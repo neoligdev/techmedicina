@@ -11,6 +11,7 @@ export const navigation: Record<Area, NavigationItem[]> = {
     { slug: 'equipe', label: 'Equipe', icon: 'doctors' }, { slug: 'planos-produtos', label: 'Planos & Produtos', icon: 'plans' },
     { slug: 'protocolos', label: 'Protocolos', icon: 'protocols' }, { slug: 'dispositivos', label: 'Dispositivos', icon: 'devices' },
     { slug: 'vendas', label: 'Vendas', icon: 'sales' }, { slug: 'integracoes', label: 'Integrações', icon: 'integrations' },
+     { slug: 'personalizacao', label: 'Personalização', icon: 'palette' },
   ],
   medico: [{ slug: '', label: 'Agenda', icon: 'calendar' }, { slug: 'pacientes', label: 'Pacientes', icon: 'users' }, { slug: 'consultas', label: 'Consultas', icon: 'consultations' }],
   app: [{ slug: '', label: 'Meu dia', icon: 'day' }, { slug: 'saude', label: 'Saúde', icon: 'health' }, { slug: 'protocolos', label: 'Protocolos', icon: 'protocols' }, { slug: 'beneficios', label: 'Benefícios', icon: 'benefits' }, { slug: 'financeiro', label: 'Financeiro', icon: 'finance' }],
