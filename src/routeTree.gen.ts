@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppSectionRouteImport } from './routes/app.$section'
+import { Route as ClinicaIndexRouteImport } from './routes/clinica.index'
+import { Route as ClinicaSectionRouteImport } from './routes/clinica.$section'
+import { Route as MedicoIndexRouteImport } from './routes/medico.index'
+import { Route as MedicoSectionRouteImport } from './routes/medico.$section'
+import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
+import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppSectionRoute = AppSectionRouteImport.update({
+  id: '/app/$section',
+  path: '/app/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClinicaIndexRoute = ClinicaIndexRouteImport.update({
+  id: '/clinica/',
+  path: '/clinica/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClinicaSectionRoute = ClinicaSectionRouteImport.update({
+  id: '/clinica/$section',
+  path: '/clinica/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicoIndexRoute = MedicoIndexRouteImport.update({
+  id: '/medico/',
+  path: '/medico/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicoSectionRoute = MedicoSectionRouteImport.update({
+  id: '/medico/$section',
+  path: '/medico/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
+  id: '/super-admin/',
+  path: '/super-admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminSectionRoute = SuperAdminSectionRouteImport.update({
+  id: '/super-admin/$section',
+  path: '/super-admin/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app/$section': typeof AppSectionRoute
+  '/clinica/$section': typeof ClinicaSectionRoute
+  '/medico/$section': typeof MedicoSectionRoute
+  '/super-admin/$section': typeof SuperAdminSectionRoute
+  '/app/': typeof AppIndexRoute
+  '/clinica/': typeof ClinicaIndexRoute
+  '/medico/': typeof MedicoIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app/$section': typeof AppSectionRoute
+  '/clinica/$section': typeof ClinicaSectionRoute
+  '/medico/$section': typeof MedicoSectionRoute
+  '/super-admin/$section': typeof SuperAdminSectionRoute
+  '/app': typeof AppIndexRoute
+  '/clinica': typeof ClinicaIndexRoute
+  '/medico': typeof MedicoIndexRoute
+  '/super-admin': typeof SuperAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app/$section': typeof AppSectionRoute
+  '/clinica/$section': typeof ClinicaSectionRoute
+  '/medico/$section': typeof MedicoSectionRoute
+  '/super-admin/$section': typeof SuperAdminSectionRoute
+  '/app/': typeof AppIndexRoute
+  '/clinica/': typeof ClinicaIndexRoute
+  '/medico/': typeof MedicoIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app/$section'
+    | '/clinica/$section'
+    | '/medico/$section'
+    | '/super-admin/$section'
+    | '/app/'
+    | '/clinica/'
+    | '/medico/'
+    | '/super-admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app/$section'
+    | '/clinica/$section'
+    | '/medico/$section'
+    | '/super-admin/$section'
+    | '/app'
+    | '/clinica'
+    | '/medico'
+    | '/super-admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/app/$section'
+    | '/clinica/$section'
+    | '/medico/$section'
+    | '/super-admin/$section'
+    | '/app/'
+    | '/clinica/'
+    | '/medico/'
+    | '/super-admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppSectionRoute: typeof AppSectionRoute
+  ClinicaSectionRoute: typeof ClinicaSectionRoute
+  MedicoSectionRoute: typeof MedicoSectionRoute
+  SuperAdminSectionRoute: typeof SuperAdminSectionRoute
+  AppIndexRoute: typeof AppIndexRoute
+  ClinicaIndexRoute: typeof ClinicaIndexRoute
+  MedicoIndexRoute: typeof MedicoIndexRoute
+  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/app'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/$section': {
+      id: '/app/$section'
+      path: '/app/$section'
+      fullPath: '/app/$section'
+      preLoaderRoute: typeof AppSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinica/': {
+      id: '/clinica/'
+      path: '/clinica'
+      fullPath: '/clinica/'
+      preLoaderRoute: typeof ClinicaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinica/$section': {
+      id: '/clinica/$section'
+      path: '/clinica/$section'
+      fullPath: '/clinica/$section'
+      preLoaderRoute: typeof ClinicaSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medico/': {
+      id: '/medico/'
+      path: '/medico'
+      fullPath: '/medico/'
+      preLoaderRoute: typeof MedicoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medico/$section': {
+      id: '/medico/$section'
+      path: '/medico/$section'
+      fullPath: '/medico/$section'
+      preLoaderRoute: typeof MedicoSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/': {
+      id: '/super-admin/'
+      path: '/super-admin'
+      fullPath: '/super-admin/'
+      preLoaderRoute: typeof SuperAdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/$section': {
+      id: '/super-admin/$section'
+      path: '/super-admin/$section'
+      fullPath: '/super-admin/$section'
+      preLoaderRoute: typeof SuperAdminSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppSectionRoute: AppSectionRoute,
+  ClinicaSectionRoute: ClinicaSectionRoute,
+  MedicoSectionRoute: MedicoSectionRoute,
+  SuperAdminSectionRoute: SuperAdminSectionRoute,
+  AppIndexRoute: AppIndexRoute,
+  ClinicaIndexRoute: ClinicaIndexRoute,
+  MedicoIndexRoute: MedicoIndexRoute,
+  SuperAdminIndexRoute: SuperAdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
