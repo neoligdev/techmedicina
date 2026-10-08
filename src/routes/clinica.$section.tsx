@@ -1,5 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { PlaceholderPage } from '@/components/platform/placeholder-page';
+import { PersonalizationPage } from '@/components/platform/personalization-page';
 import { navigation, areaLabels } from '@/features/demo/navigation';
 import { pageHead } from '@/features/demo/metadata';
 export const Route = createFileRoute('/clinica/$section')({
@@ -13,5 +14,7 @@ export const Route = createFileRoute('/clinica/$section')({
 });
 function SectionPage() {
   const { title } = Route.useLoaderData();
+  const { section } = Route.useParams();
+  if (section === 'personalizacao') return <PersonalizationPage />;
   return <PlaceholderPage title={title} />;
 }

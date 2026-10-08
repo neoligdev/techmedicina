@@ -16,3 +16,5 @@
 - Use a reusable placeholder through area-specific dynamic section routes validated against navigation; this makes each menu addressable without duplicating unfinished screens.
 - Keep clinic selection in temporary React context only, never as authentication or tenant isolation; this demo has no persistent clinical data or backend.
 - Define all visual colors through semantic CSS variables and named clinic themes; this separates clinic identities from the administrative brand.
+- Keep visual preference validation, browser storage adapter, and contrast-aware CSS variable mapping in separate browser-safe demo modules; this allows replacing persistence without coupling the form to storage.
+- Persist only whitelisted visual preferences keyed by immutable clinic ID and load after hydration; clinic selection stays temporary and never supplies authorization.

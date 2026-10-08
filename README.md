@@ -22,7 +22,13 @@ Abra o endereço indicado pelo Vite. `/` direciona para `/super-admin`.
 - `src/styles.css`: variáveis semânticas e identidades visuais da plataforma e das clínicas.
 - `src/test/`: testes básicos.
 
-A busca opera somente sobre as duas clínicas fictícias. “Visualizar clínica” seleciona o identificador no contexto React e abre a área da clínica. A seleção é temporária; ao recarregar, retorna à primeira clínica. As cores são definidas em variáveis por tema e o nome vem da identidade de cada clínica. O seletor “Demonstração” não é login: todas as áreas estão públicas, sem autorização ou isolamento real. Nenhum prontuário, senha ou chave foi criado.
+A busca opera somente sobre as duas clínicas fictícias e reflete seus nomes personalizados. “Visualizar clínica” seleciona o identificador no contexto React e abre a área da clínica. A seleção é temporária; ao recarregar, retorna à primeira clínica. O seletor “Demonstração” não é login: todas as áreas estão públicas, sem autorização ou isolamento real. Nenhum prontuário, senha ou chave foi criado.
+
+## Personalização demonstrativa
+
+O menu da clínica permite editar nome, cores e tema, salvar ou restaurar o padrão. Somente essas preferências visuais ficam no `localStorage`, separadas pelo identificador imutável da clínica; não há dados de saúde, credenciais ou permissões. A identidade é aplicada em `/clinica`, `/medico` e `/app`; `/super-admin` mantém PlugPix. As cores de uso em textos e botões são ajustadas para contraste; as amostras preservam as cores escolhidas. Falha de armazenamento gera aviso, sem confirmação falsa. Isso não substitui persistência, autorização ou isolamento no servidor.
+
+Arquivos: `personalization-page.tsx` (tela); `features/demo/personalization.ts` (configuração/validação), `preference-storage.ts` (adaptador substituível), `theme.ts` (contraste/variáveis), `context.tsx` (preferências por unidade); ajustes no layout, lista, menu, rota da clínica, estilos e testes. Nenhum serviço ou dependência foi adicionado.
 
 ## Pendências para produção
 

@@ -13,6 +13,6 @@ describe('Dados administrativos demonstrativos', () => {
     expect(filterClinics('')).toHaveLength(2);
   });
   it('oferece os menus previstos para as quatro áreas', () => {
-    expect(Object.values(navigation).map(items => items.length)).toEqual([6, 8, 3, 5]);
+    expect(Object.values(navigation).map(items => items.length)).toEqual([6, 9, 3, 5]);
   });
 });
