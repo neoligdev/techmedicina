@@ -8,3 +8,11 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Keep the TanStack Start file-based router, with `/` redirecting to `/super-admin`; this preserves the standard bootstrap and requested entry point.
+- Wrap content routes with the shared AppShell and DemoProvider in the root route; this keeps clinic selection explicit and consistent between areas.
+- Keep demo types, data, navigation, theme identity, and context in separate browser-safe modules; this supports source-code continuation without adding dependencies.
+- Use a reusable placeholder through area-specific dynamic section routes validated against navigation; this makes each menu addressable without duplicating unfinished screens.
+- Keep clinic selection in temporary React context only, never as authentication or tenant isolation; this demo has no persistent clinical data or backend.
+- Define all visual colors through semantic CSS variables and named clinic themes; this separates clinic identities from the administrative brand.
