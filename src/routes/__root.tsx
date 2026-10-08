@@ -84,7 +84,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "PlugPix Techmedicina" },
       { name: "description", content: "PlugPix Techmedicina — plataforma de gestão em saúde." },
       { property: "og:title", content: "PlugPix Techmedicina" },
-      { property: "og:description", content: "PlugPix Techmedicina — plataforma de gestão em saúde." },
+      {
+        property: "og:description",
+        content: "PlugPix Techmedicina — plataforma de gestão em saúde.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -121,7 +124,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DemoProvider><AppShell><Outlet /></AppShell></DemoProvider>
+      <DemoProvider>
+        <AppShell>
+          <Outlet />
+        </AppShell>
+      </DemoProvider>
     </QueryClientProvider>
   );
 }

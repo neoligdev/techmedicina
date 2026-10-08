@@ -14,6 +14,8 @@ bun run build
 
 Abra o endereço indicado pelo Vite. `/` direciona para `/super-admin`.
 
+Neste computador também foi validada a execução com Node/npm: `npm run dev`, `npm run test`, `npm run build`, `npm run lint` e `npx tsc --noEmit`, usando as dependências já instaladas. O endereço depende da porta disponível. Resultados da retomada e diferenças em relação ao PRD externo estão em `VALIDACAO_LOCAL.md`.
+
 ## Estrutura
 
 - `src/routes/`: quatro áreas (`/super-admin`, `/clinica`, `/medico`, `/app`) e páginas de extensão por seção, com metadados próprios.
