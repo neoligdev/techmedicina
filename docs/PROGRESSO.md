@@ -124,3 +124,10 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - PENDÊNCIAS: Override responsivo (390px) falhou ao ser embutido (viewport não forçou layout mobile), adiado para próxima etapa de preview. Cloudauth, banco real, domínios, PWA e tela de splash continuam não iniciados.
 - Integração: Histórico registra C003 enviada por push (commit 19cf5f5). C004 validada localmente, aguardando integração por merge com a origin/main (b942d89).
 - O executor retornará ao modo OCIOSO.
+ 
+ # #   C - 0 0 4   I n t e g r a � � o   e   Q A   ( 0 9 / 1 0 / 2 0 2 6 )  
+ -   I n t e g r a � � o   R e a l i z a d a :   M e r g e   d a   b r a n c h   m a i n   ( f 4 3 5 6 b f )   f e i t o   c o m   s u c e s s o .   R e s o l v i d o s   c o n f l i t o s   n o   e s t a d o   d e   e d i � � o .  
+ -   T e s t e s   P r e s e r v a d o s :   T o d o s   o s   4 0   t e s t e s   o r i g i n a i s   e s t � o   f u n c i o n a i s   ( 4 0 / 4 0 ) ,   L i n t   r e l a t a   0   e r r o s   e   8   a v i s o s .  
+ -   Q A   e   H M R :   E r r o   D e m o P r o v i d e r   f o i   H M R ;   c u r l . e x e   a t e s t o u   S S R   s e m   q u e b r a   p r o d u t i v o .   J S D O M   n a v i g a t i o n   f o i   d e s c a r t a d o .  
+ -   O C I O S O :   A g u a r d a n d o   Q A   f i n a l   d o   c o o r d e n a d o r .  
+ 
