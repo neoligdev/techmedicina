@@ -78,3 +78,9 @@ O usuário autorizou design de todas as áreas e commit/push em lotes para acomp
 Infraestrutura indicada pelo usuário: Lovable Cloud. Inspeção do projeto confirma GitHub sincronizado, mas o lote anterior mostra falha de compilação remota. Cloud oferece habilitação adicional de banco/autenticação/armazenamento; disponibilidade desses recursos ainda precisa de verificação.
 
 Correções e limites da revisão estão em RELATORIO_C002.md e DESIGN_SYSTEM.md. Antigravity permaneceu ocioso durante as edições diretas; OpenCode não foi iniciado. Endereço local desta revisão: http://127.0.0.1:8083/. PRD preservado byte a byte.
+
+### Resultado do envio C-002-R2
+
+Commit 36f7f69 enviado à main com autor PlugPix. Lovable aceitou o commit; foi acionado Update preview e a nova interface apareceu no editor. O histórico continua sinalizando Build unsuccessful; a causa ainda não aparece em Details. Site público permanece na versão anterior; publicação não realizada.
+
+Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do aplicativo sem rolagem horizontal em 378 px. Diálogo da clínica coube na tela de 393 px. Tema escuro do diálogo e retorno à identidade PlugPix aprovados localmente. Evidências PNG registradas. Personalização permanece demonstrativa por ID de clínica; permissões reais, persistência clínica e backend ainda pendentes.

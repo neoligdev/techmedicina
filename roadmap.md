@@ -26,4 +26,6 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Infraestrutura indicada pelo usuário: Lovable Cloud.
 - [ ] Confirmar/habilitar banco e autenticação e implementar políticas por clínica.
 - [x] C-002-R2: navegação por grupos, layouts por módulo, formulários temporários e painéis sem informações clínicas inventadas.
-- [ ] Concluir validação móvel e conferir compilação remota no Lovable.
+- [x] Verificar quatro áreas e diálogo em modo móvel no preview do Lovable.
+- [x] Verificar tema escuro do diálogo e marca PlugPix preservada.
+- [ ] Esclarecer aviso Build unsuccessful mantido no histórico, apesar de preview atualizado.
