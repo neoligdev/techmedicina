@@ -71,6 +71,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#061321" },
       { title: "PlugPix Techmedicina" },
       { name: "description", content: "PlugPix Techmedicina — plataforma de gestão em saúde." },
       { property: "og:title", content: "PlugPix Techmedicina" },
@@ -87,6 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,

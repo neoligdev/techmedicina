@@ -1,0 +1,13 @@
+{
+  "id": "/app",
+  "name": "Techmedicina · Meu cuidado",
+  "short_name": "Techmedicina",
+  "lang": "pt-BR",
+  "start_url": "/app",
+  "scope": "/app",
+  "display": "standalone",
+  "background_color": "#061321",
+  "theme_color": "#061321",
+  "description": "Interface demonstrativa de acompanhamento de saúde PlugPix Techmedicina.",
+  "icons": [{ "src": "/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

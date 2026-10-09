@@ -16,7 +16,7 @@ export function MedicoDashboard() {
         {
           slug: "pacientes",
           title: "Pacientes",
-          description: "Explore a estrutura de acompanhamento autorizado.",
+          description: "Veja o paciente demonstrativo, a bioimpedância e os dados da pulseira.",
         },
         {
           slug: "exames",

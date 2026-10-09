@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { filterClinics } from "@/features/demo/data";
 import { useDemoClinic } from "@/features/demo/context";
+import { OperationalOverview } from "./operational-overview";
 export function ClinicsPage() {
   const [search, setSearch] = useState("");
   const { selectClinic, clinics } = useDemoClinic();
@@ -85,6 +86,7 @@ export function ClinicsPage() {
         </Card>
       </div>
 
+      <OperationalOverview />
       <section className="clinics-section" aria-label="Clínicas cadastradas">
         <div className="table-toolbar">
           <div className="section-title">

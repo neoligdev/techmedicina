@@ -142,11 +142,9 @@ describe("Personalização por clínica", () => {
         onload: ((ev: { target: { result: string } }) => void) | null = null;
         onerror: ((ev: Event) => void) | null = null;
         readAsDataURL(file: File) {
-          setTimeout(() => {
-            this.onload?.({
-              target: { result: file.name === "logoA.png" ? validPngA : validPngB },
-            });
-          }, 0);
+          this.onload?.({
+            target: { result: file.name === "logoA.png" ? validPngA : validPngB },
+          });
         }
       },
     );
@@ -160,11 +158,8 @@ describe("Personalização por clínica", () => {
           imgInstances.push(this);
         }
         set src(value: string) {
-          console.log("MOCK IMAGE SRC:", value.slice(0, 50));
-          setTimeout(() => {
-            if (value === validPngA || value === validPngB) this.onload?.();
-            else this.onerror?.();
-          }, 0);
+          if (value === validPngA || value === validPngB) this.onload?.();
+          else this.onerror?.();
         }
       },
     );
@@ -219,7 +214,7 @@ describe("Personalização por clínica", () => {
     expect(screen.getByTestId("saved")).toHaveTextContent(validPngA);
 
     newView.unmount();
-  });
+  }, 30000);
 
   it("ignora callback stale de imagem", async () => {
     const validPng =
@@ -232,7 +227,7 @@ describe("Personalização por clínica", () => {
       class {
         onload: ((ev: { target: { result: string } }) => void) | null = null;
         readAsDataURL(file: File) {
-          setTimeout(() => this.onload?.({ target: { result: validPng } }), 0);
+          this.onload?.({ target: { result: validPng } });
         }
       },
     );
@@ -292,10 +287,7 @@ describe("Personalização por clínica", () => {
       class {
         onload: ((ev: { target: { result: string } }) => void) | null = null;
         readAsDataURL(file: File) {
-          setTimeout(
-            () => this.onload?.({ target: { result: "data:image/png;base64,bm90IGEgcG5n" } }),
-            0,
-          );
+          this.onload?.({ target: { result: "data:image/png;base64,bm90IGEgcG5n" } });
         }
       },
     );

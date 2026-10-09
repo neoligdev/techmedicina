@@ -15,6 +15,7 @@ import {
 import { moduleSpec, type ModuleSpec } from "@/features/demo/module-catalog";
 import { useDemoClinic } from "@/features/demo/context";
 import type { Area } from "@/features/demo/types";
+import { HealthDashboard } from "./health-dashboard";
 
 interface PreviewItem {
   id: string;
@@ -30,6 +31,17 @@ const normalize = (text: string) =>
 
 export function ModulePage({ area, slug }: { area: Area; slug: string }) {
   const { clinic } = useDemoClinic();
+  if (area === "app" && (slug === "saude" || slug === "bioimpedancia")) {
+    return (
+      <HealthDashboard
+        key={`${clinic.id}:${slug}`}
+        initialView={slug === "bioimpedancia" ? "body" : "bracelet"}
+      />
+    );
+  }
+  if (area === "medico" && (slug === "pacientes" || slug === "resumo")) {
+    return <HealthDashboard key={`${clinic.id}:${slug}`} clinician />;
+  }
   const spec = moduleSpec(area, slug);
   if (!spec) return null;
   return <ModuleWorkspace key={`${area}:${slug}:${clinic.id}`} spec={spec} />;

@@ -4,7 +4,7 @@ Revisão C-002-R2, 08/10/2026. Esta entrega organiza as quatro áreas e os módu
 
 ## Direção visual
 
-Superfícies claras, bordas suaves, cartões com espaçamento generoso, títulos destacados e cores semânticas. Campos e botões têm cantos arredondados e foco visível. A identidade PlugPix permanece no Super ADM; as três áreas da clínica usam suas preferências visuais.
+Direção atual C006 (09/10/2026): azul marinho profundo, superfícies translúcidas foscas, textura discreta, bordas suaves e cartões com espaçamento generoso. Verde cana é a cor principal padrão; ciano, violeta e rosa distinguem séries e indicadores. Campos e botões têm cantos arredondados e foco visível. O tema claro continua disponível e preferências anteriores são preservadas. A identidade PlugPix permanece no Super ADM; as três áreas da clínica usam suas preferências visuais.
 
 A navegação administrativa é agrupada por função. O aplicativo oferece quatro acessos principais e um botão Mais para os demais recursos. Listagens têm busca e filtro; conteúdo usa cartões; CRM usa colunas; jornadas e integrações mostram etapas e estado sem dados ou conexão.
 
@@ -21,4 +21,4 @@ As rotas e referências às seções do PRD estão em `src/features/demo/module-
 
 Busca ignora caixa e acentos; filtro distingue exemplos de rascunhos. Formulários validam nomes, permitem cancelar, adicionar exemplo e consultar sua descrição. Exemplos são descartados ao sair, mudar de clínica ou recarregar. Somente preferências visuais ficam no navegador, separadas por ID de clínica.
 
-Não são inventadas metas de saúde, medicamentos, avaliações de IA, indicadores financeiros ou regras de pontuação. Não há atendimento, prontuário, venda, autorização ou integração real. Autenticação, isolamento no servidor, auditoria e persistência clínica continuam pendentes.
+Na C006, o usuário autorizou explicitamente dados de saúde fictícios para demonstração. Cliente e médico usam a mesma fonte estática, com unidades, datas, gráficos e tabelas acessíveis. Não são inventadas metas terapêuticas, prescrições, avaliações de IA ou regras de pontuação. Não há atendimento, prontuário, venda, autorização ou integração real. Autenticação, isolamento no servidor, auditoria e persistência clínica continuam pendentes.

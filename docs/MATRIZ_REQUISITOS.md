@@ -2,7 +2,7 @@
 
 Referência: PRD_Techmedicina.md, preservado integralmente. Esta matriz organiza etapas; não declara implementação nem substitui detalhes e pendências do PRD.
 
-Decisão do usuário: definir infraestrutura depois e concluir apenas etapas independentes. A validação atual não autoriza novos módulos. Propostas anteriores de prontuário, gamificação ou vidas simuladas foram retiradas pelo coordenador: não comprovam segurança ou processamento reais.
+Histórico: a validação inicial limitava desenvolvimento a etapas independentes. Atualização de 09/10/2026: usuário indicou Lovable Cloud e autorizou Codex a implementar diretamente a modernização global, gráficos e dados de saúde demonstrativos, com commit/push para o preview. Isso substitui a restrição de execução exclusiva pelo Antigravity e permite a demonstração solicitada, sem concluir segurança, prontuário ou integrações reais.
 
 | Seção PRD | Escopo | Dependência e situação |
 | --- | --- | --- |
@@ -13,7 +13,7 @@ Decisão do usuário: definir infraestrutura depois e concluir apenas etapas ind
 | 5 | Compartilhamento na clínica | Exige vínculos e autorização no servidor; seleção demonstrativa não comprova acesso. |
 | 6 | Dispositivo e contexto | Dependente de protocolo, integração e decisões do dispositivo. |
 | 7 | Aceite Médico | Critérios propostos para futuro teste real; não atendidos pela demonstração. |
-| 8 | Paciente | Subitens 8.1–8.10 definidos com detalhes pendentes; dados, IA, lembretes e regras de saúde não implementados. |
+| 8 | Paciente | C006: painel, gráficos, histórico e navegação móvel com dados fictícios (8.1). IA, lembretes, dados reais e demais regras continuam pendentes. |
 | 9 | Loja | Catálogos definidos; operação comercial 9.3 pendente. |
 | 10 | Integração e notificações | Recomendado; requer eventos, permissões e canais aprovados. |
 | 11 | Aceite app e loja | Testes de aceitação futuros com serviços reais. |
@@ -32,7 +32,7 @@ Decisão do usuário: definir infraestrutura depois e concluir apenas etapas ind
 | 24 | Aceite conteúdo/comercial | Futuro: verificar permissões, atribuições e operação real. |
 | 25 | Pulseira | Gestão definida; firmware, autorização, estoque e telemetria dependentes. |
 | 26 | Aceite pulseira | Exige dispositivo e ciclo operacional reais. |
-| 27 | Bioimpedância | Escopo parcialmente definido; modelo, compartilhamento, integração e cobrança pendentes. |
+| 27 | Bioimpedância | C006: 8 medições fictícias, cartões, 3 gráficos e tabelas compartilhados com Médico. Modelo, dados reais, integração, permissões e cobrança pendentes. |
 | 28 | Aceite bioimpedância | Exige balança, identificação e integração reais. |
 | 29 | Inovações Super ADM | Simulador, central operacional, implantação guiada e laboratório IA aprovados; premissas/detalhes pendentes. |
 | 30 | Inovações clínica/equipe | Jornadas, fila, resumo de consulta e retenção aprovados; dependem de dados e permissões. |
@@ -54,5 +54,5 @@ Não há decisão automática sobre custos, fornecedores, regras clínicas ou co
 ## Infraestrutura e Coordenação (Atualizado 09/10/2026)
 - **Infraestrutura**: Lovable Cloud definido pelo usuário. Conexão via GitHub confirmada, porém configuração efetiva de banco de dados (DB) e autenticação real (auth) ainda não verificadas.
 - **Autorizações do Usuário**: Autorizado desenvolvimento contínuo (PRD contínuo). O executor local (Antigravity) atua como único executor, responsável pelos commits e push normais (`git commit`, `git push`) no fluxo, sem precisar pedir permissão prévia a cada passo. O coordenador atua como revisor de QA.
-- **Progresso de Tarefas**: C004 (Identidade Visual) parcialmente validada de forma demonstrativa. A próxima etapa a iniciar imediatamente é a C005 (Catálogo Base de Planos).
+- **Progresso de Tarefas**: C004 validada. C005 (Catálogo Base de Planos) implementada, formatada e consolidada localmente com testes isolados perfeitos e regras estritas em R4. Aguardando aprovação/QA final (OCIOSO).
 - O PRD original permanece intacto e servirá de base estrita para as implementações.

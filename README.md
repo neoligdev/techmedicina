@@ -1,6 +1,6 @@
 # PlugPix Techmedicina
 
-Base demonstrativa em português do Brasil, construída com React, TypeScript, TanStack Start e Tailwind CSS. Não possui banco, autenticação real ou integrações.
+Base demonstrativa em português do Brasil, construída com React, TypeScript, TanStack Start e Tailwind CSS. Inclui interface azul marinho com superfícies foscas, catálogo local de rascunhos e painéis de saúde com dados fictícios compartilhados entre cliente e médico. Não possui banco, autenticação real ou integrações de dispositivos.
 
 ## Execução
 
@@ -36,6 +36,14 @@ Arquivos: `personalization-page.tsx` (tela); `features/demo/personalization.ts` 
 ## Pendências para produção
 
 Backend e persistência; autenticação; autorização no servidor; isolamento entre clínicas; criptografia; auditoria; integrações. Os menus são pontos de extensão; as áreas têm prévias de interface descritas em docs/DESIGN_SYSTEM.md. Não usar a seleção demonstrativa como mecanismo de segurança.
+
+## Painéis demonstrativos e base PWA — C006
+
+`/app` apresenta oito indicadores principais e seis gráficos. `/app/bioimpedancia` detalha composição corporal e `/app/saude` apresenta pulseira/atividade. `/medico/pacientes` e `/medico/resumo` usam o mesmo componente e as mesmas fixtures de `src/features/demo/health-data.ts`. Os dados são estáticos no código, identificados como fictícios; não são coletados nem persistidos como prontuário. Indicadores da H59/H59MAX e da balança dependem de documentação e validação reais.
+
+A base PWA possui manifest, ícone SVG e service worker restrito à navegação do aplicativo. O worker usa rede sem cache e apresenta uma mensagem genérica ao perder conexão; não oferece histórico clínico offline. Instalação em aparelhos reais, ícones de instalação por clínica e suporte a iOS ainda precisam de validação. Registro de resultados e arquivos: `docs/RELATORIO_C006.md`.
+
+Além das preferências visuais, o catálogo C005 guarda somente rascunhos comerciais fictícios no navegador. Não há ativação, cobrança ou venda real.
 
 ## Regras futuras de negócio
 

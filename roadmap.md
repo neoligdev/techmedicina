@@ -38,3 +38,15 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [ ] Esclarecer aviso Build unsuccessful mantido no histórico, apesar de preview atualizado.
 - [x] C-003-R3: Fundação parcial de autorização lógica (`core.ts` e `guards.server.ts`) e diagnósticos testados unitariamente (403) e HTTP (401).
 - [ ] Implementar autenticação real, RLS no banco, encriptação e auditoria (Pendentes da fundação global C-003).
+
+
+## C006 — entrega de interface e dados demonstrativos
+
+- [x] Design global azul marinho/fosco e gráficos administrativos.
+- [x] Painéis do cliente e médico com mesma fonte fictícia, gráficos e tabelas.
+- [x] QA 390px/1440px, preferências por clínica e identidade PlugPix.
+- [x] Tipos, lint, 64 testes e build validados.
+- [x] Base manifest/service worker sem cache de dados de saúde.
+- [ ] Homologar instalação PWA em dispositivos reais e ícones por clínica.
+- [ ] Validar modelo H59/H59MAX, balança e protocolos oficiais.
+- [ ] Implementar dados reais, autenticação e isolamento no servidor.

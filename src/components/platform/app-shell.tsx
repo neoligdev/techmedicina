@@ -56,12 +56,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       }
     };
     const previous = document.body.style.overflow;
+    const trigger = menuTrigger.current;
     document.body.style.overflow = "hidden";
     panel.addEventListener("keydown", keydown);
     return () => {
       document.body.style.overflow = previous;
       panel.removeEventListener("keydown", keydown);
-      menuTrigger.current?.focus();
+      trigger?.focus();
     };
   }, [mobile, menuOpen]);
   const { clinic, preferences } = useDemoClinic();
@@ -72,6 +73,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   const title = navigation[area].find((item) => item.slug === section)?.label ?? "Página";
   const branded = area !== "super-admin";
   const identity = branded ? clinicIdentity(clinic) : productIdentity;
+
+  useEffect(() => {
+    if (area !== "app" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/app-sw.js", { scope: "/app" }).catch(() => {
+      // Installation support is optional; the online application remains usable.
+    });
+  }, [area]);
 
   useClinicIdentityEffect(branded, identity.name, preferences.favicon);
 

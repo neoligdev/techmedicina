@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import type { Area } from "@/features/demo/types";
+import { OperationalOverview } from "../operational-overview";
 
 interface DashboardLink {
   slug: string;
@@ -34,6 +35,7 @@ export function WorkspaceDashboard({
           <p>{description}</p>
         </div>
       </div>
+      {area === "clinica" && <OperationalOverview local />}
       <section className="module-panel mb-6">
         <span className="module-tag">Ambiente demonstrativo</span>
         <h2>Seu espaço, organizado.</h2>
