@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { PlaceholderPage } from "@/components/platform/placeholder-page";
+import { ModulePage } from "@/components/platform/module-page";
 import { navigation, areaLabels } from "@/features/demo/navigation";
 import { pageHead } from "@/features/demo/metadata";
 export const Route = createFileRoute("/super-admin/$section")({
@@ -8,13 +8,13 @@ export const Route = createFileRoute("/super-admin/$section")({
       (item) => item.slug === params.section && item.slug !== "",
     );
     if (!item) throw notFound();
-    return { title: item.label };
+    return { title: item.label, slug: item.slug };
   },
   head: ({ loaderData }) =>
     pageHead(`${loaderData?.title ?? "Página indisponível"} · ${areaLabels["super-admin"]}`),
   component: SectionPage,
 });
 function SectionPage() {
-  const { title } = Route.useLoaderData();
-  return <PlaceholderPage title={title} />;
+  const { slug } = Route.useLoaderData();
+  return <ModulePage area="super-admin" slug={slug} />;
 }

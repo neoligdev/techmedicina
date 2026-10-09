@@ -21,5 +21,9 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 
 - [x] Matriz das 34 seções do PRD e dependências registrada em docs/MATRIZ_REQUISITOS.md.
 - [x] Verificação visual móvel parcial e desktop, com limites registrados em docs/PROGRESSO.md.
+- [x] Lote 1: Design UX/UI Premium (Off-white/Petróleo) e mockups criados (app, médico, clínica, super-admin).
 - [ ] Confirmar cores pelo seletor nativo do navegador.
-- [ ] Definir infraestrutura futuramente (adiada pelo usuário); módulos novos não iniciados.
+- [x] Infraestrutura indicada pelo usuário: Lovable Cloud.
+- [ ] Confirmar/habilitar banco e autenticação e implementar políticas por clínica.
+- [x] C-002-R2: navegação por grupos, layouts por módulo, formulários temporários e painéis sem informações clínicas inventadas.
+- [ ] Concluir validação móvel e conferir compilação remota no Lovable.

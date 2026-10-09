@@ -15,11 +15,12 @@ bun run build
 Abra o endereço indicado pelo Vite. `/` direciona para `/super-admin`.
 
 Neste computador também foi validada a execução com Node/npm: `npm run dev`, `npm run test`, `npm run build`, `npm run lint` e `npx tsc --noEmit`, usando as dependências já instaladas. O endereço depende da porta disponível. Resultados da retomada e diferenças em relação ao PRD externo estão em `VALIDACAO_LOCAL.md`.
+A autorização LOTE 1 validou localmente o Design System e implementou os componentes focados em interfaces UX.
 
 ## Estrutura
 
 - `src/routes/`: quatro áreas (`/super-admin`, `/clinica`, `/medico`, `/app`) e páginas de extensão por seção, com metadados próprios.
-- `src/components/platform/`: layout, marca, navegação, seletor de demonstração, tela Clínicas e página reutilizada “Em preparação”.
+- `src/components/platform/`: layout, marca, navegação, seletor de demonstração, tela Clínicas, painéis e layouts de prévia por módulo.
 - `src/features/demo/`: tipos, dados administrativos fictícios, contexto de clínica, configuração de navegação, tema e metadados.
 - `src/styles.css`: variáveis semânticas e identidades visuais da plataforma e das clínicas.
 - `src/test/`: testes básicos.
@@ -34,7 +35,7 @@ Arquivos: `personalization-page.tsx` (tela); `features/demo/personalization.ts` 
 
 ## Pendências para produção
 
-Backend e persistência; autenticação; autorização no servidor; isolamento entre clínicas; criptografia; auditoria; integrações. Os menus são pontos de extensão; apenas Clínicas está detalhado. Não usar a seleção demonstrativa como mecanismo de segurança.
+Backend e persistência; autenticação; autorização no servidor; isolamento entre clínicas; criptografia; auditoria; integrações. Os menus são pontos de extensão; as áreas têm prévias de interface descritas em docs/DESIGN_SYSTEM.md. Não usar a seleção demonstrativa como mecanismo de segurança.
 
 ## Regras futuras de negócio
 

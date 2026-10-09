@@ -11,21 +11,6 @@ export interface Clinic {
 export interface NavigationItem {
   slug: string;
   label: string;
-  icon:
-    | "palette"
-    | "building"
-    | "doctors"
-    | "users"
-    | "plans"
-    | "devices"
-    | "finance"
-    | "overview"
-    | "protocols"
-    | "sales"
-    | "integrations"
-    | "calendar"
-    | "consultations"
-    | "day"
-    | "health"
-    | "benefits";
+  icon: string;
+  group?: string;
 }

@@ -1,14 +1,26 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Search, ArrowUpRight, Building2, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ArrowUpRight,
+  Building2,
+  ChevronRight,
+  Users,
+  CreditCard,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { filterClinics } from "@/features/demo/data";
 import { useDemoClinic } from "@/features/demo/context";
 export function ClinicsPage() {
   const [search, setSearch] = useState("");
   const { selectClinic, clinics } = useDemoClinic();
   const results = filterClinics(search, clinics);
+
+  const activeClinics = clinics.filter((c) => c.status === "Ativa").length;
+  const totalLives = clinics.reduce((acc, c) => acc + c.enabledLives, 0);
   return (
     <div className="page-content">
       <div className="page-heading">
@@ -24,11 +36,60 @@ export function ClinicsPage() {
           <span>Rede PlugPix</span>
         </div>
       </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Clínicas Ativas</CardTitle>
+            <Building2 className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeClinics}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {clinics.length - activeClinics} em implantação
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Vidas</CardTitle>
+            <Users className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalLives.toLocaleString("pt-BR")}</div>
+            <p className="text-xs text-muted-foreground mt-1">Vidas habilitadas na base</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Faturamento Global</CardTitle>
+            <CreditCard className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">R$ ---</div>
+            <p className="text-xs text-muted-foreground mt-1">Recurso não demonstrado</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avisos</CardTitle>
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">—</div>
+            <p className="text-xs text-muted-foreground mt-1">Sem dados financeiros vinculados</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <section className="clinics-section" aria-label="Clínicas cadastradas">
         <div className="table-toolbar">
           <div className="section-title">
             <h2>Clínicas cadastradas</h2>
-            <span className="count-badge">2</span>
+            <span className="count-badge">{clinics.length}</span>
           </div>
           <div className="search-field">
             <Search size={18} />
@@ -104,7 +165,9 @@ export function ClinicsPage() {
           </div>
         )}
         <div className="table-footer">
-          <span>{results.length} de 2 clínicas</span>
+          <span>
+            {results.length} de {clinics.length} clínicas
+          </span>
           <span>Dados demonstrativos</span>
         </div>
       </section>

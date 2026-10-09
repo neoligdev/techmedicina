@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { clinics, filterClinics } from "@/features/demo/data";
 import { navigation } from "@/features/demo/navigation";
+import { moduleSpec } from "@/features/demo/module-catalog";
 describe("Dados administrativos demonstrativos", () => {
   it("contém somente duas clínicas com identificadores únicos", () => {
     expect(clinics).toHaveLength(2);
@@ -13,6 +14,13 @@ describe("Dados administrativos demonstrativos", () => {
     expect(filterClinics("")).toHaveLength(2);
   });
   it("oferece os menus previstos para as quatro áreas", () => {
-    expect(Object.values(navigation).map((items) => items.length)).toEqual([6, 9, 3, 5]);
+    for (const area of ["super-admin", "clinica", "medico", "app"] as const) {
+      expect(navigation[area].some((item) => item.slug === "")).toBe(true);
+      for (const item of navigation[area]) {
+        if (item.slug && item.slug !== "personalizacao")
+          expect(moduleSpec(area, item.slug), `${area}/${item.slug}`).toBeDefined();
+      }
+      expect(new Set(navigation[area].map((item) => item.slug)).size).toBe(navigation[area].length);
+    }
   });
 });
