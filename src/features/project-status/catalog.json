@@ -1,0 +1,1781 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "Processo e estado das decisões",
+      "parent": null,
+      "status": "progress",
+      "done": "PRD preservado, matriz de requisitos e registros de continuidade criados.",
+      "next": "Consolidar decisões abertas e manter este relatório a cada etapa.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": [
+        "DEFINIDO: requisito expresso pelo usuário nesta conversa ou retomado do histórico disponível.",
+        "RECOMENDADO: detalhamento proposto para avaliação do usuário.",
+        "PENDENTE: escolha, integração ou validação ainda necessária.",
+        "A construção dos comandos para Lovable e Antigravity só começa quando o usuário declarar que as especificações estão prontas.",
+        "O PRD deve estabelecer funções, atores, permissões, regras, dependências e critérios de aceite. Os critérios abaixo são propostos e deverão ser consolidados ao concluir as regras."
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Visão e arquitetura funcional",
+      "parent": null,
+      "status": "progress",
+      "done": "Quatro áreas navegáveis, identidade PlugPix, preferências visuais por clínica, UI fosca e base PWA entregues como demonstração.",
+      "next": "Completar SaaS, domínio e ícone de instalação por clínica, banco, módulos por contrato e autorização real.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": [
+        "Plataforma por assinatura (SaaS), completa e robusta, com prioridade alta em segurança de dados. Hierarquia: Super ADM → CMDs/clínicas → pacientes. Dentro do ambiente da clínica haverá um módulo Médico com acesso profissional próprio.",
+        "Super ADM utiliza PlugPix Techmedicina; cria e administra clínicas e habilita módulos.",
+        "Módulos habilitáveis inicialmente definidos: Telemedicina 2.0/4.0, Pulseira Inteligente e Protocolos. Os demais módulos descritos nas seções posteriores ampliam o escopo; suas regras de liberação por contrato ainda serão consolidadas.",
+        "Clínica tem ambiente isolado e identidade própria (white label).",
+        "Personalização: nome, domínio, logomarca, tela de abertura, ícone da aba do navegador, ícone de instalação do PWA, cores dos menus e temas claro/escuro. Aplicativo do paciente segue a identidade da clínica.",
+        "Administração da clínica adaptada a computador e celular, com perfis e permissões por menu/função.",
+        "Autorizações verificadas no servidor, negadas por padrão quando não concedidas.",
+        "Registros de auditoria da operação; consulta global dos registros exclusiva do Super ADM. Isso não estabelece acesso administrativo automático ao conteúdo clínico.",
+        "Evitar marcas, comentários e referências desnecessárias a Lovable/Antigravity no código, respeitando obrigações aplicáveis às dependências utilizadas."
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Módulo Médico",
+      "parent": null,
+      "status": "progress",
+      "done": "Prévia médica navegável e painel de indicadores demonstrativos compartilhado com o cliente.",
+      "next": "Concluir identificação, prontuário, exames, agenda e comunicação com segurança real.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": [
+        "O módulo integra prontuário, dados de saúde, exames, agenda, consultas agendadas, chat, documentos e chamada de vídeo. O acesso clínico descrito é exclusivo do perfil médico identificado por seu registro no conselho profissional."
+      ]
+    },
+    {
+      "id": "3.1",
+      "title": "Identificação e autorização",
+      "parent": "3",
+      "status": "progress",
+      "done": "Contratos e motor lógico de autorização com guardas que negam acesso sem sessão.",
+      "next": "Conectar autenticação real e validação de identidade/registro profissional e vínculo com a clínica.",
+      "authors": ["Antigravity"],
+      "requirements": [
+        "DEFINIDO: associar o profissional à sua identidade e número de conselho; as evoluções exibem nome e CRM do autor.",
+        "RECOMENDADO: cadastro de CRM e UF, validação da identidade e situação profissional antes da liberação, conta individual e autenticação com segundo fator. O CRM identifica o profissional; não funciona como senha ou prova suficiente de identidade.",
+        "RECOMENDADO: administradores e Super ADM não recebem permissão de leitura clínica pelo simples cargo administrativo. Acesso de suporte, se futuramente necessário, exige regra específica.",
+        "DEFINIDO posteriormente: Super ADM pode editar/inativar médicos e atribuí-los a novas clínicas (seção 12.2). PENDENTE: validação/aprovação, permissões locais e alcance da suspensão.",
+        "PENDENTE: distinguir médicos com CRM de outros profissionais de saúde com seus próprios conselhos, caso sejam incluídos. Não equiparar automaticamente competências nem acessos."
+      ]
+    },
+    {
+      "id": "3.2",
+      "title": "Prontuário e evoluções",
+      "parent": "3",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar prontuário e evoluções, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Caixa de texto onde o médico escreve orientações e conclusões e salva um novo registro.",
+        "Histórico cronológico com data, hora, nome do médico e CRM. RECOMENDADO: registrar também UF e identidade interna imutável do autor.",
+        "Depois de salvo, o registro não pode ser editado ou apagado por usuários. A interface e o servidor devem aplicar essa regra.",
+        "Histórico compartilhado entre médicos cadastrados e com acesso ativo na mesma clínica do paciente, conforme seção 5. Médicos de outras clínicas não têm acesso.",
+        "Todo texto médico deve estar criptografado e protegido no banco de dados.",
+        "RECOMENDADO: permitir correção/complemento por nova evolução vinculada à anterior, preservando o original, a autoria e o momento de cada registro.",
+        "RECOMENDADO: distinguir rascunho de registro definitivo, se houver rascunhos. Nunca alterar silenciosamente uma evolução definitiva.",
+        "PENDENTE: fluxo de assinatura das evoluções, campos clínicos adicionais, anamnese e demais elementos do prontuário. O campo de texto é a experiência de escrita solicitada; não se presume que ele isoladamente cubra todos os requisitos de um prontuário eletrônico."
+      ]
+    },
+    {
+      "id": "3.3",
+      "title": "Dados de saúde e IA",
+      "parent": "3",
+      "status": "progress",
+      "done": "Bioimpedância e pulseira com números fictícios, gráficos, histórico e tabelas na visão médica.",
+      "next": "Integrar coleta real e IA validada; estados emocionais e análise clínica ainda pendentes.",
+      "authors": ["Codex"],
+      "requirements": [
+        "Ao abrir o paciente, o médico acessa junto ao prontuário:",
+        "Indicadores efetivamente coletados pela pulseira e sincronizados ao sistema.",
+        "Dados inseridos pelo paciente no aplicativo.",
+        "Estado emocional do dia e relato de como está se sentindo.",
+        "Conversas do paciente com a IA Médica, cujo nome será definido posteriormente.",
+        "Exames e demais documentos clínicos recebidos.",
+        "RECOMENDADO: exibir origem, data/hora da coleta e recebimento, unidade e informação de qualidade disponível; separar relatos do paciente, medições do dispositivo, conteúdo de IA e conclusões assinadas pelo médico. A IA não altera registros definitivos em nome do profissional.",
+        "PENDENTE: indicadores suportados, gráficos, frequência de sincronização, tratamento de dados ausentes/inconsistentes e alcance de acesso da IA. Não foi definida gravação ou transcrição automática de consultas."
+      ]
+    },
+    {
+      "id": "3.4",
+      "title": "Exames e documentos",
+      "parent": "3",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar exames e documentos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Paciente envia exames de sangue e de imagem pelo aplicativo.",
+        "Médico consulta os arquivos ao lado do prontuário, no contexto do paciente.",
+        "Médico envia arquivos de orientação ao paciente e recebe arquivos dele pelo chat.",
+        "Médico anexa receitas, pedidos de exames e atestados emitidos em plataforma externa de emissão e assinatura ICP-Brasil.",
+        "DEFINIDO neste momento: anexação de documentos externos. Integração automática com a plataforma emissora não foi definida.",
+        "RECOMENDADO: preservar o arquivo originalmente assinado; registrar tipo, autor, paciente, consulta e momento do envio. Fazer checagem técnica da assinatura antes de apresentar um documento como verificado.",
+        "PENDENTE: fornecedor de emissão/assinatura, formatos e tamanhos aceitos, apresentação ao paciente e suporte a imagens médicas DICOM ou apenas arquivos/laudos comuns."
+      ]
+    },
+    {
+      "id": "3.5",
+      "title": "Agenda e pacientes",
+      "parent": "3",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar agenda e pacientes, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Médico disponibiliza horários de atendimento.",
+        "Possui lista de todos os pacientes da mesma clínica, com prontuários e dados de saúde compartilhados entre os médicos dela, conforme seção 5.",
+        "Possui área com os pacientes agendados para ele.",
+        "Ao abrir um agendamento, acessa o prontuário, dados de saúde, exames, botão para iniciar chamada, chat e anexos/documentos.",
+        "PENDENTE: duração de consulta, recorrência de horários, bloqueios, quem agenda, reagendamento, cancelamento, faltas e notificações.",
+        "RECOMENDADO: impedir sobreposição de agendamentos do mesmo médico e definir tratamento de fuso horário."
+      ]
+    },
+    {
+      "id": "3.6",
+      "title": "Chat e vídeo",
+      "parent": "3",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar chat e vídeo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Chat escrito entre médico e paciente, com envio/recebimento de arquivos nos dois sentidos.",
+        "Área de chamada de vídeo ao vivo por transmissão de áudio e vídeo (stream).",
+        "RECOMENDADO: sessão restrita aos participantes autorizados, credenciais temporárias para entrada e proteção dos arquivos; tratamento claro de queda e retorno da conexão.",
+        "PENDENTE: fornecedor da chamada, espera do paciente, disponibilidade do chat antes/depois da consulta, retenção das mensagens e limites dos anexos.",
+        "Gravação de áudio/vídeo não faz parte do escopo definido. Caso seja solicitada, terá requisitos próprios."
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Segurança — definição e recomendações",
+      "parent": null,
+      "status": "progress",
+      "done": "Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão.",
+      "next": "Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.",
+      "authors": ["Antigravity"],
+      "requirements": [
+        "DEFINIDO: proteção de dados como prioridade, isolamento entre clínicas, autorização no servidor, prontuário criptografado e registros clínicos definitivos sem edição/exclusão.",
+        "RECOMENDADO para detalhamento técnico futuro:",
+        "Criptografia dos textos clínicos na aplicação antes de persistir; chaves administradas separadamente do banco, sem segredos no navegador ou código-fonte. Definir rotação, cópias de segurança e recuperação de chaves.",
+        "Criptografia dos demais dados sensíveis e arquivos armazenados, cópias de segurança protegidas e transmissão por canais seguros.",
+        "Decifrar conteúdo somente após autorização no servidor. Criptografia não substitui controle de acesso.",
+        "Armazenamento privado dos anexos, acesso temporário autorizado e verificação de arquivos potencialmente maliciosos.",
+        "Auditoria de leitura, escrita, download e tentativas recusadas, com médico, paciente, clínica e data/hora, sem copiar textos clínicos para registros técnicos comuns.",
+        "Proteção de integridade dos registros definitivos e respectivos anexos. Identificação de alterações indevidas além de bloqueios de interface.",
+        "Regras para processamento externo por IA e fornecedores, minimização de dados e restrição do uso ao propósito autorizado.",
+        "PENDENTE: arquitetura de chaves, fornecedores, retenção legal, recuperação, exportação ao paciente, encerramento de contas/clínicas e plano operacional de segurança. A regra de não apagar registros pela interface não equivale a retenção indiscriminada de todos os dados para sempre."
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Compartilhamento dentro da mesma clínica",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "O usuário esclareceu que o compartilhamento se limita aos médicos da mesma clínica. O prontuário, seu histórico, os dados de saúde, as conversas com a IA Médica e os exames do paciente são acessíveis aos médicos cadastrados e com acesso ativo nessa clínica.",
+        "O médico pode consultar o histórico produzido pelos demais médicos da mesma clínica, com preservação da autoria de cada registro.",
+        "Ser médico cadastrado em outra clínica da plataforma não concede acesso aos pacientes dessa clínica.",
+        "O servidor verifica o vínculo ativo entre médico e clínica e a associação do paciente à clínica em cada acesso clínico, inclusive aos anexos.",
+        "Compartilhamento entre clínicas não faz parte desta regra de acesso.",
+        "RECOMENDADO: se um médico atuar em várias clínicas, cada acesso permanece restrito ao ambiente da clínica correspondente; não haverá reunião automática de históricos entre clínicas.",
+        "RECOMENDADO: auditar as consultas ao conteúdo clínico e formalizar os fundamentos e informações ao paciente aplicáveis à operação assistencial.",
+        "PENDENTE: condições operacionais de cadastro, aprovação e suspensão do vínculo médico; acesso administrativo ao cadastro sem leitura clínica; atendimento aos direitos do próprio paciente de obter seus dados/cópia do prontuário.",
+        "Referências consultadas para orientar a decisão, sem presumir conformidade concluída:",
+        "LGPD, especialmente arts. 5º, 6º, 11 e 46: https://planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm",
+        "Resolução CFM nº 2.314/2022, preservação, segurança e consentimento no contexto da telemedicina: https://www.sistemas.cfm.org.br/normas/visualizar/resolucoes/BR/2022/2314",
+        "Resumo oficial do CFM: https://portal.cfm.org.br/noticias/apos-amplo-debate-cfm-regulamenta-pratica-da-telemedicina-no-brasil/"
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Dispositivo e contexto anterior",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar dispositivo e contexto anterior, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Integração planejada: H59MAX → Bluetooth BLE → aplicativo → API → banco → IA.",
+        "Compatibilidade H59MAX, protocolo e viabilidade da conexão no PWA ainda não confirmados. OpenH59 é referência a investigar, não prova de compatibilidade.",
+        "Contexto anterior do Doutor IA: coleta/organização de dados para acompanhamento médico, prontuário e WhatsApp. Segunda IA para atendimento, dúvidas, cadastro e acesso a serviços. Validar a relação desse contexto com a IA Médica recém-descrita antes de fixar arquitetura ou nomes."
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Critérios de aceite propostos para o módulo Médico",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos para o módulo médico, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Usuário sem perfil médico autorizado não lê prontuários, dados clínicos ou exames, mesmo tentando acessar diretamente a API ou endereço de arquivo.",
+        "2. CRM informado sem validação de identidade/conta não libera acesso médico, conforme regra de verificação a definir.",
+        "3. Ao salvar uma evolução, o servidor registra autoria, paciente, clínica, data/hora e texto protegido; leitura direta da coluna clínica não revela o texto em claro quando a criptografia na aplicação for adotada.",
+        "4. Tentativas de alterar/apagar evolução definitiva são recusadas pelo servidor. Correção gera novo registro e mantém o anterior íntegro.",
+        "5. O médico autorizado vê o histórico, dados com suas origens e exames do paciente correto, sem mistura de pacientes ou clínicas.",
+        "6. Médicos com acesso ativo na mesma clínica consultam o histórico compartilhado. Médicos de outras clínicas têm acesso recusado pelo servidor, inclusive por API, identificadores diretos e endereços de anexos.",
+        "7. Horários disponibilizados e pacientes agendados são apresentados no contexto do médico correto; prevenção de conflitos depende da regra de agenda consolidada.",
+        "8. Médico e paciente autorizados trocam mensagens e arquivos da consulta; terceiros não entram na sessão nem acessam os anexos.",
+        "9. Documentos externos assinados mantêm os bytes originais e a associação correta ao paciente; anexar documento não o transforma automaticamente em documento com assinatura verificada.",
+        "10. Chamada de vídeo conecta apenas participantes autorizados e informa falhas de conexão; provedor e comportamento de recuperação a definir."
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Aplicativo do cliente/paciente",
+      "parent": null,
+      "status": "progress",
+      "done": "Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde.",
+      "next": "Implementar dados e serviços reais, rotina, exames, IA e regras dos subitens.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "8.1",
+      "title": "Experiência e dados de saúde",
+      "parent": "8",
+      "status": "progress",
+      "done": "Painel do cliente com oito indicadores principais, tabelas, filtro e os mesmos dados demonstrativos vistos pelo médico.",
+      "next": "Coleta/sincronização real, estado emocional e permissões do paciente ainda não implementados.",
+      "authors": ["Codex"],
+      "requirements": [
+        "Aplicativo da clínica, com a personalização descrita na seção 2. O paciente consulta todas as informações efetivamente coletadas e sincronizadas da pulseira, seus dados de saúde e gráficos, e informa seu estado emocional e como está se sentindo. Os dados ficam disponíveis aos médicos da mesma clínica conforme a seção 5.",
+        "RECOMENDADO: apresentar origem, data/hora, unidades, período e última sincronização. Um período sem dados não representa resultado zero ou normal. Métricas da pulseira dependem de compatibilidade e validação do dispositivo; não presumir medições que ele não disponibilize com qualidade suficiente.",
+        "PENDENTE: tela inicial, navegação, indicadores disponíveis, cadastro, responsáveis/dependentes, sincronização, correção dos dados inseridos e permissões de notificações."
+      ]
+    },
+    {
+      "id": "8.2",
+      "title": "Exames e histórico",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar exames e histórico, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Envio de PDF ou imagem de exames pelo paciente.",
+        "IA organiza os documentos, gera histórico, interpreta e explica os resultados em linguagem compreensível.",
+        "Quando houver resultados alterados, recomenda consulta médica para apresentação dos resultados ao médico.",
+        "A IA nunca recomenda ou prescreve medicamentos nem emite receitas.",
+        "Os exames e dados correspondentes ficam acessíveis no módulo Médico da mesma clínica.",
+        "RECOMENDADO para a organização e explicação:",
+        "Preservar o arquivo original e vincular a extração ao documento, paciente, clínica, data do exame e laboratório quando identificáveis.",
+        "Separar o resultado original, o texto extraído, eventual confirmação/correção do paciente e a explicação gerada pela IA.",
+        "Usar unidades e intervalos de referência do próprio exame; não inventar valores, referências ou conclusões quando o arquivo não permita leitura segura. Não comparar séries com unidades incompatíveis sem conversão validada.",
+        "Solicitar confirmação das informações duvidosas e permitir correções auditadas da extração, sem modificar o documento original.",
+        "Para exames de imagem, explicar o laudo fornecido. Leitura diagnóstica autônoma das imagens médicas não fica presumida pela expressão “interpretação”. Essa função exigiria definição e validação específicas.",
+        "Explicações educativas não confirmam nem descartam doenças. Encaminhamento médico e mensagens para resultados críticos dependem de protocolo clínico aprovado; não tranquilizar o paciente apenas por ausência de alterações na extração.",
+        "PENDENTE: tipos de exame, formatos/tamanhos, leitura de arquivos protegidos ou ilegíveis, critérios clínicos de alteração/urgência, revisão humana e avaliação do enquadramento regulatório da finalidade efetiva de interpretação. Não concluir que a ausência de prescrição torna qualquer interpretação automaticamente isenta de requisitos regulatórios."
+      ]
+    },
+    {
+      "id": "8.3",
+      "title": "Hidratação",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar hidratação, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Meta diária de água.",
+        "Lembretes configurados pelo cliente.",
+        "Registro do consumo e histórico diário, semanal, mensal e anual, com gráficos.",
+        "IA acompanha e faz observações quando o paciente estiver esquecendo de beber água.",
+        "RECOMENDADO: registrar volume e horário, permitir correção dos registros e distinguir “não registrou” de “não bebeu”. Mensagens baseadas nos registros podem dizer que o consumo registrado está abaixo da meta; não afirmar consumo real desconhecido.",
+        "RECOMENDADO: meta configurável pelo paciente conforme orientação recebida, respeitando eventual restrição de líquidos documentada pelo profissional. IA não aumenta metas em conflito com essa orientação.",
+        "PENDENTE: origem/definição inicial da meta, unidades, intervalos de lembrete, horários de silêncio, fuso horário e canal de notificação."
+      ]
+    },
+    {
+      "id": "8.4",
+      "title": "Medicamentos e adesão",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar medicamentos e adesão, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Paciente anexa a prescrição médica no aplicativo.",
+        "IA organiza os medicamentos conforme a prescrição, cria os lembretes nos horários correspondentes e explica a importância da regularidade.",
+        "IA explica por que o medicamento foi prescrito, sem recomendar alteração de dose, cancelamento, substituição ou nova prescrição sem consulta ao médico.",
+        "RECOMENDADO para realizar essa função com fidelidade:",
+        "Extrair medicamento, apresentação/concentração, dose, via, frequência, duração e instruções quando esses elementos estiverem legíveis no documento.",
+        "Mostrar os dados extraídos para confirmação antes de ativar lembretes. Se dose, frequência ou instrução for ilegível/ambígua, não completar por suposição; orientar confirmação com o profissional.",
+        "Quando o documento trouxer a indicação clínica, explicá-la. Se não trouxer, apresentar apenas usos gerais do medicamento e dizer que o motivo específico da prescrição deve ser confirmado com o médico; não inventar diagnóstico ou intenção do prescritor.",
+        "Permitir registrar “tomei”, “não tomei” e “adiar lembrete”, mantendo histórico. Adiar uma notificação não altera a posologia prescrita. Confirmar recebimento de uma notificação não prova ingestão.",
+        "Quando houver nova prescrição, exigir reconciliação explícita com a anterior; não duplicar tratamentos nem interromper automaticamente um medicamento por inferência da IA.",
+        "Em caso de esquecimento ou dúvida, não recomendar dobrar, compensar ou ajustar doses por conta própria.",
+        "PENDENTE: fluxo de conferência pelo médico/paciente, horários derivados de intervalos, prescrições “se necessário”, fim de tratamento, notificações, medicamentos sem documento e coexistência de prescrições."
+      ]
+    },
+    {
+      "id": "8.5",
+      "title": "Chat da IA Médica e chat com o profissional",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar chat da ia médica e chat com o profissional, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "DEFINIDO: área dedicada à conversa com a IA Médica, de nome ainda a definir. A expressão “chat médico para conversar com ela” foi interpretada como referência à IA; esclarecer se o usuário desejar outro sentido.",
+        "DEFINIDO anteriormente: chat com o médico humano no contexto do atendimento, com arquivos nos dois sentidos.",
+        "RECOMENDADO: distinguir claramente IA Médica, médico humano e agente de suporte, com identidade visível de quem responde.",
+        "DEFINIDO: IA acompanha dados e hábitos para observações e orientações de saúde; não prescreve medicamentos/receitas e não modifica tratamentos.",
+        "RECOMENDADO: respostas contextualizadas apenas com os dados autorizados do paciente; supervisão e encaminhamento humano conforme o assunto. Conteúdo da IA não é evolução assinada do médico.",
+        "PENDENTE: canais, disponibilidade, limites do chat médico humano, base clínica da IA, memória, retenção, consentimentos/informações e protocolo de situações urgentes."
+      ]
+    },
+    {
+      "id": "8.6",
+      "title": "Vencer hábitos",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar vencer hábitos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Paciente escolhe um hábito ruim que quer vencer.",
+        "Mecânica de jogo com pontuação dia a dia e a cada ação vencida.",
+        "Histórico do progresso e estímulo à continuidade.",
+        "RECOMENDADO: regras de pontos explícitas, metas configuráveis e retomada acolhedora após recaídas. Pontuação não mede valor pessoal nem confirma melhora clínica. Evitar premiar consumo excessivo de água, doses adicionais, restrição alimentar ou treino excessivo.",
+        "PENDENTE: hábitos aceitos, ações, frequência de registro, pontos, níveis, recompensas e limites. Hábitos envolvendo dependência/risco exigem orientação assistencial pertinente; não prometer resolução apenas pelo jogo."
+      ]
+    },
+    {
+      "id": "8.7",
+      "title": "Benefícios e atendimento",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar benefícios e atendimento, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Clube de vantagens com descontos nacionais.",
+        "Acesso à telemedicina 24 horas.",
+        "Agendamento em 32 áreas de atendimento, incluindo psicologia e nutrição. Esta é a quantidade solicitada para este aplicativo; não importar automaticamente quantidades de outras ofertas PlugPix.",
+        "Acesso ao agente de suporte do serviço da clínica.",
+        "WhatsApp de suporte da clínica.",
+        "Acesso ao Instagram da clínica.",
+        "RECOMENDADO: contatos e links configuráveis no ADM da clínica; mostrar disponibilidade dos serviços de acordo com a contratação/liberação, sem prometer acesso a benefício não ativo.",
+        "PENDENTE: fornecedor do clube e da rede de atendimento, lista nominal das 32 áreas, elegibilidade, limites/carências/cobranças quando aplicáveis, tipo de integração e vínculo dos profissionais externos. A rede de benefícios não recebe automaticamente acesso ao prontuário da clínica por existir uma integração."
+      ]
+    },
+    {
+      "id": "8.8",
+      "title": "Alimentação",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar alimentação, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Paciente envia foto do prato/refeição.",
+        "IA identifica e registra os alimentos, mantém histórico e mostra textos e gráficos de consumo diário, semanal e mensal.",
+        "Exibe o que mais consome e composição, incluindo fibras, frutas, carboidratos e calorias.",
+        "RECOMENDADO: separar frequência de frutas/alimentos e estimativas de nutrientes. Confirmar alimentos, porções, preparo e ingredientes que a foto não revele; calorias e nutrientes calculados a partir de foto são estimativas, não medições exatas.",
+        "RECOMENDADO: usar tabela nutricional de referência definida e versionada; permitir correções; comparar somente os registros disponíveis. Refeição não registrada não equivale a jejum e quantidade estimada não comprova ingestão total.",
+        "PENDENTE: tabela nutricional, porções, tipos de refeição, nutrientes adicionais, exportação, objetivos e regras para orientação individualizada/nutricionista."
+      ]
+    },
+    {
+      "id": "8.9",
+      "title": "Treino de academia",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar treino de academia, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Treino do dia e da semana, podendo ser montado com ajuda da IA.",
+        "Exercícios, séries, repetições, peso/carga e histórico de carga.",
+        "Registro dos dias em que treinou e faltou.",
+        "Tempo de treino e histórico.",
+        "RECOMENDADO: explicitar que “peso” nesta área é a carga do exercício; acompanhamento de peso corporal, se desejado, exige campo separado. Definir ausência por sessão planejada, não pela simples inexistência de registro.",
+        "RECOMENDADO: assistência da IA respeita experiência, objetivo e limitações declaradas; progressão e treino individualizado exigem critérios profissionais, sem aumentar carga automaticamente por pontuação. Alertas de dor/limitação orientam procurar profissional pertinente.",
+        "PENDENTE: catálogo de exercícios, divisão semanal, montagem por profissional/IA, ajustes, cronômetro, pausas, regras de progressão e supervisão."
+      ]
+    },
+    {
+      "id": "8.10",
+      "title": "Visão integrada, índices e incentivo",
+      "parent": "8",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar visão integrada, índices e incentivo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Cruzar dados dos módulos, inclusive pulseira, saúde, exames, hidratação, medicamentos, estado emocional, alimentação, treino e hábitos.",
+        "Gerar índices de saúde e qualidade de vida com pontuações (scores), jogos, dicas e recomendações de saúde.",
+        "RECOMENDADO: começar distinguindo pontuação de constância dos hábitos, adesão registrada e indicadores clínicos. Definir fórmulas, origem dos dados, pesos, períodos, mínimos de dados, explicação e versão de cada índice. Não atribuir automaticamente uma nota de saúde a partir de pontos de participação.",
+        "RECOMENDADO: dados ausentes e atrasados ficam explícitos; ausência de registro não é doença nem prova de falta de adesão. Uma pontuação boa não neutraliza resultado crítico. Correlações entre módulos não demonstram causa.",
+        "PENDENTE: modelos dos índices, interpretação, validação clínica, limites de uso, critérios de alerta e regras de recomendação. Índices com finalidade clínica não serão apresentados como validados antes da validação correspondente."
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Loja do Super ADM e loja da clínica",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar loja do super adm e loja da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "9.1",
+      "title": "Catálogo central",
+      "parent": "9",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar catálogo central, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM possui módulo Loja para cadastrar produtos e serviços.",
+        "Define preço-base e libera itens para clínicas disponibilizarem aos seus clientes.",
+        "Clínica pode selecionar os itens liberados e acrescentar seu lucro ao preço-base.",
+        "PENDENTE: liberação global ou por clínica, categorias, estoque, variantes, imagens, descrição, entrega, disponibilidade e permissões de edição dos itens centrais."
+      ]
+    },
+    {
+      "id": "9.2",
+      "title": "Catálogo e venda da clínica",
+      "parent": "9",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar catálogo e venda da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "ADM da clínica pode disponibilizar produtos próprios.",
+        "Pode oferecer produtos/serviços liberados pelo Super ADM.",
+        "Pode aplicar acréscimo sobre o preço-base (markup) e/ou receber comissão, conforme modelo comercial a definir.",
+        "Cliente acessa a loja no aplicativo da clínica.",
+        "PENDENTE: se o ganho sobre item central é a diferença entre preço-base e preço final, uma comissão configurada ou a combinação explícita dos dois. Não presumir acumulação das remunerações.",
+        "Exemplo exclusivamente ilustrativo: base R$100 e preço final R$130 geram diferença bruta de R$30. Isso é acréscimo de 30% sobre a base e margem bruta de aproximadamente 23,08% sobre a venda, antes de custos. Nenhuma taxa, valor ou fórmula comercial foi aprovada pelo usuário."
+      ]
+    },
+    {
+      "id": "9.3",
+      "title": "Operação comercial",
+      "parent": "9",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar operação comercial, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Definir quem vende e emite o documento fiscal, recebe o pagamento, entrega e atende o comprador; meios de pagamento; taxa de processamento; comissão e repasse; responsabilidade por frete, estoque e serviços; cancelamentos, devoluções, estornos e disputas; preço-base alterado e efeito em itens já publicados/pedidos; regras de desconto; devolução da comissão em venda estornada.",
+        "RECOMENDADO: separar produto central e produto próprio, preservar autoria/fornecedor, manter preço e condições contratadas no pedido e registrar pedidos, pagamentos e remunerações com trilha de auditoria. Uma clínica não consulta pedidos ou resultados comerciais de outra.",
+        "RECOMENDADO: explicações clínicas da IA não são influenciadas pela comissão ou margem dos produtos. Definir os tipos de produto permitidos; não presumir comercialização de medicamentos ou outros itens regulados."
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Integração dos módulos e notificações",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar integração dos módulos e notificações, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Dados vinculados ao paciente e clínica, com origem, momento do evento e do recebimento; separar arquivo original, registro do paciente, extração da IA, interpretação e registro profissional.",
+        "Processamento de documentos/fotos indica andamento, sucesso ou falha e evita duplicar históricos/lembretes em tentativas repetidas.",
+        "Ao corrigir uma extração ou registro, atualizar gráficos/índices dependentes sem alterar o arquivo original ou evoluções médicas definitivas.",
+        "Preferências de notificações por paciente e módulo, com fuso e horários de silêncio; mensagens em tela bloqueada evitam detalhes clínicos sensíveis por padrão.",
+        "Definir canais, permissão do sistema operacional e comportamento com aplicativo fechado ou dispositivo sem conexão. Lembrete configurado, envio, recebimento e confirmação são eventos distintos; não prometer entrega garantida.",
+        "Aplicativo paciente expõe os dados próprios autorizados, sem permitir consulta a dados de outros pacientes; administração comercial não ganha acesso clínico por gerir loja/benefícios.",
+        "Definir o mapa de dados visíveis aos médicos, IA Médica, agente de suporte e administradores. Suporte não herda autorização médica."
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Critérios de aceite propostos — aplicativo e loja",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — aplicativo e loja, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Paciente acessa apenas seus dados no ambiente da clínica; tentativa de acesso a outro paciente ou clínica é recusada no servidor e nos anexos.",
+        "2. Arquivo de exame original é preservado; sua extração, interpretação e histórico são rastreáveis. Falhas de leitura não geram resultados inventados.",
+        "3. Testes clínicos e de limites da IA verificam ausência de prescrição, recomendação de novos medicamentos e alteração/suspensão de tratamento. Resultado alterado segue o protocolo de encaminhamento aprovado.",
+        "4. Dados extraídos da receita precisam de confirmação conforme fluxo a definir. Instrução ambígua/ilegível impede ativação do lembrete correspondente até esclarecimento; não se cria dose ou frequência por suposição.",
+        "5. Hidratação apresenta meta, registros e gráficos nos quatro períodos solicitados; ausência de registro é tratada como desconhecida.",
+        "6. Calendário de medicamentos respeita prescrição confirmada, fuso e duração definidos; notificações e ingestão declarada ficam diferenciadas.",
+        "7. Foto de alimentação gera identificação corrigível e estimativas nutricionais identificadas como tais; diário, semana e mês refletem os registros disponíveis.",
+        "8. Treino mostra dia/semana, séries, repetições, carga, evolução de carga, sessões previstas/realizadas e duração conforme regras consolidadas.",
+        "9. Hábitos contabilizam pontos e ações pelas regras aprovadas; índices integrados revelam método e cobertura dos dados, sem prometer validação clínica inexistente.",
+        "10. Benefícios mostram a rede de 32 áreas, telemedicina 24h, clube e canais da clínica conforme a integração/contratação aprovada.",
+        "11. IA Médica, médico humano e suporte são identificados e seus dados/permissões separados.",
+        "12. Super ADM cadastra/libera item com base; clínica seleciona, configura seu ganho e publica. Venda registra condições e calcula remuneração conforme fórmula finalmente aprovada, sem duplicar comissão.",
+        "13. Produtos próprios, centrais e pedidos permanecem vinculados à clínica/fornecedor corretos; alterações futuras de preço não reescrevem pedidos existentes.",
+        "14. Reprocessamento de documento/foto, duplicidade de retorno de pagamento e estorno não duplicam registro, cobrança ou remuneração, conforme mecanismos a definir.",
+        "Referências técnicas consultadas para orientar recomendações, sem presumir validação/conformidade concluída:",
+        "OMS, riscos de respostas falsas/incompletas e governança da IA em saúde: https://www.who.int/news/item/18-01-2024-who-releases-ai-ethics-and-governance-guidance-for-large-multi-modal-models",
+        "Anvisa, perguntas e respostas de software como dispositivo médico, incluindo distinção entre comunicação em telemedicina e finalidade diagnóstica: https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2022/software-como-dispositivo-medico-perguntas-e-respostas/"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "Super ADM — gestão global e visão da clínica",
+      "parent": null,
+      "status": "progress",
+      "done": "Lista/busca de clínicas e gráficos administrativos derivados dos cadastros fictícios.",
+      "next": "Implementar gestão, vínculos, agenda e fechamento financeiro reais.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "12.1",
+      "title": "Clínicas e acesso administrativo",
+      "parent": "12",
+      "status": "progress",
+      "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix.",
+      "next": "Cadastro e administração reais, permissões, contratos e liberação de módulos ainda pendentes.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": [
+        "Super ADM visualiza todas as clínicas.",
+        "Ao selecionar uma clínica, pode entrar no ambiente e ter a visão do ADM daquela clínica.",
+        "Mantém visão global e visão individual por clínica.",
+        "RECOMENDADO: modo explícito de administração da clínica, com identificação visível da clínica selecionada e botão de retorno ao painel global. Manter a identidade real do Super ADM na sessão e auditoria; não usar a senha nem fingir ser a conta de um administrador local. Toda ação verifica no servidor a clínica alvo.",
+        "Essa visão é administrativa: não concede, por si só, acesso ao prontuário, exames ou conversas clínicas. Preserva a exclusividade do acesso profissional médico definida anteriormente. Se o Super ADM também for médico, o acesso clínico depende de perfil e vínculo médico próprios.",
+        "PENDENTE: se o modo da clínica permite todas as alterações administrativas ou somente parte delas, limites das ações e necessidade de justificativa em operações específicas."
+      ]
+    },
+    {
+      "id": "12.2",
+      "title": "Médicos, cadastro e vínculos",
+      "parent": "12",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar médicos, cadastro e vínculos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Ver todos os médicos de uma clínica ou todos os médicos de todas as clínicas.",
+        "Atribuir um médico a uma nova clínica.",
+        "Editar o cadastro do médico.",
+        "Inativar o médico.",
+        "RECOMENDADO: identidade profissional única com vínculos separados por clínica. Vincular a uma nova clínica não transfere prontuários nem histórico de pacientes entre clínicas.",
+        "RECOMENDADO: distinguir inativação global da conta profissional e inativação de apenas um vínculo com uma clínica. A inativação bloqueia novos acessos conforme seu alcance, preserva autoria, registros definitivos e histórico. Alterar o cadastro do profissional não reescreve os dados de autoria armazenados nas evoluções antigas.",
+        "PENDENTE: alcance padrão da inativação, permissões do ADM da clínica sobre médicos, validação do cadastro/CRM, quem aprova vínculos e tratamento de consultas futuras, disponibilidade e sessões já abertas quando ocorrer inativação."
+      ]
+    },
+    {
+      "id": "12.3",
+      "title": "Clientes, uso, agenda e pagamentos",
+      "parent": "12",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar clientes, uso, agenda e pagamentos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM vê os clientes de uma clínica e uma tabela global de clientes de todas as clínicas, organizada com:",
+        "Clínica à qual o cliente pertence.",
+        "Médicos pelos quais já foi atendido.",
+        "Quantidade de vezes que acessou telemedicina 24h.",
+        "Quantidade de vezes que acessou atendimento agendado.",
+        "Agenda atual do cliente.",
+        "Se está online naquele momento e quando esteve online pela última vez.",
+        "Pagamentos, histórico de pagamentos e pendências.",
+        "RECOMENDADO: distinguir acesso/abertura do serviço, pedido de atendimento, agendamento e consulta realizada. Mostrar contadores identificados; não contar uma abertura de página como consulta concluída. Guardar identificadores e origem dos eventos, evitando duplicidade de retornos de integração.",
+        "RECOMENDADO: presença online derivada de atividade/sinal recente de sessão, com janela de tempo definida. Exibir última atividade e disponibilidade da informação; não tratar ausência de sinal como prova exata de ausência do usuário.",
+        "RECOMENDADO: permitir filtros por clínica, médico, período, situação financeira e presença. Na tabela global, dados assistenciais são metadados administrativos de uso/agenda, sem revelar texto clínico. Se uma pessoa tiver vínculos com mais de uma clínica, preservar o contexto de cada vínculo.",
+        "PENDENTE: definição de “acessou”, indicadores disponíveis na integração 24h/agendada, período dos contadores, fuso/janela de presença e alcance de “histórico” além do financeiro. Não presumir acesso a diagnósticos ou conteúdo do prontuário."
+      ]
+    },
+    {
+      "id": "12.4",
+      "title": "Vidas e faturamento mensal da clínica",
+      "parent": "12",
+      "status": "progress",
+      "done": "Contagens demonstrativas de vidas habilitadas e distribuição por clínica; nenhum faturamento inventado.",
+      "next": "Implementar fechamento mensal, cobrança por vida e registros financeiros persistentes.",
+      "authors": ["Lovable", "Codex"],
+      "requirements": [
+        "Uma vida representa uma pessoa.",
+        "Super ADM acompanha quantas vidas a clínica possui.",
+        "Sistema identifica as vidas que estiveram ativas no período de um mês.",
+        "Vida ativa para cobrança é a pessoa com serviço habilitado no sistema no período, independentemente de login, presença online, consulta ou uso de qualquer recurso. O usuário confirmou que o fato gerador é a habilitação.",
+        "A partir da apuração, sistema emite a fatura para a clínica.",
+        "Existem preços configuráveis para vida/titular e dependente.",
+        "RECOMENDADO: cada dependente é uma pessoa/vida, com vínculo ao titular e regra de preço própria. Contabilizar a pessoa uma vez na clínica por regra/período de cobrança, sem duplicar por sessões, múltiplos serviços ou troca de titular/dependente. Identificação e deduplicação precisam considerar menores e pessoas sem CPF informado.",
+        "DEFINIDO: a cobrança por vida considera a habilitação no sistema, e não a utilização. Eventos de habilitação e desabilitação devem permitir apurar os períodos ativos; ausência de uso não isenta uma vida habilitada de cobrança.",
+        "PENDENTE: cobrança integral de quem teve qualquer dia ativo no mês ou proporcional por dias; mês civil ou ciclo contratual; data de corte; vida recém-ativada, reativada, cancelada ou transferida; quantidade contratada/mínima e faixas de volume; regra para dependentes; inadimplência; múltiplos planos/módulos; mesma pessoa em clínicas diferentes.",
+        "RECOMENDADO: conservar eventos de ativação/inativação e emitir demonstrativo por competência com pessoas consideradas, categoria, períodos ativos, preços aplicados e totais. Fechamento usa regras e preços vigentes daquele período, sem recalcular faturas antigas por alteração posterior do plano.",
+        "RECOMENDADO: emissão repetida da mesma competência não gera duplicidade; ajustes posteriores têm registro próprio. Regras de emissão fiscal e cobrança permanecem pendentes."
+      ]
+    },
+    {
+      "id": "13",
+      "title": "Planos comerciais e configuração dos serviços",
+      "parent": null,
+      "status": "progress",
+      "done": "Catálogo local de rascunhos de telemedicina e pulseira com validação e tratamento de erro no navegador.",
+      "next": "Implementar contratos, venda e ativação real; consolidar condições comerciais pendentes.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "13.1",
+      "title": "Contrato de uso da clínica com a PlugPix",
+      "parent": "13",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar contrato de uso da clínica com a plugpix, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM cria o plano de uso da clínica, configurando:",
+        "Valor do setup de implementação.",
+        "Se existe mensalidade e seu valor.",
+        "Se há cobrança por volume de vidas.",
+        "Quantidade de vidas.",
+        "Preço de cada vida/titular e de cada dependente.",
+        "PENDENTE: modelos exclusivos ou acumuláveis (mensalidade mais vidas, por exemplo), franquia/mínimo, faixas de preço, prazo e parcelamento do setup, vencimento, vigência de alterações, fidelidade do contrato da clínica, tributos/taxas e consequências de atraso.",
+        "RECOMENDADO: distinguir valores únicos e recorrentes. Cada contrato guarda a versão das condições aceitas; mudança no catálogo não altera silenciosamente contratos existentes."
+      ]
+    },
+    {
+      "id": "13.2",
+      "title": "Catálogo-base de telemedicina e venda pela clínica",
+      "parent": "13",
+      "status": "progress",
+      "done": "CRUD local de rascunhos, sete opções de serviço, coparticipação e condições opcionais sem ativação comercial.",
+      "next": "Consolidar Grupo32, carência/fidelidade e implementar venda e persistência no servidor.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": [
+        "Super ADM cria planos-base de telemedicina 24h e agendada.",
+        "Clínica aplica seu preço e vende os planos aos clientes.",
+        "No escopo descrito pelo usuário como Telemedicina 2.0, planos podem habilitar/desabilitar:",
+        "- Atendimento 24h/clínico geral.",
+        "- Conjunto das 32 especialidades/áreas médicas.",
+        "- Nutrição.",
+        "- Psicologia.",
+        "- Educador físico.",
+        "- Atendimento presencial com concierge.",
+        "Configurar valor de coparticipação, carência e fidelidade para todos os itens.",
+        "RECOMENDADO: representar serviços separadamente, com preço-base, disponibilidade, coparticipação, carência e fidelidade por item; permitir padrões no plano com exceções explícitas por serviço. Benefícios e acesso no aplicativo refletem a contratação efetiva do cliente, além da liberação para a clínica.",
+        "PENDENTE: composição exata e lista das 32 áreas. Nutrição/psicologia já foram descritas como incluídas entre as 32 e agora como opções separadas; definir agrupamento e contagem sem cobrar ou contar o mesmo serviço duas vezes. Educador físico possui acesso profissional a especificar, sem equivalência automática ao perfil Médico.",
+        "PENDENTE: distinguir “atendimento 24h” e “clínico geral” se forem opções independentes. Não publicar uma combinação que prometa 24h sem serviço correspondente.",
+        "PENDENTE: preço-base e regra de remuneração por serviço/plano; limites de consultas, dependentes, recorrência de pagamento, fornecedor do presencial/concierge, utilização da coparticipação, início da carência, unidade dos prazos, eventos de fidelidade/cancelamento e coparticipação variável por item.",
+        "PENDENTE: nomenclatura comercial entre 2.0/4.0 para os itens presenciais. Preservar o escopo solicitado para 2.0 nesta conversa sem substituir silenciosamente pelo catálogo histórico de outra oferta."
+      ]
+    },
+    {
+      "id": "13.3",
+      "title": "Pulseira inteligente — plano-base",
+      "parent": "13",
+      "status": "progress",
+      "done": "Rascunhos com preço de ativação/mensalidade e opções independentes de médico, IA e fidelidade.",
+      "next": "Definir modalidades e condições pendentes e integrar plano comercial e dispositivo reais.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": [
+        "Super ADM configura planos-base com:",
+        "Preço-base de ativação.",
+        "Preço-base de mensalidade.",
+        "Com ou sem médico.",
+        "Com ou sem IA.",
+        "Com ou sem fidelidade.",
+        "RECOMENDADO: explicar, no plano, quais funções ficam disponíveis em cada combinação. Sem IA pode manter os recursos de registro/visualização contratados, mas não prometer interpretação ou assistência automática. Sem médico não prometer acompanhamento médico incluído. Isso não decide automaticamente o acesso a outros serviços de telemedicina contratados separadamente.",
+        "PENDENTE: o que a ativação inclui (serviço, dispositivo físico, pareamento ou outro), aquisição/entrega/reposição da pulseira, quantidade e modalidade de atendimentos no plano com médico, recursos do plano sem IA, prazo de fidelidade, preço final aplicado pela clínica e tratamento de dependentes."
+      ]
+    },
+    {
+      "id": "13.4",
+      "title": "Três camadas comerciais",
+      "parent": "13",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar três camadas comerciais, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Contrato da clínica com a PlugPix: setup, mensalidade e cobrança por vidas.",
+        "2. Catálogo-base: produtos/serviços/planos disponibilizados pelo Super ADM à clínica.",
+        "3. Oferta ao paciente: seleção de serviços pela clínica e preço final vendido ao cliente.",
+        "Não presumir que cobrança de vidas para a clínica seja o mesmo valor ou fato gerador da cobrança ao paciente. O modelo de comissão/acréscimo da loja continua pendente; não estender automaticamente essa fórmula a todo plano sem definição.",
+        "RECOMENDADO: autorização do recurso depende tanto da habilitação na clínica quanto da contratação do paciente e condições do serviço. A IA respeita a disponibilidade comercial sem alterar decisões clínicas em razão da margem."
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Critérios de aceite propostos — Super ADM e planos",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — super adm e planos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Super ADM lista clínicas e seleciona uma visão administrativa; identidade do operador e clínica alvo permanecem explícitas e auditáveis.",
+        "2. Visão administrativa não libera leitura de prontuário/exames; controles de acesso continuam aplicados pelo servidor.",
+        "3. Listas global/por clínica de médicos e pacientes respeitam filtros e mostram vínculos corretos; ADM local não obtém alcance global.",
+        "4. Atribuir médico a nova clínica não copia prontuários ou permite acesso cruzado. Inativação aplica seu alcance e mantém registros históricos, conforme regra consolidada.",
+        "5. Tabela de clientes apresenta clínica, médicos que atenderam, contadores identificados de uso 24h/agendado, agenda, presença recente e financeiro. Ausência de evento de integração não é apresentada como certeza de zero uso.",
+        "6. Contagem de vidas representa pessoas habilitadas por clínica/período, independentemente de utilização; titular/dependente têm preços e classificação rastreáveis. Uma vida habilitada sem login ou consulta continua incluída na apuração; acessos repetidos não geram vidas adicionais.",
+        "7. Fatura da clínica é explicável por demonstrativo e versão do contrato; não duplica em repetição de emissão e mantém preços históricos.",
+        "8. Setup, mensalidade e cobrança por vidas são calculados conforme combinações aprovadas, sem somar componentes por suposição.",
+        "9. Plano-base permite configurar os serviços e coparticipação/carência/fidelidade por item; interface e servidor respeitam as condições no acesso do cliente.",
+        "10. Agendamento/benefício não é liberado por simples visibilidade do botão quando o serviço estiver indisponível no contrato.",
+        "11. Combinações de pulseira com/sem médico, IA e fidelidade respeitam os recursos incluídos e os valores configurados.",
+        "12. Alteração de preço/plano não muda retrospectivamente faturas, vendas ou condições contratuais sem fluxo definido de alteração."
+      ]
+    },
+    {
+      "id": "15",
+      "title": "Blog central e blog no aplicativo",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar blog central e blog no aplicativo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM possui módulo Blog e disponibiliza conteúdos neutros, reutilizáveis por clínicas com marca própria.",
+        "Conteúdo pode conter imagem e texto, vídeo ou áudio de podcast.",
+        "Clínica escolhe os conteúdos que deseja disponibilizar aos clientes.",
+        "Aplicativo do cliente possui módulo Blog para consumir os conteúdos publicados pela clínica.",
+        "RECOMENDADO: separar disponibilização central de publicação pela clínica; item no catálogo central não aparece automaticamente em todo aplicativo. Conteúdo neutro não inclui marca da clínica de origem nem dados de pacientes. Manter autoria, referências e licenças quando exigidas.",
+        "RECOMENDADO: título, resumo, capa, categoria, tipo de mídia, conteúdo, estado editorial, data e versão. Exibir os estados de rascunho, publicado e retirado; validar mídia e acessibilidade. Atualização de conteúdo central deve ter regra explícita para publicações já selecionadas.",
+        "PENDENTE: definição de neutralidade, revisão editorial/clínica, hospedagem e formatos/tamanhos das mídias, publicação agendada, busca/categorias, métricas de consumo, efeitos de retirada central e possibilidade de conteúdo próprio/adaptação pela clínica. Não foi solicitado acesso do paciente à Academy."
+      ]
+    },
+    {
+      "id": "16",
+      "title": "Academy para clínicas",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar academy para clínicas, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM possui módulo Academy para disponibilizar vídeos e treinamentos.",
+        "Finalidade: ensinar a clínica a utilizar a plataforma e vender seus produtos/serviços.",
+        "RECOMENDADO: organizar cursos, aulas, materiais e progresso do usuário, com diferenciação entre capacitação operacional e comercial.",
+        "PENDENTE: perfis da clínica com acesso (ADM, equipe comercial, profissionais), estrutura de cursos, acompanhamento de conclusão, materiais adicionais e eventual certificação. Academy não entra automaticamente no aplicativo do paciente."
+      ]
+    },
+    {
+      "id": "17",
+      "title": "Indique e Ganhe",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar indique e ganhe, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "17.1",
+      "title": "Configuração da clínica",
+      "parent": "17",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar configuração da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Clínica pode ativar/desativar o programa para todos os clientes ou somente clientes selecionados e definir:",
+        "Valor pago pela indicação.",
+        "Quantidade de indicações permitidas.",
+        "Prazo de validade.",
+        "Forma de recompensa: dinheiro ou desconto na mensalidade.",
+        "PENDENTE: quantidade por cliente/período/campanha ou global; validade da campanha, link, indicação ou crédito; planos/produtos elegíveis; valor por indicação ou outra base; condição de qualificação; quando crédito é liberado; mudança das regras e clientes já participantes."
+      ]
+    },
+    {
+      "id": "17.2",
+      "title": "Aplicativo do cliente",
+      "parent": "17",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar aplicativo do cliente, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Quando ativado e autorizado para o cliente, o módulo aparece no aplicativo.",
+        "Mostra quanto já ganhou, saldo, histórico e lista de indicados.",
+        "Desativação/inelegibilidade bloqueia o programa no servidor, não somente oculta o menu.",
+        "RECOMENDADO: distinguir saldo em análise, disponível, usado/pago e estornado. Gerar link/código individual de indicação, registrar origem e vincular a regra vigente na conversão. Mostrar ao indicador apenas identificação mínima e status da indicação; não expor dados clínicos ou situação financeira detalhada do indicado.",
+        "RECOMENDADO: autorreferência, cadastros duplicados e reprocessamentos não geram recompensa múltipla. Definir restrições para indicação de dependentes/pessoas já cadastradas.",
+        "RECOMENDADO: crédito condicionado ao evento aprovado (por exemplo, primeiro pagamento confirmado), sem presumir esta condição como decisão do usuário. Estorno/cancelamento trata o crédito por regras explícitas.",
+        "PENDENTE: fluxo e dados para pagamento em dinheiro, solicitação/aprovação de saque, valor mínimo, prazo, descontos parciais ou saldo excedente, impacto da desativação sobre créditos já adquiridos e validade do crédito. Pagamento automático em dinheiro não foi definido."
+      ]
+    },
+    {
+      "id": "18",
+      "title": "Dependentes e plano familiar",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar dependentes e plano familiar, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Aplicativo tem módulo Dependentes.",
+        "Titular agrega e cadastra dependentes que recebem os benefícios do seu plano dentro do mesmo pagamento.",
+        "Cliente possui um plano ativo por vez, podendo ampliar benefícios por upgrade.",
+        "RECOMENDADO: dependentes têm identificação própria, vínculo ao titular e habilitação individual. Um pagamento familiar pode reunir várias vidas; cada pessoa habilitada é contada segundo a regra de faturamento da clínica, inclusive quando não utiliza os serviços.",
+        "RECOMENDADO: relação financeira com o titular não concede automaticamente leitura dos dados clínicos de um dependente adulto. Definir acesso próprio e representação legal de menores/incapazes. Não misturar históricos individuais.",
+        "PENDENTE: número de dependentes por plano, critérios de vínculo/idade, documentação, preços adicionais/inclusos, login próprio, direitos do responsável, alteração de titular, remoção e efeito de suspensão/cancelamento/upgrade sobre os dependentes."
+      ]
+    },
+    {
+      "id": "19",
+      "title": "Financeiro do cliente, inadimplência e plano ativo",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar financeiro do cliente, inadimplência e plano ativo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "19.1",
+      "title": "Financeiro no aplicativo",
+      "parent": "19",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar financeiro no aplicativo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Cliente consulta fatura do mês e histórico de cobranças.",
+        "Pagamento familiar reúne o titular e dependentes conforme o plano.",
+        "Cliente inadimplente, ao entrar, acessa apenas o módulo Financeiro.",
+        "Demais módulos ficam automaticamente desabilitados até que o pagamento seja realizado.",
+        "RECOMENDADO: financeiro mostra cobranças, vencimentos, estados, itens, valores, pagamentos/créditos e meios disponíveis de regularização. Aplicar bloqueio no servidor e em sessões já existentes quando a condição mudar; não limitar a proteção a esconder menus.",
+        "RECOMENDADO: estados distintos para regular, vencido, suspenso, pagamento em processamento e regularizado. Pagamento confirmado pelo servidor integra a regra de desbloqueio; comprovante enviado, clique em “paguei” ou retorno do navegador não são confirmação suficiente.",
+        "RECOMENDADO: bloqueio preserva registros e prontuários; não apaga dados nem faz a IA recomendar suspensão de tratamento. Definir fluxo próprio para direitos de acesso/cópia dos dados, ainda que os módulos comerciais estejam bloqueados.",
+        "PENDENTE: vencimento versus prazo de tolerância, quantidade/valor de parcelas em aberto que bloqueia, pagamento parcial, crédito de indicação, alcance sobre dependentes, estorno posterior e funcionamento quando a integração de cobrança estiver indisponível.",
+        "PENDENTE: relação entre bloqueio comercial do paciente e desabilitação da vida para faturamento da clínica. Não considerar que inadimplência, por si só, encerra automaticamente o período de vida habilitada sem regra aprovada."
+      ]
+    },
+    {
+      "id": "19.2",
+      "title": "Um plano ativo e upgrade",
+      "parent": "19",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar um plano ativo e upgrade, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Cada cliente possui somente um plano ativo por vez.",
+        "Pode fazer upgrade para outro plano com mais benefícios.",
+        "Acesso aos módulos/benefícios depende dos itens efetivamente contratados nesse plano.",
+        "RECOMENDADO: plano novo só substitui o anterior após as condições aprovadas da mudança; transição atômica evita dois planos ativos e preserva o histórico. Compra isolada de produto da loja não cria automaticamente segundo plano.",
+        "PENDENTE: vigência imediata ou próxima competência, cobrança de diferença/proporcionalidade, carências/fidelidade preservadas ou novas, saldo/créditos, tratamento de dependentes, plano inadimplente e downgrade, que não foi solicitado neste bloco."
+      ]
+    },
+    {
+      "id": "20",
+      "title": "Planos & Produtos do ADM da clínica",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar planos & produtos do adm da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Clínica monta seus próprios planos selecionando itens-base disponibilizados pelo Super ADM para ela.",
+        "Pode criar diversos planos e configurar seu preço final.",
+        "Sistema libera ao cliente somente os recursos/benefícios incluídos no plano contratado e com condições válidas.",
+        "ADM cria produtos/planos e atribui a oferta aos vendedores que selecionar.",
+        "RECOMENDADO: catálogo da clínica conserva vínculo/versionamento dos itens-base e seus limites; não permite adicionar benefício central que não foi liberado. Produtos próprios seguem o fluxo da loja já definido. Definir disponibilidade por plano, contrato, clínica e usuário no servidor.",
+        "PENDENTE: campos editáveis pela clínica, preços mínimos/limites de alteração, atribuição direta a diretores/coordenadores, mudanças nos planos já vendidos e reflexos em carência, fidelidade, coparticipação, comissões e dependentes."
+      ]
+    },
+    {
+      "id": "21",
+      "title": "CRM de vendas e agente de IA",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar crm de vendas e agente de ia, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "21.1",
+      "title": "Funis e leads",
+      "parent": "21",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar funis e leads, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "ADM da clínica possui CRM de vendas com quadro de etapas (Kanban).",
+        "Pode criar funis de venda.",
+        "Tem agente de IA integrado ao WhatsApp da clínica para vendas e gestão de contatos comerciais (leads).",
+        "Agente usa integração OpenAI específica por clínica.",
+        "RECOMENDADO: contatos, origem, responsável, funil/etapa, histórico de interação e relação com eventual venda/cliente. Separar lead, comprador e paciente; registrar a conversão sem duplicar identidades. Agente pode qualificar e auxiliar a venda conforme regras, produtos, preços e permissões vigentes.",
+        "RECOMENDADO: passagem clara para atendimento humano e identificação de quem responde. Agente comercial não recebe autorização clínica da IA Médica nem consulta prontuários automaticamente.",
+        "PENDENTE: etapas, campos, distribuição de leads, ações automáticas permitidas, mensagens iniciadas pela clínica, horários, consentimentos/informações, transferência ao humano e integração da atribuição de leads com a atribuição de comissões. Encaminhar planos/produtos não autoriza alterar preço ou promessa clínica por inferência."
+      ]
+    },
+    {
+      "id": "22",
+      "title": "Integrações por clínica",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar integrações por clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Cada clínica possui módulo Integrações.",
+        "Integrações iniciais: Asaas, OpenAI e API de WhatsApp.",
+        "Estrutura permite outras integrações a especificar.",
+        "A chave/token OpenAI utilizada pelo agente é específica da clínica.",
+        "RECOMENDADO: credenciais separadas por clínica, armazenadas com proteção no servidor, sem exposição no aplicativo, código-fonte ou registros comuns. Tela permite configurar, testar estado, substituir/revogar e ver falhas sem revelar a chave completa.",
+        "RECOMENDADO: uso, custos/limites e erros atribuídos à clínica correta. Em caso de falha, não usar silenciosamente a chave de outra clínica. Permissões de alteração e ação do Super ADM são auditadas.",
+        "RECOMENDADO para Asaas: eventos de pagamento autenticados, persistidos e processados sem duplicação. Distinguir pagamento confirmado de saldo recebido, pois esses eventos representam momentos diferentes. Identificar inequivocamente clínica e cobrança; impedir reaproveitamento de evento em outro ambiente.",
+        "PENDENTE: conta Asaas própria por clínica ou outra estrutura de contas, fornecedor/modalidade do WhatsApp, titularidade das contas/chaves, emissão de cobranças/assinaturas, meios aceitos, ambientes de teste/produção, evento exato de desbloqueio, transferência/repasse automático e integrações adicionais.",
+        "PENDENTE: separar integração financeira da clínica que cobra pacientes da eventual integração PlugPix que cobra as clínicas. Uma conta configurada para um propósito não é usada no outro automaticamente."
+      ]
+    },
+    {
+      "id": "23",
+      "title": "Equipe de vendas, hierarquia e comissões",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar equipe de vendas, hierarquia e comissões, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "23.1",
+      "title": "Estrutura",
+      "parent": "23",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar estrutura, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Três níveis: Diretor → Coordenador → Vendedor.",
+        "Diretor pode ter vários coordenadores abaixo dele.",
+        "Coordenador pode ter várias equipes de vendedores.",
+        "Equipe permanece vinculada à clínica.",
+        "Cada diretor, coordenador e vendedor possui acesso próprio e link rastreável de vendas.",
+        "Comissões são definidas em percentual ou valor fixo em reais e associadas a plano/produto.",
+        "RECOMENDADO: cadastrar pessoas, equipes, vínculos hierárquicos, datas de vigência e ofertas autorizadas. Não permitir ciclos de hierarquia ou vínculos entre clínicas. Uma venda preserva a cadeia de participantes existente na data da atribuição; troca de equipe não reescreve comissão antiga.",
+        "PENDENTE: quem cadastra/edita cada nível, participação em várias equipes/coordenadores, substituição de diretor, inativação e consequências para leads, links, clientes e comissões existentes."
+      ]
+    },
+    {
+      "id": "23.2",
+      "title": "Links, ofertas e atribuição",
+      "parent": "23",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar links, ofertas e atribuição, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Cada participante possui link pessoal rastreável de cada produto/plano disponível para ele.",
+        "ADM da clínica cria a oferta e pode atribuí-la aos vendedores selecionados.",
+        "Compra por link registra automaticamente as comissões dos participantes da cadeia comercial correspondente.",
+        "RECOMENDADO: link identifica clínica, oferta e participante, sem permitir adulterar valor ou destinatário da comissão. Na venda por vendedor, registrar vendedor, coordenador e diretor de sua cadeia válida. Não remunerar todos os membros da clínica: somente participantes elegíveis daquela venda.",
+        "RECOMENDADO: compra por diretor/coordenador usa a cadeia pertinente à origem da venda; não inventa vendedor subordinado. A política exata para essas vendas diretas permanece pendente.",
+        "PENDENTE: duração do rastreamento; primeiro/último link; troca de dispositivo; compra posterior pelo WhatsApp; venda manual; disputa de atribuição; link inativo; herança de ofertas para chefias; regras para link de indicação e link comercial usados na mesma compra."
+      ]
+    },
+    {
+      "id": "23.3",
+      "title": "Cálculo e estados da comissão",
+      "parent": "23",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar cálculo e estados da comissão, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "DEFINIDO: comissões em percentual ou reais, relacionadas ao produto/plano; registro automático quando a compra pelo link ocorre. Participantes consultam valores, histórico e se a comissão foi paga.",
+        "RECOMENDADO: distinguir comissão registrada/prevista, em análise, liberada, paga e estornada. Registro na compra não significa liberação imediata de dinheiro. Definir critério de liberação, preferencialmente vinculado à confirmação financeira segundo a regra escolhida.",
+        "RECOMENDADO: salvar base de cálculo, regra/versão, valor, beneficiário, venda e pagamento correspondente. Cálculo repetido por retorno duplicado não cria nova comissão. Estorno, cancelamento, inadimplência e upgrade seguem regras explícitas.",
+        "PENDENTE: comissão por pessoa, nível ou equipe; base bruta/líquida; incidência em implantação, primeira mensalidade, recorrência, dependentes, upgrades e coparticipações; arredondamento; valores máximos; coexistência de percentual/valor fixo; elegibilidade de chefias; prazo e modo de pagamento; retenções; efeitos de reembolso total/parcial e contestação. Pagamento automático/split não foi definido.",
+        "PENDENTE: acúmulo de comissão comercial, prêmio de Indique e Ganhe e ganho da loja na mesma transação. Não excluir nem somar remunerações sem política aprovada."
+      ]
+    },
+    {
+      "id": "23.4",
+      "title": "Painéis e alcance",
+      "parent": "23",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar painéis e alcance, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Diretor vê vendas próprias e as dos coordenadores/vendedores abaixo dele.",
+        "Coordenador vê vendas próprias e as de seus vendedores.",
+        "Vendedor vê suas próprias vendas.",
+        "Cada participante vê clientes relacionados às vendas dentro desse alcance, contatos básicos, planos contratados, status de pagamento dos clientes, suas comissões, histórico e indicação de comissão paga/não paga.",
+        "Cada participante vê seus links pessoais por plano/produto autorizado.",
+        "RECOMENDADO: acesso aplicado no servidor também a buscas, detalhes e exportações. “Todos veem” refere-se a participantes vendo os clientes do seu alcance comercial, não a uma lista irrestrita de pacientes da clínica ou plataforma.",
+        "RECOMENDADO: separar contatos/dados comerciais de prontuários, exames, métricas de saúde e conversas clínicas; perfil comercial não concede acesso clínico.",
+        "PENDENTE: diretor/coordenador podem consultar valores de comissão dos subordinados ou somente totais e próprias comissões; acesso após transferência de equipe; edição de dados do cliente; relatórios, exportação e informações financeiras que ficam visíveis."
+      ]
+    },
+    {
+      "id": "24",
+      "title": "Critérios de aceite propostos — conteúdo, indicações e operação comercial",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — conteúdo, indicações e operação comercial, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Super ADM disponibiliza mídia/texto no blog; clínica seleciona/publica e somente o conteúdo publicado no contexto correto aparece no aplicativo.",
+        "2. Academy apresenta treinamentos aos perfis autorizados da clínica; não concede automaticamente acesso a pacientes.",
+        "3. Indique e Ganhe pode ser ativado globalmente na clínica ou para clientes selecionados; cliente elegível consulta saldo, histórico, ganhos e indicados com privacidade.",
+        "4. Limite, validade, qualificação e remuneração de indicação seguem a versão da campanha aprovada; repetição de evento não duplica crédito.",
+        "5. Dependentes recebem os benefícios permitidos pelo plano familiar, com identidades e históricos separados. Todas as pessoas habilitadas entram na apuração de vidas conforme contrato.",
+        "6. Existe no máximo um plano ativo por cliente no contexto contratual definido. Upgrade mantém histórico e aplica preço/benefícios/carência conforme política aprovada.",
+        "7. Inadimplência aplica acesso somente ao financeiro na interface e servidor, segundo critérios aprovados; pagamento confirmado regulariza de forma consistente, preservando registros.",
+        "8. Suspensão comercial não é tratada automaticamente como desabilitação faturável da vida até aprovação dessa relação.",
+        "9. Clínica só compõe planos a partir de itens-base liberados e produtos próprios permitidos; acesso do cliente respeita a oferta vigente contratada.",
+        "10. CRM/funis/contatos e agente WhatsApp são exclusivos da clínica; IA comercial respeita catálogo, atribuição e permissões sem acesso clínico automático.",
+        "11. Credenciais Asaas/OpenAI/WhatsApp não são expostas nem reutilizadas entre clínicas. Retorno autenticado e duplicado não duplica cobrança, desbloqueio, crédito ou comissão.",
+        "12. Link de venda registra oferta, clínica, participante e cadeia corretos; usuário não autorizado não acessa oferta restrita nem altera destinatários pelo endereço.",
+        "13. Comissões são calculadas pela regra aprovada e preservam a cadeia histórica. Compra, pagamento, liberação e repasse são estados distintos.",
+        "14. Diretor/coordenador/vendedor veem apenas seus respectivos alcances comerciais, inclusive por chamadas diretas ao servidor; nenhuma chefia ganha acesso clínico.",
+        "15. Mudança/inativação de equipe ou regra não modifica retroativamente comissões já registradas; efeitos futuros obedecem à política definida.",
+        "16. Estorno/reembolso e coexistência de recompensas obedecem às decisões comerciais, com demonstrativo e trilha de auditoria.",
+        "Referências técnicas consultadas:",
+        "Asaas, autenticação e repetição de eventos: https://docs.asaas.com/docs/sobre-os-webhooks",
+        "Asaas, estados de pagamento confirmado/recebido: https://docs.asaas.com/docs/webhook-para-cobrancas",
+        "OpenAI, proteção de chave de API no servidor: https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety"
+      ]
+    },
+    {
+      "id": "25",
+      "title": "Pulseira Inteligente — gestão central no Super ADM",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar pulseira inteligente — gestão central no super adm, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "25.1",
+      "title": "Cadastro, estoque e expedição",
+      "parent": "25",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar cadastro, estoque e expedição, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM possui módulo Pulseira Inteligente para gerenciar o ciclo operacional dos dispositivos.",
+        "Cadastra pulseiras novas e gerencia o estoque.",
+        "Gerencia envio para a clínica e status de expedição.",
+        "Mantém lista/informações de firmware associadas às pulseiras cadastradas.",
+        "Apenas pulseiras cadastradas e liberadas pelo Super ADM podem acessar a plataforma.",
+        "RECOMENDADO: cadastro por unidade física com modelo, fabricante, lote quando disponível, identificador individual, versão de firmware, condição, localização e situação. Registrar entradas, reservas, saídas, expedições e recebimentos, sem confundir quantidade física com quantidade de vidas contratadas.",
+        "RECOMENDADO: expedição possui unidades enviadas, clínica destinatária, data, responsável, transportadora/código de rastreio quando disponível e histórico de status. Exemplos de estados a aprovar: disponível, reservado, expedido, recebido, atribuído ao paciente, devolvido/manutenção e retirado de uso.",
+        "PENDENTE: campos definitivos, importação em lote, conferência de recebimento, integração com transportadora, venda/cessão/aluguel, estoque em poder da clínica, devoluções, garantias e reposições. Estados de exemplo não foram aprovados como lista final."
+      ]
+    },
+    {
+      "id": "25.2",
+      "title": "Firmware, identificação e autorização",
+      "parent": "25",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar firmware, identificação e autorização, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "DEFINIDO: liberação central pelo Super ADM, com cadastro/informações do firmware de cada pulseira. Pulseira não liberada não participa da integração do sistema.",
+        "RECOMENDADO: separar versão do programa interno (firmware) e identificador da unidade. Versão de firmware identifica uma revisão de software e pode se repetir em várias unidades; não é, por si só, identificação individual nem prova de autenticidade.",
+        "RECOMENDADO: cadastro de modelos/versões homologados mais autorização de cada unidade física e vinculação válida ao paciente/clínica. A autenticação técnica do dispositivo deve ser validada com o fabricante/protocolo; número de série, etiqueta ou código de ativação, isoladamente, não comprovam que um equipamento não foi clonado.",
+        "PENDENTE: identificar qual dado o usuário chama de “firmware” e quais identificadores estáveis a H59MAX realmente expõe; obter documentação ou validar uma unidade real. Se o termo estiver sendo usado para um código individual de fábrica, mapear o campo à sua função real sem eliminar o requisito de cadastro da versão.",
+        "RECOMENDADO: pareamento/vínculo exigem autorização de servidor para unidade, usuário, clínica e contratação correspondente. Bloquear nova ativação e aceitação de novos dados de dispositivo não cadastrado, não liberado ou revogado. Nome Bluetooth, versão, endereço informado pelo aplicativo ou identificador local do navegador não constituem, isoladamente, autenticação suficiente.",
+        "PENDENTE: mecanismo de autenticação e garantia contra falsificação, segredo/certificado do fabricante se suportado, código de ativação e transferência/repareamento. Não prometer autenticação forte de hardware se o dispositivo não oferecer capacidade suficiente.",
+        "Não foi solicitado desenvolvimento, instalação ou atualização remota de firmware; cadastro e lista de versões não incluem automaticamente essas operações."
+      ]
+    },
+    {
+      "id": "25.3",
+      "title": "Monitoramento e vínculo",
+      "parent": "25",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar monitoramento e vínculo, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM visualiza:",
+        "Pulseiras ativas no momento.",
+        "Status/nível da bateria de cada pulseira.",
+        "Cliente que usa cada unidade.",
+        "Clínica vinculada ao cliente/unidade.",
+        "RECOMENDADO: separar os estados de autorização (liberada/inativada), vínculo (sem paciente/atribuída) e conectividade (conectada ao aplicativo, sincronização recente ou sem sinal recente). “Ativa” no cadastro não significa conectada neste instante.",
+        "RECOMENDADO: mostrar bateria com valor e data/hora da última leitura, último recebimento/sincronização e origem do dado. Campo sem leitura disponível deve mostrar desconhecido, não zero. Um valor antigo não é apresentado como bateria atual confirmada.",
+        "RECOMENDADO: visão global com filtros por clínica, cliente, unidade, modelo/firmware, estoque, autorização, conectividade e bateria. Metadados de equipamento não concedem acesso administrativo ao prontuário.",
+        "PENDENTE: quais dados de bateria/conexão a H59MAX realmente oferece, frequência, janela de presença, alertas de bateria, funcionamento com aplicativo fechado e suporte a segundo plano. No fluxo BLE → aplicativo → servidor, observabilidade depende do aplicativo transmitir os dados; não pressupor comunicação direta permanente da pulseira com a nuvem.",
+        "RECOMENDADO: manter um paciente ativo por unidade em cada momento. Histórico de atribuições permite troca/reposição e evita misturar medições de pacientes. Dados antigos são atribuídos pelo vínculo no momento de coleta; troca de dono não reassocia o histórico.",
+        "DEFINIDO posteriormente: ADM da clínica pode ativar unidades liberadas para ela e acompanhar seus clientes, conforme seção 25.5. PENDENTE: uso de várias pulseiras por paciente, unidade de dependente, transferência/reutilização, limpeza de dados e tratamento de medições armazenadas no dispositivo antes da atribuição."
+      ]
+    },
+    {
+      "id": "25.4",
+      "title": "Inativação e cancelamento",
+      "parent": "25",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar inativação e cancelamento, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Super ADM pode inativar uma pulseira em caso de cancelamento do plano.",
+        "A inativação impede o uso autorizado da integração dessa unidade na plataforma.",
+        "RECOMENDADO: registrar data/hora, operador, motivo e vínculo afetado, bloquear pareamento/reativação não autorizados e novas sincronizações segundo a política definida. Preservar histórico já recebido; inativação não apaga prontuários nem transfere dados.",
+        "PENDENTE: cancelamento gera inativação automática ou ação manual; início da efetividade; tratamento de dados coletados antes e enviados depois; retorno ao plano, reativação, devolução/reposição e efeito em plano familiar ou outro serviço ativo.",
+        "RECOMENDADO: revogação aplicada no servidor e aplicativo, não somente na tela do Super ADM. Definir comportamento sem conexão e prazo de revalidação; não garantir bloqueio instantâneo de ações locais em um aplicativo desconectado.",
+        "Limite técnico registrado: inativar o acesso à plataforma não significa desligar ou inutilizar fisicamente a pulseira nem impedir seu uso em aplicações de terceiros. Controle físico/remoto só poderá entrar no escopo após comprovação de suporte do fabricante."
+      ]
+    },
+    {
+      "id": "25.5",
+      "title": "Pulseiras e estoque no ADM da clínica",
+      "parent": "25",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar pulseiras e estoque no adm da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "ADM da clínica possui visão operacional das pulseiras liberadas para sua clínica pelo Super ADM.",
+        "Pode ativar essas unidades para seus clientes, respeitando a liberação central e as condições do serviço contratado.",
+        "Acompanha, por cliente, status da pulseira ativada, bateria e uso.",
+        "Possui controle de estoque baseado nas unidades individualmente liberadas para a clínica pelo Super ADM.",
+        "A clínica não cadastra por conta própria uma unidade externa como autorizada nem acessa o estoque/pulseiras de outra clínica.",
+        "RECOMENDADO: apresentar identificador da unidade, modelo/firmware, cliente vinculado, estado de autorização/ativação, última conexão/sincronização e bateria com data/hora da leitura. A ausência de dados recentes não comprova bateria zero, equipamento desligado ou falta de uso.",
+        "RECOMENDADO: separar unidade liberada, expedida, recebida e atribuída ao cliente. O estoque local tem as mesmas unidades e movimentações do cadastro central, com visão limitada à clínica; não manter inventários independentes que possam divergir. Ativação de uma unidade é atômica para evitar atribuição simultânea a dois clientes.",
+        "RECOMENDADO: tela mostra totais de unidades liberadas, em trânsito, disponíveis para ativação, atribuídas e inativas/devolvidas, conforme estados operacionais a aprovar. Inativação não significa automaticamente retorno físico ao estoque disponível.",
+        "RECOMENDADO: “uso” administrativo inicialmente representa atividade de integração, conexões/sincronizações e vínculo. Leitura de indicadores clínicos individuais, exames e prontuário permanece no perfil Médico conforme definido; acompanhamento de equipamento não concede essas permissões ao ADM.",
+        "PENDENTE: definição precisa de uso (sincronização, frequência, tempo de utilização se o dispositivo fornecer), confirmação de recebimento necessária para ativar, campos e filtros, permissões da equipe local, transferência entre clientes, reposição e se o ADM local também pode inativar/reativar. A inativação pelo Super ADM continua definida."
+      ]
+    },
+    {
+      "id": "26",
+      "title": "Critérios de aceite propostos — ciclo da pulseira",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — ciclo da pulseira, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Cadastro individual relaciona unidade, modelo/firmware, estoque e autorização; versão repetida de firmware não impede distinguir unidades.",
+        "2. Movimentação/expedição identifica as unidades e clínica destinatária, mantém histórico e não duplica baixa de estoque em repetição da operação.",
+        "3. Apenas unidades autorizadas podem ser vinculadas/sincronizadas, com verificações no servidor e mecanismo de identificação/autenticação validado para o hardware escolhido.",
+        "4. Aplicativo e servidor não aceitam autorização baseada somente em versão de firmware; tentativas de identidade adulterada são tratadas conforme a capacidade técnica validada.",
+        "5. Visão global mostra cliente/clínica corretos por unidade, bateria com data da leitura e conectividade/presença conforme definições aprovadas.",
+        "6. Pulseira sem telemetria recente não é apresentada como seguramente conectada nem com bateria atual conhecida.",
+        "7. Inativação revoga a integração conforme o fluxo aprovado, preserva o histórico e impede reativação não autorizada; limites de operação local/desconectada ficam documentados.",
+        "8. Transferência/reposição não mistura pacientes, não reatribui históricos e aplica regra para medições anteriores armazenadas na pulseira.",
+        "9. Médico/ADM da clínica não acessa unidades/pacientes de outra clínica por manipular identificadores; Super ADM mantém alcance operacional global auditado.",
+        "10. Cancelamento, dependentes e reativação seguem vínculo e condições comerciais aprovados, sem desativar outros beneficiários/serviços por suposição.",
+        "11. ADM da clínica lista e ativa somente unidades liberadas pelo Super ADM para ela; tentativa de ativar unidade externa, revogada ou de outra clínica é recusada no servidor.",
+        "12. Estoque local e central refletem as mesmas unidades/movimentações. Ativação concorrente não atribui uma unidade a dois clientes; inativação não a torna disponível fisicamente por suposição.",
+        "13. ADM acompanha bateria, status e uso das unidades de seus clientes com identificação de atualização e sem acesso clínico automático. Permissões e isolamento continuam aplicados em API, buscas e exportações.",
+        "Referências técnicas consultadas, sem comprovar implementação pela H59MAX:",
+        "Bluetooth SIG, Device Information Service: distingue número de série da unidade e versão de firmware: https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/DIS_v1.2/out/en/index-en.html",
+        "Bluetooth SIG, Battery Service: descreve leitura/notificação do nível de bateria: https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/BAS_v1.1/out/en/index-en.html"
+      ]
+    },
+    {
+      "id": "27",
+      "title": "Bioimpedância — balança integrada",
+      "parent": null,
+      "status": "progress",
+      "done": "Interface de bioimpedância com medições fictícias compartilhada entre cliente e médico.",
+      "next": "Escolher balança, validar protocolo, integrar medidas e implementar gestão operacional e acesso real.",
+      "authors": ["Codex"],
+      "requirements": []
+    },
+    {
+      "id": "27.1",
+      "title": "Escopo e aplicativo do paciente",
+      "parent": "27",
+      "status": "progress",
+      "done": "Oito medições fictícias, três gráficos de composição corporal, unidades, horários, filtro e tabelas.",
+      "next": "Integrar uma balança homologada e apresentar somente métricas efetivamente suportadas.",
+      "authors": ["Codex"],
+      "requirements": [
+        "Incluir módulo Bioimpedância com integração a balança.",
+        "Aplicativo apresenta todas as informações efetivamente coletadas e disponibilizadas pela integração da balança para aquele paciente.",
+        "Dados compõem o histórico de saúde individual, com consulta e evolução.",
+        "Integração não tem modelo/fabricante escolhido nesta conversa; nenhuma compatibilidade está garantida.",
+        "RECOMENDADO: exibir cada medição com unidade, data/hora da coleta e do recebimento, origem, identificador da balança e condições/dados de perfil necessários ao cálculo quando disponíveis. Não inventar métricas para preencher campos ausentes.",
+        "RECOMENDADO: separar grandezas medidas, como peso, de estimativas calculadas pelo equipamento/algoritmo. Exemplos condicionais, não lista garantida: percentual/massa de gordura, massa magra/muscular e água corporal. Exibir somente métricas que o modelo e a interface realmente entreguem, com descrição das limitações.",
+        "RECOMENDADO: histórico e gráficos de evolução, sem transformar estimativa de composição corporal em diagnóstico; distinguir entrada manual, cálculo do sistema e dado recebido do dispositivo. Mudança de modelo, perfil ou algoritmo é identificada para comparações.",
+        "PENDENTE: modelo(s), métricas/unidades, períodos dos gráficos, requisitos do perfil, qualidade/validação, orientações e restrições do fabricante, limites de interpretação pela IA e exportação."
+      ]
+    },
+    {
+      "id": "27.2",
+      "title": "Histórico clínico, IA e visibilidade administrativa",
+      "parent": "27",
+      "status": "progress",
+      "done": "Médico e cliente consomem o mesmo componente e a mesma fonte estática de dados demonstrativos.",
+      "next": "Implementar histórico persistente, autorização clínica, auditoria e IA; alcance administrativo clínico permanece pendente.",
+      "authors": ["Codex"],
+      "requirements": [
+        "DEFINIDO: dados da balança ficam no histórico de saúde do paciente no acesso Médico da mesma clínica, junto dos demais indicadores; interpretação contextual de “acesso pedido da clínica” conforme os módulos previamente descritos.",
+        "DEFINIDO: Super ADM e ADM da clínica possuem gestão operacional dos equipamentos, com alcance global e local respectivamente, conforme seções 27.3 e 27.4.",
+        "SOLICITADO, A ESCLARECER: usuário disse que as informações “aparecem para o Super ADM também”. Registrar a intenção sem decidir se isso significa metadados de gestão ou valores individuais de saúde. Acesso aos valores clínicos pelo perfil administrativo precisa ser conciliado com a exclusividade de acesso profissional Médico definida anteriormente; nenhuma permissão clínica nova é concedida implicitamente.",
+        "RECOMENDADO: dados da balança podem participar da visão integrada de saúde e dos índices/observações da IA já previstos, mantendo as regras de autorização, confiabilidade, origem, finalidade e ausência de prescrição. Coleta de uma nova métrica não valida automaticamente uma pontuação clínica.",
+        "PENDENTE: confirmar alcance clínico solicitado ao Super ADM e, se houver nova regra, dados específicos, finalidade, perfis e controles. Não presumir que ADM da clínica também recebe acesso clínico pelo controle do equipamento."
+      ]
+    },
+    {
+      "id": "27.3",
+      "title": "Gestão central no Super ADM",
+      "parent": "27",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar gestão central no super adm, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Aplicar à balança a gestão operacional equivalente à das pulseiras:",
+        "Cadastro individual, modelo, informações de firmware quando disponíveis e autorização/liberação central.",
+        "Gestão de estoque e unidades.",
+        "Expedição/envio para clínicas e status do envio.",
+        "Clínica responsável, vínculo de uso e paciente(s) conforme modelo individual/compartilhado a definir.",
+        "Status de uso em tempo real.",
+        "Bateria, se o equipamento expuser essa informação, com horário da última leitura.",
+        "Inativação/revogação da integração conforme regras de cancelamento e utilização.",
+        "RECOMENDADO: reutilizar um cadastro operacional de dispositivos com tipos “pulseira” e “balança”, sem impor à balança o vínculo exclusivo de um paciente por unidade antes de definir seu uso.",
+        "RECOMENDADO: identificação individual e versões homologadas são campos diferentes. Aplicar autorização de unidade e validação no servidor; versão de firmware ou leitura enviada pelo aplicativo não comprovam, isoladamente, autenticidade.",
+        "PENDENTE: identificadores/autenticação oferecidos pelo modelo; significado de status de uso; operação doméstica/compartilhada; regras de inativação, reposição, devolução, manutenção e atualização de firmware, não solicitada automaticamente."
+      ]
+    },
+    {
+      "id": "27.4",
+      "title": "Gestão no ADM da clínica",
+      "parent": "27",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar gestão no adm da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Clínica acompanha apenas balanças liberadas para ela pelo Super ADM.",
+        "Possui estoque local vinculado ao cadastro central.",
+        "Consulta envio/expedição, status e uso dos equipamentos no seu ambiente.",
+        "Pode ativar/vincular unidades autorizadas para utilização pelos seus clientes, conforme modelo operacional a definir.",
+        "Consulta bateria quando disponível, atualização e sincronização.",
+        "Não vê nem ativa equipamento liberado somente a outra clínica.",
+        "RECOMENDADO: distinguir unidade liberada, enviada, recebida, disponível, atribuída/em uso e inativa/devolvida. Inativação não implica devolução física. Ativação local respeita liberação central e benefícios contratados.",
+        "PENDENTE: quem confirma recebimento, atribuição/remoção de usuários, equipes locais com permissão e se clínica pode inativar/reativar a unidade."
+      ]
+    },
+    {
+      "id": "27.5",
+      "title": "Uso individual ou compartilhado e identificação do paciente",
+      "parent": "27",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar uso individual ou compartilhado e identificação do paciente, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "PENDENTE PRIORITÁRIO: definir se balança é pessoal, compartilhada pela família, utilizada na clínica ou suporta mais de um desses modos.",
+        "RECOMENDADO: cada medição tem paciente/clinica inequivocamente identificados por sessão/perfil autorizado. Peso semelhante não é identificação suficiente. Dado sem paciente confirmado fica em fluxo restrito de atribuição, não entra automaticamente em prontuário/histórico/IA.",
+        "RECOMENDADO: uso compartilhado tem sessões/perfis separados e não expõe resultados de outro paciente. Troca de usuário ou unidade preserva históricos e não associa leituras antigas ao usuário novo. Definir tratamento de medições armazenadas no dispositivo e enviadas posteriormente.",
+        "RECOMENDADO: em unidade compartilhada, cancelamento de um paciente revoga o acesso dele conforme sua contratação, sem bloquear os demais usuários por suposição. Revogação da unidade inteira e revogação de um vínculo são operações distintas.",
+        "PENDENTE: número de usuários, dependentes, modo de identificação, representação de menores, convivência de vários planos e eventual uso do equipamento por mais de uma clínica. Não permitir compartilhamento entre clínicas até definição explícita."
+      ]
+    },
+    {
+      "id": "27.6",
+      "title": "Integração e status em tempo real",
+      "parent": "27",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar integração e status em tempo real, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "DEFINIDO: objetivo de mostrar status de uso em tempo real na gestão global/local.",
+        "RECOMENDADO: especificar separadamente autorizado, conectado, medição em andamento, leitura concluída e última sincronização. Disponibilidade desses eventos depende do protocolo. “Sem evento recente” não significa equipamento certamente desligado.",
+        "PENDENTE: interface oficial de programação (API), biblioteca do fabricante (SDK) ou protocolo Bluetooth validado, acesso aos dados brutos versus calculados, licença/condições da integração, conexão direta ou por nuvem, compatibilidade com PWA e comportamento com aplicativo fechado.",
+        "RECOMENDADO: medir atraso da informação e definir meta de atualização. Via Bluetooth e aplicativo, a gestão recebe eventos transmitidos por esse aplicativo; via nuvem, recebe eventos/consultas suportados pelo fornecedor. Uma balança que transmite somente ao concluir a pesagem não oferece necessariamente presença contínua.",
+        "RECOMENDADO: registrar coleta/recebimento, normalizar unidades e evitar duplicidade em reenvios. Interface mostra atualização, sem conexão, aguardando sincronização ou desconhecido conforme o dado efetivamente disponível. Não apresentar valores antigos como acompanhamento contínuo em tempo real.",
+        "PENDENTE: validação de unidade real, frequência/latência, bateria, perda de conexão, modo offline, segurança do transporte, limitação de chamadas e custo do fornecedor."
+      ]
+    },
+    {
+      "id": "27.7",
+      "title": "Plano, habilitação e cobrança",
+      "parent": "27",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar plano, habilitação e cobrança, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Definir em quais planos a bioimpedância entra, se há ativação/mensalidade específica, preço-base, preço final da clínica, entrega/cessão da balança e cobrança por unidade/uso. O número de balanças não representa quantidade de vidas; cada pessoa habilitada continua sendo uma vida conforme regra contratual definida.",
+        "Cancelamento/inadimplência aplica a política consolidada de benefícios e vínculos; não apagar histórico nem presumir desativação física remota."
+      ]
+    },
+    {
+      "id": "28",
+      "title": "Critérios de aceite propostos — bioimpedância",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — bioimpedância, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Paciente consulta apenas suas medições da balança, métricas efetivamente disponibilizadas e histórico, com origem, unidades e datas.",
+        "2. Médico autorizado da mesma clínica vê esses dados no histórico de saúde; novas permissões administrativas clínicas dependem de decisão explícita.",
+        "3. Super ADM vê gestão global e clínica vê somente suas unidades autorizadas, com estoque/expedição e status coerentes.",
+        "4. Cadastro/ativação não aceita unidade não liberada; identificadores de outra clínica não permitem acesso direto ou sincronização indevida.",
+        "5. Uma pesagem é atribuída ao paciente confirmado; uso compartilhado não mistura históricos nem se apoia somente no peso para identificação.",
+        "6. Reenvio de leitura não duplica medição, gráfico ou resultado de índice; unidades/valores são normalizados sem fabricar dados ausentes.",
+        "7. Estimativas de composição corporal são identificadas como tais; suporte a uma métrica é comprovado na integração validada.",
+        "8. Status em tempo real cumpre a latência e eventos definidos para o modelo escolhido; ausência de conectividade e dados antigos ficam explícitos.",
+        "9. Bateria é mostrada somente quando disponível, com data da leitura; ausência não é convertida em zero.",
+        "10. Revogação de unidade/vínculo e reatribuição preservam históricos e não bloqueiam outros usuários autorizados por suposição.",
+        "11. Operação doméstica/compartilhada, plano e cancelamento obedecem às decisões comerciais e assistenciais aprovadas.",
+        "Referências consultadas exclusivamente para orientar a especificação; não representam escolha de Withings nem prova de integração dos modelos pesquisados em outro chat:",
+        "Fabricante Withings, bioimpedância e estimativas de composição: https://support.withings.com/hc/en-us/articles/218970957-Body-How-does-the-scale-measure-my-body-composition",
+        "Documentação de API Withings, medidas e disponibilidade após sincronização: https://developer.withings.com/api-reference/"
+      ]
+    },
+    {
+      "id": "29",
+      "title": "Inovações aprovadas — Super ADM",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar inovações aprovadas — super adm, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Todas as recomendações apresentadas na resposta anterior foram aprovadas pelo usuário para inclusão no PRD. As funções abaixo passam a ser requisitos definidos; fórmulas, telas e políticas operacionais ainda precisam ser especificadas. A aprovação não resolve pendências anteriores nem comprova conformidade, compatibilidade ou validação clínica."
+      ]
+    },
+    {
+      "id": "29.1",
+      "title": "Simulador de rentabilidade",
+      "parent": "29",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar simulador de rentabilidade, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Antes de liberar/ofertar um plano, simular vidas, dependentes, preços, custos médicos, IA, dispositivos e comissões. Mostrar resultados em diferentes cenários para identificar ofertas de baixo resultado financeiro.",
+        "RECOMENDADO: cenários conservador/base/expansão, entradas rastreáveis, custos únicos versus recorrentes, receita bruta/líquida, resultado de contribuição e ponto de equilíbrio. Não rotular diferença entre preço-base e venda como lucro líquido sem considerar demais custos.",
+        "PENDENTE: fórmulas, custos reais por fornecedor/serviço, impostos/taxas, amortização de dispositivos, tratamento de uso variável, número de cenários e persistência/exportação. Projeção é estimativa baseada em premissas, não garantia de resultado."
+      ]
+    },
+    {
+      "id": "29.2",
+      "title": "Central de funcionamento da plataforma",
+      "parent": "29",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar central de funcionamento da plataforma, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Painel global com clínicas afetadas por integração interrompida, pagamento sem conciliação, mensagens não entregues, dispositivos sem sincronizar e falhas da IA. Finalidade: ajudar a identificar e resolver problemas antes de reclamações.",
+        "Metadados operacionais não dão acesso automático aos resultados individuais de saúde; alcance clínico do Super ADM permanece pendente na seção 27.2.",
+        "PENDENTE: estados de incidente, prioridades, responsáveis, limiares, notificações, ações de recuperação e tempos de atendimento. Falha operacional é diferente de alerta clínico."
+      ]
+    },
+    {
+      "id": "29.3",
+      "title": "Implantação guiada de clínicas",
+      "parent": "29",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar implantação guiada de clínicas, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Modelos de configuração por tipo de operação, com etapas de domínio, marca, planos, integrações, equipe e testes, para reduzir trabalho manual e padronizar implantação.",
+        "RECOMENDADO: progresso por etapa e verificação de configurações; copiar somente configuração permitida, nunca credenciais, pacientes ou dados de outra clínica. Aplicar processo de forma repetível sem duplicar planos/vínculos.",
+        "PENDENTE: modelos iniciais, campos obrigatórios, verificações automáticas/manuais, quem acompanha e critério de conclusão. Conclusão do roteiro não declara conformidade legal completa."
+      ]
+    },
+    {
+      "id": "29.4",
+      "title": "Laboratório de qualidade da IA",
+      "parent": "29",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar laboratório de qualidade da ia, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Testar versões/modelos/configurações antes de sua liberação, com casos sintéticos de receita ilegível, pedido de medicamento, exame ambíguo, dúvidas comerciais e tentativa de acesso a outra clínica. Evitar introdução silenciosa de falhas.",
+        "RECOMENDADO: conjuntos de casos e critérios de aprovação versionados, registro de resultados, comparação entre versões e retorno à anterior quando necessário. Dados reais identificáveis não são usados no laboratório por padrão.",
+        "PENDENTE: avaliadores, métricas de qualidade/segurança, revisão clínica, critérios mínimos, modelos/provedores e política de liberação por clínica."
+      ]
+    },
+    {
+      "id": "30",
+      "title": "Inovações aprovadas — clínica e equipe",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar inovações aprovadas — clínica e equipe, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "30.1",
+      "title": "Jornadas configuráveis",
+      "parent": "30",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar jornadas configuráveis, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Clínica monta sequência de entrada, avaliação inicial, consulta, registros periódicos e retorno, com responsável, prazo e condição de conclusão por etapa. Vincular essas jornadas ao módulo Protocolos da seção 32, evitando criação de dois mecanismos desconectados."
+      ]
+    },
+    {
+      "id": "30.2",
+      "title": "Fila de próximos passos",
+      "parent": "30",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar fila de próximos passos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Exibir pendências como primeira consulta não agendada, retorno vencido, receita aguardando conferência e entrada no serviço não concluída. Pendências clínicas ficam com o profissional autorizado; administrativas com equipe permitida.",
+        "RECOMENDADO: responsável, prazo, motivo, status e vínculo ao próximo passo. Ausência de registro/sincronização não comprova abandono nem urgência médica.",
+        "PENDENTE: critérios de inclusão, prioridade, redistribuição e encerramento; alcance de visualização. Título/resumo da tarefa administrativa não revela conteúdo clínico."
+      ]
+    },
+    {
+      "id": "30.3",
+      "title": "Resumo preparatório da consulta",
+      "parent": "30",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar resumo preparatório da consulta, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "No acesso Médico, reunir mudanças recentes, exames novos, relatos e registros de adesão, com origem e link ao dado/documento original, reduzindo procura manual.",
+        "RECOMENDADO: distinguir fatos registrados, relatos e interpretação da IA; profissional verifica o resumo. Não incluir diagnóstico inventado, substituir o prontuário ou inserir automaticamente texto na evolução definitiva.",
+        "DEFINIDO como direção de estudo: considerar interoperabilidade com padrões de resumo de paciente, como HL7 FHIR/International Patient Summary. PENDENTE: decidir adoção técnica, campos e integração; não presumir conformidade ao padrão."
+      ]
+    },
+    {
+      "id": "30.4",
+      "title": "Retenção orientada por relacionamento",
+      "parent": "30",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar retenção orientada por relacionamento, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Identificar sinais comerciais de afastamento, como falta de utilização, atendimento de suporte sem solução, consultas canceladas e reclamações, sugerindo ação ao responsável.",
+        "RECOMENDADO: sugestões explicáveis com eventos e período, sem usar diagnósticos/dados clínicos privados para influenciar vendas. Separar comunicação assistencial de oferta comercial.",
+        "PENDENTE: regras/modelo, prioridades, janela de análise, canais e avaliação das ações. Sinal comercial não é certeza de cancelamento."
+      ]
+    },
+    {
+      "id": "31",
+      "title": "Inovações aprovadas — aplicativo do cliente",
+      "parent": null,
+      "status": "progress",
+      "done": "Novo painel Meu dia e navegação móvel adaptada ao acompanhamento demonstrativo.",
+      "next": "Integrar rotina real, preparação da consulta, linha do tempo, metas e privacidade.",
+      "authors": ["Lovable", "Antigravity", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "31.1",
+      "title": "Meu dia",
+      "parent": "31",
+      "status": "progress",
+      "done": "Meu dia apresenta composição corporal, atividade e descanso fictícios com acesso aos demais módulos.",
+      "next": "Conectar agenda, medicamentos, hidratação e demais próximos passos reais do paciente.",
+      "authors": ["Codex"],
+      "requirements": [
+        "Tela reúne próximos lembretes, consulta, treino previsto e ações do acompanhamento em sequência simples, reduzindo navegação entre módulos. Exibe somente recursos/ações autorizados pelo plano e estado de acesso, respeitando bloqueio financeiro e protocolo ainda não liberado.",
+        "PENDENTE: posição na navegação, ordenação/prioridades, personalização e interação com notificações."
+      ]
+    },
+    {
+      "id": "31.2",
+      "title": "Preparação para a consulta",
+      "parent": "31",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar preparação para a consulta, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Antes do atendimento, perguntar o que mudou, quais dúvidas o paciente quer levar e quais documentos deseja apresentar; informações ficam disponíveis ao profissional autorizado.",
+        "PENDENTE: momento do convite, perguntas, prazo, edição e vínculo à consulta. Não criar evolução definitiva em nome do médico."
+      ]
+    },
+    {
+      "id": "31.3",
+      "title": "Linha do tempo contextual",
+      "parent": "31",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar linha do tempo contextual, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Sobrepor registros de alimentação, treino, estado emocional, peso e eventos do acompanhamento para ajudar a compreender a evolução. Apresentar padrões observados sem afirmar causalidade.",
+        "RECOMENDADO: sinalizar períodos incompletos, mudanças de dispositivo/algoritmo e origem dos dados; acesso apenas ao próprio paciente/representante autorizado e equipe clínica autorizada.",
+        "PENDENTE: métricas, períodos, filtros, visualização e regras da análise."
+      ]
+    },
+    {
+      "id": "31.4",
+      "title": "Metas pequenas e adaptáveis",
+      "parent": "31",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar metas pequenas e adaptáveis, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Propor poucos compromissos por vez, dentro das orientações profissionais, com frequência/horários ajustados às preferências do cliente.",
+        "Pontuação valoriza constância, aprendizado e execução das ações, com retomada acolhedora após interrupções. Peso perdido, volume de água e intensidade de treino não são critérios isolados para premiação.",
+        "PENDENTE: número de metas, algoritmos de adaptação, aprovação profissional quando pertinente e convivência com as metas de protocolos. Adaptação de rotina não autoriza mudança de medicamento, dose ou conduta clínica."
+      ]
+    },
+    {
+      "id": "31.5",
+      "title": "Central de privacidade",
+      "parent": "31",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar central de privacidade, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Paciente vê quem acessou seus dados, consulta autorizações e solicita/exporta informações próprias.",
+        "RECOMENDADO: trilha com ator, data/hora e categoria de acesso, sem expor segredos de segurança ou dados de outras pessoas; compartilhamento explícito e rastreável. A inclusão não cria compartilhamento automático entre clínicas.",
+        "PENDENTE: granularidade, identificação dos acessos de sistema/IA, formatos, atendimento de solicitações, representação de dependentes e fluxo acessível durante bloqueio comercial, conforme direitos aplicáveis."
+      ]
+    },
+    {
+      "id": "32",
+      "title": "Protocolos de acompanhamento da clínica",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar protocolos de acompanhamento da clínica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": []
+    },
+    {
+      "id": "32.1",
+      "title": "Criação e composição",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar criação e composição, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "ADM da clínica possui módulo Protocolos de acompanhamento.",
+        "Cria cada protocolo e sua composição.",
+        "Primeira etapa é consulta agendada com médico de avaliação.",
+        "Médico avalia se o paciente está apto ou não para aquele protocolo.",
+        "Se apto, sistema libera no aplicativo o módulo Protocolo de acompanhamento correspondente.",
+        "Se não apto, paciente é encaminhado a outro plano mais simples de acompanhamento.",
+        "RECOMENDADO: composição organiza objetivo, público/condições, duração, consultas/retornos, profissionais, tarefas, metas, registros, dispositivos e benefícios a partir dos itens disponíveis à clínica. Esses são campos propostos, não composição clínica prescrita para um protocolo específico.",
+        "RECOMENDADO: usar o mecanismo de jornadas com etapas, responsáveis, prazos e condições de conclusão. ADM configura a oferta/estrutura; avaliação e decisão de aptidão são do médico autorizado.",
+        "PENDENTE: campos obrigatórios, protocolos iniciais, responsável técnico, aprovação de critérios clínicos/composição e diferença entre protocolo padrão e adaptações individuais. A edição administrativa não inclui emitir prescrição nem determinar aptidão."
+      ]
+    },
+    {
+      "id": "32.2",
+      "title": "Avaliação e decisão médica",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar avaliação e decisão médica, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Agendar consulta de avaliação inicial antes da liberação do acompanhamento.",
+        "Médico acessa o histórico/dados disponíveis do paciente no ambiente clínico autorizado.",
+        "Registra decisão de aptidão específica para o protocolo e orientações correspondentes, identificadas por médico, CRM, paciente, clínica e data/hora.",
+        "A liberação depende de decisão médica registrada, não de avaliação automática da IA ou escolha do ADM/paciente.",
+        "RECOMENDADO: relacionar a avaliação ao protocolo/versão e consulta; preservar registro definitivo e autoria conforme regras do prontuário. Correção/reavaliação gera novo registro sem sobrescrever decisão anterior.",
+        "PENDENTE: campos da avaliação, requisitos/documentos/exames, assinatura, se existe decisão pendente por falta de informação, validade da aptidão e reavaliação. Falta à consulta ou pendência não equivale automaticamente a “não apto”."
+      ]
+    },
+    {
+      "id": "32.3",
+      "title": "Apto — liberação do acompanhamento",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar apto — liberação do acompanhamento, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Após decisão “apto”, liberar o módulo correspondente no aplicativo. Mostrar acompanhamento, etapas, próximas ações, metas e retornos conforme composição/jornada contratada.",
+        "RECOMENDADO: estado clínico de aptidão separado de contratação, vigência e situação financeira. Aprovação clínica não regulariza inadimplência nem concede benefícios não contratados. A decisão é preservada mesmo quando acesso comercial estiver temporariamente bloqueado.",
+        "RECOMENDADO: paciente vê linguagem clara sobre aprovação e próximos passos; tarefas/resumos usam as permissões dos módulos associados. Aptidão não é garantia de resultado.",
+        "PENDENTE: quando o paciente adere/paga, data de início, aceite/consentimento, responsáveis, frequência, acompanhamento médico incluído, conclusão/pausa/reavaliação, encerramento e fluxo de segurança clínica."
+      ]
+    },
+    {
+      "id": "32.4",
+      "title": "Não apto — encaminhamento",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar não apto — encaminhamento, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "Se não apto, encaminhar o paciente para outro plano mais simples de acompanhamento, sem liberar o protocolo recusado.",
+        "RECOMENDADO: médico registra a orientação clínica/encaminhamento; equipe comercial organiza adesão ao plano indicado dentro das suas permissões. Não atribuir o motivo clínico aos vendedores nem deixar a IA selecionar tratamento por margem de venda.",
+        "PENDENTE: quem escolhe o plano alternativo, opções elegíveis, se encaminhamento depende de avaliação adicional, comunicação ao paciente, cobrança da avaliação, valores já pagos e cancelamento/reembolso. Encaminhamento não significa contratação automática ou alteração de cobrança sem fluxo definido."
+      ]
+    },
+    {
+      "id": "32.5",
+      "title": "Estados, plano ativo e evolução",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar estados, plano ativo e evolução, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "RECOMENDADO: acompanhar estados “aguardando agendamento”, “avaliação agendada”, “avaliação pendente”, “apto”, “não apto/encaminhado”, “acompanhamento liberado”, “em acompanhamento” e “concluído/pausado/cancelado”, distinguindo estado clínico e comercial. Lista final de estados ainda será aprovada.",
+        "PENDENTE PRIORITÁRIO: protocolo é composição do único plano ativo, benefício dentro de um plano ou contratação complementar? Consolidar modelo sem violar a regra de um plano ativo por cliente e sem presumir segundo plano ativo. Encaminhamento ao plano simples e upgrade preservam histórico.",
+        "RECOMENDADO: mudanças na composição são versionadas e não reescrevem jornadas/condições já contratadas. Mudanças clínicas individuais precisam do profissional competente; IA auxilia registros/organização dentro dos limites existentes.",
+        "RECOMENDADO: ADM acompanha inscrição, agenda, etapas e pendências administrativas. Médico acompanha aptidão e conteúdo clínico. Super ADM acompanha operação/qualidade com permissões definidas, sem resolver implicitamente o acesso clínico pendente."
+      ]
+    },
+    {
+      "id": "32.6",
+      "title": "Critérios de aceite propostos — protocolos",
+      "parent": "32",
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — protocolos, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. ADM cria protocolo com composição e etapa inicial de avaliação agendada; itens indisponíveis à clínica não são concedidos por essa configuração.",
+        "2. Sem decisão médica de aptidão para o protocolo, cliente não acessa seu acompanhamento, inclusive por endereço/API direto. A consulta inicial permanece acessível por fluxo definido fora do acompanhamento bloqueado.",
+        "3. Somente médico autorizado registra aptidão; ADM, paciente, IA e equipe de vendas não conseguem liberar por alteração direta do estado.",
+        "4. Registro de decisão preserva identidade, protocolo/versão, data/hora e histórico. Reavaliação não apaga a anterior.",
+        "5. Decisão apto libera somente o protocolo/benefícios correspondentes, observadas as condições comerciais aprovadas.",
+        "6. Não apto não libera o protocolo original e cria o encaminhamento conforme regra aprovada, sem contratação ou cobrança automática presumida.",
+        "7. Jornada possui etapas, responsáveis e prazos; tarefas administrativas/clínicas respeitam seus perfis.",
+        "8. Paciente em um protocolo continua com no máximo um plano ativo conforme modelo final; encaminhamento, upgrade e alteração de composição não duplicam contrato/benefícios/cobranças.",
+        "9. Falta, documento incompleto e bloqueio financeiro não são gravados como inaptidão clínica por suposição.",
+        "10. Aplicativo e histórico preservam dados entre avaliação, acompanhamento e encaminhamento, sem acesso entre clínicas."
+      ]
+    },
+    {
+      "id": "33",
+      "title": "Critérios de aceite propostos — inovações aprovadas",
+      "parent": null,
+      "status": "pending",
+      "done": "Ainda não há implementação funcional deste requisito validada.",
+      "next": "Falta implementar e validar critérios de aceite propostos — inovações aprovadas, respeitando as decisões pendentes do PRD.",
+      "authors": [],
+      "requirements": [
+        "1. Simulador mostra premissas e cenários; repetir cálculo com mesmas entradas/versão produz resultado consistente e custos/receitas não são contados duas vezes.",
+        "2. Central operacional mostra incidentes e atualização por clínica/integração sem expor conteúdo clínico indevidamente.",
+        "3. Implantação guiada copia configuração autorizada, nunca dados ou segredos de outra clínica, e registra progresso/verificações.",
+        "4. Laboratório de IA registra versões/resultados e aplica os critérios de liberação aprovados, com casos sintéticos cobrindo limites e isolamento.",
+        "5. Fila de próximos passos atribui pendências ao perfil certo e não revela informação clínica em tarefa comercial.",
+        "6. Resumo da consulta tem origem/documentos verificáveis e não altera automaticamente evolução médica definitiva.",
+        "7. Retenção apresenta sinais explicáveis de relacionamento sem uso clínico indevido para venda.",
+        "8. Meu dia respeita plano, jornada, permissões, estado de protocolo e bloqueio financeiro.",
+        "9. Preparação da consulta, linha do tempo e metas mantêm o paciente correto, dados incompletos explícitos e ausência de causalidade/prescrição indevida.",
+        "10. Central de privacidade mostra acessos/autorizações e permite solicitações/exportação conforme fluxo aprovado, sem liberar dados de terceiros."
+      ]
+    },
+    {
+      "id": "34",
+      "title": "Prioridade recomendada e decisões pendentes",
+      "parent": null,
+      "status": "progress",
+      "done": "Roadmap e matriz registram etapas, dependências, limites e decisões pendentes.",
+      "next": "Atualizar prioridades com a fundação real, dispositivos homologados e regras consolidadas.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": [
+        "As 13 inovações foram aprovadas para o escopo. Prioridade sugerida na resposta anterior, sem cronograma fechado: Meu dia; jornadas configuráveis/protocolos; resumo preparatório da consulta; central de funcionamento; simulador de rentabilidade. Demais funções permanecem incluídas, com sequência de implementação a definir.",
+        "Novas prioridades de decisão: composição/validação dos protocolos, avaliação e registros, cobrança/adesão, alternativa para não apto, protocolo versus único plano ativo, critérios de aptidão/reavaliação e etapas do acompanhamento.",
+        "Permanecem pendentes os detalhes de cada módulo e as decisões anteriores: balança/modelo/uso compartilhado/acesso clínico do Super ADM; dispositivos/estoque/telemetria; indicação/dependentes; inadimplência/cobrança por vidas; upgrade; integrações; vendas/comissões; 32 áreas; loja; IA/índices e segurança.",
+        "PRD permanece em construção. Comandos Lovable/Antigravity só serão gerados quando o usuário declarar as especificações prontas."
+      ]
+    }
+  ],
+  "deliveries": [
+    {
+      "id": "D1",
+      "title": "Quatro áreas e navegação demonstrativa",
+      "parent": null,
+      "status": "done",
+      "done": "Base Super ADM, clínica, médico e cliente criada e navegável.",
+      "next": "Módulos funcionais produtivos continuam nas pendências do PRD.",
+      "authors": ["Lovable", "Antigravity"],
+      "requirements": []
+    },
+    {
+      "id": "D2",
+      "title": "Personalização visual no navegador",
+      "parent": null,
+      "status": "done",
+      "done": "Nome, cores, tema, logomarca e favicon salvos por clínica; Super ADM preserva PlugPix.",
+      "next": "Domínio, identidade de instalação e persistência real ainda pendentes no item2.",
+      "authors": ["Lovable", "Antigravity"],
+      "requirements": []
+    },
+    {
+      "id": "D3",
+      "title": "Design global azul marinho e superfícies foscas",
+      "parent": null,
+      "status": "done",
+      "done": "Cartões, campos, navegação e gráficos com tokens semânticos e tema claro preservado.",
+      "next": "Manter o padrão nos próximos módulos.",
+      "authors": ["Lovable", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "D4",
+      "title": "Catálogo demonstrativo de planos",
+      "parent": null,
+      "status": "done",
+      "done": "Salvar, recarregar, editar e excluir rascunhos locais de telemedicina/pulseira; validação e falhas cobertas.",
+      "next": "Ativação, venda e cobrança real permanecem nos itens13 e20.",
+      "authors": ["Antigravity", "Codex"],
+      "requirements": []
+    },
+    {
+      "id": "D5",
+      "title": "Painéis de saúde com números fictícios",
+      "parent": null,
+      "status": "done",
+      "done": "Cliente e médico usam a mesma fonte de medições, seis gráficos e tabelas, com QA móvel e desktop.",
+      "next": "Integração H59/H59MAX e balança real permanecem nos itens6,25 e27.",
+      "authors": ["Codex"],
+      "requirements": []
+    },
+    {
+      "id": "D6",
+      "title": "Base PWA de rede sem cache de saúde",
+      "parent": null,
+      "status": "done",
+      "done": "Manifest, ícone SVG, service worker e mensagem de desconexão implementados e testados unitariamente.",
+      "next": "Homologar instalação em aparelhos e ícones por clínica; histórico clínico offline não implementado.",
+      "authors": ["Codex"],
+      "requirements": []
+    },
+    {
+      "id": "D7",
+      "title": "Verificação local da entrega C006",
+      "parent": null,
+      "status": "done",
+      "done": "64 testes passaram; tipos e build válidos; lint sem erros e7avisos Fast Refresh.",
+      "next": "Build remoto Lovable ainda apresenta aviso, apesar de recebimento/renderização do commit.",
+      "authors": ["Codex"],
+      "requirements": []
+    },
+    {
+      "id": "D8",
+      "title": "Relatório temporário Status do projeto",
+      "parent": null,
+      "status": "done",
+      "done": "101 títulos do PRD organizados com requisitos, situações, executores, busca e filtros na rota /staus.",
+      "next": "Atualizar em cada entrega; excluir página, botão e catálogo ao concluir o projeto.",
+      "authors": ["Codex"],
+      "requirements": []
+    }
+  ]
+}

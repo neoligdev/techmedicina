@@ -70,7 +70,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const area: Area =
     first === "clinica" || first === "medico" || first === "app" ? first : "super-admin";
   const section = pathname.split("/")[2] ?? "";
-  const title = navigation[area].find((item) => item.slug === section)?.label ?? "Página";
+  const title =
+    first === "staus"
+      ? "Status do projeto"
+      : (navigation[area].find((item) => item.slug === section)?.label ?? "Página");
   const branded = area !== "super-admin";
   const identity = branded ? clinicIdentity(clinic) : productIdentity;
 
@@ -185,6 +188,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <AreaSelector area={area} />
+          {!branded && (
+            <Button asChild variant="outline" size="sm" className="project-status-top-link">
+              <Link to="/staus">
+                Status do projeto<span className="project-status-temporary"> · temporário</span>
+              </Link>
+            </Button>
+          )}
           {!branded && (
             <Button
               variant="ghost"

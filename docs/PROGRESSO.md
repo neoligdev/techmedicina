@@ -1,6 +1,7 @@
 # Progresso e Pendências
 
 ## Estado Atual (08/10/2026)
+
 - **TESTE C-000**: Concluído estritamente como somente leitura (não incluiu testes automáticos nem validações visuais de UI).
 - **Tarefa C-001-R1/R2**: Correção da validação inicial e refatoração de testes.
 - **Tarefa C-002 (LOTE 1)**: Design System aplicado, UX/UI premium estruturada, componentes mockups implementados nas 4 rotas (`super-admin`, `clinica`, `medico`, `app`).
@@ -9,26 +10,31 @@
 - **Dependências**: `package-lock.json` inalterado, sem adição de dependências. Operação via `npm`.
 
 ## Evidências
+
 - Validações manuais parciais do Coordenador atestadas em `VALIDACAO_LOCAL.md`.
 - Suite de testes expandida para cobrir "cor secundária", "restauração" e "busca personalizada". Histórico antigo (1 falha/6 passes, timeout 5000ms) observado pelo coordenador foi sobrescrito pela rodada anterior.
 - Na rodada R2, testes foram refatorados para usar `filterClinics` real, e o código foi formatado. Logs separados registram 8 testes aprovados, tsc sem texto de erro e lint sem erros; os códigos de saída não foram gravados pelo executor.
 - Lint executado: 0 erros e 7 avisos. Type check (tsc) executado sem erros.
 
 ## Pendências
+
 - **Responsividade:** verificação parcial concluída pelo coordenador, descrita abaixo.
 - **Cor nativa no navegador:** confirmação ainda pendente.
 
 ## Diretrizes Atuais de Decisão (C-001-R2)
+
 - Infraestrutura ficará para depois. Concluídas validação parcial e organização de requisitos; módulos novos não iniciados.
 - Não há backend, provedor de dados ou autenticação real a ser integrado neste momento.
 
 ## Evidências Adicionais LOTE 1
+
 - `docs/DESIGN_SYSTEM.md` documenta a cobertura visual de UX.
 - Executados `npm run build`, `npm run test`, `npm run lint` e `npx tsc --noEmit` pós-implementação do Lote 1.
-- Todos retornaram *exit code 0* com os logs nas respectivas saídas.
+- Todos retornaram _exit code 0_ com os logs nas respectivas saídas.
 - Não há novos avisos ou erros. Os novos componentes substituíram `PlaceholderPage` preservando rotas.
 
 ## Próxima Ação
+
 - Aguardar revisão do Coordenador sobre Lote 1 (Estado: OCIOSO).
 - Retomada: validação ou continuidade dos módulos secundários conforme Matriz. Novas dependências ou backend continuam vetados nesta etapa.
 
@@ -46,9 +52,8 @@ Transferência registrada: Antigravity declarou OCIOSO após C-001-R2; Codex ass
 
 Estado final: executor OCIOSO. Retomada: revisar esta seção e MATRIZ_REQUISITOS.md; concluir a lacuna do seletor nativo de cores. Implementações dependentes de infraestrutura aguardam decisão futura do usuário. Preservar alterações locais existentes e package-lock.json.
 
-
-
 ### Encerramento verificável
+
 - Rodada do coordenador: test_coordenador_final.log registra EPERM no cache do sandbox (nenhum teste executado, exit 1); repetição autorizada fora do sandbox em test_coordenador_final_fora_sandbox.log: 8/8 testes, exit 0. tsc_coordenador_final.log: exit 0.
 - A formatação geral feita pelo executor em R2 alterou bytes da cópia do PRD. Coordenador restaurou a cópia a partir do original; SHA256 de ambos: 02C9182511E7BBC14EBB4A034B31A9A69937438AB0BD9D41FC25A5CBF941C035. PRD permanece intocado em conteúdo e bytes.
 - Compilação de produção já aprovada na validação anterior; após ela, mudanças nesta rodada limitadas a testes e registros (além de formatação). Sem publicação.
@@ -69,6 +74,7 @@ Antigravity permanece OCIOSO. Codex assume a tarefa de revisão e sincronizaçã
 Após o push, conferir o commit efetivamente sincronizado no Lovable antes de considerar seu preview validado. Push bem-sucedido não comprova atualização do preview.
 
 ## Transferência C-002-R2 — 08/10/2026
+
 Antigravity confirmou OCIOSO. Codex assumiu a correção direta de cobertura visual, interações e checks. Relatório R1 dizia lint aprovado, mas log real contém 2 erros; tipos e fluxos serão verificados de novo. Não há edições concorrentes. OpenCode instalado informado pelo usuário, alternativa via opencode.cmd quando créditos do executor acabarem.
 
 ## C-002-R2 — revisão e autorização atual
@@ -88,6 +94,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 ## Tarefa C-003: Fundação de Autorização (Engine) — 08/10/2026
 
 **Ações realizadas (Executor Antigravity):**
+
 - Codex foi estabelecido formalmente como Coordenador; Antigravity como Executor exclusivo de arquivos/comandos (atualizado em `AGENTS.md` e `docs/COORDENACAO.md`).
 - Construída base lógica agnóstica de autorização (`src/lib/auth/core.ts`) com a fundação parcial da segurança global. Permissões de autorização estabelecidas logicamente por contrato, recusando por padrão acessos não vinculados ou edições destrutivas de prontuários.
 - Isolado o acesso através de `guards.server.ts` simulando guarda via servidor e negando tentativas sem adaptador de sessão.
@@ -98,10 +105,10 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Resta pendente implementação real: autenticação, RLS no banco, encriptação e auditoria.
 - O Coordenador agora pode revisar a C-003. O executor retornará ao modo OCIOSO.
 
-
 ## Tarefa C-004: Identidade Visual (08/10/2026)
 
 **Ações realizadas (Executor Antigravity):**
+
 - Implementada persistência de cores e imagens no navegador vinculada ao ID da clínica.
 - Validação estrita de base64 (assinaturas canônicas, decodificação assíncrona real e fallback em caso de erro).
 - Atualização dinâmica de tema, title e favicon, com limpeza correta de efeitos paralelos ao trocar de contexto.
@@ -114,6 +121,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 ## Tarefa C-004-R3: Identidade Visual Validada (09/10/2026)
 
 **Ações realizadas (Executor Antigravity):**
+
 - Mocks de Image e FileReader tipados rigorosamente com vi.stubGlobal em testes assíncronos.
 - Substituição das strings `dummy` por bytes binários inteiros (Uint8Array reconstruído via atob) das fixtures PNG para o mock FileReader.
 - Correção de vazamento assíncrono em waitFor do callback stale de favicon e uso de fallback individual `failedSrc` em componente Brand.
@@ -126,6 +134,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - O executor retornará ao modo OCIOSO.
 
 ## C-004 Integração e QA Real (09/10/2026)
+
 - **Integração Realizada**: Merge da branch main (`f4356bf`) com sucesso.
 - **Testes Preservados**: 40/40, Lint 0 erros e 8 avisos.
 - **QA e HMR**: O erro relatado anteriormente (DemoProvider) tem o HMR como hipótese compatível (não sendo causa 100% atestada via curl, mas o SSR foi recuperado). O QA real com recarga limpa no servidor comprovou que o ClinicaDashboard renderizou normalmente.
@@ -133,6 +142,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Aprovação**: C004 aprovada pelo coordenador. O sistema agora suporta a mudança de identidade de forma provisória/demonstrativa para QA (ainda dependente da finalização e segurança da base real). Próxima etapa será a C005 (Catálogo Base).
 
 ## C-005 Catálogo Base de Planos (09/10/2026)
+
 - **Implementação**: Construído PlansCatalog em src/features/super-admin/plans e substituído o placeholder /super-admin/planos.
 - **Componentes CRUD**: Criados formulários para Telemedicina (com 32 áreas, Nutrição, Psicologia, Educador Físico, Concierge Presencial, 24h) e Pulseira (preço ativação, mensalidade, Médico, IA, Fidelidade).
 - **Condições Comerciais**: Implementadas coparticipação, carência e fidelidade com aceitação de nulos e bloqueio de negativos. Toggles explícitos.
@@ -141,6 +151,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Logs de Qualidade**: Lint e Build passando com sucesso e gravados em docs/evidencias/c005_*.txt.
 
 ## C-005 Catálogo Base de Planos (R2 a R4) - 09/10/2026
+
 - **C005-R1 Endurecimento**: Ajustado `getPlans` para detecção em única passagem, preservação obrigatória de `rawContent` para backup de JSONs e migração. O fluxo assíncrono nos testes (FileReader/Image) foi refatorado para testes perfeitos de forma síncrona, eliminando instabilidades.
 - **C005-R2 (Parcial)**: Havia sido declarada como sucesso, mas o log real de lint ocultou 4 erros `no-explicit-any` de `storage.ts` e mascarou o EXIT_CODE 1, porque PowerShell requer tratamento manual na variável $LASTEXITCODE. A suíte 58 testes e compilação R2 ficaram preservados.
 - **C005-R3 (Cirúrgica)**: Removidos todos `any` de `storage.ts`, substituindo-os por `Record<string, unknown>` com acesso via colchetes para não violar as regras TypeScript.
@@ -150,7 +161,6 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
   - Editor com tag semântica `h1` mantendo estrutura, cores warning compatíveis com Dark Mode.
   - Registros de progresso unificados e caracteres malformados sanados (corrompimento em version/active).
   - **Estado Atual**: Antigravity OCIOSO. Logs R4 isolados comprovam `EXIT_CODE 0`. Sem commit/push ativo até QA.
-
 
 ## C006 — execução direta autorizada e modernização (09/10/2026)
 
@@ -163,3 +173,12 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Próxima etapa: conferir sincronização do commit no editor Lovable e planejar backend/integrações com documentação validada, mantendo demonstração identificada.
 
 - Pós-envio C006: implementação49e42d2 confirmada em origin/main. Lovable reconheceu Accepted e renderizou os novos indicadores operacionais; aviso de build/outdated permanece sem log concreto acessível. Build remoto não atestado, Publish não acionado. Ver RELATORIO_C006.md.
+
+
+## C007 — status temporário do projeto (09/10/2026)
+
+- Executor: Codex, conforme autorização direta do usuário. Rota /staus e botão temporário no topo do Super ADM.
+- Fonte única catalog.json: 101 itens (34 seções + 67 subitens), todos os 597 blocos não vazios do PRD original disponíveis para consulta. 20 itens parciais, 81 pendentes; 8 entregas demonstrativas concluídas separadas. Autoria baseada nos registros, sem declarar demo como produção.
+- Busca por requisito/executor/número e filtros validados: 5 resultados para bioimpedancia, 81 pendentes, 20 parciais. Desktop e 390px sem overflow; botão de acesso validado.
+- TypeScript, build e lint passaram (7 avisos existentes). Testes finais registrados no relatório C007.
+- Atualizar fonte, data e este registro em cada implementação. Remover a página e seu catálogo, exportação Markdown, botão e estilos quando todo o PRD estiver concluído.

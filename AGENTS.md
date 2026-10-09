@@ -28,3 +28,12 @@
 - Apenas uma tarefa ativa por vez nesta pasta, sem edições concorrentes.
 - Segredos apenas em locais apropriados, nunca versionados ou expostos em logs.
 - Não inventar integrações, custos ou decisões de negócios; solicitar ao Coordenador quando bloqueante.
+
+## Status temporário do projeto
+
+- Em cada implementação, atualizar `src/features/project-status/catalog.json`, a data em `catalog.ts` e os registros de progresso no mesmo commit. Registrar executor real (Codex, Lovable ou Antigravity), entrega validada e próximo passo; não atribuir autoria ao coordenador quando outro agente executou.
+- A rota `/staus` e o botão temporário do Super ADM são relatório manual. Verde é entrega concluída no escopo descrito; azul é requisito iniciado/parcial; amarelo é não implementado. Dados demo ou uma prévia não concluem requisitos de produção.
+- Manter cobertura das 34 seções e todos os subitens do PRD; o teste de cobertura deve continuar passando quando o PRD mudar.
+- Ao concluir todo o projeto, remover rota `staus.tsx`, botão/ajuste de breadcrumb em AppShell, pasta `features/project-status`, teste `project-status.test.ts` e estilos `project-status-*`; regenerar rotas, validar e registrar a remoção.
+
+- Regenerar `docs/STATUS_PROJETO_TEMPORARIO.md` a partir do catálogo a cada atualização; removê-lo ao concluir o projeto, junto às variáveis CSS `--project-done`, `--project-progress`, `--project-pending` e seletores temporários `[data-status]`.
