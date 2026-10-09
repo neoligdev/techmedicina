@@ -25,6 +25,7 @@ import {
   Share2,
 } from "lucide-react";
 import { navigation } from "@/features/demo/navigation";
+import { Button } from "@/components/ui/button";
 import type { Area } from "@/features/demo/types";
 const icons = {
   palette: Palette,
@@ -101,7 +102,8 @@ export function AreaNavigation({
       <div className="patient-navigation-container">
         <nav className="patient-navigation" aria-label="Menu principal">
           {items.filter((item) => primary.includes(item.slug)).map(itemLink)}
-          <button
+          <Button
+            variant="ghost"
             className={`nav-item ${expanded || !primary.includes(section) ? "is-active" : ""}`}
             aria-expanded={expanded}
             aria-controls="patient-all-resources"
@@ -109,7 +111,7 @@ export function AreaNavigation({
           >
             <LayoutDashboard size={19} />
             <span>Mais</span>
-          </button>
+          </Button>
         </nav>
         {expanded && (
           <nav

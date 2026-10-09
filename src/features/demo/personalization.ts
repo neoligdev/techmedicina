@@ -24,8 +24,8 @@ export function validPreferences(value: unknown): value is ClinicPreferences {
 export function defaultPreferences(clinic: Clinic): ClinicPreferences {
   return {
     name: clinic.name,
-    primary: clinic.theme === "verde" ? "#23765a" : "#326fbb",
-    secondary: "#168567",
-    mode: "light",
+    primary: "#B9D85D",
+    secondary: "#56B9C5",
+    mode: "dark",
   };
 }

@@ -20,13 +20,17 @@ function channels(hex: string) {
 }
 function readableBrand(hex: string, dark: boolean) {
   let rgb = channels(hex);
-  const surface = dark ? luminance(channels("#151a20")) : 1;
+  const surface = dark ? luminance(channels("#142B43")) : 1;
   for (let i = 0; i < 60; i++) {
     const l = luminance(rgb);
     if ((Math.max(l, surface) + 0.05) / (Math.min(l, surface) + 0.05) >= 4.6) break;
     rgb = rgb.map((c) => Math.round(dark ? c + (255 - c) * 0.1 : c * 0.9));
   }
   return `rgb(${rgb.join(" ")})`;
+}
+export function brandColorAdjusted(p: ClinicPreferences) {
+  if (!validColor(p.primary)) return false;
+  return readableBrand(p.primary, p.mode === "dark") !== `rgb(${channels(p.primary).join(" ")})`;
 }
 export function clinicThemeStyle(p: ClinicPreferences): CSSProperties {
   if (!validColor(p.primary) || !validColor(p.secondary)) return {};
