@@ -51,8 +51,8 @@ Decisão do usuário: definir infraestrutura depois e concluir apenas etapas ind
 
 Não há decisão automática sobre custos, fornecedores, regras clínicas ou comerciais. Próxima ação local possível: finalizar verificação manual do seletor nativo de cores; próxima etapa estrutural depende da decisão de infraestrutura adiada.
 
-## Infraestrutura informada pelo usuário — 08/10/2026
-
-O usuário informou que o projeto usa Lovable Cloud, conectado ao projeto via GitHub. Isso substitui a pendência de escolher um provedor. A configuração efetiva do ambiente, banco, autenticação, permissões e sincronização ainda não foi verificada pelo coordenador. Não presumir que a conexão com GitHub comprova serviços ativos ou isolamento de dados.
-
-Próxima etapa: verificar a configuração existente do Lovable Cloud e o vínculo com este repositório antes de propor implementação de persistência/autenticação. Esta informação não autoriza commit, push, publicação ou alterações de produção; manter as restrições vigentes.
+## Infraestrutura e Coordenação (Atualizado 09/10/2026)
+- **Infraestrutura**: Lovable Cloud definido pelo usuário. Conexão via GitHub confirmada, porém configuração efetiva de banco de dados (DB) e autenticação real (auth) ainda não verificadas.
+- **Autorizações do Usuário**: Autorizado desenvolvimento contínuo (PRD contínuo). O executor local (Antigravity) atua como único executor, responsável pelos commits e push normais (`git commit`, `git push`) no fluxo, sem precisar pedir permissão prévia a cada passo. O coordenador atua como revisor de QA.
+- **Progresso de Tarefas**: C004 (Identidade Visual) parcialmente validada de forma demonstrativa. A próxima etapa a iniciar imediatamente é a C005 (Catálogo Base de Planos).
+- O PRD original permanece intacto e servirá de base estrita para as implementações.

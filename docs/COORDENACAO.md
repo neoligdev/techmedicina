@@ -14,15 +14,14 @@
 
 Transferência final C-001-R2: executor OCIOSO; coordenador assumiu revisão documental e visual. Ver PROGRESSO.md. Durante execução do Antigravity, continuam proibidas edições ou checks concorrentes.
 
-## Infraestrutura informada pelo usuário — 08/10/2026
+## Infraestrutura e Sincronização (Atualizado 09/10/2026)
 
-O usuário informou que o projeto usa Lovable Cloud, conectado ao projeto via GitHub. Isso substitui a pendência de escolher um provedor. A configuração efetiva do ambiente, banco, autenticação, permissões e sincronização ainda não foi verificada pelo coordenador. Não presumir que a conexão com GitHub comprova serviços ativos ou isolamento de dados.
+O usuário informou que o projeto usa Lovable Cloud, conectado via GitHub. A configuração efetiva de DB e Auth ainda não foi verificada, devendo prosseguir localmente.
 
-Próxima etapa: verificar a configuração existente do Lovable Cloud e o vínculo com este repositório antes de propor implementação de persistência/autenticação. Esta informação não autoriza commit, push, publicação ou alterações de produção; manter as restrições vigentes.
-
-## Autorização de sincronização — 08/10/2026
-
-O usuário autorizou explicitamente commit e push para atualizar o preview do Lovable e testar o sistema. A restrição anterior de envio ao GitHub está superada para estas alterações locais de validação. Não há autorização adicional para mudanças de produção ou serviços.
+### Autorização de Desenvolvimento Contínuo
+O usuário autorizou explicitamente o desenvolvimento contínuo (PRD contínuo).
+O executor Antigravity é o único executor autorizado e é responsável por realizar os **commits e push normais** diretamente, de acordo com o fluxo, sem precisar delegar o push ao Coordenador. A restrição antiga de envio ao GitHub está completamente superada para estas tarefas autorizadas.
+Não há autorização para ativação de deploy em nuvem ("Publish/Cloud activation") neste momento.
 
 Antigravity permanece OCIOSO. Codex assume a tarefa de revisão e sincronização Git. origin/main foi atualizado por fetch e estava alinhado com HEAD (0/0) antes do commit. bun.lock permanece a referência versionada; package-lock.json preexistente não rastreado fica local. Logs .log são ignorados pelo Git; resumo reproduzível está em docs/EVIDENCIAS_VALIDACAO.md.
 

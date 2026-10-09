@@ -124,10 +124,10 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - PENDÊNCIAS: Override responsivo (390px) falhou ao ser embutido (viewport não forçou layout mobile), adiado para próxima etapa de preview. Cloudauth, banco real, domínios, PWA e tela de splash continuam não iniciados.
 - Integração: Histórico registra C003 enviada por push (commit 19cf5f5). C004 validada localmente, aguardando integração por merge com a origin/main (b942d89).
 - O executor retornará ao modo OCIOSO.
- 
- # #   C - 0 0 4   I n t e g r a � � o   e   Q A   ( 0 9 / 1 0 / 2 0 2 6 )  
- -   I n t e g r a � � o   R e a l i z a d a :   M e r g e   d a   b r a n c h   m a i n   ( f 4 3 5 6 b f )   f e i t o   c o m   s u c e s s o .   R e s o l v i d o s   c o n f l i t o s   n o   e s t a d o   d e   e d i � � o .  
- -   T e s t e s   P r e s e r v a d o s :   T o d o s   o s   4 0   t e s t e s   o r i g i n a i s   e s t � o   f u n c i o n a i s   ( 4 0 / 4 0 ) ,   L i n t   r e l a t a   0   e r r o s   e   8   a v i s o s .  
- -   Q A   e   H M R :   E r r o   D e m o P r o v i d e r   f o i   H M R ;   c u r l . e x e   a t e s t o u   S S R   s e m   q u e b r a   p r o d u t i v o .   J S D O M   n a v i g a t i o n   f o i   d e s c a r t a d o .  
- -   O C I O S O :   A g u a r d a n d o   Q A   f i n a l   d o   c o o r d e n a d o r .  
- 
+
+## C-004 Integração e QA Real (09/10/2026)
+- **Integração Realizada**: Merge da branch main (`f4356bf`) com sucesso.
+- **Testes Preservados**: 40/40, Lint 0 erros e 8 avisos.
+- **QA e HMR**: O erro relatado anteriormente (DemoProvider) tem o HMR como hipótese compatível (não sendo causa 100% atestada via curl, mas o SSR foi recuperado). O QA real com recarga limpa no servidor comprovou que o ClinicaDashboard renderizou normalmente.
+- **QA Real Aprovado**: A clínica A reteve nome e imagens de forma demonstrativa (logo e favicon salvos); B não vazou o estado de A; as áreas Médico e Paciente abriram corretamente sem ProviderError. A deleção e o fallback também persistiram e restauraram estado anterior. Viewport 826px funciona, layout mobile 390px ainda permanece não atestado de forma isolada/garantida. Não se alega ambiente seguro/mobile.
+- **Aprovação**: C004 aprovada pelo coordenador. O sistema agora suporta a mudança de identidade de forma provisória/demonstrativa para QA (ainda dependente da finalização e segurança da base real). Próxima etapa será a C005 (Catálogo Base).
