@@ -1,5 +1,12 @@
 # Escopo inicial
 
+## Modernização visual — 09/10/2026
+
+- [ ] Consolidar tokens escuros/claros e superfícies foscas nas quatro áreas.
+- [ ] Refinar navegação, formulários, listas, diálogos e personalização sem mudar regras.
+- [ ] Verificar testes, lint e fluxos no navegador em celular, tablet e desktop.
+- [ ] Registrar evidências, arquivos alterados e limites na documentação.
+
 - [x] Quatro áreas navegáveis e seleção demonstrativa de clínica.
 - [x] Tela Clínicas com busca e duas clínicas fictícias.
 - [x] Identidades, adaptação a celular e páginas em preparação.
