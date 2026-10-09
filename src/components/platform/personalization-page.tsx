@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Save, RotateCcw, Check, Sun, Moon } from "lucide-react";
+import { Save, RotateCcw, Check, Sun, Moon, Palette, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDemoClinic } from "@/features/demo/context";
 import { validColor, type ClinicPreferences } from "@/features/demo/personalization";
-import { clinicThemeStyle } from "@/features/demo/theme";
+import { brandColorAdjusted, clinicThemeStyle } from "@/features/demo/theme";
 
 export function PersonalizationPage() {
   const { clinic, preferences, ready } = useDemoClinic();
@@ -21,6 +21,7 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
   const [draft, setDraft] = useState(initial);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const dirty = JSON.stringify(draft) !== JSON.stringify(initial);
   function update(p: Partial<ClinicPreferences>) {
     setDraft((current) => ({ ...current, ...p }));
     setMessage("");
@@ -59,6 +60,7 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           <h1>
             Personalização<span className="heading-dot">.</span>
           </h1>
+          <p>A identidade da sua clínica, em cada ambiente.</p>
         </div>
       </div>
       <div className="personalization-layout">
@@ -70,6 +72,10 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           }}
           noValidate
         >
+          <div className="preference-section-heading">
+            <Palette size={20} />
+            <h2>Identidade visual</h2>
+          </div>
           <div className="preference-field">
             <label htmlFor="clinic-display-name">Nome de exibição</label>
             <Input
@@ -78,9 +84,20 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
               maxLength={80}
               required
               aria-invalid={!draft.name.trim()}
+              aria-describedby={error ? "preference-error" : undefined}
               onChange={(event) => update({ name: event.target.value })}
             />
           </div>
+          <p className="preference-hint">
+            As cores originais aparecem nas amostras. Textos e botões usam ajustes automáticos para
+            manter a leitura.
+          </p>
+          {brandColorAdjusted(draft) && (
+            <p className="contrast-note" role="status">
+              <ShieldCheck size={17} />A cor principal foi ajustada na prévia para garantir
+              contraste.
+            </p>
+          )}
           <div className="color-fields">
             {(["primary", "secondary"] as const).map((field, i) => (
               <div className="preference-field" key={field}>
@@ -126,8 +143,9 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
               Restaurar padrão
             </Button>
           </div>
+          {dirty && !message && <p className="preference-hint">Alterações ainda não salvas.</p>}
           {error && (
-            <p className="preference-error" role="alert">
+            <p className="preference-error" id="preference-error" role="alert">
               {error}
             </p>
           )}
@@ -144,7 +162,10 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           style={clinicThemeStyle(draft)}
           aria-label="Prévia da clínica"
         >
-          <h2>Prévia</h2>
+          <div className="preview-topline">
+            <h2>Prévia</h2>
+            <span className="module-tag">{draft.mode === "dark" ? "Escuro" : "Claro"}</span>
+          </div>
           <div className="preview-identity">
             <span className="brand-symbol">
               <Check />
@@ -158,11 +179,14 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           <label htmlFor="preview-name">Nome de exibição</label>
           <Input id="preview-name" value={draft.name} readOnly />
           <div className="preview-actions">
-            <Button type="button" tabIndex={-1}>
+            <Button type="button" disabled>
               Confirmar
             </Button>
             <span className="secondary-preview">Clínica</span>
           </div>
+          <p className="preview-scope">
+            Aplicada à clínica, área médica e aplicativo do paciente após salvar.
+          </p>
         </section>
       </div>
     </div>
