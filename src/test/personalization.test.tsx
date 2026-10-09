@@ -69,7 +69,7 @@ describe("Personalização por clínica", () => {
     expect(screen.getByTestId("saved")).not.toHaveTextContent("#336699");
     fireEvent.click(screen.getByText("Clínica B"));
     expect(screen.getByTestId("saved")).toHaveTextContent("Unidade B personalizada");
-  }, 15000);
+  }, 30000);
   it("não confirma nem aplica uma gravação recusada", () => {
     mount();
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {

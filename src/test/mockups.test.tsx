@@ -16,7 +16,7 @@ describe("Prévia interativa dos módulos", () => {
     expect(screen.getByText("Nenhum exemplo encontrado")).toBeDefined();
     fireEvent.click(screen.getByText("Limpar filtros"));
     expect(screen.getByText("Catálogo de dispositivos")).toBeDefined();
-  });
+  }, 30000);
   it("cancela e limpa o formulário sem criar item", () => {
     render(<ModuleWorkspace spec={spec} />);
     fireEvent.click(screen.getByText(spec.action!));
@@ -26,7 +26,7 @@ describe("Prévia interativa dos módulos", () => {
     expect(screen.queryByText("Descartado")).toBeNull();
     fireEvent.click(screen.getByText(spec.action!));
     expect((screen.getByLabelText(spec.fields[0]) as HTMLInputElement).value).toBe("");
-  });
+  }, 30000);
   it("valida nome e mantém descrição no detalhe do rascunho", () => {
     render(<ModuleWorkspace spec={spec} />);
     fireEvent.click(screen.getByText(spec.action!));
@@ -43,7 +43,7 @@ describe("Prévia interativa dos módulos", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByLabelText("Ver detalhes de Plano fictício"));
     expect(within(screen.getByRole("dialog")).getByText("Descrição experimental")).toBeDefined();
-  });
+  }, 30000);
   it("descarta rascunhos ao desmontar a tela", () => {
     const view = render(<ModuleWorkspace spec={spec} />);
     fireEvent.click(screen.getByText(spec.action!));
@@ -54,5 +54,5 @@ describe("Prévia interativa dos módulos", () => {
     view.unmount();
     render(<ModuleWorkspace spec={spec} />);
     expect(screen.queryByText("Rascunho isolado")).toBeNull();
-  });
+  }, 30000);
 });

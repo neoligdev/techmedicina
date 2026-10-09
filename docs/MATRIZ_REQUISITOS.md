@@ -45,7 +45,7 @@ Decisão do usuário: definir infraestrutura depois e concluir apenas etapas ind
 
 1. Base existente: verificar compilação, tipos, lint, testes e interface; separar evidência executada de lacunas. Realizada com ressalva do seletor nativo de cores.
 2. Continuidade e requisitos: cópia fiel do PRD, controle de ida e volta do executor, matriz e registros de retomada. Concluída nesta sessão.
-3. Fundação de produção: escolher infraestrutura, definir contratos de identidade/vínculos, autorização no servidor, persistência e proteção dos dados. Adiada pelo usuário.
+3. Fundação de produção: escolher infraestrutura, definir contratos de identidade/vínculos, autorização no servidor, persistência e proteção dos dados. Avançado parcialmente: Motor de autorização lógico (`core.ts`) e contratos agnósticos implementados com simulação de guarda via `guards.server.ts`. Autenticação real, RLS no banco, encriptação e auditoria permanecem pendentes. Restam provedor e conexão Lovable Cloud reais.
 4. Dados clínicos e demais módulos: implementar somente após fundação e decisões específicas, usando critérios das seções 7, 11, 14, 24, 26, 28, 32.6 e 33. Não iniciada.
 5. Serviços/dispositivos/comercial: depende de fornecedores, protocolos e regras aprovadas. Não iniciada.
 

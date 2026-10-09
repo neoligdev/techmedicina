@@ -24,7 +24,7 @@
 
 ## Coordenação e Desenvolvimento (Adicionado)
 
-- Codex atua como Coordenador; Antigravity atua como Executor único.
+- Codex atua exclusivamente como Coordenador (revisa, testa, analisa); Antigravity atua como o único Executor (cria código, documentos, executa comandos). O Codex nunca deve editar os arquivos do projeto.
 - Apenas uma tarefa ativa por vez nesta pasta, sem edições concorrentes.
 - Segredos apenas em locais apropriados, nunca versionados ou expostos em logs.
 - Não inventar integrações, custos ou decisões de negócios; solicitar ao Coordenador quando bloqueante.

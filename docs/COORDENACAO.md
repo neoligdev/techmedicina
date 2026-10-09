@@ -2,7 +2,7 @@
 
 ## Papéis
 
-- **Coordenador**: Codex (avalia requisitos, aprova ações, lê relatórios, delega etapas e valida interface/regras de negócio quando ferramentas automatizadas estão indisponíveis).
+- **Coordenador**: Codex (avalia requisitos, aprova ações, lê relatórios, delega etapas e valida interface/regras de negócio). O Codex NUNCA deve editar o projeto diretamente.
 - **Executor**: Antigravity (executa código, compilações, testes e documentação na pasta do projeto). Único executor ativo nesta pasta.
 
 ## Diretrizes e Regras de Retomada

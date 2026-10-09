@@ -84,3 +84,16 @@ Correções e limites da revisão estão em RELATORIO_C002.md e DESIGN_SYSTEM.md
 Commit 36f7f69 enviado à main com autor PlugPix. Lovable aceitou o commit; foi acionado Update preview e a nova interface apareceu no editor. O histórico continua sinalizando Build unsuccessful; a causa ainda não aparece em Details. Site público permanece na versão anterior; publicação não realizada.
 
 Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do aplicativo sem rolagem horizontal em 378 px. Diálogo da clínica coube na tela de 393 px. Tema escuro do diálogo e retorno à identidade PlugPix aprovados localmente. Evidências PNG registradas. Personalização permanece demonstrativa por ID de clínica; permissões reais, persistência clínica e backend ainda pendentes.
+
+## Tarefa C-003: Fundação de Autorização (Engine) — 08/10/2026
+
+**Ações realizadas (Executor Antigravity):**
+- Codex foi estabelecido formalmente como Coordenador; Antigravity como Executor exclusivo de arquivos/comandos (atualizado em `AGENTS.md` e `docs/COORDENACAO.md`).
+- Construída base lógica agnóstica de autorização (`src/lib/auth/core.ts`) com a fundação parcial da segurança global. Permissões de autorização estabelecidas logicamente por contrato, recusando por padrão acessos não vinculados ou edições destrutivas de prontuários.
+- Isolado o acesso através de `guards.server.ts` simulando guarda via servidor e negando tentativas sem adaptador de sessão.
+- Incluídos testes unitários (18 testes na suíte auth, total de 33 testes no projeto) atestando restrições a domínios e a negação padrão 403 (UNITÁRIO) de acessos laterais ou mágicos a admins para prontuários clínicos e vínculos malformados ou globais aplicados indevidamente à clínica.
+- Testes de interface visual com `testTimeout` de 30s nos mocks, com asserts preservados.
+- Execução limpa e sequencial com códigos de saída salvos em arquivos .txt e salvos via `$LASTEXITCODE`: `npm run build`, `npm run lint` (0 erros), `npx tsc --noEmit` e `npm run test` localmente.
+- Servidor Vite ativo e em execução mantida (`http://localhost:8080`) com acesso HTTP independente fora do sandbox validado pelo coordenador (GET sem sessão, cabeçalho e query forjados em `/api/access-check`) retornando rigidamente status 401. Servidores Vite antigos de outras instâncias foram encerrados; a instância atual permanece ativa.
+- Resta pendente implementação real: autenticação, RLS no banco, encriptação e auditoria.
+- O Coordenador agora pode revisar a C-003. O executor retornará ao modo OCIOSO.

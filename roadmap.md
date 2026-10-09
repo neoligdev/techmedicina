@@ -29,3 +29,5 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Verificar quatro áreas e diálogo em modo móvel no preview do Lovable.
 - [x] Verificar tema escuro do diálogo e marca PlugPix preservada.
 - [ ] Esclarecer aviso Build unsuccessful mantido no histórico, apesar de preview atualizado.
+- [x] C-003-R3: Fundação parcial de autorização lógica (`core.ts` e `guards.server.ts`) e diagnósticos testados unitariamente (403) e HTTP (401).
+- [ ] Implementar autenticação real, RLS no banco, encriptação e auditoria (Pendentes da fundação global C-003).

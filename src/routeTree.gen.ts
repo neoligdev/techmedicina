@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiAccessCheckRouteImport } from './routes/api/access-check'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppSectionRouteImport } from './routes/app.$section'
 import { Route as ClinicaIndexRouteImport } from './routes/clinica.index'
@@ -22,6 +23,11 @@ import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$sec
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAccessCheckRoute = ApiAccessCheckRouteImport.update({
+  id: '/api/access-check',
+  path: '/api/access-check',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -67,6 +73,7 @@ const SuperAdminSectionRoute = SuperAdminSectionRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
   '/clinica/$section': typeof ClinicaSectionRoute
   '/medico/$section': typeof MedicoSectionRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
   '/clinica/$section': typeof ClinicaSectionRoute
   '/medico/$section': typeof MedicoSectionRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
   '/clinica/$section': typeof ClinicaSectionRoute
   '/medico/$section': typeof MedicoSectionRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api/access-check'
     | '/app/$section'
     | '/clinica/$section'
     | '/medico/$section'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/access-check'
     | '/app/$section'
     | '/clinica/$section'
     | '/medico/$section'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/api/access-check'
     | '/app/$section'
     | '/clinica/$section'
     | '/medico/$section'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiAccessCheckRoute: typeof ApiAccessCheckRoute
   AppSectionRoute: typeof AppSectionRoute
   ClinicaSectionRoute: typeof ClinicaSectionRoute
   MedicoSectionRoute: typeof MedicoSectionRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/access-check': {
+      id: '/api/access-check'
+      path: '/api/access-check'
+      fullPath: '/api/access-check'
+      preLoaderRoute: typeof ApiAccessCheckRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -217,6 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiAccessCheckRoute: ApiAccessCheckRoute,
   AppSectionRoute: AppSectionRoute,
   ClinicaSectionRoute: ClinicaSectionRoute,
   MedicoSectionRoute: MedicoSectionRoute,
