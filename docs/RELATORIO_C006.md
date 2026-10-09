@@ -47,3 +47,10 @@ Instalação PWA em aparelhos reais/iOS, ícones de instalação personalizados 
 Autenticação, isolamento no servidor, auditoria, persistência de saúde e requisitos produtivos dos demais módulos continuam pendentes. Commit/push sincronizam o projeto conectado ao Lovable; não houve Publish nem confirmação automática de atualização do domínio público.
 
 Scripts auxiliares, package-lock, backup e logs antigos ficaram fora do commit. `clean.cjs` auxiliar preexistente recebeu somente formatação local para permitir o lint e não foi executado nem versionado.
+
+
+## GitHub e Lovable após envio
+
+Commit de implementação `49e42d26a76dd45bfc8299975f90f5323ed00641`, autor PlugPix <plugpix.brasil@gmail.com>, enviado normalmente para origin/main e confirmado por git ls-remote. No editor Lovable, o commit apareceu como Pushed from GitHub / Accepted. O iframe do preview mostrou o componente novo Indicadores operacionais demonstrativos (Vidas habilitadas / Visão da rede), comprovando recebimento da nova interface.
+
+O histórico continua exibindo Build unsuccessful / Preview is out of date também para o commit novo. A abertura de Details não forneceu um log concreto e a leitura subsequente do painel expirou. Portanto, recebimento e renderização da interface foram observados, mas o build remoto não foi declarado aprovado. O build local passou. Não foi acionado Build com créditos, Publish ou upgrade. Próxima retomada: investigar esse aviso no ambiente Lovable e testar instalação em aparelhos reais.

@@ -161,3 +161,5 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Final: tsc0, lint0 (7 avisos Fast Refresh), 64 testes/10 arquivos passando, build0. QA 390px/1440px sem overflow; seis gráficos; filtro/tabelas; mesmas métricas no Médico; preferências da clínica A restauradas e B sem mistura visual; PlugPix no Super ADM.
 - PRD intacto. Integrações reais, autenticação e requisitos produtivos permanecem pendentes. Detalhes/arquivos: RELATORIO_C006.md; resumo dos resultados: evidencias/c006_validacao.md.
 - Próxima etapa: conferir sincronização do commit no editor Lovable e planejar backend/integrações com documentação validada, mantendo demonstração identificada.
+
+- Pós-envio C006: implementação49e42d2 confirmada em origin/main. Lovable reconheceu Accepted e renderizou os novos indicadores operacionais; aviso de build/outdated permanece sem log concreto acessível. Build remoto não atestado, Publish não acionado. Ver RELATORIO_C006.md.
