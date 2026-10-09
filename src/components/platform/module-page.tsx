@@ -189,8 +189,12 @@ export function ModuleWorkspace({ spec }: { spec: ModuleSpec }) {
         <section className="module-collection" aria-label={`Exemplos de ${spec.title}`}>
           <div className="module-toolbar">
             <div className="module-search">
+              <Label htmlFor={`search-${spec.slug}`} className="search-label">
+                Buscar em {spec.title.toLowerCase()}
+              </Label>
               <Search size={17} />
               <Input
+                id={`search-${spec.slug}`}
                 aria-label={`Buscar em ${spec.title}`}
                 placeholder={`Buscar em ${spec.title.toLowerCase()}…`}
                 value={query}
@@ -245,15 +249,15 @@ export function ModuleWorkspace({ spec }: { spec: ModuleSpec }) {
                 <tbody>
                   {filtered.map((item) => (
                     <tr key={item.id}>
-                      <td>
+                      <td data-label={spec.fields[0]}>
                         <strong>{item.name}</strong>
                         <small>Dados demonstrativos</small>
                       </td>
-                      <td>Sem vínculo real</td>
-                      <td>
+                      <td data-label={spec.fields[1]}>Sem vínculo real</td>
+                      <td data-label="Situação">
                         <span className="module-tag">{item.status}</span>
                       </td>
-                      <td>
+                      <td data-label="Ações">
                         <Button
                           variant="ghost"
                           onClick={() => openDetails(item)}

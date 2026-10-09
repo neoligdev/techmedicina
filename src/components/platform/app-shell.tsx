@@ -1,6 +1,6 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, Menu, X, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ChevronRight, Menu, X, ShieldCheck, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDemoClinic } from "@/features/demo/context";
 import {
@@ -17,6 +17,53 @@ import { AreaNavigation } from "./navigation";
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  const [adminMode, setAdminMode] = useState<"dark" | "light">("dark");
+  const sidebar = useRef<HTMLElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px)");
+    const update = () => {
+      setMobile(media.matches);
+      setMenuOpen(false);
+    };
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (!mobile || !menuOpen) return;
+    const panel = sidebar.current;
+    if (!panel) return;
+    const focusable = () =>
+      Array.from(panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
+    focusable()[0]?.focus();
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenuOpen(false);
+      }
+      if (event.key !== "Tab") return;
+      const elements = focusable();
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panel.addEventListener("keydown", keydown);
+    return () => {
+      document.body.style.overflow = previous;
+      panel.removeEventListener("keydown", keydown);
+      menuTrigger.current?.focus();
+    };
+  }, [mobile, menuOpen]);
   const { clinic, preferences } = useDemoClinic();
   const first = pathname.split("/")[1];
   const area: Area =
@@ -32,7 +79,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div
       className={`platform-shell ${area === "app" ? "patient-shell" : ""} ${branded ? "clinic-branded" : ""}`}
       data-theme={identity.theme}
-      data-mode={branded ? preferences.mode : undefined}
+      data-mode={branded ? preferences.mode : adminMode}
       style={branded ? clinicThemeStyle(preferences) : undefined}
     >
       {area !== "app" && (
@@ -41,7 +88,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={`sidebar-scrim ${menuOpen ? "is-open" : ""}`}
             onClick={() => setMenuOpen(false)}
           />
-          <aside className={`sidebar ${menuOpen ? "is-open" : ""}`}>
+          <aside
+            ref={sidebar}
+            className={`sidebar ${menuOpen ? "is-open" : ""}`}
+            inert={mobile && !menuOpen}
+            role={mobile && menuOpen ? "dialog" : undefined}
+            aria-modal={mobile && menuOpen ? true : undefined}
+            aria-label="Navegação da área"
+            id="area-sidebar"
+          >
             <div className="sidebar-brand">
               <Brand
                 name={branded ? identity.name : undefined}
@@ -67,7 +122,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                   ? "Área profissional"
                   : "Super administrador"}
             </div>
-            <span className="menu-label">PRINCIPAL</span>
             <AreaNavigation area={area} section={section} onNavigate={() => setMenuOpen(false)} />
             <div className="sidebar-bottom">
               {area !== "super-admin" && (
@@ -92,16 +146,19 @@ export function AppShell({ children }: { children: ReactNode }) {
           </aside>
         </>
       )}
-      <div className="main-area">
+      <div className="main-area" inert={mobile && menuOpen}>
         <header className="topbar">
           <div className="breadcrumb">
             {area !== "app" ? (
               <>
                 <Button
+                  ref={menuTrigger}
                   variant="ghost"
                   size="icon"
                   className="open-menu"
                   aria-label="Abrir menu"
+                  aria-expanded={menuOpen}
+                  aria-controls="area-sidebar"
                   onClick={() => setMenuOpen(true)}
                 >
                   <Menu />
@@ -120,6 +177,18 @@ export function AppShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <AreaSelector area={area} />
+          {!branded && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mode-toggle"
+              aria-label={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              title={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              onClick={() => setAdminMode(adminMode === "dark" ? "light" : "dark")}
+            >
+              {adminMode === "dark" ? <Sun /> : <Moon />}
+            </Button>
+          )}
           <div className="user-avatar" aria-label="Ambiente demonstrativo">
             {area === "super-admin"
               ? "SA"

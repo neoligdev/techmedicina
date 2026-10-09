@@ -76,7 +76,7 @@ export function ClinicsPage() {
         <Card className="border-border/50 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avisos</CardTitle>
-            <AlertCircle className="h-4 w-4 text-amber-500" />
+            <AlertCircle className="h-4 w-4 text-warning-ink" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">—</div>
@@ -92,8 +92,12 @@ export function ClinicsPage() {
             <span className="count-badge">{clinics.length}</span>
           </div>
           <div className="search-field">
+            <label htmlFor="clinic-search" className="search-label">
+              Buscar clínica
+            </label>
             <Search size={18} />
             <Input
+              id="clinic-search"
               aria-label="Buscar clínica por nome"
               placeholder="Buscar clínica por nome..."
               value={search}
@@ -116,7 +120,7 @@ export function ClinicsPage() {
             <tbody>
               {results.map((clinic) => (
                 <tr key={clinic.id}>
-                  <td>
+                  <td data-label="Clínica">
                     <div className="clinic-name">
                       <div className="clinic-avatar" data-clinic-theme={clinic.theme}>
                         {clinic.initials}
@@ -127,7 +131,7 @@ export function ClinicsPage() {
                       </div>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="Situação">
                     <span
                       className={`status-badge ${clinic.status === "Ativa" ? "status-active" : "status-pending"}`}
                     >
@@ -135,7 +139,7 @@ export function ClinicsPage() {
                       {clinic.status}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Vidas habilitadas">
                     <span className="lives-value">
                       {clinic.enabledLives.toLocaleString("pt-BR")}
                     </span>
@@ -165,7 +169,7 @@ export function ClinicsPage() {
           </div>
         )}
         <div className="table-footer">
-          <span>
+          <span aria-live="polite">
             {results.length} de {clinics.length} clínicas
           </span>
           <span>Dados demonstrativos</span>
