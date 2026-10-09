@@ -15,6 +15,7 @@ export const navigation: Record<Area, NavigationItem[]> = {
     { slug: "planos", label: "Planos", icon: "plans" },
     { slug: "dispositivos", label: "Dispositivos", icon: "devices" },
     { slug: "financeiro", label: "Financeiro", icon: "finance" },
+    { slug: "simulador", label: "Simulador", icon: "sparkles", group: "Configurações" },
     { slug: "inovacoes", label: "Inovações", icon: "sparkles", group: "Configurações" },
     { slug: "privacidade", label: "Privacidade", icon: "shield", group: "Configurações" },
   ],

@@ -19,6 +19,7 @@ Transferência final C-001-R2: executor OCIOSO; coordenador assumiu revisão doc
 O usuário informou que o projeto usa Lovable Cloud, conectado via GitHub. A configuração efetiva de DB e Auth ainda não foi verificada, devendo prosseguir localmente.
 
 ### Autorização de Desenvolvimento Contínuo
+
 O usuário autorizou explicitamente o desenvolvimento contínuo (PRD contínuo).
 O executor Antigravity é o único executor autorizado e é responsável por realizar os **commits e push normais** diretamente, de acordo com o fluxo, sem precisar delegar o push ao Coordenador. A restrição antiga de envio ao GitHub está completamente superada para estas tarefas autorizadas.
 Não há autorização para ativação de deploy em nuvem ("Publish/Cloud activation") neste momento.
@@ -27,6 +28,10 @@ Antigravity permanece OCIOSO. Codex assume a tarefa de revisão e sincronizaçã
 
 Após o push, conferir o commit efetivamente sincronizado no Lovable antes de considerar seu preview validado. Push bem-sucedido não comprova atualização do preview.
 
-
 ## Atualização humana — 09/10/2026
+
 O usuário autorizou explicitamente o Codex a implementar diretamente a modernização global e os painéis demonstrativos, fazer commit e push. Esta decisão substitui o executor exclusivo Antigravity registrado anteriormente. Preservar uma tarefa/executor ativo por vez, Git sem reescrita e requisitos do PRD. Resultados atuais em RELATORIO_C006.md.
+
+## Próxima Etapa: C009 (09/10/2026)
+
+A próxima tarefa (C009) focará no levantamento da fundação **Lovable Cloud**, sem criação de credenciais, inserção de dependências ou alteração da produção atual. O Antigravity permanece como executor, enquanto o Codex atuará coordenando e testando.

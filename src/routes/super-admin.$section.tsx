@@ -3,6 +3,7 @@ import { ModulePage } from "@/components/platform/module-page";
 import { navigation, areaLabels } from "@/features/demo/navigation";
 import { pageHead } from "@/features/demo/metadata";
 import { PlansCatalog } from "@/features/super-admin/plans";
+import { SimulatorPage } from "@/features/super-admin/simulator";
 export const Route = createFileRoute("/super-admin/$section")({
   loader: ({ params }) => {
     const item = navigation["super-admin"].find(
@@ -19,6 +20,9 @@ function SectionPage() {
   const { slug } = Route.useLoaderData();
   if (slug === "planos") {
     return <PlansCatalog />;
+  }
+  if (slug === "simulador") {
+    return <SimulatorPage />;
   }
   return <ModulePage area="super-admin" slug={slug} />;
 }

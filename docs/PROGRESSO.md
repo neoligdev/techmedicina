@@ -174,7 +174,6 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 
 - Pós-envio C006: implementação49e42d2 confirmada em origin/main. Lovable reconheceu Accepted e renderizou os novos indicadores operacionais; aviso de build/outdated permanece sem log concreto acessível. Build remoto não atestado, Publish não acionado. Ver RELATORIO_C006.md.
 
-
 ## C007 — status temporário do projeto (09/10/2026)
 
 - Executor: Codex, conforme autorização direta do usuário. Rota /staus e botão temporário no topo do Super ADM.
@@ -182,3 +181,13 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Busca por requisito/executor/número e filtros validados: 5 resultados para bioimpedancia, 81 pendentes, 20 parciais. Desktop e 390px sem overflow; botão de acesso validado.
 - TypeScript, build e lint passaram (7 avisos existentes). Testes finais registrados no relatório C007.
 - Atualizar fonte, data e este registro em cada implementação. Remover a página e seu catálogo, exportação Markdown, botão e estilos quando todo o PRD estiver concluído.
+
+## C008 — Simulador de Rentabilidade Didático (09/10/2026)
+
+- **Nova Diretriz**: Codex só coordena/testa; Antigravity volta a implementar. OpenCode servirá como fallback quando a quota falhar. PRD deve permanecer intacto. Modificações anteriores e autorias preservadas.
+- **Desenvolvimento C008**: Simulador de rentabilidade (PRD 29.1) construído como etapa independente ("modo didático", sem misturar banco de dados, auth ou custos hardcoded inventados). Função abstrata puramente matemática de fácil testagem.
+- **Teste Unitário Seguro**: `calculator.test.ts` implementado com cobertura validada nos limites de regra de negócio estipulados no prompt (vidas negativas, valores indefinidos, exclusão de contribuições irreais/negativas).
+- **Interface e Navegação**: Rota `/super-admin/simulador` inserida. 3 cenários isolados em memória com inputs editáveis. Outputs reativos formatados (`pt-BR`). Nenhuma alteração disruptiva visual ou persistência não autorizada.
+- **Qualidade Local (Logs Gerados)**: Pipeline R3 final (Codex Testador) confirmou `EXIT_CODE=0` em: TSC, LINT (0 erros, 7 avisos conhecidos), BUILD e 81 testes aprovados em 13 arquivos. Rota respondendo 200 OK com formulário incompleto padrão.
+- **QA Visual (Pendência)**: QA visual no navegador indisponível por falha de conexão local do coordenador. O estado foi registrado como pendente; modos mobile/desktop não são dados como validados ainda.
+- **Status**: Antigravity **OCIOSO**. C008 concluída. Próxima etapa (C009) focada na fundação Lovable Cloud.

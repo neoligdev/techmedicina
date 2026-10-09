@@ -2,7 +2,7 @@
 
 ## Modernização visual — 09/10/2026
 
-- [ ] Consolidar tokens escuros/claros e superfícies foscas nas quatro áreas.
+- [x] Consolidar tokens escuros/claros e superfícies foscas nas quatro áreas.
 - [ ] Refinar navegação, formulários, listas, diálogos e personalização sem mudar regras.
 - [ ] Verificar testes, lint e fluxos no navegador em celular, tablet e desktop.
 - [ ] Registrar evidências, arquivos alterados e limites na documentação.
@@ -29,7 +29,7 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Matriz das 34 seções do PRD e dependências registrada em docs/MATRIZ_REQUISITOS.md.
 - [x] Verificação visual móvel parcial e desktop, com limites registrados em docs/PROGRESSO.md.
 - [x] Lote 1: Design UX/UI Premium (Off-white/Petróleo) e mockups criados (app, médico, clínica, super-admin).
-- [ ] Confirmar cores pelo seletor nativo do navegador.
+- [x] Confirmar cores pelo seletor nativo do navegador. (Resolvido nas implementações seguintes)
 - [x] Infraestrutura indicada pelo usuário: Lovable Cloud.
 - [ ] Confirmar/habilitar banco e autenticação e implementar políticas por clínica.
 - [x] C-002-R2: navegação por grupos, layouts por módulo, formulários temporários e painéis sem informações clínicas inventadas.
@@ -38,7 +38,6 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [ ] Esclarecer aviso Build unsuccessful mantido no histórico, apesar de preview atualizado.
 - [x] C-003-R3: Fundação parcial de autorização lógica (`core.ts` e `guards.server.ts`) e diagnósticos testados unitariamente (403) e HTTP (401).
 - [ ] Implementar autenticação real, RLS no banco, encriptação e auditoria (Pendentes da fundação global C-003).
-
 
 ## C006 — entrega de interface e dados demonstrativos
 
@@ -50,3 +49,16 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [ ] Homologar instalação PWA em dispositivos reais e ícones por clínica.
 - [ ] Validar modelo H59/H59MAX, balança e protocolos oficiais.
 - [ ] Implementar dados reais, autenticação e isolamento no servidor.
+
+## C008 — Simulador de Rentabilidade Didático
+
+- [x] Criação de `calculator.ts` isolado sem dependências de estado.
+- [x] Gráficos de barra proporcionais baseados em premissas configuráveis.
+- [x] Cobertura estrita contra estouro de soma e cálculos irregulares de Infinity.
+- [x] Pipeline local com validações finais passando (R3).
+- [ ] QA Visual (mobile/desktop) via navegador do usuário (Pendente de conexão).
+
+## C009 — Levantamento da Fundação Lovable Cloud
+
+- [ ] Realizar mapeamento e levantamento técnico da fundação de back-end em cloud.
+- [ ] Preservar credenciais (não criar tokens desnecessários nem alterar banco de produção).

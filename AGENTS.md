@@ -24,7 +24,7 @@
 
 ## Coordenação e Desenvolvimento (Adicionado)
 
-- Em 09/10/2026, o usuário autorizou explicitamente o Codex a implementar diretamente, validar, fazer commit e push. Esta autorização substitui a restrição anterior de execução exclusiva pelo Antigravity. Manter apenas um executor ativo por vez.
+- Nova diretriz humana (09/10/2026, C008): Codex só coordena/testa; Antigravity implementa, OpenCode será acionado como fallback apenas quando a quota falhar. Manter apenas um executor ativo por vez. Preservar o histórico, as autorias das entregas passadas e as modificações anteriores intactas. PRD INTACTO. Nada de `git add .` ou commit manual sem a aprovação explícita e posterior da coordenação.
 - Apenas uma tarefa ativa por vez nesta pasta, sem edições concorrentes.
 - Segredos apenas em locais apropriados, nunca versionados ou expostos em logs.
 - Não inventar integrações, custos ou decisões de negócios; solicitar ao Coordenador quando bloqueante.
