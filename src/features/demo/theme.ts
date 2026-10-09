@@ -1,5 +1,5 @@
 import type { Clinic } from "./types";
-import type { CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
 import { validColor, type ClinicPreferences } from "./personalization";
 export const productIdentity = { name: "PlugPix Techmedicina", initials: "P", theme: "platform" };
 export function clinicIdentity(clinic: Clinic) {
@@ -41,4 +41,35 @@ export function clinicThemeStyle(p: ClinicPreferences): CSSProperties {
     "--brand-secondary-foreground":
       luminance(channels(p.secondary)) > 0.179 ? "var(--contrast-dark)" : "var(--contrast-light)",
   } as CSSProperties;
+}
+
+export function useClinicIdentityEffect(
+  branded: boolean,
+  identityName: string,
+  favicon: string | undefined,
+) {
+  useEffect(() => {
+    document.title = branded ? `${identityName} | Techmedicina` : "PlugPix Techmedicina";
+    const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (!link) return;
+
+    let cancelled = false;
+    // Apply default immediately before decoding
+    link.href = "/favicon.ico";
+
+    if (branded && favicon) {
+      const img = new Image();
+      img.onload = () => {
+        if (!cancelled) link.href = favicon;
+      };
+      img.onerror = () => {
+        if (!cancelled) link.href = "/favicon.ico";
+      };
+      img.src = favicon;
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [branded, identityName, favicon]);
 }

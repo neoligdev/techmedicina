@@ -1,9 +1,14 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft, ChevronRight, Menu, X, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDemoClinic } from "@/features/demo/context";
-import { clinicIdentity, productIdentity, clinicThemeStyle } from "@/features/demo/theme";
+import {
+  clinicIdentity,
+  productIdentity,
+  clinicThemeStyle,
+  useClinicIdentityEffect,
+} from "@/features/demo/theme";
 import { navigation, areaLabels } from "@/features/demo/navigation";
 import type { Area } from "@/features/demo/types";
 import { Brand } from "./brand";
@@ -20,6 +25,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const title = navigation[area].find((item) => item.slug === section)?.label ?? "Página";
   const branded = area !== "super-admin";
   const identity = branded ? clinicIdentity(clinic) : productIdentity;
+
+  useClinicIdentityEffect(branded, identity.name, preferences.favicon);
+
   return (
     <div
       className={`platform-shell ${area === "app" ? "patient-shell" : ""} ${branded ? "clinic-branded" : ""}`}
@@ -39,6 +47,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 name={branded ? identity.name : undefined}
                 clinic={branded}
                 initials={identity.initials}
+                logo={branded ? preferences.logo : undefined}
               />
               <Button
                 variant="ghost"
@@ -102,7 +111,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <strong>{title}</strong>
               </>
             ) : (
-              <Brand name={identity.name} clinic initials={identity.initials} />
+              <Brand
+                name={identity.name}
+                clinic
+                initials={identity.initials}
+                logo={preferences.logo}
+              />
             )}
           </div>
           <AreaSelector area={area} />

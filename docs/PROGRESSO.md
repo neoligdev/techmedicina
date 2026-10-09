@@ -97,3 +97,30 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Servidor Vite ativo e em execução mantida (`http://localhost:8080`) com acesso HTTP independente fora do sandbox validado pelo coordenador (GET sem sessão, cabeçalho e query forjados em `/api/access-check`) retornando rigidamente status 401. Servidores Vite antigos de outras instâncias foram encerrados; a instância atual permanece ativa.
 - Resta pendente implementação real: autenticação, RLS no banco, encriptação e auditoria.
 - O Coordenador agora pode revisar a C-003. O executor retornará ao modo OCIOSO.
+
+
+## Tarefa C-004: Identidade Visual (08/10/2026)
+
+**Ações realizadas (Executor Antigravity):**
+- Implementada persistência de cores e imagens no navegador vinculada ao ID da clínica.
+- Validação estrita de base64 (assinaturas canônicas, decodificação assíncrona real e fallback em caso de erro).
+- Atualização dinâmica de tema, title e favicon, com limpeza correta de efeitos paralelos ao trocar de contexto.
+- Adicionados testes rigorosos simulando assincronia e race conditions na troca de logotipo e favicon (mockando FileReader e Image).
+- Testes limpos 39/39, lint e build concluídos com sucesso (LINT 0, TSC 0, TEST 0, BUILD 0).
+- Preparadas duas fixtures de imagem válidas em docs/fixtures/.
+- Servidor local reiniciado e ativo na porta 8080.
+- O executor retornará ao modo OCIOSO.
+
+## Tarefa C-004-R3: Identidade Visual Validada (09/10/2026)
+
+**Ações realizadas (Executor Antigravity):**
+- Mocks de Image e FileReader tipados rigorosamente com vi.stubGlobal em testes assíncronos.
+- Substituição das strings `dummy` por bytes binários inteiros (Uint8Array reconstruído via atob) das fixtures PNG para o mock FileReader.
+- Correção de vazamento assíncrono em waitFor do callback stale de favicon e uso de fallback individual `failedSrc` em componente Brand.
+- Refatoração do hook useClinicIdentityEffect de pp-shell para `features/demo/theme.ts` extinguindo warnings Fast Refresh.
+- Interface adaptada com rótulos ARIA explícitos `Remover logomarca`.
+- Testes limpos 40/40, lint e build concluídos (EXIT_CODE=0 registrados isolados nas evidências c004_r3_*.txt).
+- Validação manual QA do coordenador em localhost confirmada.
+- PENDÊNCIAS: Override responsivo (390px) falhou ao ser embutido (viewport não forçou layout mobile), adiado para próxima etapa de preview. Cloudauth, banco real, domínios, PWA e tela de splash continuam não iniciados.
+- Integração: Histórico registra C003 enviada por push (commit 19cf5f5). C004 validada localmente, aguardando integração por merge com a origin/main (b942d89).
+- O executor retornará ao modo OCIOSO.
