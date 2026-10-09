@@ -40,5 +40,14 @@ Implementar a funcionalidade de personalização visual (logomarca, ícone de ab
 - Customização de domínios (DNS) e assets reais PWA/Splash não estão no escopo da fundação inicial.
 - Requisito 2 (Identidade visual avançada) ainda está apenas parcialmente implementado.
 
+## 7. Integração Git (Merge origin/main)
+- A ramificação `main` do repositório remoto (`origin/main`) foi integrada (`git merge`) à cópia local.
+- Conflitos em `app-shell.tsx` e `personalization-page.tsx` foram resolvidos, preservando a lógica remota de contraste de cor (`ShieldCheck`), uso de `useRef`, junto à funcionalidade de identidade de marca da clínica construída localmente.
+- O código combinado foi validado com sucesso. Logs de evidência foram gravados como `c004_integracao_*.txt`:
+  - LINT: 0 erros, 7 avisos (`EXIT_CODE=0`)
+  - TSC: Type check com sucesso (`EXIT_CODE=0`)
+  - TESTES: Suíte aprovada 40/40 (`EXIT_CODE=0`)
+  - BUILD: Compilação de produção com sucesso (`EXIT_CODE=0`)
+
 ## Conclusão
-O componente de identidade visual atinge as exigências da revisão C-004-R3 e está com 100% de pass nos testes rígidos solicitados. O servidor `Vite` continua limpo. O sistema está ocioso e aguardando testes suplementares.
+O componente de identidade visual atingiu as exigências da revisão C-004-R3, passou por todos os testes rígidos solicitados e foi integrado com sucesso à versão mais recente da `origin/main`. O servidor Vite continua ativo e a versão combinada passou em toda a validação sequencial com códigos de saída `0`. O sistema está ocioso e pronto para revisão/publicação final.
