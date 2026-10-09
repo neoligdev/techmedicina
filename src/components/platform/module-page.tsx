@@ -189,7 +189,9 @@ export function ModuleWorkspace({ spec }: { spec: ModuleSpec }) {
         <section className="module-collection" aria-label={`Exemplos de ${spec.title}`}>
           <div className="module-toolbar">
             <div className="module-search">
-              <Label htmlFor={`search-${spec.slug}`} className="search-label">Buscar em {spec.title.toLowerCase()}</Label>
+              <Label htmlFor={`search-${spec.slug}`} className="search-label">
+                Buscar em {spec.title.toLowerCase()}
+              </Label>
               <Search size={17} />
               <Input
                 id={`search-${spec.slug}`}

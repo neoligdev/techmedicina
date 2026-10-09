@@ -92,7 +92,9 @@ export function ClinicsPage() {
             <span className="count-badge">{clinics.length}</span>
           </div>
           <div className="search-field">
-            <label htmlFor="clinic-search" className="search-label">Buscar clínica</label>
+            <label htmlFor="clinic-search" className="search-label">
+              Buscar clínica
+            </label>
             <Search size={18} />
             <Input
               id="clinic-search"

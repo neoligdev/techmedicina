@@ -18,7 +18,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const menuTrigger = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const media = window.matchMedia("(max-width: 900px)");
-    const update = () => { setMobile(media.matches); setMenuOpen(false); };
+    const update = () => {
+      setMobile(media.matches);
+      setMenuOpen(false);
+    };
     update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
@@ -27,16 +30,25 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (!mobile || !menuOpen) return;
     const panel = sidebar.current;
     if (!panel) return;
-    const focusable = () => Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+    const focusable = () =>
+      Array.from(panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
     focusable()[0]?.focus();
     const keydown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { event.preventDefault(); setMenuOpen(false); }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenuOpen(false);
+      }
       if (event.key !== "Tab") return;
       const elements = focusable();
       const first = elements[0];
       const last = elements[elements.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
     };
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -68,7 +80,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={`sidebar-scrim ${menuOpen ? "is-open" : ""}`}
             onClick={() => setMenuOpen(false)}
           />
-          <aside ref={sidebar} className={`sidebar ${menuOpen ? "is-open" : ""}`} inert={mobile && !menuOpen} role={mobile && menuOpen ? "dialog" : undefined} aria-modal={mobile && menuOpen ? true : undefined} aria-label="Navegação da área" id="area-sidebar">
+          <aside
+            ref={sidebar}
+            className={`sidebar ${menuOpen ? "is-open" : ""}`}
+            inert={mobile && !menuOpen}
+            role={mobile && menuOpen ? "dialog" : undefined}
+            aria-modal={mobile && menuOpen ? true : undefined}
+            aria-label="Navegação da área"
+            id="area-sidebar"
+          >
             <div className="sidebar-brand">
               <Brand
                 name={branded ? identity.name : undefined}
@@ -144,7 +164,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <AreaSelector area={area} />
           {!branded && (
-            <Button variant="ghost" size="icon" className="mode-toggle" aria-label={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"} title={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"} onClick={() => setAdminMode(adminMode === "dark" ? "light" : "dark")}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mode-toggle"
+              aria-label={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              title={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              onClick={() => setAdminMode(adminMode === "dark" ? "light" : "dark")}
+            >
               {adminMode === "dark" ? <Sun /> : <Moon />}
             </Button>
           )}

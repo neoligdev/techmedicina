@@ -22,11 +22,11 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Página não encontrada</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Esta página não existe ou foi movida.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Esta página não existe ou foi movida.</p>
         <div className="mt-6">
-          <Button asChild><Link to="/">Voltar ao início</Link></Button>
+          <Button asChild>
+            <Link to="/">Voltar ao início</Link>
+          </Button>
         </div>
       </div>
     </div>
@@ -46,9 +46,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Não foi possível abrir esta página
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Tente novamente ou volte ao início.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Tente novamente ou volte ao início.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button
             onClick={() => {
@@ -59,7 +57,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           >
             Tentar novamente
           </Button>
-          <Button asChild variant="outline"><a href="/">Voltar ao início</a></Button>
+          <Button asChild variant="outline">
+            <a href="/">Voltar ao início</a>
+          </Button>
         </div>
       </div>
     </div>

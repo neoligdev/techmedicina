@@ -27,42 +27,42 @@
   --color-border: var(--border);
   --color-input: var(--border);
   --color-ring: var(--primary);
+  --color-field: var(--field);
+  --color-scrim: var(--scrim);
+  --color-primary-hover: var(--primary-hover);
+  --color-warning-ink: var(--warning-ink);
 }
 :root {
   --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.29 0.047 249);
-  --card: oklch(1 0 0);
-  --popover: oklch(1 0 0);
-  --primary: oklch(0.36 0.077 249);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.966 0.006 247);
-  --muted: oklch(0.975 0.003 247);
-  --muted-foreground: oklch(0.54 0.024 248);
-  --accent: oklch(0.951 0.014 241);
-  --border: oklch(0.918 0.009 247);
-  --destructive: oklch(0.58 0.19 25);
-  --green: oklch(0.57 0.12 169);
-  --green-soft: oklch(0.953 0.025 164);
-  --green-ink: oklch(0.43 0.091 164);
-  --warning-soft: oklch(0.967 0.029 88);
-  --warning-ink: oklch(0.51 0.09 77);
-  --sidebar-surface: oklch(0.982 0.003 247);
-  --subtle-ink: oklch(0.65 0.019 248);
-  --scrim: oklch(0.21 0.03 249 / 0.3);
-  --clinic-blue: oklch(0.52 0.13 250);
-  --clinic-blue-soft: oklch(0.953 0.022 249);
-  --surface-shadow: 0 2px 5px oklch(0.2 0.02 249 / 0.025);
-  --contrast-light: #ffffff;
-  --contrast-dark: #101418;
-}
-[data-theme="verde"] {
-  --primary: var(--green-ink);
-  --accent: var(--green-soft);
-}
-[data-theme="azul"] {
-  --primary: var(--clinic-blue);
-  --accent: var(--clinic-blue-soft);
+  --background: oklch(0.2 0.039 250);
+  --foreground: oklch(0.972 0.008 250);
+  --card: oklch(0.244 0.048 250);
+  --popover: oklch(0.294 0.055 250);
+  --field: oklch(0.27 0.045 250);
+  --primary: oklch(0.846 0.153 121);
+  --primary-hover: color-mix(in oklab, var(--primary) 85%, var(--foreground));
+  --primary-foreground: oklch(0.2 0.039 250);
+  --secondary: oklch(0.294 0.055 250);
+  --muted: oklch(0.264 0.043 250);
+  --muted-foreground: oklch(0.779 0.031 248);
+  --accent: oklch(0.846 0.153 121 / 0.1);
+  --border: oklch(0.779 0.031 248 / 0.19);
+  --destructive: oklch(0.748 0.14 22);
+  --destructive-foreground: oklch(0.2 0.039 250);
+  --green: oklch(0.846 0.153 121);
+  --green-soft: oklch(0.846 0.153 121 / 0.09);
+  --green-ink: oklch(0.846 0.153 121);
+  --warning-soft: oklch(0.8 0.12 85 / 0.12);
+  --warning-ink: oklch(0.85 0.115 85);
+  --sidebar-surface: oklch(0.223 0.043 250);
+  --subtle-ink: oklch(0.735 0.03 248);
+  --scrim: oklch(0.12 0.03 250 / 0.7);
+  --clinic-blue: oklch(0.77 0.09 226);
+  --clinic-blue-soft: oklch(0.77 0.09 226 / 0.1);
+  --surface-shadow: 0 4px 18px oklch(0.12 0.03 250 / 0.13);
+  --contrast-light: oklch(0.972 0.008 250);
+  --contrast-dark: oklch(0.16 0.024 250);
+  color-scheme: dark;
 }
 @layer base {
   * {
@@ -110,45 +110,34 @@
   color: var(--foreground);
 }
 [data-mode="light"] {
-  --background: #fafafa;
-  --foreground: #1c1f24;
-  --card: #ffffff;
-  --popover: #ffffff;
-  --muted: #f1f5f9;
-  --secondary: #e2e8f0;
-  --sidebar-surface: #ffffff;
-  --muted-foreground: #64748b;
-  --subtle-ink: #94a3b8;
-  --border: #e2e8f0;
-  --accent: #f8fafc;
-
-  /* Petróleo PlugPix */
-  --primary: #064e3b;
-  --primary-foreground: #ffffff;
+  color-scheme: light;
+  --background: oklch(0.975 0.005 247);
+  --foreground: oklch(0.26 0.04 250);
+  --card: oklch(0.997 0.002 247);
+  --popover: oklch(0.997 0.002 247);
+  --field: oklch(0.96 0.009 247);
+  --muted: oklch(0.95 0.009 247);
+  --secondary: oklch(0.938 0.014 247);
+  --sidebar-surface: oklch(0.99 0.003 247);
+  --muted-foreground: oklch(0.49 0.034 248);
+  --subtle-ink: oklch(0.49 0.034 248);
+  --border: oklch(0.4 0.04 247 / 0.18);
+  --accent: oklch(0.54 0.11 121 / 0.09);
+  --primary: oklch(0.43 0.1 121);
+  --primary-foreground: oklch(0.997 0.002 247);
+  --green: oklch(0.45 0.1 121);
+  --green-ink: oklch(0.43 0.1 121);
+  --green-soft: oklch(0.55 0.11 121 / 0.08);
+  --warning-soft: oklch(0.83 0.12 85 / 0.12);
+  --warning-ink: oklch(0.46 0.09 72);
+  --destructive: oklch(0.5 0.19 25);
+  --destructive-foreground: oklch(0.997 0.002 247);
+  --clinic-blue: oklch(0.45 0.1 226);
+  --clinic-blue-soft: oklch(0.55 0.1 226 / 0.09);
+  --surface-shadow: 0 4px 18px oklch(0.2 0.03 250 / 0.035);
 }
 [data-mode="dark"] {
   color-scheme: dark;
-  --background: #0f1115;
-  --foreground: #f8fafc;
-  --card: #151a20;
-  --popover: #151a20;
-  --muted: #1e293b;
-  --secondary: #334155;
-  --sidebar-surface: #0f1115;
-  --muted-foreground: #94a3b8;
-  --subtle-ink: #64748b;
-  --border: #334155;
-  --accent: #1e293b;
-
-  /* Petróleo PlugPix Dark */
-  --primary: #059669;
-  --primary-foreground: #ffffff;
-
-  --green-soft: #064e3b;
-  --green-ink: #34d399;
-  --green: #10b981;
-  --warning-soft: #451a03;
-  --warning-ink: #fcd34d;
 }
 .clinic-branded .brand strong {
   font-size: 17px;
@@ -1109,12 +1098,7 @@ h1 {
   }
 }
 
-/* UX premium partagé : surfaces, navigation et modules */
-:root {
-  --radius: 0.85rem;
-  --background: #f6f8fa;
-  --card: #ffffff;
-}
+/* Shared module layouts */
 .main-area {
   min-width: 0;
 }
@@ -1135,12 +1119,12 @@ h1 {
   color: var(--muted-foreground);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0;
   text-transform: uppercase;
   margin: 0 12px 9px;
 }
 .nav-item {
-  border-radius: 12px;
+  border-radius: 8px;
   transition:
     background 150ms ease,
     color 150ms ease;
@@ -1186,8 +1170,8 @@ h1 {
 .module-collection {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 3px 14px rgb(0 0 0 / 0.025);
+  border-radius: 8px;
+  box-shadow: var(--surface-shadow);
   min-width: 0;
 }
 .module-panel {
@@ -1205,7 +1189,7 @@ h1 {
   font-size: 20px;
   font-weight: 600;
   line-height: 1.4;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 .module-panel > p {
   color: var(--muted-foreground);
@@ -1218,7 +1202,7 @@ h1 {
   height: 44px;
   background: var(--accent);
   color: var(--primary);
-  border-radius: 14px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1349,7 +1333,7 @@ h1 {
 }
 .module-card {
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 24px;
   min-width: 0;
 }
@@ -1391,7 +1375,7 @@ h1 {
 }
 .module-board > section {
   background: var(--muted);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 16px;
 }
 .module-board h2 {
@@ -1414,7 +1398,7 @@ h1 {
   width: calc(100% - 32px);
   max-height: calc(100dvh - 48px);
   overflow-y: auto;
-  border-radius: 20px;
+  border-radius: 8px;
   background: var(--card);
   color: var(--foreground);
 }
@@ -1427,7 +1411,7 @@ h1 {
   margin-bottom: 8px;
 }
 .module-form textarea {
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--card);
 }
 .module-detail-text {
@@ -1450,7 +1434,7 @@ h1 {
   border: 1px solid var(--border);
   background: var(--accent);
   padding: 14px 18px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 12px;
   margin-bottom: 20px;
 }
@@ -1483,7 +1467,7 @@ h1 {
   color: var(--muted-foreground);
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
   margin: 0 12px 12px;
 }
 .patient-all-resources .nav-item {
@@ -1504,7 +1488,7 @@ h1 {
   gap: 16px;
   padding: 26px;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 8px;
   background: var(--card);
   color: var(--foreground);
   transition: border-color 150ms ease;
@@ -1581,5 +1565,664 @@ h1 {
   .nav-item,
   .quick-link {
     transition: none;
+  }
+}
+
+/* PlugPix 2026 — restrained frosted surfaces */
+.platform-shell {
+  --primary-hover: color-mix(in oklab, var(--primary) 88%, var(--foreground));
+}
+.sidebar {
+  width: 248px;
+  padding: 28px 16px 20px;
+  background: var(--sidebar-surface);
+  scrollbar-width: thin;
+}
+.main-area {
+  margin-left: 248px;
+}
+.brand-symbol {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+.brand strong {
+  font-size: 25px;
+  font-weight: 700;
+}
+.brand span {
+  font-size: 10px;
+}
+.workspace-label {
+  margin: 24px 8px 28px;
+  font-size: 12px;
+}
+.navigation-group {
+  margin-bottom: 20px;
+}
+.navigation-group h2 {
+  font-size: 10px;
+  margin-left: 12px;
+}
+.side-navigation .nav-item {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.nav-item.is-active {
+  background: var(--accent);
+  border: 1px solid color-mix(in oklab, var(--primary) 20%, transparent);
+}
+.nav-item:not(.is-active) {
+  border: 1px solid transparent;
+}
+.sidebar-bottom {
+  padding-top: 22px;
+}
+.sidebar-signature,
+.sidebar-environment strong,
+.sidebar-environment span {
+  font-size: 11px;
+}
+.topbar {
+  height: 80px;
+  padding-inline: 36px;
+  gap: 16px;
+  background: var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.breadcrumb {
+  font-size: 13px;
+}
+.breadcrumb strong {
+  overflow-wrap: anywhere;
+}
+.area-trigger {
+  min-width: 148px;
+  height: 44px;
+  font-size: 13px;
+  background: var(--field);
+}
+.demo-label {
+  font-size: 11px;
+}
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 11px;
+}
+.demo-notice {
+  background: var(--green-soft);
+  padding-inline: 36px;
+  font-size: 12px;
+}
+.notice-badge {
+  font-size: 9px;
+}
+.page-content {
+  padding: 40px 36px;
+}
+.page-heading {
+  margin-bottom: 32px;
+}
+.eyebrow {
+  font-size: 11px;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+h1 {
+  font-size: 36px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+.page-heading p {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.heading-dot {
+  color: var(--primary);
+}
+.network-label {
+  font-size: 12px;
+  padding-top: 0;
+}
+[data-slot="card"],
+.quick-link,
+.module-card,
+.clinic-preview {
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: var(--surface-shadow);
+}
+[data-slot="card"] {
+  gap: 14px;
+}
+[data-slot="card-title"] {
+  color: var(--muted-foreground);
+}
+.section-title h2 {
+  font-size: 16px;
+}
+.search-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.search-field svg,
+.module-search > svg {
+  top: auto;
+  bottom: 14px;
+}
+.search-field input {
+  height: 46px;
+  font-size: 14px;
+  background: var(--field);
+}
+.table-toolbar {
+  align-items: flex-end;
+  padding-bottom: 18px;
+}
+.table-scroll {
+  background: var(--card);
+  box-shadow: var(--surface-shadow);
+}
+.clinics-table th,
+.module-table th {
+  font-size: 12px;
+  padding-block: 16px;
+  background: var(--muted);
+}
+.clinics-table td,
+.module-table td {
+  font-size: 14px;
+  padding-block: 24px;
+}
+.clinics-table tbody tr:hover,
+.module-table tbody tr:hover {
+  background: var(--accent);
+}
+.clinic-name strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.clinic-name span {
+  font-size: 12px;
+}
+.clinic-avatar {
+  width: 44px;
+  height: 44px;
+  font-size: 13px;
+}
+.status-badge {
+  font-size: 11px;
+  padding: 6px 9px;
+}
+.lives-value {
+  font-size: 15px;
+}
+.lives-label,
+.table-footer {
+  font-size: 12px;
+}
+.view-clinic {
+  height: 44px;
+  font-size: 12px;
+}
+.network-note strong {
+  font-size: 14px;
+}
+.network-note p {
+  font-size: 12px;
+}
+.main-footer {
+  font-size: 11px;
+  padding-inline: 36px;
+}
+.module-panel,
+.module-collection {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.module-panel {
+  padding: 24px 0;
+  border-block: 1px solid var(--border);
+}
+.module-service-grid {
+  gap: 36px;
+}
+.module-toolbar {
+  padding: 18px 0;
+  align-items: flex-end;
+}
+.module-search {
+  min-width: 0;
+}
+.module-filter {
+  min-height: 46px;
+}
+.module-filter select {
+  background: var(--field);
+  min-height: 46px;
+  border-radius: 8px;
+}
+.module-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+.module-card-grid,
+.module-board {
+  padding: 24px 0;
+}
+.module-board > section {
+  background: transparent;
+  border-radius: 0;
+  padding: 16px 0;
+}
+.module-card p,
+.module-preview-note,
+.module-steps small,
+.quick-link p {
+  font-size: 13px;
+}
+.module-steps li {
+  min-height: 44px;
+}
+.module-steps li > span {
+  width: 36px;
+  height: 36px;
+  font-size: 12px;
+}
+.module-tag {
+  font-size: 11px;
+}
+.module-dialog {
+  background: var(--card);
+  box-shadow: var(--surface-shadow);
+  border-radius: 8px;
+}
+.module-form input,
+.module-form textarea,
+.preference-field input,
+.clinic-preview input {
+  background: var(--field);
+}
+.personalization-layout {
+  max-width: 1120px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 56px;
+}
+.personalization-form {
+  gap: 24px;
+}
+.preference-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.preference-section-heading h2 {
+  color: var(--foreground);
+  font-size: 18px;
+  font-weight: 600;
+}
+.preference-field label,
+.preference-field legend,
+.clinic-preview label {
+  font-size: 14px;
+}
+.preference-field fieldset,
+fieldset.preference-field {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.color-control {
+  padding: 10px;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  min-width: 0;
+}
+.color-control input {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+.preference-hint,
+.preview-scope {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+}
+.contrast-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--primary);
+}
+.contrast-note svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.preference-actions {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+.preference-success {
+  background: var(--green-soft);
+  padding: 12px;
+  border-radius: 8px;
+}
+.clinic-preview {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--brand-primary);
+}
+.preview-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.preview-topline h2 {
+  font-size: 14px;
+  margin: 0;
+}
+.preview-identity {
+  margin-bottom: 24px;
+}
+.preview-colors span {
+  width: 48px;
+  height: 16px;
+}
+.preview-scope {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 24px;
+}
+.patient-navigation-container {
+  background: var(--card);
+}
+.patient-navigation {
+  padding: 12px;
+}
+.patient-navigation .nav-item {
+  min-height: 58px;
+  font-size: 12px;
+}
+.patient-all-resources .nav-item {
+  min-height: 44px;
+}
+.patient-all-resources h2 {
+  letter-spacing: 0;
+}
+.quick-link {
+  gap: 12px;
+  border-radius: 8px;
+}
+:where(input, select, textarea, button, a):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+@supports (backdrop-filter: blur(8px)) {
+  .topbar,
+  .patient-navigation-container,
+  .module-dialog {
+    background: color-mix(in oklab, var(--card) 94%, transparent);
+    backdrop-filter: blur(12px) saturate(110%);
+  }
+  input:not([type="color"]),
+  textarea,
+  .area-trigger,
+  .module-filter select {
+    background: color-mix(in oklab, var(--field) 96%, transparent);
+    backdrop-filter: blur(6px);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .topbar,
+  .patient-navigation-container,
+  .module-dialog {
+    background: var(--card);
+    backdrop-filter: none;
+  }
+  input:not([type="color"]),
+  textarea,
+  .area-trigger,
+  .module-filter select {
+    background: var(--field);
+    backdrop-filter: none;
+  }
+}
+@media (max-width: 1100px) {
+  .personalization-layout {
+    gap: 28px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .topbar {
+    gap: 12px;
+  }
+}
+@media (max-width: 900px) {
+  .main-area {
+    margin-left: 0;
+  }
+  .sidebar {
+    width: 280px;
+    max-width: calc(100vw - 32px);
+    visibility: hidden;
+  }
+  .sidebar.is-open {
+    visibility: visible;
+  }
+  .topbar,
+  .demo-notice {
+    padding-inline: 24px;
+  }
+  .page-content {
+    padding: 32px 24px;
+  }
+}
+@media (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+    overflow-wrap: anywhere;
+  }
+  .topbar {
+    height: 76px;
+    padding-inline: 16px;
+    gap: 8px;
+  }
+  .breadcrumb {
+    gap: 4px;
+  }
+  .breadcrumb strong {
+    font-size: 12px;
+  }
+  .area-trigger {
+    min-width: 112px;
+    width: 112px;
+    height: 44px;
+    font-size: 12px;
+  }
+  .demo-label {
+    font-size: 9px;
+  }
+  .mode-toggle {
+    width: 36px;
+  }
+  .page-content {
+    padding: 28px 16px;
+  }
+  .page-heading p {
+    font-size: 14px;
+  }
+  .eyebrow {
+    font-size: 10px;
+  }
+  .demo-notice {
+    padding-inline: 16px;
+    font-size: 11px;
+  }
+  .table-toolbar {
+    align-items: stretch;
+  }
+  .table-scroll {
+    background: transparent;
+    box-shadow: none;
+  }
+  .clinics-table tr {
+    background: var(--card);
+    padding: 20px;
+  }
+  .clinics-table td {
+    padding: 0;
+  }
+  .clinic-name strong {
+    font-size: 14px;
+  }
+  .clinic-name span {
+    font-size: 12px;
+  }
+  .view-clinic {
+    min-height: 44px;
+    height: 44px;
+    font-size: 13px;
+  }
+  .clinics-table td:nth-child(3)::before {
+    font-size: 11px;
+  }
+  .table-footer {
+    font-size: 11px;
+  }
+  .module-table-wrap {
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .module-table,
+  .module-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .module-table thead {
+    display: none;
+  }
+  .module-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    padding: 20px;
+    margin-top: 12px;
+  }
+  .module-table td {
+    display: block;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    overflow-wrap: anywhere;
+  }
+  .module-table td:first-child,
+  .module-table td:last-child {
+    grid-column: 1 / -1;
+  }
+  .module-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+  }
+  .module-table td:last-child::before {
+    display: none;
+  }
+  .module-table td:last-child {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .module-table td:last-child button {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .personalization-layout {
+    gap: 28px;
+  }
+  .clinic-preview {
+    padding: 24px;
+  }
+  .color-fields {
+    gap: 12px;
+  }
+  .color-control {
+    gap: 6px;
+    padding: 6px;
+    font-size: 12px;
+  }
+  .color-control input {
+    width: 36px;
+  }
+  .patient-shell .brand {
+    max-width: 160px;
+  }
+  .patient-shell .brand-symbol {
+    width: 36px;
+    height: 36px;
+  }
+  .patient-shell.clinic-branded .brand strong {
+    font-size: 14px;
+  }
+  .patient-shell .brand span {
+    font-size: 9px;
+  }
+  .patient-navigation {
+    gap: 0;
+    padding: 8px;
+  }
+  .patient-navigation .nav-item {
+    font-size: 11px;
+    padding: 8px 2px;
+    gap: 6px;
+  }
+  .patient-all-resources {
+    gap: 12px;
+  }
+  .patient-all-resources .nav-item {
+    overflow-wrap: anywhere;
+  }
+  .main-footer {
+    padding-inline: 16px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 360px) {
+  .color-fields {
+    grid-template-columns: 1fr;
+  }
+  .patient-shell .brand {
+    max-width: 130px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }

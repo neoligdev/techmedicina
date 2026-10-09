@@ -72,7 +72,10 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           }}
           noValidate
         >
-          <div className="preference-section-heading"><Palette size={20} /><h2>Identidade visual</h2></div>
+          <div className="preference-section-heading">
+            <Palette size={20} />
+            <h2>Identidade visual</h2>
+          </div>
           <div className="preference-field">
             <label htmlFor="clinic-display-name">Nome de exibição</label>
             <Input
@@ -85,8 +88,16 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
               onChange={(event) => update({ name: event.target.value })}
             />
           </div>
-          <p className="preference-hint">As cores originais aparecem nas amostras. Textos e botões usam ajustes automáticos para manter a leitura.</p>
-          {brandColorAdjusted(draft) && <p className="contrast-note" role="status"><ShieldCheck size={17} />A cor principal foi ajustada na prévia para garantir contraste.</p>}
+          <p className="preference-hint">
+            As cores originais aparecem nas amostras. Textos e botões usam ajustes automáticos para
+            manter a leitura.
+          </p>
+          {brandColorAdjusted(draft) && (
+            <p className="contrast-note" role="status">
+              <ShieldCheck size={17} />A cor principal foi ajustada na prévia para garantir
+              contraste.
+            </p>
+          )}
           <div className="color-fields">
             {(["primary", "secondary"] as const).map((field, i) => (
               <div className="preference-field" key={field}>
@@ -151,7 +162,10 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
           style={clinicThemeStyle(draft)}
           aria-label="Prévia da clínica"
         >
-          <div className="preview-topline"><h2>Prévia</h2><span className="module-tag">{draft.mode === "dark" ? "Escuro" : "Claro"}</span></div>
+          <div className="preview-topline">
+            <h2>Prévia</h2>
+            <span className="module-tag">{draft.mode === "dark" ? "Escuro" : "Claro"}</span>
+          </div>
           <div className="preview-identity">
             <span className="brand-symbol">
               <Check />
@@ -170,7 +184,9 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
             </Button>
             <span className="secondary-preview">Clínica</span>
           </div>
-          <p className="preview-scope">Aplicada à clínica, área médica e aplicativo do paciente após salvar.</p>
+          <p className="preview-scope">
+            Aplicada à clínica, área médica e aplicativo do paciente após salvar.
+          </p>
         </section>
       </div>
     </div>
