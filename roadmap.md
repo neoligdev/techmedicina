@@ -169,3 +169,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Reconexão Chrome e confirmação da C022 R1 renderizada.
 - [x] Reinício do preview pelo Lovable; formulário de login/hidratação verificados por Codex.
 - [ ] Homologar sessão real e operações administrativas; continuar requisitos de persistência.
+
+## C026 — API de identidade visual
+- [x] Migração 003 aplicada diretamente e privilégios conferidos no Cloud.
+- [x] Fronteira HTTP e transporte PostgREST protegidos implementados.
+- [ ] Conectar formulário e homologar salvar/recarregar no preview.

@@ -36,6 +36,8 @@
 
 ## Status temporário do projeto
 
+- Diretriz humana de 10/10/2026: não enviar prompts ao Ask Lovable. Codex implementa diretamente; no Lovable usar somente preview, Cloud/SQL, funções e configurações. C026 aplicou o SQL revisado diretamente no SQL Editor, registrando evidência e arquivo fonte; não reaplicar migrações já executadas. Preservar arquivos gerados e validar contratos estritos de respostas até haver regeneração gerenciada disponível sem chat.
+
 - Diretriz humana vigente (10/10/2026): Codex implementa diretamente, testa, atualiza status e faz commit/push autorizados. Substitui a divisão coordenador/Antigravity de 09/10; manter Antigravity e OpenCode parados durante estas alterações. Preservar autorias históricas e registrar a transferência de execução.
 
 - Em cada implementação, atualizar `src/features/project-status/catalog.json`, a data em `catalog.ts` e os registros de progresso no mesmo commit. Registrar executor real (Codex, Lovable ou Antigravity), entrega validada e próximo passo; não atribuir autoria ao coordenador quando outro agente executou.

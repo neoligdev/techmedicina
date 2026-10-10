@@ -150,8 +150,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, OpenCode, Codex, Lovable
-- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente. C022: dependências registradas revisadas, instalação frozen e auditoria do Bun sem alertas conhecidos; verificações locais aprovadas, sem atestar segurança integral.
-- **Próximo Passo**: Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.
+- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente. C022: dependências registradas revisadas, instalação frozen e auditoria do Bun sem alertas conhecidos; verificações locais aprovadas, sem atestar segurança integral. C026: migração de preferências por clínica aplicada no Cloud; API protegida implementada.
+- **Próximo Passo**: Conectar formulário e homologar a personalização com sessão real; concluir demais requisitos de persistência.
 
 **Requisitos**:
 
@@ -1746,4 +1746,11 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex verificou login real do primeiro Super ADM, criou uma clínica QA inativa, alterou seu nome e confirmou os dois eventos de auditoria com a conta autora correta no preview Lovable. Sem dados clínicos, contas ou concessões adicionais.
 - **Próximo Passo**: Integrar persistência de identidade visual; testar isolamento com contas e vínculos próprios antes de declarar autorização clínica homologada.
+
+## D26 - Personalização no Cloud — migração e API protegida 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex aplicou a migração 003 diretamente no SQL Editor e verificou RLS, bloqueio de acesso anônimo e ausência de escrita direta. Implementou API GET/PUT com sessão validada, limites, autorização por clínica, revisão e DTOs estritos. Sem prompts ao Lovable; formulário ainda não conectado.
+- **Próximo Passo**: Conectar editor autenticado e homologar salvar/recarregar com a clínica QA. Regeneração gerenciada dos tipos ainda pendente; transporte PostgREST usa DTOs estritos sem alterar arquivos gerados.
 

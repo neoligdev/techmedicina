@@ -321,3 +321,6 @@ Chrome reconectado. Codex confirmou C022 R1 renderizada, mas login falhava na im
 
 ## C025 — Homologação administrativa real
 Codex confirmou sessão do Super ADM no preview, criação/edição de clínica QA inativa e eventos com autor correto. Evidência c025_auditoria_real.jpg. Não valida acesso clínico ou isolamento entre contas; C024 ainda aguarda implantação e API/formulário.
+
+## C026 — Migração e API de personalização
+Codex aplicou 003 pelo SQL Editor, sem Ask Lovable. Pré-condições confirmadas; Query succeeded e RLS/privilegios verificados. API GET/PUT implementada com sessão validada, DTOs, autorização, limite de corpo e conflitos. Formulário ainda pendente. Tipos gerados preservados; transporte PostgREST retorna unknown validado pelo contrato.

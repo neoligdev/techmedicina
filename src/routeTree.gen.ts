@@ -22,6 +22,7 @@ import { Route as MedicoSectionRouteImport } from './routes/medico.$section'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
+import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
 
@@ -90,6 +91,11 @@ const ApiPlatformAuditRoute = ApiPlatformAuditRouteImport.update({
   path: '/api/platform/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformBrandingRoute = ApiPlatformBrandingRouteImport.update({
+  id: '/api/platform/branding',
+  path: '/api/platform/branding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformClinicRoute = ApiPlatformClinicRouteImport.update({
   id: '/api/platform/clinic',
   path: '/api/platform/clinic',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
+  '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/medico': typeof MedicoIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
+  '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
+  '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/medico/'
     | '/super-admin/'
     | '/api/platform/audit'
+    | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/medico'
     | '/super-admin'
     | '/api/platform/audit'
+    | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/medico/'
     | '/super-admin/'
     | '/api/platform/audit'
+    | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesById: FileRoutesById
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   MedicoIndexRoute: typeof MedicoIndexRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
+  ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
 }
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/branding': {
+      id: '/api/platform/branding'
+      path: '/api/platform/branding'
+      fullPath: '/api/platform/branding'
+      preLoaderRoute: typeof ApiPlatformBrandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/clinic': {
       id: '/api/platform/clinic'
       path: '/api/platform/clinic'
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   MedicoIndexRoute: MedicoIndexRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,
+  ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
 }
