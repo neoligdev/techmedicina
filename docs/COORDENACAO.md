@@ -94,3 +94,7 @@ Próximo Passo Planejado: C012 (Login visual e E2E) e fechamento do fluxo RLS Au
 - Cloud já habilitado pelo usuário/Lovable; nenhuma migração ou conta criada nesta entrega. Login real E2E e RLS continuam pendentes.
 - Controle do navegador retornou `Transport closed`; preview/QA visual desta revisão não confirmados. Push autorizado pelo usuário, normal em main com PlugPix, após validação.
 - Próxima C013: preparar domínio persistido de clínicas e vínculos, com testes de isolamento e negação por padrão. Não usar o Supabase externo como segundo runtime.
+
+## C013 — Execução direta (10/10/2026)
+
+Codex implementa e valida; Antigravity/OpenCode parados. Migração aditiva e grants persistidos passaram 166 testes, com PostgreSQL em memória para RLS. Após commit/push, Lovable pode aplicar exatamente a migração versionada e registrar Drizzle/tipos; Codex suspende edições durante essa aplicação. Sem seed de operador, sem contas novas ou dados clínicos. Verificar SQL/políticas antes de marcar implantação concluída; próximo C014 cadastro administrativo autorizado.

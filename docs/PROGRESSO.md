@@ -262,3 +262,11 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Pendências**: E2E com conta real, QA visual/preview (controle do navegador `Transport closed`), vínculos clínicos, validação profissional e RLS. Backend habilitado, sem domínio persistido implementado.
 - **Retomada**: próxima C013 fundação persistida de clínicas/vínculos e isolamento no servidor. Nenhum papel administrativo concedido por metadados ou pelo seletor demo.
 - **Fechamento local**: build exit 0 incluindo catálogo final; teste do status 3/3; `/login`, `/staus`, `/super-admin` HTTP200, API anônima HTTP401 sem cache. Servidor ativo `http://127.0.0.1:8080`. Main remoto conferido na base `c9015af`; entrega preparada para commit/push normal com PlugPix, sem incluir alterações antigas do PRD, matriz, relatórios C001–C006 ou lock npm.
+
+## C013 — Codex direto, fundação persistida (10/10/2026)
+
+- Código: migração aditiva de cinco tabelas, RLS sem escrita do navegador, RPC SECURITY INVOKER auth.uid() e validação estrita de identidade persistida após getUser. Sem usuários/operadores seeded; resource resolver clínico permanece fechado.
+- Testes: PostgreSQL real em memória via PGlite fixado no bun.lock; 12 cenários SQL, 13 de parser, 4 novos do adaptador. Suíte 166/166 em 18 arquivos; tsc/lint exit 0 (sete avisos antigos); build em c013_build.txt.
+- Cloud: conector 404; Chrome/editor voltou a funcionar. Consulta somente leitura mostrou auth disponível e zero tabelas públicas. Preview C012 renderizou D12/12 entregas; aviso de build remoto continua visível.
+- Estado: Codex único executor. C013 azul até aplicação/verificação Cloud; aplicar via Lovable após commit/push para manter registro gerenciado, sem edição concorrente. Nenhum grant ou acesso administrativo foi criado por email/metadata.
+- Retomada: verificar aplicação C013, depois C014 administração real separada da demo. Login real, RLS remoto, auditoria, keystore, hardware e regras comerciais seguem explicitamente pendentes.

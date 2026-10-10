@@ -100,3 +100,12 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [ ] Implementar e atestar E2E de login Cloud completo real e configuração de RLS vinculando tenant de clínica.
 
 Revisão final C012: Antigravity iniciou; usuário transferiu execução direta ao Codex, que corrigiu e testou restauração/renovação, logout, concorrência e indisponibilidade. 22 testes de login, 137 na suíte, tsc/lint sem erros. API responde sem cache. Evidências `c012_codex_*`; não confundir mocks com E2E. Próxima C013: persistência de clínicas/vínculos e isolamento, preservando negação por padrão.
+
+## C013 — Fundação persistida (Codex direto)
+
+- [x] Migração aditiva de clínicas, pacientes opacos, vínculos/grants e operadores, sem seed administrativo.
+- [x] RLS de leitura própria, escrita pelo navegador negada; RPC invoker sem ID de usuário recebido.
+- [x] Adaptador lê grants persistidos somente após getUser; validação estrita e fallback sem privilégios.
+- [x] PostgreSQL em memória: 12 testes de isolamento/integridade; suíte 166/166, tsc/lint sem erros.
+- [ ] Aplicar e verificar migração Cloud via Lovable; homologar Auth/gateway/RLS remoto.
+- [ ] C014: administração real de clínicas, vínculos e auditoria com escrita autorizada no servidor. Operador inicial não criado automaticamente.

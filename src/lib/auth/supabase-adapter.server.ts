@@ -2,6 +2,7 @@ import "@tanstack/react-start/server-only";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { AuthenticatedIdentity } from "./core";
+import { parsePersistedIdentity } from "./persisted-identity";
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith("sb_publishable_");
@@ -81,10 +82,17 @@ export async function resolveSupabaseSession(): Promise<AuthenticatedIdentity | 
       return null;
     }
 
-    return {
+    const identity: AuthenticatedIdentity = {
       userId: data.user.id,
       links: [],
     };
+    try {
+      const persisted = await supabase.rpc("tm_resolve_identity");
+      if (!persisted.error) return parsePersistedIdentity(persisted.data, data.user.id) ?? identity;
+    } catch {
+      // A missing migration or unavailable database never supplies grants; Auth remains distinct.
+    }
+    return identity;
   } catch (error) {
     return null;
   }

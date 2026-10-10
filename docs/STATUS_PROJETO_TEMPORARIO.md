@@ -21,7 +21,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex, OpenCode
-- **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática.
+- **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
 - **Próximo Passo**: Homologar login real ponta a ponta; implementar vínculos persistidos, RLS e isolamento entre clínicas antes de concluir os requisitos de produção.
 
 **Requisitos**:
@@ -50,8 +50,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## 3.1 - Identificação e autorização 🔵
 
 - **Status**: 🔵 Em implementação / parcial
-- **Autores**: Antigravity, OpenCode
-- **Entregue**: Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod.
+- **Autores**: Antigravity, OpenCode, Codex
+- **Entregue**: Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
 - **Próximo Passo**: C012 entrega UI de login sem permissões clínicas; faltam login real ponta a ponta, validação do registro profissional, vínculos persistidos e RLS.
 
 **Requisitos**:
@@ -149,8 +149,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## 4 - Segurança — definição e recomendações 🔵
 
 - **Status**: 🔵 Em implementação / parcial
-- **Autores**: Antigravity, OpenCode
-- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes.
+- **Autores**: Antigravity, OpenCode, Codex
+- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
 - **Próximo Passo**: Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.
 
 **Requisitos**:
@@ -169,8 +169,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## 5 - Compartilhamento dentro da mesma clínica 🔵
 
 - **Status**: 🔵 Em implementação / parcial
-- **Autores**: OpenCode
-- **Entregue**: Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real.
+- **Autores**: OpenCode, Codex
+- **Entregue**: Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
 - **Próximo Passo**: Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
@@ -1560,8 +1560,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex, OpenCode
-- **Entregue**: Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real.
-- **Próximo Passo**: C011: mapear auth gerado (getClaims confiável) e preparar acesso clinic-aware no servidor, sem presumir tenant cliente nem atribuir acesso clínico ao Super ADM.
+- **Entregue**: Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
+- **Próximo Passo**: Aplicar e verificar C013 no Cloud; avançar na administração real, cadastro e testes ponta a ponta. Decisões comerciais e integrações de hardware permanecem pendentes.
 
 **Requisitos**:
 
@@ -1655,4 +1655,11 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Antigravity, Codex
 - **Entregue**: Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks.
 - **Próximo Passo**: Homologar conta real e preview Lovable; criar vínculos persistidos e RLS. Isso não conclui autenticação/isolamento de produção.
+
+## D13 - Fundação SQL e resolvedor — validação local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex concluiu código da migração aditiva, RLS de leitura própria e resolvedor persistido; testes em PostgreSQL em memória e suíte 166/166. Entrega local, sem homologação remota.
+- **Próximo Passo**: Aplicar a migração no Cloud, verificar catálogo de políticas e validar login/vínculos reais sem bootstrap administrativo automático.
 

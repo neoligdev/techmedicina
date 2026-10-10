@@ -157,6 +157,55 @@ describe("Server-only Auth Adapter", () => {
     await expect(strictGuards.requireAuth("any")).rejects.toThrow("401: Unauthorized");
   });
 
+  it("loads persisted identity only after remote user confirmation", async () => {
+    const userId = "00000000-0000-4000-8000-000000000001";
+    const rpc = vi
+      .fn()
+      .mockResolvedValue({ data: { userId, globalRole: "super_admin", links: [] }, error: null });
+    const getUser = vi.fn().mockResolvedValue({ data: { user: { id: userId } }, error: null });
+    mockGetRequest.mockReturnValue(
+      new Request("https://local.test", { headers: { Authorization: "Bearer a.b.c" } }),
+    );
+    mockCreateClient.mockReturnValue({ auth: { getUser }, rpc } as unknown as ReturnType<
+      typeof supabaseJs.createClient
+    >);
+    expect(await resolveSupabaseSession()).toEqual({
+      userId,
+      globalRole: "super_admin",
+      links: [],
+    });
+    expect(rpc).toHaveBeenCalledWith("tm_resolve_identity");
+    expect(getUser.mock.invocationCallOrder[0]!).toBeLessThan(rpc.mock.invocationCallOrder[0]!);
+  });
+
+  it.each(["error", "throw", "different-user"])(
+    "database failure cannot create privileges: %s",
+    async (failure) => {
+      const userId = "00000000-0000-4000-8000-000000000001";
+      const rpc = vi.fn();
+      if (failure === "throw") rpc.mockRejectedValue(new Error("secret database details"));
+      else
+        rpc.mockResolvedValue({
+          data: {
+            userId: "00000000-0000-4000-8000-000000000002",
+            globalRole: "super_admin",
+            links: [],
+          },
+          error: failure === "error" ? new Error("missing migration") : null,
+        });
+      mockGetRequest.mockReturnValue(
+        new Request("https://local.test", { headers: { Authorization: "Bearer a.b.c" } }),
+      );
+      mockCreateClient.mockReturnValue({
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: { id: userId } }, error: null }),
+        },
+        rpc,
+      } as unknown as ReturnType<typeof supabaseJs.createClient>);
+      expect(await resolveSupabaseSession()).toEqual({ userId, links: [] });
+    },
+  );
+
   it("should enforce factory isolation and concurrent independence", async () => {
     let requestCount = 0;
 
