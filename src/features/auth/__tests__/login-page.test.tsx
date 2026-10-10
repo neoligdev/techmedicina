@@ -7,11 +7,19 @@ import { LoginPage } from "../login-page";
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   signIn: vi.fn(),
+  signUp: vi.fn(),
+  google: vi.fn(),
+  cancelQueries: vi.fn(),
+  clear: vi.fn(),
   signOut: vi.fn(),
   subscribe: vi.fn(),
   unsubscribe: vi.fn(),
   fetch: vi.fn(),
 }));
+vi.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({ cancelQueries: mocks.cancelQueries, clear: mocks.clear }),
+}));
+vi.mock("@/integrations/lovable", () => ({ lovable: { auth: { signInWithOAuth: mocks.google } } }));
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children, to }: { children: ReactNode; to: string }) => <a href={to}>{children}</a>,
 }));
@@ -20,6 +28,7 @@ vi.mock("@/integrations/supabase/client", () => ({
     auth: {
       getSession: mocks.getSession,
       signInWithPassword: mocks.signIn,
+      signUp: mocks.signUp,
       signOut: mocks.signOut,
       onAuthStateChange: mocks.subscribe,
     },
@@ -64,6 +73,9 @@ beforeEach(() => {
   vi.stubGlobal("fetch", mocks.fetch);
   mocks.getSession.mockResolvedValue({ data: { session: null }, error: null });
   mocks.signIn.mockResolvedValue({ data: { user, session: session() }, error: null });
+  mocks.signUp.mockResolvedValue({ data: { user, session: null }, error: null });
+  mocks.google.mockResolvedValue({ redirected: true });
+  mocks.cancelQueries.mockResolvedValue(undefined);
   mocks.signOut.mockResolvedValue({ error: null });
   mocks.fetch.mockImplementation(async () => Response.json({ status: "ok" }));
   mocks.subscribe.mockImplementation((listener: typeof callback) => {
@@ -78,6 +90,55 @@ afterEach(() => {
 });
 
 describe("Login Cloud — identidade confirmada pelo servidor", () => {
+  it("cadastra sem perfil e exige confirmação quando não há sessão", async () => {
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Não tem conta? Cadastre-se" }));
+    expect(screen.getByLabelText("Senha")).toHaveAttribute("autocomplete", "new-password");
+    fireEvent.change(screen.getByLabelText("Senha"), { target: { value: "  senha exata  " } });
+    fireEvent.click(screen.getByRole("button", { name: "Criar conta" }));
+    await screen.findByText(/Confira seu e-mail para confirmar/);
+    expect(mocks.signUp).toHaveBeenCalledWith({
+      email: "teste@example.com",
+      password: "  senha exata  ",
+      options: { emailRedirectTo: window.location.origin },
+    });
+    expect(mocks.fetch).not.toHaveBeenCalled();
+    expect(screen.queryByText("Conta autenticada")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Senha")).toHaveValue("");
+  });
+  it("contém erros de cadastro sem expor detalhes do serviço", async () => {
+    mocks.signUp.mockResolvedValue({ data: { session: null }, error: new Error("private detail") });
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Não tem conta? Cadastre-se" }));
+    fireEvent.change(screen.getByLabelText("Senha"), { target: { value: "abcdefgh123" } });
+    fireEvent.click(screen.getByRole("button", { name: "Criar conta" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível criar a conta");
+    expect(screen.queryByText(/private detail/)).not.toBeInTheDocument();
+  });
+  it("Google usa o broker com retorno público na mesma origem", async () => {
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Continuar com Google" }));
+    await waitFor(() =>
+      expect(mocks.google).toHaveBeenCalledWith("google", { redirect_uri: window.location.origin }),
+    );
+    expect(mocks.signIn).not.toHaveBeenCalled();
+  });
+  it("logout cancela e limpa consultas antes de remover a sessão", async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: session() }, error: null });
+    render(<LoginPage />);
+    await screen.findByText("Conta autenticada");
+    fireEvent.click(screen.getByRole("button", { name: "Sair desta sessão" }));
+    await waitFor(() => expect(mocks.signOut).toHaveBeenCalled());
+    expect(mocks.cancelQueries.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(
+      mocks.clear.mock.invocationCallOrder[0] ?? 0,
+    );
+    expect(mocks.clear.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(
+      mocks.signOut.mock.invocationCallOrder[0] ?? 0,
+    );
+  });
   it("mantém a marca, rótulos, autocomplete e distinção da demonstração", async () => {
     render(<LoginPage />);
     await form();

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { lovable } from "@/integrations/lovable";
 import { Eye, EyeOff, Loader2, LogOut, ShieldCheck } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +21,9 @@ const loginError =
 const validationError = "Não foi possível confirmar a sessão no servidor. Tente entrar novamente.";
 
 export function LoginPage() {
+  const queryClient = useQueryClient();
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [notice, setNotice] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +40,7 @@ export function LoginPage() {
   const auth = useRef<SupabaseClient["auth"] | null>(null);
   const mounted = useRef(false);
   const revision = useRef(0);
-  const operation = useRef<"login" | "logout" | null>(null);
+  const operation = useRef<"login" | "signup" | "google" | "logout" | null>(null);
   const abort = useRef<AbortController | null>(null);
 
   function invalidate() {
@@ -129,6 +134,16 @@ export function LoginPage() {
       const initialRevision = revision.current;
       const { data } = auth.current.onAuthStateChange((event, session) => {
         if (!mounted.current || operation.current === "logout") return;
+        if (
+          ![
+            "INITIAL_SESSION",
+            "SIGNED_IN",
+            "SIGNED_OUT",
+            "TOKEN_REFRESHED",
+            "USER_UPDATED",
+          ].includes(event)
+        )
+          return;
         if (event === "SIGNED_OUT" || !session) {
           invalidate();
           setAuthenticated(false);
@@ -179,6 +194,37 @@ export function LoginPage() {
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
     if (!auth.current || operation.current || validating) return;
+    if (mode === "signup") {
+      operation.current = "signup";
+      const current = invalidate();
+      setBusy(true);
+      setError(null);
+      setNotice(null);
+      try {
+        const { data, error: signupError } = await auth.current.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: window.location.origin },
+        });
+        if (!mounted.current || revision.current !== current) return;
+        if (signupError)
+          setError(
+            "Não foi possível criar a conta. Confira os dados ou tente novamente mais tarde.",
+          );
+        else if (data.session) await validate(data.session.access_token);
+        else {
+          setNotice("Confira seu e-mail para confirmar o cadastro. Depois, entre na sua conta.");
+          setPassword("");
+          setShowPassword(false);
+        }
+      } catch {
+        if (mounted.current && revision.current === current) setError(unavailable);
+      } finally {
+        operation.current = null;
+        if (mounted.current) setBusy(false);
+      }
+      return;
+    }
     operation.current = "login";
     const current = invalidate();
     setBusy(true);
@@ -211,12 +257,33 @@ export function LoginPage() {
     setShowPassword(false);
     setError(null);
     try {
+      await queryClient.cancelQueries();
+      queryClient.clear();
       const { error: signOutError } = await auth.current.signOut({ scope: "local" });
       if (!mounted.current) return;
       if (signOutError) setError("Não foi possível encerrar a sessão. Tente sair novamente.");
       else setSessionPresent(false);
     } catch {
       if (mounted.current) setError("Não foi possível encerrar a sessão. Tente sair novamente.");
+    } finally {
+      operation.current = null;
+      if (mounted.current) setBusy(false);
+    }
+  }
+
+  async function handleGoogle() {
+    if (!ready || operation.current || validating) return;
+    operation.current = "google";
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error && mounted.current) setError(unavailable);
+    } catch {
+      if (mounted.current) setError(unavailable);
     } finally {
       operation.current = null;
       if (mounted.current) setBusy(false);
@@ -232,12 +299,18 @@ export function LoginPage() {
             Acesso à sua conta
           </span>
           <h1 id="login-title" className="mt-3 text-2xl font-semibold tracking-tight">
-            {authenticated ? "Conta autenticada" : "Bem-vindo à Techmedicina"}
+            {authenticated
+              ? "Conta autenticada"
+              : mode === "signup"
+                ? "Crie sua conta"
+                : "Bem-vindo à Techmedicina"}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {authenticated
               ? "Identidade confirmada no servidor."
-              : "Entre com sua conta cadastrada na plataforma."}
+              : mode === "signup"
+                ? "Cadastre seu e-mail e uma senha para acessar sua conta."
+                : "Entre com sua conta cadastrada na plataforma."}
           </p>
         </div>
         {validating ? (
@@ -330,8 +403,9 @@ export function LoginPage() {
                 <Input
                   id="login-password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
                   required
+                  minLength={mode === "signup" ? 8 : undefined}
                   value={password}
                   disabled={!ready || busy}
                   onChange={(event) => setPassword(event.target.value)}
@@ -353,9 +427,41 @@ export function LoginPage() {
             </div>
             <Button type="submit" disabled={!ready || busy} className="h-11 w-full">
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
-              Entrar
+              {mode === "signup" ? "Criar conta" : "Entrar"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={!ready || busy}
+              onClick={handleGoogle}
+            >
+              Continuar com Google
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              disabled={busy}
+              onClick={() => {
+                setMode(mode === "login" ? "signup" : "login");
+                setError(null);
+                setNotice(null);
+                setPassword("");
+                setShowPassword(false);
+              }}
+            >
+              {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
             </Button>
           </form>
+        )}
+        {notice && (
+          <p
+            role="status"
+            className="mt-4 border border-border bg-muted p-3 text-sm text-foreground"
+          >
+            {notice}
+          </p>
         )}
         {error && (
           <p

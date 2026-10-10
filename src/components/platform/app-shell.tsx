@@ -14,6 +14,7 @@ import type { Area } from "@/features/demo/types";
 import { Brand } from "./brand";
 import { AreaSelector } from "./area-selector";
 import { AreaNavigation } from "./navigation";
+import { AccountButton } from "@/features/auth/account-button";
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -147,7 +148,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <ShieldCheck size={18} />
                 <div>
                   <strong>Ambiente de demonstração</strong>
-                  <span>Sem autenticação real</span>
+                  <span>Dados fictícios, acesso clínico separado</span>
                 </div>
               </div>
               <div className="sidebar-signature">
@@ -195,16 +196,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                   Status do projeto<span className="project-status-temporary"> · temporário</span>
                 </Link>
               </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Link to="/login">Entrar</Link>
-              </Button>
             </div>
           )}
+          <AccountButton />
           {!branded && (
             <Button
               variant="ghost"

@@ -13,6 +13,9 @@
 
 ## Application architecture
 
+- Extend the existing server-validated login surface for account signup and brokered Google OAuth, without provisioning tenant grants; account creation must not imply clinical authorization.
+- Keep the login page as the existing session-validation owner and refresh shell account identity via Auth getUser on shell navigation; avoid competing session subscriptions.
+
 - Keep the TanStack Start file-based router, with `/` redirecting to `/super-admin`; this preserves the standard bootstrap and requested entry point.
 - Wrap content routes with the shared AppShell and DemoProvider in the root route; this keeps clinic selection explicit and consistent between areas.
 - Keep demo types, data, navigation, theme identity, and context in separate browser-safe modules; this supports source-code continuation without adding dependencies.
