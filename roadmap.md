@@ -130,3 +130,7 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] API/painel global restrito, sem conteúdo clínico, 226 testes.
 - [ ] Implantar C015, regenerar tipos e homologar com operador real.
 - [ ] Paginação integral, auditoria clínica/recusas e fluxos assistenciais.
+
+## Cadastro e entrada — Lovable (10/10/2026)
+- [ ] Cadastro por e-mail com confirmação, entrada Google, indicação de sessão e saída; sem perfil, tabelas ou grants novos.
+- [ ] Testes dos fluxos e atualização do relatório manual.
