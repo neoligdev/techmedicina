@@ -150,7 +150,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, OpenCode, Codex
-- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.
+- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; produção pendente.
 - **Próximo Passo**: Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.
 
 **Requisitos**:
@@ -504,8 +504,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
-- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos.
-- **Próximo Passo**: Criação/edição auditada de clínicas, provisionamento controlado e teste ponta a ponta com operador real ainda pendentes.
+- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; ainda não aplicadas no Cloud.
+- **Próximo Passo**: Aplicar C015 pelo gerenciamento Cloud, atualizar tipos e integrar formulário administrativo; provisionar operador explicitamente para E2E.
 
 **Requisitos**:
 
@@ -1669,4 +1669,11 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou API de leitura global exclusiva do operador persistido, cliente por requisição sujeito a RLS, resumo de acesso sem dados sensíveis e lista de clínicas reais no login. Banco vazio não gera registros demonstrativos. Homologação com operador real pendente.
 - **Próximo Passo**: Provisionar conta/operador sob controle explícito e validar gateway; seguir com criação/edição auditada sem conceder acesso clínico ao cargo administrativo.
+
+## D15 - Cadastro auditado — API e migração validadas localmente 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou SQL/API de criação e edição administrativas com ator verificado, auditoria atômica, revisão otimista e limites de payload. Testes locais aprovados; migração ainda NÃO aplicada no Cloud e formulário pendente.
+- **Próximo Passo**: Aplicação gerenciada C015 e homologação com operador real. Cloud Lovable esgotou créditos após C013; nenhuma compra. Integrar formulário de cadastro/edição e consulta de auditoria.
 

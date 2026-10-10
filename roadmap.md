@@ -115,3 +115,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] API/lista de clínicas reais, Super ADM persistido, RLS e ausência de cache.
 - [x] 183 testes, tipos/lint/build aprovados.
 - [ ] C015: criação/edição auditada e provisionamento explícito para E2E.
+
+## C015 — Cadastro auditado (Codex, local)
+- [x] Migração/RPC auditada, revisão otimista, API POST validada e 204 testes.
+- [ ] Aplicação gerenciada Cloud, tipos e E2E real.
+- [ ] C016: formulário administrativo e consulta da auditoria.

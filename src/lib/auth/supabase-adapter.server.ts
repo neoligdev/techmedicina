@@ -1,7 +1,7 @@
 import "@tanstack/react-start/server-only";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "../../integrations/supabase/types";
+import type { RuntimeDatabase } from "../database/runtime-schema";
 import { AuthenticatedIdentity } from "./core";
 import { parsePersistedIdentity } from "./persisted-identity";
 
@@ -37,7 +37,7 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 
 export async function resolveSupabaseContext(): Promise<{
   identity: AuthenticatedIdentity;
-  client: SupabaseClient<Database>;
+  client: SupabaseClient<RuntimeDatabase>;
 } | null> {
   try {
     const SUPABASE_URL = process.env["SUPABASE_URL"];
@@ -66,7 +66,7 @@ export async function resolveSupabaseContext(): Promise<{
       return null;
     }
 
-    const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    const supabase = createClient<RuntimeDatabase>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       global: {
         fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
         headers: {
