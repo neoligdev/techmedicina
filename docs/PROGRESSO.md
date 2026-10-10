@@ -287,3 +287,5 @@ C014 (Codex): API/lista real de clínicas com identidade persistida, RLS, respos
 C015 Codex: API e migração de clínicas com revisão otimista e auditoria atômica, 204 testes aprovados. Tipos/lint/build exit 0. Migração NÃO aplicada no Cloud (créditos Lovable esgotados), sem operador criado. Próxima C016: formulário administrativo e integração; E2E aguarda conta real informada pelo usuário.
 
 C016 Codex: formulário administrativo integrado e API de revisão por ID protegida. 214 testes aprovados, tipos/lint/build exit 0. C015 Cloud e E2E pendentes. Chrome sem controle após tentativas documentadas de recuperar a mesma aba; sem compra/criação de operador. Próxima C017 consulta global de auditoria.
+
+C017 Codex: API/painel global de auditoria administrativa restrita, DTO sem conteúdo/valores clínicos, leitura explícita e invalidação no logout. 226 testes aprovados, tsc/lint/build exit 0. Cloud C013 verificada; C015 Cloud pendente por créditos/conexão Chrome, primeiro operador aguarda identificação humana. Nenhum privilégio ou compra criado. Evidências c017_* e relatório de retomada.

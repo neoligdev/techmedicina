@@ -125,3 +125,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Criar/editar, versão por ID protegido, conflitos, invalidação e 214 testes.
 - [ ] Aplicação C015 Cloud e E2E com operador real.
 - [ ] C017: consulta global de auditoria administrativa.
+
+## C017 — Consulta de auditoria (local)
+- [x] API/painel global restrito, sem conteúdo clínico, 226 testes.
+- [ ] Implantar C015, regenerar tipos e homologar com operador real.
+- [ ] Paginação integral, auditoria clínica/recusas e fluxos assistenciais.

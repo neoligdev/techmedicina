@@ -24,7 +24,7 @@
       "title": "Visão e arquitetura funcional",
       "parent": null,
       "status": "progress",
-      "done": "Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.",
+      "done": "Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local.",
       "next": "Homologar login real ponta a ponta; implementar vínculos persistidos, RLS e isolamento entre clínicas antes de concluir os requisitos de produção.",
       "authors": [
         "Lovable",
@@ -65,12 +65,13 @@
       "title": "Identificação e autorização",
       "parent": "3",
       "status": "progress",
-      "done": "Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.",
+      "done": "Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
       "next": "C012 entrega UI de login sem permissões clínicas; faltam login real ponta a ponta, validação do registro profissional, vínculos persistidos e RLS.",
       "authors": [
         "Antigravity",
         "OpenCode",
-        "Codex"
+        "Codex",
+        "Lovable"
       ],
       "requirements": [
         "DEFINIDO: associar o profissional à sua identidade e número de conselho; as evoluções exibem nome e CRM do autor.",
@@ -178,12 +179,13 @@
       "title": "Segurança — definição e recomendações",
       "parent": null,
       "status": "progress",
-      "done": "Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; produção pendente.",
+      "done": "Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; produção pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; produção depende da C015.",
       "next": "Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.",
       "authors": [
         "Antigravity",
         "OpenCode",
-        "Codex"
+        "Codex",
+        "Lovable"
       ],
       "requirements": [
         "DEFINIDO: proteção de dados como prioridade, isolamento entre clínicas, autorização no servidor, prontuário criptografado e registros clínicos definitivos sem edição/exclusão.",
@@ -203,11 +205,12 @@
       "title": "Compartilhamento dentro da mesma clínica",
       "parent": null,
       "status": "progress",
-      "done": "Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.",
+      "done": "Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
       "next": "Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.",
       "authors": [
         "OpenCode",
-        "Codex"
+        "Codex",
+        "Lovable"
       ],
       "requirements": [
         "O usuário esclareceu que o compartilhamento se limita aos médicos da mesma clínica. O prontuário, seu histórico, os dados de saúde, as conversas com a IA Médica e os exames do paciente são acessíveis aos médicos cadastrados e com acesso ativo nessa clínica.",
@@ -1758,12 +1761,13 @@
       "title": "Prioridade recomendada e decisões pendentes",
       "parent": null,
       "status": "progress",
-      "done": "Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; implantação Cloud em andamento.",
-      "next": "Aplicar e verificar C013 no Cloud; avançar na administração real, cadastro e testes ponta a ponta. Decisões comerciais e integrações de hardware permanecem pendentes.",
+      "done": "Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
+      "next": "Aplicar C015 e homologar C014–C017 com operador real. Cloud C013 verificada; controle do Chrome indisponível e Lovable sem créditos nesta sessão. Cadastro/vínculos, áreas clínicas, chaves e integrações ainda exigem desenvolvimento/decisões pendentes.",
       "authors": [
         "Antigravity",
         "Codex",
-        "OpenCode"
+        "OpenCode",
+        "Lovable"
       ],
       "requirements": [
         "As 13 inovações foram aprovadas para o escopo. Prioridade sugerida na resposta anterior, sem cronograma fechado: Meu dia; jornadas configuráveis/protocolos; resumo preparatório da consulta; central de funcionamento; simulador de rentabilidade. Demais funções permanecem incluídas, com sequência de implementação a definir.",
@@ -1967,6 +1971,18 @@
       "status": "done",
       "done": "Codex integrou criar/editar clínica ao login verificado, campos foscos e controles sem duplicação, leitura de revisão por ID protegido, respostas tardias invalidadas e conflitos sem sobrescrita. Código e testes locais; não homologado com conta real.",
       "next": "Aplicar migração C015 no Cloud (créditos Lovable esgotados), definir primeira conta operadora, confirmar permissões explicitamente e validar ponta a ponta; próxima consulta global de auditoria.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
+    },
+    {
+      "id": "D17",
+      "title": "Consulta global de auditoria — integração local",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex implementou API/painel da auditoria de cadastro exclusiva do Super ADM persistido. Consulta explícita com RLS, limite de 100 eventos, origem/ator/horário/campos alterados e sem textos ou valores clínicos. Testes locais; Cloud C015 e E2E pendentes.",
+      "next": "Aplicar C015 no Cloud e homologar fluxo completo com operador real. Paginação completa, auditoria clínica e tentativas recusadas ainda pendentes; Chrome sem controle nesta sessão e Lovable sem créditos.",
       "authors": [
         "Codex"
       ],

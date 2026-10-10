@@ -4,6 +4,7 @@ import { Eye, EyeOff, Loader2, LogOut, ShieldCheck } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { ClinicAdministration } from "./clinic-administration";
+import { AdministrativeAuditPanel } from "./administrative-audit-panel";
 import { Brand } from "@/components/platform/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -301,6 +302,9 @@ export function LoginPage() {
                 <p className="text-xs text-muted-foreground">
                   Criação e edição dependem da migração de auditoria no Cloud.
                 </p>
+                {verifiedToken && (
+                  <AdministrativeAuditPanel key={verifiedToken} token={verifiedToken} />
+                )}
               </section>
             )}
           </div>

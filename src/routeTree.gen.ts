@@ -21,6 +21,7 @@ import { Route as MedicoIndexRouteImport } from './routes/medico.index'
 import { Route as MedicoSectionRouteImport } from './routes/medico.$section'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
+import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
 
@@ -84,6 +85,11 @@ const SuperAdminSectionRoute = SuperAdminSectionRouteImport.update({
   path: '/super-admin/$section',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformAuditRoute = ApiPlatformAuditRouteImport.update({
+  id: '/api/platform/audit',
+  path: '/api/platform/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformClinicRoute = ApiPlatformClinicRouteImport.update({
   id: '/api/platform/clinic',
   path: '/api/platform/clinic',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/clinica/': typeof ClinicaIndexRoute
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/clinica': typeof ClinicaIndexRoute
   '/medico': typeof MedicoIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
+  '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/clinica/': typeof ClinicaIndexRoute
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/clinica/'
     | '/medico/'
     | '/super-admin/'
+    | '/api/platform/audit'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/clinica'
     | '/medico'
     | '/super-admin'
+    | '/api/platform/audit'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/clinica/'
     | '/medico/'
     | '/super-admin/'
+    | '/api/platform/audit'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesById: FileRoutesById
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   ClinicaIndexRoute: typeof ClinicaIndexRoute
   MedicoIndexRoute: typeof MedicoIndexRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+  ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
 }
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminSectionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/audit': {
+      id: '/api/platform/audit'
+      path: '/api/platform/audit'
+      fullPath: '/api/platform/audit'
+      preLoaderRoute: typeof ApiPlatformAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/clinic': {
       id: '/api/platform/clinic'
       path: '/api/platform/clinic'
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClinicaIndexRoute: ClinicaIndexRoute,
   MedicoIndexRoute: MedicoIndexRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
+  ApiPlatformAuditRoute: ApiPlatformAuditRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
 }

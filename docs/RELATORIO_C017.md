@@ -1,0 +1,11 @@
+# C017 — Consulta global de auditoria administrativa (local)
+
+Executor Codex, 10/10/2026. PRD 2, 4 e 12.1. API GET /api/platform/audit e painel no login confirmado do Super ADM. Conta anônima/local é negada antes da consulta; usa cliente publishable por requisição sujeito a RLS. Tipos do contrato C015 são próprios, não alteram os gerados nem concedem privilégios.
+
+Consulta retorna até 100 eventos mais recentes, ordenados por horário/ID e com aviso de mais resultados. DTO estrito contém IDs da conta autora e clínica, ação administrativa, nomes dos campos e horário. Sem nomes/valores do cadastro, textos clínicos ou payloads genéricos. Consulta explícita; ausência, falha e recusa são distintas. Sem cache. Respostas tardias são invalidadas quando a sessão/painel sai. Horários mostrados em America/Bahia. Auditoria de leitura clínica/recusas e paginação integral permanecem pendentes.
+
+226/226 testes em 25 arquivos; tipos/lint/build exit 0, sete avisos antigos. Oito testes de diretório, quatro de painel e testes SQL C015 de escrita/consulta restrita. HTTP anônimo real: 401 private/no-store. Testes de UI usam fixtures, não são login real. Cloud C015 ainda não aplicada, logo tabela de auditoria não existe lá; API retorna indisponibilidade ao operador enquanto ausente.
+
+C013 está aplicada e inspecionada no Cloud. C014–C017: código/local validados, sem homologação com operador real. Lovable esgotou créditos após C013 e controle Chrome deixou de funcionar (mesma aba listada, recuperação pelas APIs documentadas não restabeleceu controle). Nenhuma compra, criação de senha/conta ou atribuição de privilégio. Conta inicial foi solicitada ao usuário e permanece aguardando identificação.
+
+Retomada: restabelecer controle do Chrome, verificar créditos disponíveis sem comprar, aplicar exatamente 002_clinic_administration.sql pelo gerenciamento Cloud e regenerar tipos; incorporar apenas por fast-forward e validar. Depois identificar primeira conta, apresentar concessão concreta para confirmação antes de atribuir papel, testar criar/editar/conflito/auditoria reais e isolamento. Áreas públicas são demo; não transformar seletor em identidade. Desenvolvimento clínico exige provisionamento autorizado e configuração de chaves, preservando decisões pendentes do PRD.
