@@ -159,7 +159,20 @@ export function AppShell({ children }: { children: ReactNode }) {
         </>
       )}
       <div className="main-area" inert={mobile && menuOpen}>
-        <header className="topbar">
+        <header className={`topbar ${!branded ? "platform-logo-topbar" : ""}`}>
+          {!branded && (
+            <Link
+              to="/super-admin"
+              className="platform-logo-link"
+              aria-label="PlugPix Techmedicina — início do Super ADM"
+            >
+              <img
+                src="/plugpix-techmedicina.png"
+                alt="PlugPix Techmedicina Avançada 6.0"
+                className="platform-logo-image"
+              />
+            </Link>
+          )}
           <div className="breadcrumb">
             {area !== "app" ? (
               <>

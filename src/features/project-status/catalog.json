@@ -2004,6 +2004,18 @@
         "Lovable"
       ],
       "requirements": []
+    },
+    {
+      "id": "D19",
+      "title": "Logo oficial no topo do Super ADM",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex adicionou a imagem oficial fornecida pelo titular ao cabeçalho do Super ADM, com proporção preservada, tamanho responsivo, descrição acessível e link para início. Personalização das clínicas permanece independente.",
+      "next": "Prosseguir homologação autenticada e demais requisitos do PRD.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

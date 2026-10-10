@@ -298,3 +298,6 @@ C017 Codex: API/painel global de auditoria administrativa restrita, DTO sem cont
 
 ## C018 — 10/10/2026
 Cloud C015 aplicada por Lovable; tipos e cadastro sincronizados até bedb68a. Codex corrigiu lint, validou 230 testes/tsc/build e confirmou RLS remota. Primeiro Super ADM ativado após autorização específica do titular, sem acesso clínico. E2E autenticado pendente. Ver docs/RELATORIO_C018.md.
+
+## C019 — Logo oficial
+Codex incorporou a logo fornecida pelo titular ao topo do Super ADM, responsiva e com proporção original. Asset local public/plugpix-techmedicina.png. Personalização por clínica preservada.

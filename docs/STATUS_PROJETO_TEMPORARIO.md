@@ -1698,3 +1698,10 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Lovable aplicou C015 e regenerou tipos, adicionou cadastro e entrada por e-mail/Google. Codex incorporou commits, confirmou SQL equivalente e RLS remota, corrigiu formatação dos arquivos gerados e validou 230 testes, TypeScript, lint e build. Primeira conta Auth confirmada; Super ADM ativado após autorização específica do titular, sem permissões clínicas.
 - **Próximo Passo**: Primeiro Super ADM ativo por autorização específica. Homologar criação, edição, conflito e auditoria com login real; OAuth, paginação e demais requisitos produtivos permanecem pendentes.
 
+## D19 - Logo oficial no topo do Super ADM 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex adicionou a imagem oficial fornecida pelo titular ao cabeçalho do Super ADM, com proporção preservada, tamanho responsivo, descrição acessível e link para início. Personalização das clínicas permanece independente.
+- **Próximo Passo**: Prosseguir homologação autenticada e demais requisitos do PRD.
+
