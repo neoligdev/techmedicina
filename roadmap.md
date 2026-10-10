@@ -156,3 +156,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Dependências sinalizadas no lockfile atualizadas, sem troca das versões declaradas dos módulos.
 - [x] Instalação frozen e bun audit sem alertas; 234 testes, tsc/build aprovados.
 - [ ] Recuperar diagnóstico e build do preview Lovable; homologar sessão real do titular.
+
+## C023 — Runtime do preview
+- [x] Reconexão Chrome e confirmação da C022 R1 renderizada.
+- [x] Reinício do preview pelo Lovable; formulário de login/hidratação verificados por Codex.
+- [ ] Homologar sessão real e operações administrativas; continuar requisitos de persistência.

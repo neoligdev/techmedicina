@@ -1560,8 +1560,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex, OpenCode, Lovable
-- **Entregue**: Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular.
-- **Próximo Passo**: Prioridade: resolver Build unsuccessful / Preview is out of date observado no Lovable para commits recebidos até C021; diagnóstico somente leitura enviado, resposta ainda não lida devido à perda do controle do Chrome. Depois homologar fluxo real com o titular. Vínculos, áreas clínicas, chaves e integrações continuam pendentes.
+- **Entregue**: Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C023: runtime do preview recuperado por Lovable e formulário de login verificado no Chrome por Codex, após erro de importação do cliente. Sem publicação.
+- **Próximo Passo**: Homologar login/JWT/gateway/cadastro/auditoria no preview com o titular. Continuar vínculos, persistência das preferências e recursos clínicos; chaves, dispositivos e integrações seguem pendentes.
 
 **Requisitos**:
 
@@ -1724,5 +1724,12 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex, Lovable
 - **Entregue**: Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto. R1: Codex incorporou por merge normal a regeneração Lovable 095f9d1 e limitou exceções de estilo aos dois arquivos gerados, mantendo verificações de correção e autorização.
-- **Próximo Passo**: Ler diagnóstico do Lovable: últimos commits estão recebidos, mas preview mostra falha de build. Controle do Chrome indisponível e API Lovable retorna 404; homologação remota pendente.
+- **Próximo Passo**: C023 recuperou runtime do preview, com build 7a6e6cc informado succeeded/in_sync e formulário de login confirmado no navegador. Homologar login e operações com sessão real; dependências não comprovam segurança integral.
+
+## D23 - Recuperação e validação do preview — sem publicação 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex, Lovable
+- **Entregue**: Codex reconectou Chrome, confirmou C022 R1 renderizada e diagnosticou falha de importação do cliente TanStack. Lovable reiniciou somente o runtime; informou build 7a6e6cc succeeded/in_sync, módulo HTTP 200 e hidratação após Refresh. Codex confirmou campos E-mail/Senha, Entrar habilitado e espera de sessão ausente. Sem alteração de banco, permissões ou publicação.
+- **Próximo Passo**: Titular entrar no preview para homologar JWT/gateway, criação/edição de clínica QA e auditoria; continuar persistência e vínculos do PRD.
 

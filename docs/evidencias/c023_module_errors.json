@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-10-10T15:11:21.567Z",
+    "message": "TypeError: Failed to fetch dynamically imported module: https://75200069-2ce5-40c9-a874-f12db50531be.lovableproject.com/node_modules/@tanstack/react-start/dist/plugin/default-entry/client.tsx"
+  },
+  {
+    "timestamp": "2026-10-10T15:12:13.316Z",
+    "message": "TypeError: Failed to fetch dynamically imported module: https://75200069-2ce5-40c9-a874-f12db50531be.lovableproject.com/node_modules/@tanstack/react-start/dist/plugin/default-entry/client.tsx"
+  },
+  {
+    "timestamp": "2026-10-10T15:14:10.286Z",
+    "message": "TypeError: Failed to fetch dynamically imported module: https://75200069-2ce5-40c9-a874-f12db50531be.lovableproject.com/node_modules/@tanstack/react-start/dist/plugin/default-entry/client.tsx"
+  }
+]
