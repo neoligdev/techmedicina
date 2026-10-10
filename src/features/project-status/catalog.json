@@ -2046,10 +2046,11 @@
       "title": "Revisão das dependências registradas — auditoria e testes",
       "parent": "4",
       "status": "done",
-      "done": "Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto.",
+      "done": "Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto. R1: Codex incorporou por merge normal a regeneração Lovable 095f9d1 e limitou exceções de estilo aos dois arquivos gerados, mantendo verificações de correção e autorização.",
       "next": "Ler diagnóstico do Lovable: últimos commits estão recebidos, mas preview mostra falha de build. Controle do Chrome indisponível e API Lovable retorna 404; homologação remota pendente.",
       "authors": [
-        "Codex"
+        "Codex",
+        "Lovable"
       ],
       "requirements": []
     }

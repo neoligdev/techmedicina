@@ -1722,7 +1722,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## D22 - Revisão das dependências registradas — auditoria e testes 🟢
 
 - **Status**: 🟢 Concluído no escopo descrito
-- **Autores**: Codex
-- **Entregue**: Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto.
+- **Autores**: Codex, Lovable
+- **Entregue**: Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto. R1: Codex incorporou por merge normal a regeneração Lovable 095f9d1 e limitou exceções de estilo aos dois arquivos gerados, mantendo verificações de correção e autorização.
 - **Próximo Passo**: Ler diagnóstico do Lovable: últimos commits estão recebidos, mas preview mostra falha de build. Controle do Chrome indisponível e API Lovable retorna 404; homologação remota pendente.
 

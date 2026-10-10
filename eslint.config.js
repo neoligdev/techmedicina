@@ -37,4 +37,17 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  // Managed tooling regenerates these files with its own formatting.
+  // Keep correctness rules; avoid a format/reformat loop on every Cloud update.
+  {
+    files: [
+      "src/integrations/supabase/types.ts",
+      "src/integrations/supabase/previewAuthStorage.ts",
+    ],
+    rules: { "prettier/prettier": "off" },
+  },
+  {
+    files: ["src/integrations/supabase/previewAuthStorage.ts"],
+    rules: { "prefer-const": "off" },
+  },
 );

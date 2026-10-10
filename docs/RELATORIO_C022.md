@@ -19,3 +19,8 @@ Fontes primárias: https://github.com/evanw/esbuild/security/advisories/GHSA-67m
 No Lovable, os commits recentes até 921a02d aparecem Accepted, porém Build unsuccessful / Preview is out of date. Portanto push recebido não comprova preview atualizado. Foi enviado pedido somente leitura para obter logs, comando e versão do runtime. O controle Chrome ficou indisponível antes da leitura da resposta; connector list_messages retornou 404 project_not_found. Causa remota ainda não determinada. Não atribuir a falha a dependências sem evidência.
 
 A aba de login local anterior não existe mais; não houve homologação com sessão real. Próximo passo: recuperar diagnóstico, corrigir causa específica, validar preview e login/JWT/gateway/cadastro/auditoria. Vínculos e demais requisitos do PRD continuam parciais. Sem publicação, novos serviços, permissões ou dados clínicos nesta etapa.
+
+## Revisão R1 — integração da regeneração Lovable
+Antes do push, o remoto avançou para 095f9d1, contendo regeneração de types.ts e previewAuthStorage.ts. Push normal recusado; commits incorporados por merge normal, sem reescrever histórico. Essas duas fontes gerenciadas usam formatação própria e o temporizador gerado usa let. A configuração ESLint mantém regras de correção e restringe somente exceções cosméticas: prettier nos dois arquivos e prefer-const no adaptador gerado. Isso evita o ciclo de reformatar arquivos que o Cloud reemite. Não prova que esse ciclo seja a causa completa da falha remota: diagnóstico ainda não lido.
+
+Validação R1 pós-merge: 234/234 testes, 25 arquivos, TypeScript/build exit 0, lint exit 0 com sete avisos existentes. Evidências c022_r1_*.txt.

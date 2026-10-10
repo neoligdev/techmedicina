@@ -310,3 +310,5 @@ Codex implementou cursor de cadastro/ID para navegar entre páginas de clínicas
 
 ## C022 — Dependências e divergência do preview
 Codex revisou o lockfile Bun, corrigiu esbuild e cinco famílias transitivas, preservando ranges declarados dos módulos. Instalação frozen, bun audit sem alertas, 234 testes/tsc/build aprovados, lint 0 erros/7 avisos. Lovable recebeu commits até 921a02d mas mostrou Build unsuccessful / Preview is out of date; diagnóstico somente leitura enviado. Chrome perdeu disponibilidade e API respondeu 404, resposta ainda não lida. Não considerar preview remoto atualizado/homologado.
+
+C022 R1: remoto Lovable 095f9d1 incorporado por merge normal após rejeição de push não fast-forward. Ajuste ESLint cosmético restrito aos dois arquivos regenerados; sem afrouxar regras de autorização. Diagnóstico remoto continua pendente.

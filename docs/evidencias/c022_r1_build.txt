@@ -1,0 +1,186 @@
+The plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.
+vite v8.1.5 building client environment for production...
+[2K
+transforming...✓ 2680 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/public/assets/styles-BiARIrkv.css               127.02 kB │ gzip:  22.16 kB
+.output/public/assets/arrow-up-right-A9Wy7q2U.js          0.16 kB │ gzip:   0.15 kB
+.output/public/assets/search-C9ydXLbw.js                  0.17 kB │ gzip:   0.16 kB
+.output/public/assets/app.index-Bw9KANM1.js               0.19 kB │ gzip:   0.16 kB
+.output/public/assets/medico._section-2IC7_Ndv.js         0.24 kB │ gzip:   0.20 kB
+.output/public/assets/app._section-CqsJVSJh.js            0.24 kB │ gzip:   0.20 kB
+.output/public/assets/save-Cp55yOrR.js                    0.32 kB │ gzip:   0.22 kB
+.output/public/assets/clsx-CjueKrWZ.js                    0.36 kB │ gzip:   0.23 kB
+.output/public/assets/label-DmijdMar.js                   0.69 kB │ gzip:   0.45 kB
+.output/public/assets/input-jTXPojoQ.js                   0.70 kB │ gzip:   0.42 kB
+.output/public/assets/medico.index-B3Cx67EE.js            1.01 kB │ gzip:   0.57 kB
+.output/public/assets/clinica.index-Ct1KU0P-.js           1.15 kB │ gzip:   0.66 kB
+.output/public/assets/workspace-dashboard-Dw2Ryk2U.js     1.24 kB │ gzip:   0.55 kB
+.output/public/assets/card-UG8MMpO9.js                    1.28 kB │ gzip:   0.52 kB
+.output/public/assets/operational-overview-l6ezDilG.js    2.53 kB │ gzip:   0.91 kB
+.output/public/assets/dist-Biu2RVci.js                    5.21 kB │ gzip:   2.11 kB
+.output/public/assets/super-admin.index-CI8NlOyT.js       6.21 kB │ gzip:   1.87 kB
+.output/public/assets/clinica._section-ClBwy_ac.js        7.92 kB │ gzip:   2.81 kB
+.output/public/assets/module-page-CyxVIeKN.js            16.82 kB │ gzip:   5.57 kB
+.output/public/assets/createLucideIcon-KS86xzXt.js       20.94 kB │ gzip:   8.46 kB
+.output/public/assets/button-C1Y57HQC.js                 31.73 kB │ gzip:  10.45 kB
+.output/public/assets/super-admin._section-CDxUjzk-.js   60.49 kB │ gzip:  16.72 kB
+.output/public/assets/login-D2Vh0ea4.js                  80.54 kB │ gzip:  20.49 kB
+.output/public/assets/staus-CiaIynle.js                 151.57 kB │ gzip:  42.59 kB
+.output/public/assets/health-dashboard-nhOPNtd0.js      395.51 kB │ gzip: 104.80 kB
+.output/public/assets/index-Bxb6fL-W.js                 661.22 kB │ gzip: 198.95 kB
+
+✓ built in 5.41s
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+vite v8.1.5 building ssr environment for production...
+[2K
+transforming...✓ 148 modules transformed.
+rendering chunks...
+computing gzip size...
+node_modules/.nitro/vite/services/ssr/assets/styles-BiARIrkv.css                     127.02 kB │ gzip: 22.16 kB
+node_modules/.nitro/vite/services/ssr/assets/empty-plugin-adapters-D9UWiqvJ.js         0.22 kB │ gzip:  0.16 kB
+node_modules/.nitro/vite/services/ssr/assets/app._section-nIeR_Sw-.js                  0.40 kB │ gzip:  0.28 kB
+node_modules/.nitro/vite/services/ssr/assets/medico._section-CPS_RI0E.js               0.41 kB │ gzip:  0.28 kB
+node_modules/.nitro/vite/services/ssr/assets/app.index-DiWmQ5bg.js                     0.45 kB │ gzip:  0.27 kB
+node_modules/.nitro/vite/services/ssr/assets/label-DTuFs1IM.js                         0.64 kB │ gzip:  0.39 kB
+node_modules/.nitro/vite/services/ssr/assets/app._section-B6JqliUf.js                  0.77 kB │ gzip:  0.46 kB
+node_modules/.nitro/vite/services/ssr/assets/medico._section-CFH29wfN.js               0.79 kB │ gzip:  0.46 kB
+node_modules/.nitro/vite/services/ssr/assets/super-admin._section-CYuQbKfY.js          0.81 kB │ gzip:  0.46 kB
+node_modules/.nitro/vite/services/ssr/assets/input-Ep2dt-K7.js                         0.83 kB │ gzip:  0.49 kB
+node_modules/.nitro/vite/services/ssr/assets/medico.index-Cul6S0a7.js                  1.43 kB │ gzip:  0.69 kB
+node_modules/.nitro/vite/services/ssr/assets/card-BdsvR0vv.js                          1.62 kB │ gzip:  0.50 kB
+node_modules/.nitro/vite/services/ssr/assets/clinica.index-D-ZN-tKt.js                 1.65 kB │ gzip:  0.80 kB
+node_modules/.nitro/vite/services/ssr/assets/button-CbH-tOVg.js                        1.88 kB │ gzip:  0.84 kB
+node_modules/.nitro/vite/services/ssr/assets/start-DXtFH8Gy.js                         2.00 kB │ gzip:  0.88 kB
+node_modules/.nitro/vite/services/ssr/assets/workspace-dashboard-DM71hBc5.js           2.04 kB │ gzip:  0.73 kB
+node_modules/.nitro/vite/services/ssr/assets/request-response-B7GxCXoC.js              3.02 kB │ gzip:  1.02 kB
+node_modules/.nitro/vite/services/ssr/assets/createCsrfMiddleware-B2To0gPJ.js          3.19 kB │ gzip:  1.01 kB
+node_modules/.nitro/vite/services/ssr/assets/clinica._section-Curjz_9Z.js              3.34 kB │ gzip:  1.47 kB
+node_modules/.nitro/vite/services/ssr/assets/clinic-directory-DxPetFd4.js              3.52 kB │ gzip:  1.20 kB
+node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-Be4J_5dB.js    3.66 kB │ gzip:  0.88 kB
+node_modules/.nitro/vite/services/ssr/assets/operational-overview-vFAiYdBT.js          3.87 kB │ gzip:  1.18 kB
+node_modules/.nitro/vite/services/ssr/index.js                                         4.61 kB │ gzip:  1.92 kB
+node_modules/.nitro/vite/services/ssr/assets/context-D1a_VrNh.js                       5.04 kB │ gzip:  1.94 kB
+node_modules/.nitro/vite/services/ssr/assets/client-cz65iQ_W.js                        7.05 kB │ gzip:  2.39 kB
+node_modules/.nitro/vite/services/ssr/assets/super-admin.index-Dqw3YI85.js             9.89 kB │ gzip:  2.28 kB
+node_modules/.nitro/vite/services/ssr/assets/clinica._section-BWP7zoQI.js             12.95 kB │ gzip:  3.49 kB
+node_modules/.nitro/vite/services/ssr/assets/metadata-Bpscp-Ms.js                     17.57 kB │ gzip:  4.85 kB
+node_modules/.nitro/vite/services/ssr/assets/module-page-DSi3SFdO.js                  18.56 kB │ gzip:  4.78 kB
+node_modules/.nitro/vite/services/ssr/assets/health-dashboard-BACR3rgH.js             28.12 kB │ gzip:  5.03 kB
+node_modules/.nitro/vite/services/ssr/assets/login-DKCkjWG1.js                        32.59 kB │ gzip:  7.42 kB
+node_modules/.nitro/vite/services/ssr/assets/router-Cy2gvz_r.js                       48.82 kB │ gzip: 12.51 kB
+node_modules/.nitro/vite/services/ssr/assets/server-DkSFSQD9.js                       63.57 kB │ gzip: 16.39 kB
+node_modules/.nitro/vite/services/ssr/assets/super-admin._section-DEj-c9ks.js         71.11 kB │ gzip: 14.21 kB
+node_modules/.nitro/vite/services/ssr/assets/staus-TR4qkQOL.js                       165.40 kB │ gzip: 43.55 kB
+
+✓ built in 2.14s
+[nitro] o Building [Nitro] (preset: cloudflare-module, compatibility: 2026-10-05)
+[nitro] √ Generated public .output/public
+vite v8.1.5 building nitro environment for production...
+
+ WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified.
+
+[2K
+transforming...✓ 2687 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/server/_ssr/empty-plugin-adapters-D9UWiqvJ.mjs         0.23 kB │ gzip:   0.16 kB
+.output/server/_libs/radix-ui__number.mjs                      0.32 kB │ gzip:   0.24 kB
+.output/server/_ssr/app.index-DiWmQ5bg.mjs                     0.54 kB │ gzip:   0.31 kB
+.output/server/_ssr/app._section-nIeR_Sw-.mjs                  0.54 kB │ gzip:   0.34 kB
+.output/server/_ssr/medico._section-CPS_RI0E.mjs               0.55 kB │ gzip:   0.34 kB
+.output/server/_chunks/ssr-renderer.mjs                        0.60 kB │ gzip:   0.36 kB
+.output/server/_ssr/app._section-B6JqliUf.mjs                  0.85 kB │ gzip:   0.51 kB
+.output/server/_ssr/medico._section-CFH29wfN.mjs               0.87 kB │ gzip:   0.51 kB
+.output/server/_ssr/super-admin._section-CYuQbKfY.mjs          0.89 kB │ gzip:   0.52 kB
+.output/server/_ssr/label-DTuFs1IM.mjs                         0.96 kB │ gzip:   0.49 kB
+.output/server/_libs/radix-ui__react-label.mjs                 1.00 kB │ gzip:   0.51 kB
+.output/server/_libs/tanstack__react-query.mjs                 1.05 kB │ gzip:   0.47 kB
+.output/server/_ssr/input-Ep2dt-K7.mjs                         1.15 kB │ gzip:   0.60 kB
+.output/server/_libs/hookable.mjs                              1.16 kB │ gzip:   0.51 kB
+.output/server/_ssr/medico.index-Cul6S0a7.mjs                  1.52 kB │ gzip:   0.74 kB
+.output/server/_runtime.mjs                                    1.61 kB │ gzip:   0.74 kB
+.output/server/_libs/react-is.mjs                              1.71 kB │ gzip:   0.66 kB
+.output/server/_ssr/clinica.index-D-ZN-tKt.mjs                 1.74 kB │ gzip:   0.85 kB
+.output/server/_libs/radix-ui__primitive.mjs                   1.83 kB │ gzip:   0.72 kB
+.output/server/_ssr/start-DXtFH8Gy.mjs                         1.90 kB │ gzip:   0.86 kB
+.output/server/_ssr/card-BdsvR0vv.mjs                          2.08 kB │ gzip:   0.61 kB
+.output/server/_ssr/button-CbH-tOVg.mjs                        2.14 kB │ gzip:   0.94 kB
+.output/server/_libs/prop-types.mjs                            2.27 kB │ gzip:   0.84 kB
+.output/server/_ssr/workspace-dashboard-DM71hBc5.mjs           2.65 kB │ gzip:   0.81 kB
+.output/server/_ssr/request-response-B7GxCXoC.mjs              3.06 kB │ gzip:   1.06 kB
+.output/server/_ssr/createCsrfMiddleware-B2To0gPJ.mjs          3.11 kB │ gzip:   1.01 kB
+.output/server/_libs/class-variance-authority+clsx.mjs         3.17 kB │ gzip:   1.24 kB
+.output/server/_libs/d3-path.mjs                               3.25 kB │ gzip:   1.16 kB
+.output/server/_ssr/clinica._section-Curjz_9Z.mjs              3.55 kB │ gzip:   1.57 kB
+.output/server/_tanstack-start-manifest_v-Be4J_5dB.mjs         3.71 kB │ gzip:   0.91 kB
+.output/server/_ssr/clinic-directory-DxPetFd4.mjs              4.01 kB │ gzip:   1.34 kB
+.output/server/_ssr/ssr.mjs                                    4.55 kB │ gzip:   1.92 kB
+.output/server/_ssr/operational-overview-vFAiYdBT.mjs          4.86 kB │ gzip:   1.28 kB
+.output/server/_libs/d3-interpolate.mjs                        5.02 kB │ gzip:   1.61 kB
+.output/server/_ssr/context-D1a_VrNh.mjs                       5.25 kB │ gzip:   2.03 kB
+.output/server/_libs/radix-ui__react-tabs.mjs                  6.03 kB │ gzip:   1.76 kB
+.output/server/_libs/lovable.dev__cloud-auth-js.mjs            6.12 kB │ gzip:   2.22 kB
+.output/server/_ssr/client-cz65iQ_W.mjs                        7.10 kB │ gzip:   2.44 kB
+.output/server/_libs/radix-ui__react-switch.mjs                7.72 kB │ gzip:   2.21 kB
+.output/server/_libs/d3-array.mjs                              8.05 kB │ gzip:   2.25 kB
+.output/server/_libs/eventemitter3.mjs                         8.31 kB │ gzip:   2.05 kB
+.output/server/_libs/h3-v2+rou3+srvx.mjs                       9.89 kB │ gzip:   3.06 kB
+.output/server/_libs/@radix-ui/react-roving-focus+[...].mjs   10.11 kB │ gzip:   2.80 kB
+.output/server/_libs/d3-color.mjs                             10.38 kB │ gzip:   3.57 kB
+.output/server/_libs/d3-format.mjs                            10.56 kB │ gzip:   3.02 kB
+.output/server/_libs/@radix-ui/react-popper+[...].mjs         10.67 kB │ gzip:   3.14 kB
+.output/server/_ssr/super-admin.index-Dqw3YI85.mjs            12.37 kB │ gzip:   2.43 kB
+.output/server/_libs/tanstack__history.mjs                    12.50 kB │ gzip:   3.70 kB
+.output/server/_libs/supabase__functions-js.mjs               12.54 kB │ gzip:   3.48 kB
+.output/server/_libs/fast-equals.mjs                          14.37 kB │ gzip:   3.62 kB
+.output/server/_ssr/clinica._section-BWP7zoQI.mjs             15.07 kB │ gzip:   3.64 kB
+.output/server/index.mjs                                      16.10 kB │ gzip:   4.79 kB
+.output/server/_libs/h3+rou3+srvx.mjs                         16.61 kB │ gzip:   4.80 kB
+.output/server/_ssr/metadata-Bpscp-Ms.mjs                     17.49 kB │ gzip:   4.85 kB
+.output/server/_ssr/module-page-DSi3SFdO.mjs                  22.12 kB │ gzip:   4.98 kB
+.output/server/_libs/decimal.js-light.mjs                     23.31 kB │ gzip:   6.89 kB
+.output/server/_libs/d3-shape.mjs                             24.56 kB │ gzip:   5.02 kB
+.output/server/_libs/@floating-ui/dom+[...].mjs               25.38 kB │ gzip:   6.57 kB
+.output/server/_libs/@floating-ui/core+[...].mjs              25.55 kB │ gzip:   6.32 kB
+.output/server/_libs/@tanstack/router-core+[...].mjs          29.60 kB │ gzip:   7.98 kB
+.output/server/_libs/@floating-ui/react-dom+[...].mjs         31.30 kB │ gzip:   7.98 kB
+.output/server/_libs/lucide-react.mjs                         31.46 kB │ gzip:   6.47 kB
+.output/server/_ssr/health-dashboard-BACR3rgH.mjs             34.05 kB │ gzip:   5.27 kB
+.output/server/_ssr/login-DKCkjWG1.mjs                        35.42 kB │ gzip:   7.55 kB
+.output/server/_libs/react-smooth.mjs                         37.83 kB │ gzip:   8.15 kB
+.output/server/_libs/supabase__supabase-js.mjs                37.86 kB │ gzip:  11.17 kB
+.output/server/_libs/@radix-ui/react-select+[...].mjs         45.85 kB │ gzip:   9.69 kB
+.output/server/_libs/tanstack__query-core.mjs                 48.17 kB │ gzip:  10.70 kB
+.output/server/_libs/supabase__phoenix.mjs                    50.54 kB │ gzip:  12.76 kB
+.output/server/_ssr/router-Cy2gvz_r.mjs                       51.73 kB │ gzip:  12.73 kB
+.output/server/_libs/@radix-ui/react-accordion+[...].mjs      56.52 kB │ gzip:  11.84 kB
+.output/server/_libs/d3-scale+[...].mjs                       58.22 kB │ gzip:  12.11 kB
+.output/server/_ssr/server-DkSFSQD9.mjs                       62.07 kB │ gzip:  16.29 kB
+.output/server/_libs/@radix-ui/react-dialog+[...].mjs         64.36 kB │ gzip:  15.32 kB
+.output/server/_ssr/super-admin._section-DEj-c9ks.mjs         79.41 kB │ gzip:  14.50 kB
+.output/server/_libs/supabase__realtime-js+unenv.mjs          82.09 kB │ gzip:  20.98 kB
+.output/server/_libs/tailwind-merge.mjs                       88.13 kB │ gzip:  15.66 kB
+.output/server/_libs/zod.mjs                                 100.10 kB │ gzip:  17.33 kB
+.output/server/_libs/supabase__postgrest-js.mjs              110.46 kB │ gzip:  23.20 kB
+.output/server/_libs/@supabase/storage-js+[...].mjs          126.15 kB │ gzip:  23.59 kB
+.output/server/_libs/lodash.mjs                              161.80 kB │ gzip:  29.44 kB
+.output/server/_ssr/staus-TR4qkQOL.mjs                       167.54 kB │ gzip:  43.73 kB
+.output/server/_libs/supabase__auth-js.mjs                   319.51 kB │ gzip:  64.76 kB
+.output/server/_libs/recharts+[...].mjs                      516.04 kB │ gzip:  96.80 kB
+.output/server/_libs/@tanstack/react-router+[...].mjs        749.69 kB │ gzip: 158.62 kB
+
+✓ built in 2.75s
+[nitro] i Using auto generated worker name: neoligdev-techmedicina
+i Generated .output/server/wrangler.json
+i Generated .wrangler/deploy/config.json
+i Generated .output/public/_headers
+i Generated .output/nitro.json
+[nitro] √ You can preview this build using npx vite preview
+[nitro] √ You can deploy this build using npx nitro deploy --prebuilt
+EXIT_CODE=0
