@@ -1,6 +1,7 @@
 import "@tanstack/react-start/server-only";
 import { getRequest } from "@tanstack/react-start/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "../../integrations/supabase/types";
 import { AuthenticatedIdentity } from "./core";
 import { parsePersistedIdentity } from "./persisted-identity";
 
@@ -34,7 +35,10 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
-export async function resolveSupabaseSession(): Promise<AuthenticatedIdentity | null> {
+export async function resolveSupabaseContext(): Promise<{
+  identity: AuthenticatedIdentity;
+  client: SupabaseClient<Database>;
+} | null> {
   try {
     const SUPABASE_URL = process.env["SUPABASE_URL"];
     const SUPABASE_PUBLISHABLE_KEY = process.env["SUPABASE_PUBLISHABLE_KEY"];
@@ -62,7 +66,7 @@ export async function resolveSupabaseSession(): Promise<AuthenticatedIdentity | 
       return null;
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       global: {
         fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
         headers: {
@@ -88,12 +92,20 @@ export async function resolveSupabaseSession(): Promise<AuthenticatedIdentity | 
     };
     try {
       const persisted = await supabase.rpc("tm_resolve_identity");
-      if (!persisted.error) return parsePersistedIdentity(persisted.data, data.user.id) ?? identity;
+      if (!persisted.error)
+        return {
+          identity: parsePersistedIdentity(persisted.data, data.user.id) ?? identity,
+          client: supabase,
+        };
     } catch {
       // A missing migration or unavailable database never supplies grants; Auth remains distinct.
     }
-    return identity;
+    return { identity, client: supabase };
   } catch (error) {
     return null;
   }
+}
+
+export async function resolveSupabaseSession(): Promise<AuthenticatedIdentity | null> {
+  return (await resolveSupabaseContext())?.identity ?? null;
 }

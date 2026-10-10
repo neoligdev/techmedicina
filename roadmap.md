@@ -110,3 +110,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Lovable aplicou a revisão d70f8de sem alterar SQL; verificou cinco tabelas vazias, RLS, privilégios, políticas e RPC invoker; migração e tipos gerenciados registrados.
 - [ ] Homologar Auth/gateway/RLS ponta a ponta com conta e vínculos reais (não criados nesta aplicação).
 - [ ] C014: administração real de clínicas, vínculos e auditoria com escrita autorizada no servidor. Operador inicial não criado automaticamente.
+
+## C014 — Consulta administrativa (Codex)
+- [x] API/lista de clínicas reais, Super ADM persistido, RLS e ausência de cache.
+- [x] 183 testes, tipos/lint/build aprovados.
+- [ ] C015: criação/edição auditada e provisionamento explícito para E2E.

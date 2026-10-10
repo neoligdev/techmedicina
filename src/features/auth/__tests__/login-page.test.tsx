@@ -260,3 +260,77 @@ describe("Login Cloud — identidade confirmada pelo servidor", () => {
 function sessionResult() {
   return { data: { user, session: session() }, error: null };
 }
+
+describe("Cadastro persistido após autenticação", () => {
+  it("logout invalida diretório pendente e impede reaparecimento de clínicas", async () => {
+    const pending = deferred<Response>();
+    mocks.fetch.mockImplementation(async (url: string) =>
+      url === "/api/access-check"
+        ? Response.json({ status: "ok", access: { platformAdmin: true, clinicCount: 0 } })
+        : pending.promise,
+    );
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    await waitFor(() => expect(mocks.fetch).toHaveBeenCalledTimes(2));
+    fireEvent.click(screen.getByRole("button", { name: "Sair desta sessão" }));
+    await waitFor(() => expect(mocks.signOut).toHaveBeenCalled());
+    await act(async () =>
+      pending.resolve(
+        Response.json({
+          clinics: [
+            {
+              id: "00000000-0000-4000-8000-000000000001",
+              name: "Clínica tardia",
+              is_active: true,
+              created_at: "2026-10-10T12:00:00Z",
+            },
+          ],
+          hasMore: false,
+        }),
+      ),
+    );
+    expect(screen.queryByText("Clínica tardia")).not.toBeInTheDocument();
+  });
+  it("operador confirmado consulta banco vazio sem usar clínicas demo", async () => {
+    mocks.fetch.mockImplementation(async (url: string) =>
+      url === "/api/access-check"
+        ? Response.json({ status: "ok", access: { platformAdmin: true, clinicCount: 0 } })
+        : Response.json({ clinics: [], hasMore: false }),
+    );
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    await screen.findByText("Nenhuma clínica cadastrada no banco.");
+    expect(screen.getByText("Administração PlugPix")).toBeInTheDocument();
+    expect(mocks.fetch).toHaveBeenCalledWith(
+      "/api/platform/clinics",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer test-token" },
+        cache: "no-store",
+      }),
+    );
+  });
+  it("conta local não consulta diretório global", async () => {
+    mocks.fetch.mockResolvedValue(
+      Response.json({ status: "ok", access: { platformAdmin: false, clinicCount: 2 } }),
+    );
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    await screen.findByText("Vínculos autorizados confirmados");
+    expect(mocks.fetch).toHaveBeenCalledTimes(1);
+  });
+  it("recusa erro de diretório sem apresentar dados ou conceder acesso clínico", async () => {
+    mocks.fetch.mockImplementation(async (url: string) =>
+      url === "/api/access-check"
+        ? Response.json({ status: "ok", access: { platformAdmin: true, clinicCount: 0 } })
+        : Response.json({ error: "denied" }, { status: 403 }),
+    );
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    await screen.findByRole("alert");
+    expect(screen.queryByRole("region", { name: "Clínicas cadastradas" })).not.toBeInTheDocument();
+  });
+});

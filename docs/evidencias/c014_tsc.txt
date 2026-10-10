@@ -1,0 +1,6 @@
+src/lib/auth/supabase-adapter.server.ts(97,11): error TS2375: Type 'SupabaseClient<any, "public", "public", any, any>' is not assignable to type 'SupabaseClient<unknown, { PostgrestVersion: string; }, never, never, { PostgrestVersion: string; }>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Type '"public"' is not assignable to type 'never'.
+src/lib/auth/supabase-adapter.server.ts(102,24): error TS2375: Type 'SupabaseClient<any, "public", "public", any, any>' is not assignable to type 'SupabaseClient<unknown, { PostgrestVersion: string; }, never, never, { PostgrestVersion: string; }>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Type '"public"' is not assignable to type 'never'.
+EXIT_CODE=2
+EXIT_CODE=0

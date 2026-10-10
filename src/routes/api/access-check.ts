@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { requireAuth, AuthError } from "../../lib/auth/guards.server";
+import { summarizeAccess } from "../../lib/auth/access-summary";
 
 export const Route = createFileRoute("/api/access-check")({
   server: {
@@ -7,9 +8,9 @@ export const Route = createFileRoute("/api/access-check")({
       GET: async () => {
         try {
           // Validação de sessão no servidor
-          await requireAuth();
+          const context = await requireAuth();
           return Response.json(
-            { status: "ok" },
+            { status: "ok", access: summarizeAccess(context.identity) },
             { headers: { "Cache-Control": "private, no-store" } },
           );
         } catch (error) {

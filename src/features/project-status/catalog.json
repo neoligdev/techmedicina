@@ -579,8 +579,8 @@
       "title": "Clínicas e acesso administrativo",
       "parent": "12",
       "status": "progress",
-      "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix.",
-      "next": "Cadastro e administração reais, permissões, contratos e liberação de módulos ainda pendentes.",
+      "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos.",
+      "next": "Criação/edição auditada de clínicas, provisionamento controlado e teste ponta a ponta com operador real ainda pendentes.",
       "authors": [
         "Lovable",
         "Antigravity",
@@ -1933,6 +1933,18 @@
       "authors": [
         "Codex",
         "Lovable"
+      ],
+      "requirements": []
+    },
+    {
+      "id": "D14",
+      "title": "Consulta administrativa persistida — código e testes",
+      "parent": "12.1",
+      "status": "done",
+      "done": "Codex implementou API de leitura global exclusiva do operador persistido, cliente por requisição sujeito a RLS, resumo de acesso sem dados sensíveis e lista de clínicas reais no login. Banco vazio não gera registros demonstrativos. Homologação com operador real pendente.",
+      "next": "Provisionar conta/operador sob controle explícito e validar gateway; seguir com criação/edição auditada sem conceder acesso clínico ao cargo administrativo.",
+      "authors": [
+        "Codex"
       ],
       "requirements": []
     }

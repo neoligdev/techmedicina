@@ -30,7 +30,7 @@ Lovable recusou aplicação exata: FKs ao schema auth.users e ordem GRANT/RLS in
 
 ### Aplicação Cloud confirmada — Lovable, 10/10/2026
 
-Revisão Codex `d70f8de` aplicada uma vez no Cloud existente, após verificar ausência dos objetos. Registro gerenciado: `drizzle/migrations/0000_c013_tenant_foundation_d70f8de.sql`, idêntico byte a byte à fonte (SHA256 `b435909e4508aece38c616ea5e3bcd87f6369168c7f90c5e2e8efbc2ea3f56e0`). Tipos gerados automaticamente; commit gerenciado observado `e94fb0f`.
+Revisão Codex `d70f8de` aplicada uma vez no Cloud existente, após verificar ausência dos objetos. Registro gerenciado: `drizzle/migrations/0000_c013_tenant_foundation_d70f8de.sql`, idêntico à fonte após normalizar LF/CRLF no checkout Windows (SHA256 `b435909e4508aece38c616ea5e3bcd87f6369168c7f90c5e2e8efbc2ea3f56e0`). Tipos gerados automaticamente; commit gerenciado observado `e94fb0f`.
 
 Consultas remotas confirmam cinco tabelas vazias e com RLS ativa, cinco políticas SELECT para authenticated, anon sem acesso e authenticated sem escrita (INSERT/UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER). Service role conserva acesso administrativo por default ACL do ambiente, sem alteração do SQL ou concessões a pessoas. Associação composta paciente/clínica/conta intacta, nenhuma FK para Auth.
 

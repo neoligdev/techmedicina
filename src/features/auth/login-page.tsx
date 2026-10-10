@@ -7,6 +7,8 @@ import { Brand } from "@/components/platform/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { accessSummarySchema, type AccessSummary } from "@/lib/auth/access-summary";
+import { clinicDirectorySchema, type ClinicDirectory } from "./clinic-directory";
 
 const unavailable =
   "Serviço de autenticação temporariamente indisponível. Tente novamente mais tarde.";
@@ -21,6 +23,9 @@ export function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
+  const [access, setAccess] = useState<AccessSummary | null>(null);
+  const [directory, setDirectory] = useState<ClinicDirectory | null>(null);
+  const [directoryLoading, setDirectoryLoading] = useState(false);
   const [validating, setValidating] = useState(true);
   const [sessionPresent, setSessionPresent] = useState(false);
   const [ready, setReady] = useState(false);
@@ -33,6 +38,9 @@ export function LoginPage() {
   function invalidate() {
     revision.current += 1;
     abort.current?.abort();
+    setAccess(null);
+    setDirectory(null);
+    setDirectoryLoading(false);
     return revision.current;
   }
 
@@ -59,6 +67,36 @@ export function LoginPage() {
         setAuthenticated(true);
         setPassword("");
         setShowPassword(false);
+        const summary = accessSummarySchema.safeParse("access" in body ? body.access : null);
+        if (summary.success) {
+          setAccess(summary.data);
+          if (summary.data.platformAdmin) {
+            setDirectoryLoading(true);
+            // Directory loading must not keep the login operation locked or prevent logout.
+            void (async () => {
+              try {
+                const listing = await fetch("/api/platform/clinics", {
+                  headers: { Authorization: `Bearer ${token}` },
+                  cache: "no-store",
+                  signal: controller.signal,
+                });
+                const parsed = clinicDirectorySchema.safeParse(
+                  listing.status === 200 ? await listing.json() : null,
+                );
+                if (!isCurrent()) return;
+                if (parsed.success) setDirectory(parsed.data);
+                else
+                  setError(
+                    "Não foi possível consultar o cadastro de clínicas. Entre novamente para atualizar o acesso.",
+                  );
+              } catch {
+                if (isCurrent()) setError("Cadastro de clínicas temporariamente indisponível.");
+              } finally {
+                if (isCurrent()) setDirectoryLoading(false);
+              }
+            })();
+          }
+        }
       } else {
         setError(validationError);
       }
@@ -205,11 +243,58 @@ export function LoginPage() {
         ) : authenticated ? (
           <div className="rounded-xl border border-border bg-primary/5 p-5" role="status">
             <ShieldCheck className="mb-3 h-7 w-7 text-primary" aria-hidden="true" />
-            <h2 className="font-semibold">Acesso aguardando vínculo autorizado</h2>
+            <h2 className="font-semibold">
+              {access?.platformAdmin
+                ? "Administração PlugPix"
+                : access?.clinicCount
+                  ? "Vínculos autorizados confirmados"
+                  : "Acesso aguardando vínculo autorizado"}
+            </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Sua conta ainda não possui acesso autorizado a uma clínica. Dados de pacientes
-              permanecem indisponíveis.
+              {access?.platformAdmin
+                ? "Cadastro administrativo verificado no servidor. O cargo não concede acesso clínico."
+                : access?.clinicCount
+                  ? `${access.clinicCount} vínculo(s) ativo(s) confirmado(s). Os módulos de atendimento real ainda estão em desenvolvimento.`
+                  : "Sua conta ainda não possui acesso autorizado a uma clínica. Dados de pacientes permanecem indisponíveis."}
             </p>
+            {directoryLoading && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Consultando clínicas cadastradas…
+              </p>
+            )}
+            {directory && (
+              <section aria-label="Clínicas cadastradas" className="mt-5 space-y-3">
+                <h3 className="font-semibold">Clínicas cadastradas</h3>
+                {directory.clinics.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma clínica cadastrada no banco.
+                  </p>
+                ) : (
+                  <ul className="space-y-3">
+                    {directory.clinics.map((clinic) => (
+                      <li
+                        key={clinic.id}
+                        className="rounded-xl border border-border bg-background/40 p-4"
+                      >
+                        <span className="block font-medium break-words">{clinic.name}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {clinic.is_active ? "Ativa" : "Inativa"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {directory.hasMore && (
+                  <p className="text-sm text-muted-foreground">
+                    Mostrando as primeiras 100 clínicas. Paginação completa em desenvolvimento.
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Consulta administrativa. Cadastro e alterações serão disponibilizados na próxima
+                  etapa.
+                </p>
+              </section>
+            )}
           </div>
         ) : (
           <form onSubmit={handleLogin} className="space-y-5">

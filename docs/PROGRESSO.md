@@ -281,3 +281,5 @@ C013 revisão Cloud: migração recusada pelo Lovable por restrições do schema
 - FK composta paciente/clínica/conta preservada, sem FK para Auth. RPC sem argumentos, jsonb, STABLE, `prosecdef=false` (SECURITY INVOKER), `search_path` vazio; EXECUTE anon=false/authenticated=true; definição conferida no catálogo remoto.
 - Registro automático de aplicação/tipos observado no commit `e94fb0f`; sem commit/push manual. Compilação automática: build OK.
 - Nenhuma conta, seed, operador, vínculo ou dado criado; nenhuma alteração de telas, fluxo/configuração Auth, dependências ou faturamento. Homologação com conta e vínculos reais permanece pendente; não equivale a E2E de autenticação.
+
+C014 (Codex): API/lista real de clínicas com identidade persistida, RLS, resposta sem cache e logout concorrente corrigido. 183/183 testes, tipos/build aprovados; lint sete avisos antigos. Cloud C013 verificada. Sem operador criado/E2E real. Local 127.0.0.1:8081. Próxima C015: criação/edição auditada.

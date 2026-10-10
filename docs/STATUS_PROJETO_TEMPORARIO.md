@@ -504,8 +504,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
-- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix.
-- **Próximo Passo**: Cadastro e administração reais, permissões, contratos e liberação de módulos ainda pendentes.
+- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos.
+- **Próximo Passo**: Criação/edição auditada de clínicas, provisionamento controlado e teste ponta a ponta com operador real ainda pendentes.
 
 **Requisitos**:
 
@@ -1656,10 +1656,17 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks.
 - **Próximo Passo**: Homologar conta real e preview Lovable; criar vínculos persistidos e RLS. Isso não conclui autenticação/isolamento de produção.
 
-## D13 - Fundação SQL e resolvedor — validação local 🟢
+## D13 - Fundação SQL e resolvedor — aplicação Cloud verificada 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex, Lovable
+- **Entregue**: Codex concluiu e revisou o SQL (d70f8de), com suíte local 166/166. Lovable aplicou exatamente a revisão no Cloud existente e registrou migração/tipos gerenciados: cinco tabelas vazias com RLS, SELECT restrito, escrita de anon/authenticated negada, associação composta e RPC invoker com search_path vazio confirmados por consultas remotas. Sem contas ou vínculos criados.
+- **Próximo Passo**: Homologar login/JWT/gateway/RLS ponta a ponta com conta e vínculos reais; não atestado nesta aplicação. Provisionamento futuro deverá verificar existência/status da conta pelo Auth. C014: administração e auditoria com escrita autorizada no servidor.
+
+## D14 - Consulta administrativa persistida — código e testes 🟢
 
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
-- **Entregue**: Codex concluiu código da migração aditiva, RLS de leitura própria e resolvedor persistido; testes em PostgreSQL em memória e suíte 166/166. Entrega local, sem homologação remota.
-- **Próximo Passo**: Revisão Cloud: IDs de conta opacos sem FK ao schema Auth gerenciado e permissões antes de RLS. 12 testes PostgreSQL mantidos. Aplicação remota e login real ainda pendentes; provisionamento deverá validar conta pelo Auth.
+- **Entregue**: Codex implementou API de leitura global exclusiva do operador persistido, cliente por requisição sujeito a RLS, resumo de acesso sem dados sensíveis e lista de clínicas reais no login. Banco vazio não gera registros demonstrativos. Homologação com operador real pendente.
+- **Próximo Passo**: Provisionar conta/operador sob controle explícito e validar gateway; seguir com criação/edição auditada sem conceder acesso clínico ao cargo administrativo.
 
