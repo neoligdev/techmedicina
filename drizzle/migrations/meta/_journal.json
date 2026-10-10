@@ -8,6 +8,13 @@
       "when": 1791633208587,
       "tag": "0000_c013_tenant_foundation_d70f8de",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791642717141,
+      "tag": "0001_c015_clinic_administration_97784d3",
+      "breakpoints": true
     }
   ]
 }

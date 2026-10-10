@@ -14,24 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      tm_admin_audit: {
+        Row: {
+          action: string
+          actor_user_id: string
+          changed_fields: string[]
+          clinic_id: string
+          id: string
+          occurred_at: string
+        }
+        Insert: {
+          action: string
+          actor_user_id: string
+          changed_fields: string[]
+          clinic_id: string
+          id?: string
+          occurred_at?: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string
+          changed_fields?: string[]
+          clinic_id?: string
+          id?: string
+          occurred_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tm_admin_audit_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "tm_clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tm_clinics: {
         Row: {
           created_at: string
           id: string
           is_active: boolean
           name: string
+          revision: number
         }
         Insert: {
           created_at?: string
           id?: string
           is_active?: boolean
           name: string
+          revision?: number
         }
         Update: {
           created_at?: string
           id?: string
           is_active?: boolean
           name?: string
+          revision?: number
         }
         Relationships: []
       }
@@ -168,6 +206,15 @@ export type Database = {
     }
     Functions: {
       tm_resolve_identity: { Args: never; Returns: Json }
+      tm_save_clinic: {
+        Args: {
+          p_clinic_id?: string
+          p_expected_revision?: number
+          p_is_active: boolean
+          p_name: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
