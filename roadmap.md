@@ -107,5 +107,6 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] RLS de leitura própria, escrita pelo navegador negada; RPC invoker sem ID de usuário recebido.
 - [x] Adaptador lê grants persistidos somente após getUser; validação estrita e fallback sem privilégios.
 - [x] PostgreSQL em memória: 12 testes de isolamento/integridade; suíte 166/166, tsc/lint sem erros.
-- [ ] Aplicar e verificar migração Cloud via Lovable; homologar Auth/gateway/RLS remoto.
+- [x] Lovable aplicou a revisão d70f8de sem alterar SQL; verificou cinco tabelas vazias, RLS, privilégios, políticas e RPC invoker; migração e tipos gerenciados registrados.
+- [ ] Homologar Auth/gateway/RLS ponta a ponta com conta e vínculos reais (não criados nesta aplicação).
 - [ ] C014: administração real de clínicas, vínculos e auditoria com escrita autorizada no servidor. Operador inicial não criado automaticamente.

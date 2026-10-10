@@ -27,3 +27,11 @@ Referências: [RLS Supabase](https://supabase.com/docs/guides/database/postgres/
 
 ### Revisão Cloud — 10/10/2026
 Lovable recusou aplicação exata: FKs ao schema auth.users e ordem GRANT/RLS incompatíveis com suas regras gerenciadas. Nenhuma tabela criada nessa tentativa. Removidas as três FKs de conta, mantendo IDs UUID opacos, associação composta paciente/clínica/conta e autorização auth.uid(). Provisionamento futuro precisa confirmar existência/status da conta via Auth API. GRANT/REVOKE agora antecedem RLS dentro da mesma transação. 12/12 testes PostgreSQL aprovados sem tabela auth.users simulada. Incorporados commits gerenciados e corrigido lint do timer/formatação sem alterar destino de tokens. Aplicação remota permanece pendente.
+
+### Aplicação Cloud confirmada — Lovable, 10/10/2026
+
+Revisão Codex `d70f8de` aplicada uma vez no Cloud existente, após verificar ausência dos objetos. Registro gerenciado: `drizzle/migrations/0000_c013_tenant_foundation_d70f8de.sql`, idêntico byte a byte à fonte (SHA256 `b435909e4508aece38c616ea5e3bcd87f6369168c7f90c5e2e8efbc2ea3f56e0`). Tipos gerados automaticamente; commit gerenciado observado `e94fb0f`.
+
+Consultas remotas confirmam cinco tabelas vazias e com RLS ativa, cinco políticas SELECT para authenticated, anon sem acesso e authenticated sem escrita (INSERT/UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER). Service role conserva acesso administrativo por default ACL do ambiente, sem alteração do SQL ou concessões a pessoas. Associação composta paciente/clínica/conta intacta, nenhuma FK para Auth.
+
+`tm_resolve_identity()` conferida via `pg_get_functiondef`: retorna jsonb, STABLE, zero argumentos, SECURITY INVOKER (`prosecdef=false`), search_path vazio; EXECUTE negado a anon e concedido a authenticated. Definição mantém auth.uid() e os filtros de atividade. Nenhum dado, conta ou vínculo criado. Aplicação/inspeção remota não homologa login, JWT/gateway ou isolamento ponta a ponta com contas e vínculos reais; esses testes continuam pendentes. Sem alterações de frontend, Auth ou billing.

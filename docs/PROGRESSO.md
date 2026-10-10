@@ -272,3 +272,12 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Retomada: verificar aplicação C013, depois C014 administração real separada da demo. Login real, RLS remoto, auditoria, keystore, hardware e regras comerciais seguem explicitamente pendentes.
 
 C013 revisão Cloud: migração recusada pelo Lovable por restrições do schema Auth e ordem de privilégios/RLS; revisão Codex com IDs opacos e validação de conta reservada ao provisionamento Auth. 12/12 testes PostgreSQL novamente aprovados. Nenhum operador ou acesso criado.
+
+## C013 — Aplicação gerenciada efetiva (Lovable, 10/10/2026)
+
+- Codex é autor da revisão d70f8de; Lovable executou exclusivamente aplicação/verificação e registro gerenciado. Antigravity/OpenCode não acionados.
+- Pré-verificação: cinco tabelas e RPC ausentes. Aplicação única bem-sucedida em `drizzle/migrations/0000_c013_tenant_foundation_d70f8de.sql`; SQL idêntico byte a byte ao original e ao commit revisado (SHA256 `b435909e4508aece38c616ea5e3bcd87f6369168c7f90c5e2e8efbc2ea3f56e0`). Tipos regenerados automaticamente pela ferramenta gerenciada.
+- Consultas remotas confirmaram RLS habilitada nas cinco tabelas, todas com zero linhas; cinco políticas exclusivamente SELECT para authenticated. Anon sem SELECT nem escrita; authenticated somente SELECT, sem INSERT/UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER. Service role mantém os privilégios administrativos preexistentes por default ACL; nenhuma permissão atribuída a pessoas.
+- FK composta paciente/clínica/conta preservada, sem FK para Auth. RPC sem argumentos, jsonb, STABLE, `prosecdef=false` (SECURITY INVOKER), `search_path` vazio; EXECUTE anon=false/authenticated=true; definição conferida no catálogo remoto.
+- Registro automático de aplicação/tipos observado no commit `e94fb0f`; sem commit/push manual. Compilação automática: build OK.
+- Nenhuma conta, seed, operador, vínculo ou dado criado; nenhuma alteração de telas, fluxo/configuração Auth, dependências ou faturamento. Homologação com conta e vínculos reais permanece pendente; não equivale a E2E de autenticação.
