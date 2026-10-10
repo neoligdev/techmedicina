@@ -134,7 +134,16 @@ export function LoginPage() {
       const initialRevision = revision.current;
       const { data } = auth.current.onAuthStateChange((event, session) => {
         if (!mounted.current || operation.current === "logout") return;
-        if (!["INITIAL_SESSION", "SIGNED_IN", "SIGNED_OUT", "TOKEN_REFRESHED", "USER_UPDATED"].includes(event)) return;
+        if (
+          ![
+            "INITIAL_SESSION",
+            "SIGNED_IN",
+            "SIGNED_OUT",
+            "TOKEN_REFRESHED",
+            "USER_UPDATED",
+          ].includes(event)
+        )
+          return;
         if (event === "SIGNED_OUT" || !session) {
           invalidate();
           setAuthenticated(false);
@@ -198,7 +207,10 @@ export function LoginPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (!mounted.current || revision.current !== current) return;
-        if (signupError) setError("Não foi possível criar a conta. Confira os dados ou tente novamente mais tarde.");
+        if (signupError)
+          setError(
+            "Não foi possível criar a conta. Confira os dados ou tente novamente mais tarde.",
+          );
         else if (data.session) await validate(data.session.access_token);
         else {
           setNotice("Confira seu e-mail para confirmar o cadastro. Depois, entre na sua conta.");
@@ -266,7 +278,9 @@ export function LoginPage() {
     setError(null);
     setNotice(null);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
       if (result.error && mounted.current) setError(unavailable);
     } catch {
       if (mounted.current) setError(unavailable);
@@ -285,12 +299,18 @@ export function LoginPage() {
             Acesso à sua conta
           </span>
           <h1 id="login-title" className="mt-3 text-2xl font-semibold tracking-tight">
-            {authenticated ? "Conta autenticada" : mode === "signup" ? "Crie sua conta" : "Bem-vindo à Techmedicina"}
+            {authenticated
+              ? "Conta autenticada"
+              : mode === "signup"
+                ? "Crie sua conta"
+                : "Bem-vindo à Techmedicina"}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {authenticated
               ? "Identidade confirmada no servidor."
-              : mode === "signup" ? "Cadastre seu e-mail e uma senha para acessar sua conta." : "Entre com sua conta cadastrada na plataforma."}
+              : mode === "signup"
+                ? "Cadastre seu e-mail e uma senha para acessar sua conta."
+                : "Entre com sua conta cadastrada na plataforma."}
           </p>
         </div>
         {validating ? (
@@ -409,21 +429,40 @@ export function LoginPage() {
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
               {mode === "signup" ? "Criar conta" : "Entrar"}
             </Button>
-            <Button type="button" variant="outline" className="w-full" disabled={!ready || busy} onClick={handleGoogle}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={!ready || busy}
+              onClick={handleGoogle}
+            >
               Continuar com Google
             </Button>
-            <Button type="button" variant="ghost" className="w-full" disabled={busy} onClick={() => {
-              setMode(mode === "login" ? "signup" : "login");
-              setError(null);
-              setNotice(null);
-              setPassword("");
-              setShowPassword(false);
-            }}>
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              disabled={busy}
+              onClick={() => {
+                setMode(mode === "login" ? "signup" : "login");
+                setError(null);
+                setNotice(null);
+                setPassword("");
+                setShowPassword(false);
+              }}
+            >
               {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
             </Button>
           </form>
         )}
-        {notice && <p role="status" className="mt-4 border border-border bg-muted p-3 text-sm text-foreground">{notice}</p>}
+        {notice && (
+          <p
+            role="status"
+            className="mt-4 border border-border bg-muted p-3 text-sm text-foreground"
+          >
+            {notice}
+          </p>
+        )}
         {error && (
           <p
             role="alert"

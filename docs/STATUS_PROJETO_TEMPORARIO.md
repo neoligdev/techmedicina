@@ -1652,9 +1652,9 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## D12 - Login Cloud com UI premium e validação no servidor 🟢
 
 - **Status**: 🟢 Concluído no escopo descrito
-- **Autores**: Antigravity, Codex
-- **Entregue**: Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks.
-- **Próximo Passo**: Homologar conta real e preview Lovable; criar vínculos persistidos e RLS. Isso não conclui autenticação/isolamento de produção.
+- **Autores**: Antigravity, Codex, Lovable
+- **Entregue**: Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks. Lovable estendeu o cadastro sem perfil adicional com confirmação de e-mail, Google habilitado, indicação de sessão validada por getUser e limpeza de consultas no logout. Tela verificada no navegador; suíte 230/230, incluindo quatro novos testes. Nenhuma conta ou permissão criada automaticamente.
+- **Próximo Passo**: Homologar confirmação por e-mail e OAuth com conta real; preservar vínculos e isolamento negados por padrão. Isso não conclui autenticação/isolamento clínico de produção.
 
 ## D13 - Fundação SQL e resolvedor — aplicação Cloud verificada 🟢
 

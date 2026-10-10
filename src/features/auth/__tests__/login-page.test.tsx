@@ -16,7 +16,9 @@ const mocks = vi.hoisted(() => ({
   unsubscribe: vi.fn(),
   fetch: vi.fn(),
 }));
-vi.mock("@tanstack/react-query", () => ({ useQueryClient: () => ({ cancelQueries: mocks.cancelQueries, clear: mocks.clear }) }));
+vi.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({ cancelQueries: mocks.cancelQueries, clear: mocks.clear }),
+}));
 vi.mock("@/integrations/lovable", () => ({ lovable: { auth: { signInWithOAuth: mocks.google } } }));
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children, to }: { children: ReactNode; to: string }) => <a href={to}>{children}</a>,
@@ -96,7 +98,11 @@ describe("Login Cloud — identidade confirmada pelo servidor", () => {
     fireEvent.change(screen.getByLabelText("Senha"), { target: { value: "  senha exata  " } });
     fireEvent.click(screen.getByRole("button", { name: "Criar conta" }));
     await screen.findByText(/Confira seu e-mail para confirmar/);
-    expect(mocks.signUp).toHaveBeenCalledWith({ email: "teste@example.com", password: "  senha exata  ", options: { emailRedirectTo: window.location.origin } });
+    expect(mocks.signUp).toHaveBeenCalledWith({
+      email: "teste@example.com",
+      password: "  senha exata  ",
+      options: { emailRedirectTo: window.location.origin },
+    });
     expect(mocks.fetch).not.toHaveBeenCalled();
     expect(screen.queryByText("Conta autenticada")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha")).toHaveValue("");
@@ -115,7 +121,9 @@ describe("Login Cloud — identidade confirmada pelo servidor", () => {
     render(<LoginPage />);
     await form();
     fireEvent.click(screen.getByRole("button", { name: "Continuar com Google" }));
-    await waitFor(() => expect(mocks.google).toHaveBeenCalledWith("google", { redirect_uri: window.location.origin }));
+    await waitFor(() =>
+      expect(mocks.google).toHaveBeenCalledWith("google", { redirect_uri: window.location.origin }),
+    );
     expect(mocks.signIn).not.toHaveBeenCalled();
   });
   it("logout cancela e limpa consultas antes de remover a sessão", async () => {
@@ -124,8 +132,12 @@ describe("Login Cloud — identidade confirmada pelo servidor", () => {
     await screen.findByText("Conta autenticada");
     fireEvent.click(screen.getByRole("button", { name: "Sair desta sessão" }));
     await waitFor(() => expect(mocks.signOut).toHaveBeenCalled());
-    expect(mocks.cancelQueries.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(mocks.clear.mock.invocationCallOrder[0] ?? 0);
-    expect(mocks.clear.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(mocks.signOut.mock.invocationCallOrder[0] ?? 0);
+    expect(mocks.cancelQueries.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(
+      mocks.clear.mock.invocationCallOrder[0] ?? 0,
+    );
+    expect(mocks.clear.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(
+      mocks.signOut.mock.invocationCallOrder[0] ?? 0,
+    );
   });
   it("mantém a marca, rótulos, autocomplete e distinção da demonstração", async () => {
     render(<LoginPage />);
