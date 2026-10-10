@@ -49,6 +49,11 @@ Gerado automaticamente a partir do catálogo a cada atualização.
 - **Próximo:** Homologar visual, fórmulas/custos oficiais e persistência futura.
 - **Autores:** Antigravity
 
+### 🟢 D10 - Unidade de criptografia clínica server-only
+- **Feito:** Módulo AES-256-GCM server-only com WebCrypto nativa, envelope tipado v1, AAD (clínica/paciente/registro/tipo/kid) e KeyProvider injetado; 20 testes unitários em Node. Apenas escopo unitário.
+- **Próximo:** Keystore real, guardas, persistência, auditoria, backup e rotação de produção permanecem pendentes; PRD 3.2/4/7 seguem parciais.
+- **Autores:** OpenCode
+
 ## Requisitos (PRD)
 
 ### 🔵 1 - Processo e estado das decisões
@@ -63,9 +68,9 @@ Gerado automaticamente a partir do catálogo a cada atualização.
   - O PRD deve estabelecer funções, atores, permissões, regras, dependências e critérios de aceite. Os critérios abaixo são propostos e deverão ser consolidados ao concluir as regras.
 
 ### 🔵 2 - Visão e arquitetura funcional
-- **Feito:** Quatro áreas navegáveis, identidade PlugPix, preferências visuais por clínica, UI fosca e base PWA entregues como demonstração.
-- **Próximo:** Completar SaaS, domínio e ícone de instalação por clínica, banco, módulos por contrato e autorização real.
-- **Autores:** Lovable, Antigravity, Codex
+- **Feito:** Quatro áreas navegáveis, identidade PlugPix, preferências visuais por clínica, UI fosca e base PWA entregues como demonstração. Auditoria C009 (executor OpenCode, local) confirmou ausência de banco, sessão e isolamento reais; permanece parcial. Cloud Lovable ativado pelo usuário/Lovable: scaffold de integração Supabase chegou em origin/main (805bcce) com @supabase/supabase-js, esquema drizzle vazio e middleware/auth, sem fluxo de login/tenant real.
+- **Próximo:** Implementar fundamentos da fundação Cloud (auth confiável getClaims, acesso clinic-aware no servidor, RLS/tenancy) antes de concluir SaaS, domínio e integrações reais.
+- **Autores:** Lovable, Antigravity, Codex, OpenCode
 - **Requisitos:**
   - Plataforma por assinatura (SaaS), completa e robusta, com prioridade alta em segurança de dados. Hierarquia: Super ADM → CMDs/clínicas → pacientes. Dentro do ambiente da clínica haverá um módulo Médico com acesso profissional próprio.
   - Super ADM utiliza PlugPix Techmedicina; cria e administra clínicas e habilita módulos.
@@ -85,9 +90,9 @@ Gerado automaticamente a partir do catálogo a cada atualização.
   - O módulo integra prontuário, dados de saúde, exames, agenda, consultas agendadas, chat, documentos e chamada de vídeo. O acesso clínico descrito é exclusivo do perfil médico identificado por seu registro no conselho profissional.
 
   ### 🔵 3.1 - Identificação e autorização
-  - **Feito:** Contratos e motor lógico de autorização com guardas que negam acesso sem sessão.
+  - **Feito:** Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real.
   - **Próximo:** Conectar autenticação real e validação de identidade/registro profissional e vínculo com a clínica.
-  - **Autores:** Antigravity
+  - **Autores:** Antigravity, OpenCode
   - **Requisitos:**
     - DEFINIDO: associar o profissional à sua identidade e número de conselho; as evoluções exibem nome e CRM do autor.
     - RECOMENDADO: cadastro de CRM e UF, validação da identidade e situação profissional antes da liberação, conta individual e autenticação com segundo fator. O CRM identifica o profissional; não funciona como senha ou prova suficiente de identidade.
@@ -95,9 +100,10 @@ Gerado automaticamente a partir do catálogo a cada atualização.
     - DEFINIDO posteriormente: Super ADM pode editar/inativar médicos e atribuí-los a novas clínicas (seção 12.2). PENDENTE: validação/aprovação, permissões locais e alcance da suspensão.
     - PENDENTE: distinguir médicos com CRM de outros profissionais de saúde com seus próprios conselhos, caso sejam incluídos. Não equiparar automaticamente competências nem acessos.
 
-  ### 🟡 3.2 - Prontuário e evoluções
-  - **Feito:** Ainda não há implementação funcional deste requisito validada.
+  ### 🔵 3.2 - Prontuário e evoluções
+  - **Feito:** Ainda não há prontuário funcional validado. C010 (executor OpenCode) implementa unidade de criptografia server-only AES-256-GCM para o texto clínico, com testes unitários e endurecimento R1 (snapshot de contexto, IV/limites estritos); sem persistência, guarda, UI ou assinatura.
   - **Próximo:** Falta implementar e validar prontuário e evoluções, respeitando as decisões pendentes do PRD.
+  - **Autores:** OpenCode
   - **Requisitos:**
     - Caixa de texto onde o médico escreve orientações e conclusões e salva um novo registro.
     - Histórico cronológico com data, hora, nome do médico e CRM. RECOMENDADO: registrar também UF e identidade interna imutável do autor.
@@ -156,9 +162,9 @@ Gerado automaticamente a partir do catálogo a cada atualização.
     - Gravação de áudio/vídeo não faz parte do escopo definido. Caso seja solicitada, terá requisitos próprios.
 
 ### 🔵 4 - Segurança — definição e recomendações
-- **Feito:** Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão.
+- **Feito:** Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes.
 - **Próximo:** Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.
-- **Autores:** Antigravity
+- **Autores:** Antigravity, OpenCode
 - **Requisitos:**
   - DEFINIDO: proteção de dados como prioridade, isolamento entre clínicas, autorização no servidor, prontuário criptografado e registros clínicos definitivos sem edição/exclusão.
   - RECOMENDADO para detalhamento técnico futuro:
@@ -171,9 +177,10 @@ Gerado automaticamente a partir do catálogo a cada atualização.
   - Regras para processamento externo por IA e fornecedores, minimização de dados e restrição do uso ao propósito autorizado.
   - PENDENTE: arquitetura de chaves, fornecedores, retenção legal, recuperação, exportação ao paciente, encerramento de contas/clínicas e plano operacional de segurança. A regra de não apagar registros pela interface não equivale a retenção indiscriminada de todos os dados para sempre.
 
-### 🟡 5 - Compartilhamento dentro da mesma clínica
-- **Feito:** Ainda não há implementação funcional deste requisito validada.
+### 🔵 5 - Compartilhamento dentro da mesma clínica
+- **Feito:** Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real.
 - **Próximo:** Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.
+- **Autores:** OpenCode
 - **Requisitos:**
   - O usuário esclareceu que o compartilhamento se limita aos médicos da mesma clínica. O prontuário, seu histórico, os dados de saúde, as conversas com a IA Médica e os exames do paciente são acessíveis aos médicos cadastrados e com acesso ativo nessa clínica.
   - O médico pode consultar o histórico produzido pelos demais médicos da mesma clínica, com preservação da autoria de cada registro.
@@ -196,9 +203,10 @@ Gerado automaticamente a partir do catálogo a cada atualização.
   - Compatibilidade H59MAX, protocolo e viabilidade da conexão no PWA ainda não confirmados. OpenH59 é referência a investigar, não prova de compatibilidade.
   - Contexto anterior do Doutor IA: coleta/organização de dados para acompanhamento médico, prontuário e WhatsApp. Segunda IA para atendimento, dúvidas, cadastro e acesso a serviços. Validar a relação desse contexto com a IA Médica recém-descrita antes de fixar arquitetura ou nomes.
 
-### 🟡 7 - Critérios de aceite propostos para o módulo Médico
-- **Feito:** Ainda não há implementação funcional deste requisito validada.
+### 🔵 7 - Critérios de aceite propostos para o módulo Médico
+- **Feito:** Ainda não há implementação funcional validada; critério 3 (texto clínico cifrado em repouso) iniciado parcialmente por C010 (executor OpenCode), com unidade de criptografia sem persistência. Demais critérios pendentes.
 - **Próximo:** Falta implementar e validar critérios de aceite propostos para o módulo médico, respeitando as decisões pendentes do PRD.
+- **Autores:** OpenCode
 - **Requisitos:**
   - 1. Usuário sem perfil médico autorizado não lê prontuários, dados clínicos ou exames, mesmo tentando acessar diretamente a API ou endereço de arquivo.
   - 2. CRM informado sem validação de identidade/conta não libera acesso médico, conforme regra de verificação a definir.
@@ -1154,9 +1162,9 @@ Gerado automaticamente a partir do catálogo a cada atualização.
   - 10. Central de privacidade mostra acessos/autorizações e permite solicitações/exportação conforme fluxo aprovado, sem liberar dados de terceiros.
 
 ### 🔵 34 - Prioridade recomendada e decisões pendentes
-- **Feito:** Roadmap e matriz registram etapas, dependências, limites e decisões pendentes.
-- **Próximo:** Atualizar prioridades com a fundação real, dispositivos homologados e regras consolidadas.
-- **Autores:** Antigravity, Codex
+- **Feito:** Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real.
+- **Próximo:** C011: mapear auth gerado (getClaims confiável) e preparar acesso clinic-aware no servidor, sem presumir tenant cliente nem atribuir acesso clínico ao Super ADM.
+- **Autores:** Antigravity, Codex, OpenCode
 - **Requisitos:**
   - As 13 inovações foram aprovadas para o escopo. Prioridade sugerida na resposta anterior, sem cronograma fechado: Meu dia; jornadas configuráveis/protocolos; resumo preparatório da consulta; central de funcionamento; simulador de rentabilidade. Demais funções permanecem incluídas, com sequência de implementação a definir.
   - Novas prioridades de decisão: composição/validação dos protocolos, avaliação e registros, cobrança/adesão, alternativa para não apto, protocolo versus único plano ativo, critérios de aptidão/reavaliação e etapas do acompanhamento.

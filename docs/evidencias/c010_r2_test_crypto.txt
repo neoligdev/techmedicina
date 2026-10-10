@@ -1,0 +1,11 @@
+﻿EXECUCAO: vitest run clinical-crypto (2026-10-09 23:47:30)
+
+ RUN  v4.1.11 C:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina
+
+
+ Test Files  1 passed (1)
+      Tests  23 passed (23)
+   Start at  23:47:29
+   Duration  724ms (transform 122ms, setup 218ms, import 107ms, tests 81ms, environment 0ms)
+
+EXIT_CODE=0

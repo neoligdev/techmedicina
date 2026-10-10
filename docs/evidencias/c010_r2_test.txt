@@ -1,0 +1,11 @@
+﻿EXECUCAO: vitest run (suíte completa) (2026-10-09 23:47:51)
+
+ RUN  v4.1.11 C:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina
+
+
+ Test Files  14 passed (14)
+      Tests  104 passed (104)
+   Start at  23:47:36
+   Duration  15.54s (transform 2.27s, setup 3.60s, import 8.36s, tests 6.67s, environment 18.57s)
+
+EXIT_CODE=0

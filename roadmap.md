@@ -31,7 +31,8 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Lote 1: Design UX/UI Premium (Off-white/Petróleo) e mockups criados (app, médico, clínica, super-admin).
 - [x] Confirmar cores pelo seletor nativo do navegador. (Resolvido nas implementações seguintes)
 - [x] Infraestrutura indicada pelo usuário: Lovable Cloud.
-- [ ] Confirmar/habilitar banco e autenticação e implementar políticas por clínica.
+- [x] Cloud habilitado pelo usuário/Lovable (09/10/2026): Database sem tabelas; leitura `SELECT count(*)` no editor SQL → 0 tabelas (autor Codex); scaffold chegado em `origin/main` (`805bcce`).
+- [ ] Confirmar/habilitar banco e autenticação e implementar políticas por clínica (Cloud habilitado; **fluxo de login/tenant ainda não implementado/validado na aplicação** — não houve teste do serviço Auth).
 - [x] C-002-R2: navegação por grupos, layouts por módulo, formulários temporários e painéis sem informações clínicas inventadas.
 - [x] Verificar quatro áreas e diálogo em modo móvel no preview do Lovable.
 - [x] Verificar tema escuro do diálogo e marca PlugPix preservada.
@@ -56,9 +57,30 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Gráficos de barra proporcionais baseados em premissas configuráveis.
 - [x] Cobertura estrita contra estouro de soma e cálculos irregulares de Infinity.
 - [x] Pipeline local com validações finais passando (R3).
-- [ ] QA Visual (mobile/desktop) via navegador do usuário (Pendente de conexão).
+- [x] QA visual local (**Codex, 10/10/2026**) em `http://127.0.0.1:8080/super-admin/simulador`: desktop exemplo **Conservador/100 titulares/150 dependentes** (receita 9.500, contribuição 2.450, equilíbrio 113); **Conservador → Base vazia → Conservador/100 preservado**; comparativo **distingue incompletos**; viewport **390px** (área 375, `scrollWidth` 375, **sem overflow**); exemplo **móvel 100** após otimização inicial do Vite. Preview do Lovable **não** alegado (editor ainda `Build unsuccessful/out of date`, causa desconhecida).
 
 ## C009 — Levantamento da Fundação Lovable Cloud
 
-- [ ] Realizar mapeamento e levantamento técnico da fundação de back-end em cloud.
-- [ ] Preservar credenciais (não criar tokens desnecessários nem alterar banco de produção).
+- [x] Realizar mapeamento e levantamento técnico da fundação de back-end em cloud (auditoria factual `getSession()`/guardas/tenant; catálogo itens 2, 3.1, 3.2, 4, 5, 7 e 34; relatório `docs/RELATORIO_C009.md`).
+- [x] Preservar credenciais (nenhum token criado, nenhum segredo aberto, nenhum DDL/dado criado; SQL executado foi somente leitura).
+
+## C010 — Unidade de criptografia clínica server-only
+
+- [x] Módulo `src/lib/security/clinical-crypto.server.ts` (AES-256-GCM via WebCrypto, envelope v1, AAD por clínica/paciente/registro/tipo/kid, KeyProvider injetado).
+- [x] Endurecimento R1 (IV/limites estritos, snapshot de contexto/envelope/kid, provider síncrono/assíncrono sem vazar detalhes).
+- [x] Revisão R2 (snapshot de `kid`/`key` antes do `subtle.encrypt`, pre-limite sem `* 2`, catches sempre falha genérica).
+- [x] 23 testes em Node real; `tsc`/`lint`/`build` e suíte completa (104/104) com exit 0 (evidências `c010_r2_*` e `c010_cloud_*`).
+- [ ] Keystore real, guardas, persistência, auditoria, backup e rotação de produção (PRD 3.2/4/7 permanecem parciais).
+
+## Cloud — Integração scaffold (origin/main `805bcce`)
+
+- [x] Fast-forward de `origin/main` incorporado com `git merge --ff-only` (sem `.env` local, sem conflitos, sem perda de alterações locais).
+- [x] Dependências instaladas via `npm install` (lock `bun.lock` congelado preservado; `package-lock.json` local não versionado).
+- [x] Scaffold `@supabase/supabase-js`, `drizzle` vazio e middleware/auth: lint mecânico autorizado (`eslint --fix` em `src/integrations/supabase/*.ts`, só formatação/`let`→`const`).
+- [ ] Acesso clinic-aware no servidor, RLS e fluxo de login reais.
+
+## C011 — Próxima etapa (planejada)
+
+- **Estado (10/10/2026)**: liberada pelo Codex como próxima após o fechamento do push da C010; executor OpenCode **pára** ao fim desta rodada para o coordenador verificar o remoto e iniciar a C011.
+- [ ] Mapear o auth gerado e o `getClaims` confiável e preparar acesso clinic-aware no servidor.
+- [ ] Não presumir tenant no cliente; não atribuir acesso clínico ao Super ADM.
