@@ -295,3 +295,6 @@ C017 Codex: API/painel global de auditoria administrativa restrita, DTO sem cont
 - Login existente continua validando identidade e vínculos no servidor; cadastro não provisiona papéis, vínculos ou grants. Nenhuma migração, seed, conta de teste ou alteração de billing.
 - Indicação Minha conta/Entrar baseada em getUser; logout cancela consultas, limpa cache e remove sessão local. Tela de cadastro e alternância verificadas no Playwright, sem erros de execução; 230/230 testes (25 arquivos), incluindo quatro testes novos. O aviso preexistente de chave repetida na fixture de diretório permanece.
 - Testes de integração com e-mail recebido e OAuth real não executados; homologação com conta e vínculos reais permanece pendente. Relatório temporário regenerado do catálogo.
+
+## C018 — 10/10/2026
+Cloud C015 aplicada por Lovable; tipos e cadastro sincronizados até bedb68a. Codex corrigiu lint, validou 230 testes/tsc/build e confirmou RLS remota. Primeiro Super ADM ativado após autorização específica do titular, sem acesso clínico. E2E autenticado pendente. Ver docs/RELATORIO_C018.md.

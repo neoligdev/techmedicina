@@ -135,3 +135,9 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Cadastro por e-mail com confirmação, entrada Google, indicação de sessão e saída; sem perfil, tabelas ou grants novos.
 - [x] 230 testes aprovados e tela de cadastro verificada no navegador; relatório manual atualizado.
 - [ ] Homologar confirmação recebida por e-mail e OAuth com conta real (depende de interação do titular); não criar contas de teste ou vínculos automaticamente.
+
+## C018 — Cloud e primeiro operador
+- [x] C015 aplicada, migração gerenciada equivalente e RLS remota conferida.
+- [x] Primeiro Super ADM persistido provisionado após autorização específica.
+- [x] 230 testes, tsc, build e lint sem erros.
+- [ ] Homologar login, criação/edição de clínicas e auditoria reais; continuar vínculos e isolamento.

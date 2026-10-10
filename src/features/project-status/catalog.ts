@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "10/10/2026"; // Cadastro e entrada: Lovable; validação de UI e 230 testes.
+export const updatedAt = "10/10/2026"; // C018: Cloud C015 verificada; E2E e provisionamento pendentes.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export const statusLabels: Record<ProjectStatus, string> = {
