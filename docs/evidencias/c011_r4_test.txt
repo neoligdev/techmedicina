@@ -1,0 +1,51 @@
+
+> test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina[39m
+
+ [32m✓[39m src/features/super-admin/simulator/__tests__/index.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 9697[2mms[22m[39m
+     [33m[2m✓[22m[39m deve renderizar a interface base [33m 3475[2mms[22m[39m
+     [33m[2m✓[22m[39m deve preencher inputs sem perder o foco usando fireEvent [33m 2478[2mms[22m[39m
+     [33m[2m✓[22m[39m deve exibir estado incompleto inicialmente [33m 1000[2mms[22m[39m
+     [33m[2m✓[22m[39m deve calcular o cenário base com o preenchimento de exemplo [33m 1639[2mms[22m[39m
+     [33m[2m✓[22m[39m deve resetar os inputs ao clicar em limpar cenário [33m 653[2mms[22m[39m
+     [33m[2m✓[22m[39m deve alterar entre abas e renderizar comparativo corretamente [33m 379[2mms[22m[39m
+ [32m✓[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 14347[2mms[22m[39m
+     [33m[2m✓[22m[39m salva, alterna sem misturar preferências e recupera após remontar [33m 9825[2mms[22m[39m
+     [33m[2m✓[22m[39m não confirma nem aplica uma gravação recusada [33m 578[2mms[22m[39m
+     [33m[2m✓[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 2410[2mms[22m[39m
+     [33m[2m✓[22m[39m ignora callback stale de imagem [33m 420[2mms[22m[39m
+     [33m[2m✓[22m[39m dados inválidos de imagem ou quota ignorados de forma segura [33m 616[2mms[22m[39m
+     [33m[2m✓[22m[39m dados corrompidos acionam erro assíncrono [33m 335[2mms[22m[39m
+ [32m✓[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 6804[2mms[22m[39m
+     [33m[2m✓[22m[39m filtra busca e situação e restaura resultados [33m 1711[2mms[22m[39m
+     [33m[2m✓[22m[39m cancela e limpa o formulário sem criar item [33m 2170[2mms[22m[39m
+     [33m[2m✓[22m[39m valida nome e mantém descrição no detalhe do rascunho [33m 1807[2mms[22m[39m
+     [33m[2m✓[22m[39m descarta rascunhos ao desmontar a tela [33m 1102[2mms[22m[39m
+ [32m✓[39m src/test/clinical-crypto.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 2577[2mms[22m[39m
+     [33m[2m✓[22m[39m faz round-trip de texto UTF-8 com acentos e emojis [33m 547[2mms[22m[39m
+ [32m✓[39m src/test/health-data.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 236[2mms[22m[39m
+ [32m✓[39m src/test/auth-adapter.server.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 9619[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta e bloqueia criação quando recoveryNeeded é true [33m 3025[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta, bloqueia botões e permite tentar novamente quando readFailed é true [33m 1031[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe warning de legacy active mas permite ações (migração sem perda de dados inválidos) [33m 893[2mms[22m[39m
+     [33m[2m✓[22m[39m permite recuperar acesso quando recoveryNeeded é true e aciona backupAndClearPlans preservando válidos [33m 1919[2mms[22m[39m
+     [33m[2m✓[22m[39m preserva o editor (não fecha) e exibe erro quando savePlans falha (setItem error ou duplicate) [33m 2634[2mms[22m[39m
+ [32m✓[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/storage.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m src/test/project-status.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/simulator/__tests__/calculator.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m src/test/app-sw.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 103[2mms[22m[39m
+ [32m✓[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m      Tests [22m [1m[32m115 passed[39m[22m[90m (115)[39m
+[2m   Start at [22m 01:03:57
+[2m   Duration [22m 80.94s[2m (transform 23.52s, setup 20.43s, import 50.55s, tests 43.68s, environment 85.48s)[22m
+
+EXIT_CODE=0 

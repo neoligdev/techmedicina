@@ -82,5 +82,10 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 ## C011 — Próxima etapa (planejada)
 
 - **Estado (10/10/2026)**: liberada pelo Codex como próxima após o fechamento do push da C010; executor OpenCode **pára** ao fim desta rodada para o coordenador verificar o remoto e iniciar a C011.
-- [ ] Mapear o auth gerado e o `getClaims` confiável e preparar acesso clinic-aware no servidor.
-- [ ] Não presumir tenant no cliente; não atribuir acesso clínico ao Super ADM.
+- [x] Mapear o auth gerado e o `getClaims` confiável e preparar acesso clinic-aware no servidor.
+- [x] Não presumir tenant no cliente; não atribuir acesso clínico ao Super ADM.
+
+## C011 — Adaptador Auth Server-only (10/10/2026)
+- [x] Substituído `getSession` nulo por adaptador confiável de `getUser(token)`.
+- [x] Suíte isolada de testes garantindo ausência de bypass por parte de claims forjadas.
+- [ ] Conectar autenticação real, E2E login, RLS e esquema final.

@@ -231,3 +231,23 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Autorização (Codex)**: liberação final — 27 arquivos staged revisados, código e checks aprovados (104/104 tsc/lint/build); **commit/push autorizados nesta rodada** com título `feat: add server-only clinical encryption and align Cloud scaffold` e autor/committer **PlugPix** `<plugpix.brasil@gmail.com>`.
 - **Próxima C011**: mapear o auth gerado e o `getClaims` confiável, preparar acesso clinic-aware no servidor; **não** presumir tenant no cliente; **não** atribuir acesso clínico ao Super ADM. Início da C011 fica para o coordenador após verificação do remoto.
 - **Status**: OpenCode **OCIOSO** ao fim desta rodada (commit/push autorizados; executor pára após o push para o coordenador verificar o remoto e iniciar a C011).
+
+## C011 — Adaptador Auth Server-only (10/10/2026)
+
+- **Executor**: Antigravity. Codex coordenou.
+- **Entregue**: `src/lib/auth/supabase-adapter.server.ts` com extração segura do token Bearer, validando diretamente no Supabase Auth via `getUser(token)`.
+- **Modificado**: `src/lib/auth/guards.server.ts` ligado ao novo adaptador; `getSession()` real implementado.
+- **Testes**: `src/test/auth-adapter.server.test.ts` com cobertura para header ausente, token malformado/inválido, e metadados forjados do cliente. Isolation mantido entre requisições. Suíte executada limpa.
+- **Limites mantidos**: A identidade validada intencionalmente não possui `globalRole` nem `links` auto-aprovados; as políticas negam (403) por padrão até a implementação real do esquema de RLS e vínculo clínico. Nenhum Bypass foi configurado em produção.
+- **Status**: Antigravity **OCIOSO**. Fica sob espera da revisão do coordenador Codex. O PRD e demais estruturas foram intocadas, e nenhum commit/push explícito foi efetuado, respeitando a liberação pendente.
+
+## C011 — Revisão R4: Adendo de Segurança e Testes (10/10/2026)
+
+- **Correções R4**:
+  1. Segurança máxima (`try...catch` limitando falhas de bibliotecas terceiras como o erro de throw de `getRequest` ou `getUser`).
+  2. Validações estritas na variável PUBLISHABLE impedindo falsificações com `sb_secret_`.
+  3. Mocks refatorados completamente (`vi.stubEnv`) sem types perdidos (`any`), assegurando respostas simultâneas (`Promise.all`).
+  4. Formatação de código executada. Captura imediata com `EXIT_CODE` não mascarado gerando logs `docs/evidencias/c011_r4_*`.
+- **Limitações e Status**: O preview do editor Lovable segue bloqueado remotamente. Nenhuma tabela nem banco conectado. Executor OCIOSO.
+
+- **QA Adicional**: Endpoint `/api/access-check` retorna 401 confirmado.

@@ -8,13 +8,14 @@ import {
   ResourceMetadata,
 } from "./core";
 
+import { resolveSupabaseSession } from "./supabase-adapter.server";
+
 /**
  * Resolvedor de sessão confiável (servidor).
  * Oculto da API pública do cliente.
  */
 export async function getSession(): Promise<AuthenticatedIdentity | null> {
-  // Simulação vazia para segurança
-  return null;
+  return resolveSupabaseSession();
 }
 
 export class AuthError extends Error {

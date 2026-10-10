@@ -73,3 +73,15 @@ A próxima tarefa (C009) focará no levantamento da fundação **Lovable Cloud**
 - **Evidências**: `c010_tsc.txt` antigo **inconsistente/desconsiderado** (exit fora de ordem); válidas = `c010_r2_*` e `c010_cloud_*`. Afirmações "auth não funciona" substituídas por "fluxo de login/tenant ainda não implementado/validado na aplicação (não houve teste do serviço Auth)".
 - **Próxima C011**: mapear o auth gerado e o `getClaims` confiável, preparar acesso clinic-aware no servidor; **não** presumir tenant no cliente; **não** atribuir acesso clínico ao Super ADM. Início com o coordenador após verificação do remoto.
 - **Estado**: OpenCode pára ao fim desta rodada (após push) para o coordenador verificar o remoto e iniciar a C011.
+
+## Adendo C011
+
+Próximo Passo Planejado: C012 (Login visual e E2E) e fechamento do fluxo RLS Auth. — Revisão R4 do Codex (10/10/2026)
+
+- **Executor**: Antigravity.
+- **Entrega R4**: Limites seguros try-catch envolvendo `createClient`, `getRequest` e `getUser`. Suporte de lógica `sb_secret_` expurgado da API cliente. 
+- **Testes Ajustados**: Sem tipos `any`; stub/unstub de ambiente controlados (`vi.stubEnv`); concorrência simultânea com Deferred promises e asserts rigorosos de instâncias clientes isoladas; testes assertivos `requireAuth` 401 e requisição cliente forjada 403.
+- **Logs reais**: Saída sem máscaras de comandos encadeados. `EXIT_CODE` coletado localmente.
+- **Notas da nuvem**: API Lovable retornou 404 `project_not_found` para conexão externa, e o preview remoto continuou `build unsuccessful`. Nenhum DDL, nem adminclient criados.
+
+- **Codex QA**: Validado via `curl` sem credenciais retornando `HTTP 401 Missing session` limpo, sem alegar login real.
