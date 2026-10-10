@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "10/10/2026";
+export const updatedAt = "10/10/2026"; // C013: aplicação Cloud verificada por Lovable nesta data.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export const statusLabels: Record<ProjectStatus, string> = {

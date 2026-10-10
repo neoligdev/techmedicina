@@ -1925,13 +1925,14 @@
     },
     {
       "id": "D13",
-      "title": "Fundação SQL e resolvedor — validação local",
+      "title": "Fundação SQL e resolvedor — aplicação Cloud verificada",
       "parent": "4",
       "status": "done",
-      "done": "Codex concluiu código da migração aditiva, RLS de leitura própria e resolvedor persistido; testes em PostgreSQL em memória e suíte 166/166. Entrega local, sem homologação remota.",
-      "next": "Revisão Cloud: IDs de conta opacos sem FK ao schema Auth gerenciado e permissões antes de RLS. 12 testes PostgreSQL mantidos. Aplicação remota e login real ainda pendentes; provisionamento deverá validar conta pelo Auth.",
+      "done": "Codex concluiu e revisou o SQL (d70f8de), com suíte local 166/166. Lovable aplicou exatamente a revisão no Cloud existente e registrou migração/tipos gerenciados: cinco tabelas vazias com RLS, SELECT restrito, escrita de anon/authenticated negada, associação composta e RPC invoker com search_path vazio confirmados por consultas remotas. Sem contas ou vínculos criados.",
+      "next": "Homologar login/JWT/gateway/RLS ponta a ponta com conta e vínculos reais; não atestado nesta aplicação. Provisionamento futuro deverá verificar existência/status da conta pelo Auth. C014: administração e auditoria com escrita autorizada no servidor.",
       "authors": [
-        "Codex"
+        "Codex",
+        "Lovable"
       ],
       "requirements": []
     }
