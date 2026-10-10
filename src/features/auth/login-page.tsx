@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Eye, EyeOff, Loader2, LogOut, ShieldCheck } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { ClinicAdministration } from "./clinic-administration";
 import { Brand } from "@/components/platform/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ export function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
+  const [verifiedToken, setVerifiedToken] = useState<string | null>(null);
   const [access, setAccess] = useState<AccessSummary | null>(null);
   const [directory, setDirectory] = useState<ClinicDirectory | null>(null);
   const [directoryLoading, setDirectoryLoading] = useState(false);
@@ -40,6 +42,7 @@ export function LoginPage() {
     abort.current?.abort();
     setAccess(null);
     setDirectory(null);
+    setVerifiedToken(null);
     setDirectoryLoading(false);
     return revision.current;
   }
@@ -65,6 +68,7 @@ export function LoginPage() {
       if (!isCurrent()) return;
       if (body && typeof body === "object" && "status" in body && body.status === "ok") {
         setAuthenticated(true);
+        setVerifiedToken(token);
         setPassword("");
         setShowPassword(false);
         const summary = accessSummarySchema.safeParse("access" in body ? body.access : null);
@@ -265,24 +269,29 @@ export function LoginPage() {
             {directory && (
               <section aria-label="Clínicas cadastradas" className="mt-5 space-y-3">
                 <h3 className="font-semibold">Clínicas cadastradas</h3>
-                {directory.clinics.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    Nenhuma clínica cadastrada no banco.
-                  </p>
-                ) : (
-                  <ul className="space-y-3">
-                    {directory.clinics.map((clinic) => (
-                      <li
-                        key={clinic.id}
-                        className="rounded-xl border border-border bg-background/40 p-4"
-                      >
-                        <span className="block font-medium break-words">{clinic.name}</span>
-                        <span className="text-sm text-muted-foreground">
-                          {clinic.is_active ? "Ativa" : "Inativa"}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                {verifiedToken && (
+                  <ClinicAdministration
+                    key={verifiedToken}
+                    token={verifiedToken}
+                    clinics={directory.clinics}
+                    onSaved={(saved) =>
+                      setDirectory((current) =>
+                        current
+                          ? {
+                              ...current,
+                              clinics: [
+                                saved,
+                                ...current.clinics.filter((clinic) => clinic.id !== saved.id),
+                              ].slice(0, 100),
+                              hasMore:
+                                current.hasMore ||
+                                (current.clinics.length >= 100 &&
+                                  !current.clinics.some((clinic) => clinic.id === saved.id)),
+                            }
+                          : null,
+                      )
+                    }
+                  />
                 )}
                 {directory.hasMore && (
                   <p className="text-sm text-muted-foreground">
@@ -290,8 +299,7 @@ export function LoginPage() {
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Consulta administrativa. Cadastro e alterações serão disponibilizados na próxima
-                  etapa.
+                  Criação e edição dependem da migração de auditoria no Cloud.
                 </p>
               </section>
             )}

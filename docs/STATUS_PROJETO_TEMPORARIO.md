@@ -504,8 +504,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
-- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; ainda não aplicadas no Cloud.
-- **Próximo Passo**: Aplicar C015 pelo gerenciamento Cloud, atualizar tipos e integrar formulário administrativo; provisionar operador explicitamente para E2E.
+- **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; ainda não aplicadas no Cloud. C016 (Codex): formulário real de criação/edição integrado ao login do operador, carregamento de revisão no servidor e testes de conflito/duplicação/logout; Cloud C015 e E2E pendentes.
+- **Próximo Passo**: Aplicar C015 no Cloud e homologar formulário com operador real; consulta global de auditoria e administração completa ainda pendentes.
 
 **Requisitos**:
 
@@ -1676,4 +1676,11 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou SQL/API de criação e edição administrativas com ator verificado, auditoria atômica, revisão otimista e limites de payload. Testes locais aprovados; migração ainda NÃO aplicada no Cloud e formulário pendente.
 - **Próximo Passo**: Aplicação gerenciada C015 e homologação com operador real. Cloud Lovable esgotou créditos após C013; nenhuma compra. Integrar formulário de cadastro/edição e consulta de auditoria.
+
+## D16 - Formulário administrativo — integração local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex integrou criar/editar clínica ao login verificado, campos foscos e controles sem duplicação, leitura de revisão por ID protegido, respostas tardias invalidadas e conflitos sem sobrescrita. Código e testes locais; não homologado com conta real.
+- **Próximo Passo**: Aplicar migração C015 no Cloud (créditos Lovable esgotados), definir primeira conta operadora, confirmar permissões explicitamente e validar ponta a ponta; próxima consulta global de auditoria.
 

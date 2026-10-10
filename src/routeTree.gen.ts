@@ -21,6 +21,7 @@ import { Route as MedicoIndexRouteImport } from './routes/medico.index'
 import { Route as MedicoSectionRouteImport } from './routes/medico.$section'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
+import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
 
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +84,11 @@ const SuperAdminSectionRoute = SuperAdminSectionRouteImport.update({
   path: '/super-admin/$section',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformClinicRoute = ApiPlatformClinicRouteImport.update({
+  id: '/api/platform/clinic',
+  path: '/api/platform/clinic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformClinicsRoute = ApiPlatformClinicsRouteImport.update({
   id: '/api/platform/clinics',
   path: '/api/platform/clinics',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/clinica/': typeof ClinicaIndexRoute
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/clinica': typeof ClinicaIndexRoute
   '/medico': typeof MedicoIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
+  '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/clinica/': typeof ClinicaIndexRoute
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/clinica/'
     | '/medico/'
     | '/super-admin/'
+    | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/clinica'
     | '/medico'
     | '/super-admin'
+    | '/api/platform/clinic'
     | '/api/platform/clinics'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/clinica/'
     | '/medico/'
     | '/super-admin/'
+    | '/api/platform/clinic'
     | '/api/platform/clinics'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   ClinicaIndexRoute: typeof ClinicaIndexRoute
   MedicoIndexRoute: typeof MedicoIndexRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+  ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminSectionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/clinic': {
+      id: '/api/platform/clinic'
+      path: '/api/platform/clinic'
+      fullPath: '/api/platform/clinic'
+      preLoaderRoute: typeof ApiPlatformClinicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/clinics': {
       id: '/api/platform/clinics'
       path: '/api/platform/clinics'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClinicaIndexRoute: ClinicaIndexRoute,
   MedicoIndexRoute: MedicoIndexRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
+  ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
 }
 export const routeTree = rootRouteImport

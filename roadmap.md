@@ -120,3 +120,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Migração/RPC auditada, revisão otimista, API POST validada e 204 testes.
 - [ ] Aplicação gerenciada Cloud, tipos e E2E real.
 - [ ] C016: formulário administrativo e consulta da auditoria.
+
+## C016 — Formulário administrativo (local)
+- [x] Criar/editar, versão por ID protegido, conflitos, invalidação e 214 testes.
+- [ ] Aplicação C015 Cloud e E2E com operador real.
+- [ ] C017: consulta global de auditoria administrativa.

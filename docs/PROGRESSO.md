@@ -285,3 +285,5 @@ C013 revisão Cloud: migração recusada pelo Lovable por restrições do schema
 C014 (Codex): API/lista real de clínicas com identidade persistida, RLS, resposta sem cache e logout concorrente corrigido. 183/183 testes, tipos/build aprovados; lint sete avisos antigos. Cloud C013 verificada. Sem operador criado/E2E real. Local 127.0.0.1:8081. Próxima C015: criação/edição auditada.
 
 C015 Codex: API e migração de clínicas com revisão otimista e auditoria atômica, 204 testes aprovados. Tipos/lint/build exit 0. Migração NÃO aplicada no Cloud (créditos Lovable esgotados), sem operador criado. Próxima C016: formulário administrativo e integração; E2E aguarda conta real informada pelo usuário.
+
+C016 Codex: formulário administrativo integrado e API de revisão por ID protegida. 214 testes aprovados, tipos/lint/build exit 0. C015 Cloud e E2E pendentes. Chrome sem controle após tentativas documentadas de recuperar a mesma aba; sem compra/criação de operador. Próxima C017 consulta global de auditoria.
