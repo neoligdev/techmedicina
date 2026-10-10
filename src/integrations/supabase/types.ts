@@ -14,13 +14,160 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      tm_clinics: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      tm_membership_grants: {
+        Row: {
+          action: string
+          membership_id: string
+          resource: string
+        }
+        Insert: {
+          action: string
+          membership_id: string
+          resource: string
+        }
+        Update: {
+          action?: string
+          membership_id?: string
+          resource?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tm_membership_grants_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "tm_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tm_memberships: {
+        Row: {
+          clinic_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          medical_identity_verified: boolean
+          patient_id: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          medical_identity_verified?: boolean
+          patient_id?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          medical_identity_verified?: boolean
+          patient_id?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tm_memberships_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "tm_clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tm_memberships_patient_id_clinic_id_user_id_fkey"
+            columns: ["patient_id", "clinic_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "tm_patients"
+            referencedColumns: ["id", "clinic_id", "user_id"]
+          },
+        ]
+      }
+      tm_patients: {
+        Row: {
+          clinic_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          user_id: string | null
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tm_patients_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "tm_clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tm_platform_operators: {
+        Row: {
+          created_at: string
+          is_active: boolean
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          is_active?: boolean
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          is_active?: boolean
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      tm_resolve_identity: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never

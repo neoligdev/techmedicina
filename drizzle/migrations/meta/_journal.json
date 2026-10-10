@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791633208587,
+      "tag": "0000_c013_tenant_foundation_d70f8de",
+      "breakpoints": true
+    }
+  ]
 }
