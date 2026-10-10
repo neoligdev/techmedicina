@@ -146,3 +146,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Auditoria com navegação por cursor de horário/ID e validação estrita.
 - [x] 232 testes locais, TypeScript, build e lint sem erros.
 - [ ] Homologar consulta com sessão real e eventos Cloud; continuar persistência dos demais recursos.
+
+## C021 — Rede administrativa
+- [x] Paginação por cadastro/ID, navegação para registros anteriores e retorno aos recentes.
+- [x] Lista recarregada no servidor após gravação confirmada; respostas tardias descartadas após logout.
+- [ ] Homologar com sessão real e continuar vínculos/recursos administrativos.

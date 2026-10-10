@@ -372,6 +372,62 @@ describe("Cadastro persistido após autenticação", () => {
       }),
     );
   });
+  it("navega por cursor e descarta página recebida depois do logout", async () => {
+    const cursor = {
+      before: "2026-10-10T12:00:00Z",
+      beforeId: "00000000-0000-4000-8000-000000000001",
+    };
+    const pending = deferred<Response>();
+    mocks.fetch.mockImplementation(async (url: string) => {
+      if (url === "/api/access-check")
+        return Response.json({ status: "ok", access: { platformAdmin: true, clinicCount: 0 } });
+      if (url.includes("?")) return pending.promise;
+      return Response.json({
+        clinics: [
+          {
+            id: cursor.beforeId,
+            name: "Clínica inicial",
+            is_active: false,
+            created_at: cursor.before,
+          },
+        ],
+        hasMore: true,
+        nextCursor: cursor,
+      });
+    });
+    render(<LoginPage />);
+    await form();
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Clínicas anteriores" }));
+    await waitFor(() =>
+      expect(mocks.fetch).toHaveBeenCalledWith(
+        "/api/platform/clinics?" + new URLSearchParams(cursor),
+        expect.objectContaining({
+          headers: { Authorization: "Bearer test-token" },
+          cache: "no-store",
+        }),
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Sair desta sessão" }));
+    await waitFor(() => expect(mocks.signOut).toHaveBeenCalled());
+    await act(async () =>
+      pending.resolve(
+        Response.json({
+          clinics: [
+            {
+              id: cursor.beforeId,
+              name: "Clínica de outra página",
+              is_active: false,
+              created_at: cursor.before,
+            },
+          ],
+          hasMore: false,
+          nextCursor: null,
+        }),
+      ),
+    );
+    expect(screen.queryByText("Clínica de outra página")).not.toBeInTheDocument();
+  });
   it("conta local não consulta diretório global", async () => {
     mocks.fetch.mockResolvedValue(
       Response.json({ status: "ok", access: { platformAdmin: false, clinicCount: 2 } }),

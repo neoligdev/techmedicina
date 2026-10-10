@@ -1,0 +1,13 @@
+src/features/auth/login-page.tsx(57,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ headers: { Authorization: string; }; cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ headers: { Authorization: string; }; cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+EXIT_CODE=2
+EXIT_CODE=0

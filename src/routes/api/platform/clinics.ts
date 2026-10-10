@@ -4,6 +4,9 @@ import { writePlatformClinic } from "@/lib/admin/clinic-write.server";
 
 export const Route = createFileRoute("/api/platform/clinics")({
   server: {
-    handlers: { GET: clinicDirectoryResponse, POST: ({ request }) => writePlatformClinic(request) },
+    handlers: {
+      GET: ({ request }) => clinicDirectoryResponse(request),
+      POST: ({ request }) => writePlatformClinic(request),
+    },
   },
 });

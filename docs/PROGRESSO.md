@@ -304,3 +304,6 @@ Codex incorporou a logo fornecida pelo titular ao topo do Super ADM, responsiva 
 
 ## C020 — Paginação administrativa
 Codex implementou cursor de horário/ID para consultar eventos anteriores, com autorização antes da validação/leitura, limite por página e preservação da página em falha temporária; acesso negado limpa resultados. 232 testes/25 arquivos aprovados, tsc/build aprovados, lint 0 erros/7 avisos existentes. Login real ainda depende da entrada do titular. Logo C019 conferida visualmente no navegador.
+
+## C021 — Consulta da rede por páginas
+Codex implementou cursor de cadastro/ID para navegar entre páginas de clínicas com RLS, autorização e validação estrita. Salvamento confirmado recarrega a lista no servidor. 234 testes aprovados; build e lint sem erros. Homologação real aguarda entrada do titular; nenhuma conta/vínculo ou migração foi criada nesta etapa.

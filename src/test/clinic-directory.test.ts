@@ -71,8 +71,9 @@ describe("Cadastro administrativo protegido", () => {
     expect(await createClinicDirectory(async () => context, read)()).toEqual({
       clinics: [row],
       hasMore: false,
+      nextCursor: null,
     });
-    expect(read).toHaveBeenCalledWith(context);
+    expect(read).toHaveBeenCalledWith(context, undefined);
   });
   it("retorna banco vazio sem gerar clínicas demonstrativas", async () => {
     expect(
@@ -80,7 +81,7 @@ describe("Cadastro administrativo protegido", () => {
         async () => ({ identity: operator }),
         async () => [],
       )(),
-    ).toEqual({ clinics: [], hasMore: false });
+    ).toEqual({ clinics: [], hasMore: false, nextCursor: null });
   });
   it("limita resultado e informa que há mais clínicas", async () => {
     const result = await createClinicDirectory(
@@ -89,6 +90,7 @@ describe("Cadastro administrativo protegido", () => {
     )();
     expect(result.clinics).toHaveLength(100);
     expect(result.hasMore).toBe(true);
+    expect(result.nextCursor).toEqual({ before: row.created_at, beforeId: row.id });
   });
   it("recusa resposta com campos sensíveis ou formato inesperado", async () => {
     await expect(
@@ -97,6 +99,29 @@ describe("Cadastro administrativo protegido", () => {
         async () => [{ ...row, medical_record: "never expose" }],
       )(),
     ).rejects.toThrow();
+  });
+  it("recusa cursor inválido sem ler banco e autentica antes de validar", async () => {
+    const read = vi.fn().mockResolvedValue([]);
+    const list = createClinicDirectory(async () => ({ identity: operator }), read);
+    for (const query of [
+      "?before=bad&beforeId=" + row.id,
+      "?beforeId=" + row.id,
+      "?before=2026-10-10T12:00:00Z&beforeId=" + row.id + "&role=super_admin",
+      "?before=2026-10-10T12:00:00Z&beforeId=" + row.id + "&beforeId=" + row.id,
+    ]) {
+      await expect(
+        list(new Request("http://localhost/api/platform/clinics" + query)),
+      ).rejects.toMatchObject({ status: 400 });
+    }
+    expect(read).not.toHaveBeenCalled();
+    const cursor = { before: row.created_at, beforeId: row.id };
+    await list(new Request("http://localhost/api/platform/clinics?" + new URLSearchParams(cursor)));
+    expect(read).toHaveBeenCalledWith({ identity: operator }, cursor);
+    const response = await createClinicDirectoryResponse(
+      createClinicDirectory(async () => null, vi.fn()),
+    )(new Request("http://localhost/api/platform/clinics?before=bad"));
+    expect(response.status).toBe(401);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
   });
   it("resumo não expõe usuário, patientId ou grants e ignora vínculos inativos", () => {
     const identity: AuthenticatedIdentity = {

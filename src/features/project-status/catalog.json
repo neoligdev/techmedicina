@@ -582,7 +582,7 @@
       "title": "Clínicas e acesso administrativo",
       "parent": "12",
       "status": "progress",
-      "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; C015 agora aplicada no Cloud. C016 (Codex): formulário real de criação/edição integrado ao login do operador, carregamento de revisão no servidor e testes de conflito/duplicação/logout; C015 aplicada no Cloud; E2E pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular.",
+      "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; C015 agora aplicada no Cloud. C016 (Codex): formulário real de criação/edição integrado ao login do operador, carregamento de revisão no servidor e testes de conflito/duplicação/logout; C015 aplicada no Cloud; E2E pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C021: rede administrativa consultável por páginas de até 100, com cursor validado no servidor, revisão da lista após salvar e respostas após logout ignoradas; validação local.",
       "next": "Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.",
       "authors": [
         "Lovable",
@@ -1947,7 +1947,7 @@
       "parent": "12.1",
       "status": "done",
       "done": "Codex implementou API de leitura global exclusiva do operador persistido, cliente por requisição sujeito a RLS, resumo de acesso sem dados sensíveis e lista de clínicas reais no login. Banco vazio não gera registros demonstrativos. Homologação com operador real pendente.",
-      "next": "Provisionar conta/operador sob controle explícito e validar gateway; seguir com criação/edição auditada sem conceder acesso clínico ao cargo administrativo.",
+      "next": "Paginação adicionada em C021. Homologar gateway/listagem e cadastro com operador real; administração completa e vínculos permanecem em desenvolvimento.",
       "authors": [
         "Codex"
       ],
@@ -2024,6 +2024,18 @@
       "status": "done",
       "done": "Codex implementou consulta de eventos anteriores por cursor de horário/ID, páginas limitadas a 100, validação do cursor após autorização e antes da leitura, acesso via cliente sujeito a RLS e limpeza da página em acesso negado. Suíte local 232/232, TypeScript, build e lint sem erros. Não homologado com sessão real.",
       "next": "Homologar auditoria autenticada no Cloud com o titular e ampliar auditoria para os próximos recursos do PRD; sem acesso clínico automático.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
+    },
+    {
+      "id": "D21",
+      "title": "Consulta de toda a rede por páginas — código e testes",
+      "parent": "12.1",
+      "status": "done",
+      "done": "Codex adicionou paginação do cadastro real de clínicas por horário/ID, consulta de páginas anteriores e retorno aos cadastros recentes. Servidor autoriza antes de validar cursor e consultar com RLS; lista é recarregada após gravação confirmada. 234 testes locais aprovados; homologação autenticada pendente.",
+      "next": "Validar navegação e gravações com sessão real do primeiro Super ADM; seguir vínculos e recursos administrativos do PRD.",
       "authors": [
         "Codex"
       ],

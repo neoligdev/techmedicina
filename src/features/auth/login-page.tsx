@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { accessSummarySchema, type AccessSummary } from "@/lib/auth/access-summary";
-import { clinicDirectorySchema, type ClinicDirectory } from "./clinic-directory";
+import { clinicDirectorySchema, type ClinicDirectory, type ClinicCursor } from "./clinic-directory";
 
 const unavailable =
   "Serviço de autenticação temporariamente indisponível. Tente novamente mais tarde.";
@@ -42,6 +42,39 @@ export function LoginPage() {
   const revision = useRef(0);
   const operation = useRef<"login" | "signup" | "google" | "logout" | null>(null);
   const abort = useRef<AbortController | null>(null);
+  const directoryOperation = useRef(false);
+
+  async function loadDirectoryPage(cursor?: ClinicCursor) {
+    if (!verifiedToken || directoryOperation.current || directoryLoading) return;
+    directoryOperation.current = true;
+    const current = revision.current;
+    const signal = abort.current?.signal ?? null;
+    const isCurrent = () => mounted.current && revision.current === current && !signal?.aborted;
+    setDirectoryLoading(true);
+    setError(null);
+    try {
+      const query = cursor ? `?${new URLSearchParams(cursor)}` : "";
+      const response = await fetch(`/api/platform/clinics${query}`, {
+        headers: { Authorization: `Bearer ${verifiedToken}` },
+        cache: "no-store",
+        signal,
+      });
+      const parsed = clinicDirectorySchema.safeParse(
+        response.status === 200 ? await response.json() : null,
+      );
+      if (!isCurrent()) return;
+      if (parsed.success) setDirectory(parsed.data);
+      else {
+        if (response.status === 401 || response.status === 403) setDirectory(null);
+        setError("Não foi possível atualizar o cadastro de clínicas. Tente consultar novamente.");
+      }
+    } catch {
+      if (isCurrent()) setError("Cadastro de clínicas temporariamente indisponível.");
+    } finally {
+      directoryOperation.current = false;
+      if (isCurrent()) setDirectoryLoading(false);
+    }
+  }
 
   function invalidate() {
     revision.current += 1;
@@ -348,32 +381,32 @@ export function LoginPage() {
                     key={verifiedToken}
                     token={verifiedToken}
                     clinics={directory.clinics}
-                    onSaved={(saved) =>
-                      setDirectory((current) =>
-                        current
-                          ? {
-                              ...current,
-                              clinics: [
-                                saved,
-                                ...current.clinics.filter((clinic) => clinic.id !== saved.id),
-                              ].slice(0, 100),
-                              hasMore:
-                                current.hasMore ||
-                                (current.clinics.length >= 100 &&
-                                  !current.clinics.some((clinic) => clinic.id === saved.id)),
-                            }
-                          : null,
-                      )
-                    }
+                    onSaved={() => void loadDirectoryPage()}
                   />
                 )}
-                {directory.hasMore && (
-                  <p className="text-sm text-muted-foreground">
-                    Mostrando as primeiras 100 clínicas. Paginação completa em desenvolvimento.
-                  </p>
-                )}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={directoryLoading}
+                    onClick={() => void loadDirectoryPage()}
+                  >
+                    Clínicas mais recentes
+                  </Button>
+                  {directory.hasMore && directory.nextCursor && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={directoryLoading}
+                      onClick={() => void loadDirectoryPage(directory.nextCursor ?? undefined)}
+                    >
+                      Clínicas anteriores
+                    </Button>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Criação e edição dependem da migração de auditoria no Cloud.
+                  Até 100 clínicas por página, ordenadas pelo cadastro mais recente. Alterações
+                  confirmadas recarregam a primeira página.
                 </p>
                 {verifiedToken && (
                   <AdministrativeAuditPanel key={verifiedToken} token={verifiedToken} />
