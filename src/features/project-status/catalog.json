@@ -2066,6 +2066,18 @@
         "Lovable"
       ],
       "requirements": []
+    },
+    {
+      "id": "D24",
+      "title": "Identidade visual por clínica — fundação SQL validada localmente",
+      "parent": "4",
+      "status": "done",
+      "done": "Codex preparou tabela com RLS, gravação por RPC autorizada, revisão contra sobrescritas, validação de preferências e auditoria de campos. 243 testes, TypeScript, lint dos arquivos alterados e compilação aprovados. Nenhuma migração aplicada no Cloud nesta etapa.",
+      "next": "Aplicar migração revisada pelo fluxo gerenciado, regenerar tipos e integrar API/formulário com sessão real. Personalização atual continua salva no navegador.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

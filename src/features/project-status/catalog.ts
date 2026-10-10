@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "10/10/2026"; // C023: preview recuperado; homologação autenticada pendente.
+export const updatedAt = "10/10/2026"; // C024: fundação de personalização testada; integração Cloud pendente.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export const statusLabels: Record<ProjectStatus, string> = {

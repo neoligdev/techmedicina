@@ -1733,3 +1733,10 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex reconectou Chrome, confirmou C022 R1 renderizada e diagnosticou falha de importação do cliente TanStack. Lovable reiniciou somente o runtime; informou build 7a6e6cc succeeded/in_sync, módulo HTTP 200 e hidratação após Refresh. Codex confirmou campos E-mail/Senha, Entrar habilitado e espera de sessão ausente. Sem alteração de banco, permissões ou publicação.
 - **Próximo Passo**: Titular entrar no preview para homologar JWT/gateway, criação/edição de clínica QA e auditoria; continuar persistência e vínculos do PRD.
 
+## D24 - Identidade visual por clínica — fundação SQL validada localmente 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou tabela com RLS, gravação por RPC autorizada, revisão contra sobrescritas, validação de preferências e auditoria de campos. 243 testes, TypeScript, lint dos arquivos alterados e compilação aprovados. Nenhuma migração aplicada no Cloud nesta etapa.
+- **Próximo Passo**: Aplicar migração revisada pelo fluxo gerenciado, regenerar tipos e integrar API/formulário com sessão real. Personalização atual continua salva no navegador.
+

@@ -13,8 +13,10 @@ export const administrativeAuditRowsSchema = z
         id: z.string().uuid(),
         actor_user_id: z.string().uuid(),
         clinic_id: z.string().uuid(),
-        action: z.enum(["clinic_created", "clinic_updated"]),
-        changed_fields: z.array(z.enum(["name", "is_active"])).max(2),
+        action: z.enum(["clinic_created", "clinic_updated", "branding_updated"]),
+        changed_fields: z
+          .array(z.enum(["name", "is_active", "primary", "secondary", "mode", "logo", "favicon"]))
+          .max(6),
         occurred_at: z.string().datetime({ offset: true }),
       })
       .strict(),

@@ -313,5 +313,8 @@ Codex revisou o lockfile Bun, corrigiu esbuild e cinco famílias transitivas, pr
 
 C022 R1: remoto Lovable 095f9d1 incorporado por merge normal após rejeição de push não fast-forward. Ajuste ESLint cosmético restrito aos dois arquivos regenerados; sem afrouxar regras de autorização. Diagnóstico remoto continua pendente.
 
+## C024 — Fundação da identidade visual
+Codex preparou migração com RLS, RPC autorizada, revisão e auditoria de campos; contrato estrito e nove testes novos. 243 testes/26 arquivos, TypeScript, lint dos arquivos alterados e build aprovados. Cloud ainda não recebeu a migração; API/formulário e sessão real são próximos passos. Identidade PlugPix preservada.
+
 ## C023 — Preview recuperado
 Chrome reconectado. Codex confirmou C022 R1 renderizada, mas login falhava na importação do cliente TanStack. Lovable reiniciou somente runtime, informando build 7a6e6cc succeeded/in_sync e módulo HTTP 200. Codex confirmou formulário com campos e botão Entrar habilitado, sem espera de sessão. Capturas c023_*.jpg e erros anteriores c023_module_errors.json. Nenhuma publicação, alteração de banco/permissões ou credenciais. Entrada do titular ainda pendente.

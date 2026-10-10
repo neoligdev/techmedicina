@@ -157,6 +157,10 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Instalação frozen e bun audit sem alertas; 234 testes, tsc/build aprovados.
 - [ ] Recuperar diagnóstico e build do preview Lovable; homologar sessão real do titular.
 
+## C024 — Persistência da identidade visual
+- [x] Fundação SQL/RLS/RPC e contrato validados localmente com revisão e auditoria.
+- [ ] Aplicar no Cloud, regenerar tipos e integrar API/formulário com sessão real.
+
 ## C023 — Runtime do preview
 - [x] Reconexão Chrome e confirmação da C022 R1 renderizada.
 - [x] Reinício do preview pelo Lovable; formulário de login/hidratação verificados por Codex.

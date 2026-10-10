@@ -83,7 +83,11 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
                 className="rounded-xl border border-border bg-background/40 p-4 text-sm"
               >
                 <strong>
-                  {event.action === "clinic_created" ? "Clínica criada" : "Clínica atualizada"}
+                  {event.action === "clinic_created"
+                    ? "Clínica criada"
+                    : event.action === "branding_updated"
+                      ? "Identidade visual atualizada"
+                      : "Clínica atualizada"}
                 </strong>
                 <p className="mt-1 text-muted-foreground">
                   <time dateTime={event.occurred_at}>
@@ -103,7 +107,18 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
                 <p className="mt-2 text-xs text-muted-foreground">
                   Campos:{" "}
                   {event.changed_fields
-                    .map((field) => (field === "name" ? "nome" : "atividade"))
+                    .map(
+                      (field) =>
+                        ({
+                          name: "nome",
+                          is_active: "atividade",
+                          primary: "cor principal",
+                          secondary: "cor secundária",
+                          mode: "tema",
+                          logo: "logo",
+                          favicon: "ícone",
+                        })[field],
+                    )
                     .join(", ") || "sem alteração de campos"}
                 </p>
               </li>
