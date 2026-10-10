@@ -32,7 +32,6 @@ beforeAll(async () => {
     CREATE ROLE anon NOLOGIN;
     CREATE ROLE authenticated NOLOGIN;
     CREATE SCHEMA auth;
-    CREATE TABLE auth.users (id uuid PRIMARY KEY);
     CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$
       SELECT nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
     $$;
@@ -45,8 +44,6 @@ beforeAll(async () => {
       "utf8",
     ),
   );
-  for (const id of [doctorA, doctorB, adminA, patientA, operator])
-    await db.query("INSERT INTO auth.users (id) VALUES ($1)", [id]);
   await db.query(
     "INSERT INTO public.tm_clinics(id,name,is_active) VALUES ($1,'Clínica A',true),($2,'Clínica B',true)",
     [clinicA, clinicB],

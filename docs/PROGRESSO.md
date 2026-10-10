@@ -270,3 +270,5 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - Cloud: conector 404; Chrome/editor voltou a funcionar. Consulta somente leitura mostrou auth disponível e zero tabelas públicas. Preview C012 renderizou D12/12 entregas; aviso de build remoto continua visível.
 - Estado: Codex único executor. C013 azul até aplicação/verificação Cloud; aplicar via Lovable após commit/push para manter registro gerenciado, sem edição concorrente. Nenhum grant ou acesso administrativo foi criado por email/metadata.
 - Retomada: verificar aplicação C013, depois C014 administração real separada da demo. Login real, RLS remoto, auditoria, keystore, hardware e regras comerciais seguem explicitamente pendentes.
+
+C013 revisão Cloud: migração recusada pelo Lovable por restrições do schema Auth e ordem de privilégios/RLS; revisão Codex com IDs opacos e validação de conta reservada ao provisionamento Auth. 12/12 testes PostgreSQL novamente aprovados. Nenhum operador ou acesso criado.

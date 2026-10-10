@@ -1661,5 +1661,5 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
 - **Entregue**: Codex concluiu código da migração aditiva, RLS de leitura própria e resolvedor persistido; testes em PostgreSQL em memória e suíte 166/166. Entrega local, sem homologação remota.
-- **Próximo Passo**: Aplicar a migração no Cloud, verificar catálogo de políticas e validar login/vínculos reais sem bootstrap administrativo automático.
+- **Próximo Passo**: Revisão Cloud: IDs de conta opacos sem FK ao schema Auth gerenciado e permissões antes de RLS. 12 testes PostgreSQL mantidos. Aplicação remota e login real ainda pendentes; provisionamento deverá validar conta pelo Auth.
 

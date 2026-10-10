@@ -9,11 +9,12 @@ CREATE TABLE public.tm_clinics (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- Auth account IDs are opaque: managed Cloud forbids FKs to auth.users. Provisioning must verify accounts through Auth.
 -- Opaque patient/account association only; no medical or personal content in this foundation.
 CREATE TABLE public.tm_patients (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   clinic_id uuid NOT NULL REFERENCES public.tm_clinics(id),
-  user_id uuid REFERENCES auth.users(id),
+  user_id uuid,
   is_active boolean NOT NULL DEFAULT false,
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (id, clinic_id, user_id),
@@ -23,7 +24,7 @@ CREATE TABLE public.tm_patients (
 CREATE TABLE public.tm_memberships (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   clinic_id uuid NOT NULL REFERENCES public.tm_clinics(id),
-  user_id uuid NOT NULL REFERENCES auth.users(id),
+  user_id uuid NOT NULL,
   role text NOT NULL CHECK (role IN ('admin', 'medico', 'paciente')),
   is_active boolean NOT NULL DEFAULT false,
   medical_identity_verified boolean NOT NULL DEFAULT false,
@@ -43,23 +44,23 @@ CREATE TABLE public.tm_membership_grants (
 );
 
 CREATE TABLE public.tm_platform_operators (
-  user_id uuid PRIMARY KEY REFERENCES auth.users(id),
+  user_id uuid PRIMARY KEY,
   role text NOT NULL CHECK (role = 'super_admin'),
   is_active boolean NOT NULL DEFAULT false,
   created_at timestamptz NOT NULL DEFAULT now()
 );
-
-ALTER TABLE public.tm_clinics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.tm_patients ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.tm_memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.tm_membership_grants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.tm_platform_operators ENABLE ROW LEVEL SECURITY;
 
 -- No browser writes, no public/anonymous data, no self-promotion or role metadata trust.
 REVOKE ALL ON public.tm_clinics, public.tm_patients, public.tm_memberships,
   public.tm_membership_grants, public.tm_platform_operators FROM PUBLIC, anon, authenticated;
 GRANT SELECT ON public.tm_clinics, public.tm_patients, public.tm_memberships,
   public.tm_membership_grants, public.tm_platform_operators TO authenticated;
+
+ALTER TABLE public.tm_clinics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tm_patients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tm_memberships ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tm_membership_grants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tm_platform_operators ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY tm_membership_self_read ON public.tm_memberships FOR SELECT TO authenticated
   USING (user_id = (SELECT auth.uid()));
