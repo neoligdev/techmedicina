@@ -12,6 +12,27 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("Painel de auditoria", () => {
+  it("consulta eventos anteriores pelo cursor e mantém página em falha", async () => {
+    const event = {
+      id,
+      actor_user_id: id,
+      clinic_id: id,
+      action: "clinic_created",
+      changed_fields: ["name"],
+      occurred_at: "2026-10-10T12:00:00Z",
+    };
+    const cursor = { before: event.occurred_at, beforeId: id };
+    fetchMock
+      .mockResolvedValueOnce(Response.json({ events: [event], hasMore: true, nextCursor: cursor }))
+      .mockResolvedValueOnce(Response.json({}, { status: 503 }));
+    render(<AdministrativeAuditPanel token="verified-token" />);
+    fireEvent.click(screen.getByRole("button", { name: "Consultar auditoria" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Eventos anteriores" }));
+    await screen.findByRole("alert");
+    expect(screen.getByText("Clínica criada")).toBeInTheDocument();
+    expect(fetchMock.mock.calls[1]![0]).toBe("/api/platform/audit?" + new URLSearchParams(cursor));
+    expect(fetchMock.mock.calls[1]![1].headers.Authorization).toBe("Bearer verified-token");
+  });
   it("consulta somente por ação explícita e diferencia banco vazio", async () => {
     fetchMock.mockResolvedValue(Response.json({ events: [], hasMore: false }));
     render(<AdministrativeAuditPanel token="verified-token" />);

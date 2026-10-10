@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { administrativeAuditSchema } from "./administrative-audit";
+import { administrativeAuditSchema, type AuditCursor } from "./administrative-audit";
 import type { z } from "zod";
 
 export function AdministrativeAuditPanel({ token }: { token: string }) {
@@ -17,16 +17,17 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
       abort.current?.abort();
     };
   }, []);
-  async function load() {
+  async function load(cursor?: AuditCursor) {
     if (running.current) return;
     running.current = true;
     setBusy(true);
-    setAudit(null);
+    if (!cursor) setAudit(null);
     setError(null);
     const controller = new AbortController();
     abort.current = controller;
     try {
-      const response = await fetch("/api/platform/audit", {
+      const query = cursor ? `?${new URLSearchParams(cursor).toString()}` : "";
+      const response = await fetch(`/api/platform/audit${query}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
         signal: controller.signal,
@@ -36,12 +37,14 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
       );
       if (!mounted.current || controller.signal.aborted) return;
       if (parsed.success) setAudit(parsed.data);
-      else
+      else {
+        if (response.status === 401 || response.status === 403) setAudit(null);
         setError(
           response.status === 401 || response.status === 403
             ? "Acesso à auditoria não autorizado. Entre novamente."
             : "Auditoria temporariamente indisponível.",
         );
+      }
     } catch {
       if (mounted.current && !controller.signal.aborted)
         setError("Auditoria temporariamente indisponível.");
@@ -108,9 +111,21 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
           </ol>
         ))}
       {audit?.hasMore && (
-        <p className="text-xs text-muted-foreground">
-          Mostrando os 100 eventos mais recentes. Paginação completa em desenvolvimento.
-        </p>
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Até 100 eventos por página. Consultar auditoria retorna aos mais recentes.
+          </p>
+          {audit.nextCursor && (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() => void load(audit.nextCursor ?? undefined)}
+            >
+              Eventos anteriores
+            </Button>
+          )}
+        </div>
       )}
     </section>
   );

@@ -141,3 +141,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Primeiro Super ADM persistido provisionado após autorização específica.
 - [x] 230 testes, tsc, build e lint sem erros.
 - [ ] Homologar login, criação/edição de clínicas e auditoria reais; continuar vínculos e isolamento.
+
+## C020 — Consulta administrativa
+- [x] Auditoria com navegação por cursor de horário/ID e validação estrita.
+- [x] 232 testes locais, TypeScript, build e lint sem erros.
+- [ ] Homologar consulta com sessão real e eventos Cloud; continuar persistência dos demais recursos.

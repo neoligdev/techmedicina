@@ -46,7 +46,7 @@ describe("Consulta global de auditoria administrativa", () => {
     )();
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(await response.json()).toEqual({ events: [event], hasMore: false });
+    expect(await response.json()).toEqual({ events: [event], hasMore: false, nextCursor: null });
   });
   it("campos extras ou evento clínico não entram na resposta", async () => {
     const response = await createAuditDirectory(
@@ -72,6 +72,7 @@ describe("Consulta global de auditoria administrativa", () => {
     const result = await response.json();
     expect(result.events).toHaveLength(100);
     expect(result.hasMore).toBe(true);
+    expect(result.nextCursor).toEqual({ before: event.occurred_at, beforeId: id });
   });
   it("banco indisponível não expõe detalhes internos", async () => {
     const response = await createAuditDirectory(
@@ -82,5 +83,39 @@ describe("Consulta global de auditoria administrativa", () => {
     )();
     expect(response.status).toBe(503);
     expect(await response.text()).not.toContain("private");
+  });
+  it("valida cursor depois de autorizar e antes da leitura", async () => {
+    const read = vi.fn().mockResolvedValue([]);
+    const list = createAuditDirectory(async () => ({ identity }), read);
+    for (const query of [
+      "?before=invalid&beforeId=" + id,
+      "?beforeId=" + id,
+      "?before=2026-10-10T12:00:00Z&beforeId=" + id + "&role=super_admin",
+      "?before=2026-10-10T12:00:00Z&beforeId=" + id + "&beforeId=" + id,
+    ]) {
+      expect((await list(new Request("http://localhost/api/platform/audit" + query))).status).toBe(
+        400,
+      );
+    }
+    expect(read).not.toHaveBeenCalled();
+    const cursor = { before: event.occurred_at, beforeId: id };
+    expect(
+      (
+        await list(
+          new Request("http://localhost/api/platform/audit?" + new URLSearchParams(cursor)),
+        )
+      ).status,
+    ).toBe(200);
+    expect(read).toHaveBeenCalledWith({ identity }, cursor);
+    const deniedRead = vi.fn();
+    expect(
+      (
+        await createAuditDirectory(
+          async () => null,
+          deniedRead,
+        )(new Request("http://localhost/api/platform/audit?before=invalid"))
+      ).status,
+    ).toBe(401);
+    expect(deniedRead).not.toHaveBeenCalled();
   });
 });

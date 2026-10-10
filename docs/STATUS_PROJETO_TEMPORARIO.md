@@ -21,7 +21,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex, OpenCode
-- **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular.
+- **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente.
 - **Próximo Passo**: Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.
 
 **Requisitos**:
@@ -150,7 +150,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, OpenCode, Codex, Lovable
-- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular.
+- **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente.
 - **Próximo Passo**: Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.
 
 **Requisitos**:
@@ -1689,7 +1689,7 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex, Lovable
 - **Entregue**: Codex implementou API/painel da auditoria de cadastro exclusiva do Super ADM persistido. Consulta explícita com RLS, limite de 100 eventos, origem/ator/horário/campos alterados e sem textos ou valores clínicos. Testes locais; C015 aplicada no Cloud; E2E com conta real pendente.
-- **Próximo Passo**: Primeiro Super ADM ativo por autorização específica. Homologar criação, edição, conflito e auditoria com login real; OAuth, paginação e demais requisitos produtivos permanecem pendentes.
+- **Próximo Passo**: Paginação administrativa implementada em C020. Homologação com sessão real e auditoria dos demais recursos permanecem pendentes.
 
 ## D18 - Sincronização Cloud, cadastro e validação — escopo C018 🟢
 
@@ -1704,4 +1704,11 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex adicionou a imagem oficial fornecida pelo titular ao cabeçalho do Super ADM, com proporção preservada, tamanho responsivo, descrição acessível e link para início. Personalização das clínicas permanece independente.
 - **Próximo Passo**: Prosseguir homologação autenticada e demais requisitos do PRD.
+
+## D20 - Paginação da auditoria administrativa — código e testes 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou consulta de eventos anteriores por cursor de horário/ID, páginas limitadas a 100, validação do cursor após autorização e antes da leitura, acesso via cliente sujeito a RLS e limpeza da página em acesso negado. Suíte local 232/232, TypeScript, build e lint sem erros. Não homologado com sessão real.
+- **Próximo Passo**: Homologar auditoria autenticada no Cloud com o titular e ampliar auditoria para os próximos recursos do PRD; sem acesso clínico automático.
 

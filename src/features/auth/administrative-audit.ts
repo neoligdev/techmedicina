@@ -1,4 +1,11 @@
 import { z } from "zod";
+export const auditCursorSchema = z
+  .object({
+    before: z.string().datetime({ offset: true }),
+    beforeId: z.string().uuid(),
+  })
+  .strict();
+export type AuditCursor = z.infer<typeof auditCursorSchema>;
 export const administrativeAuditRowsSchema = z
   .array(
     z
@@ -17,5 +24,6 @@ export const administrativeAuditSchema = z
   .object({
     events: administrativeAuditRowsSchema.max(100),
     hasMore: z.boolean(),
+    nextCursor: auditCursorSchema.nullable().optional(),
   })
   .strict();

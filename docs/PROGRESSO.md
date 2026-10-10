@@ -301,3 +301,6 @@ Cloud C015 aplicada por Lovable; tipos e cadastro sincronizados até bedb68a. Co
 
 ## C019 — Logo oficial
 Codex incorporou a logo fornecida pelo titular ao topo do Super ADM, responsiva e com proporção original. Asset local public/plugpix-techmedicina.png. Personalização por clínica preservada.
+
+## C020 — Paginação administrativa
+Codex implementou cursor de horário/ID para consultar eventos anteriores, com autorização antes da validação/leitura, limite por página e preservação da página em falha temporária; acesso negado limpa resultados. 232 testes/25 arquivos aprovados, tsc/build aprovados, lint 0 erros/7 avisos existentes. Login real ainda depende da entrada do titular. Logo C019 conferida visualmente no navegador.
