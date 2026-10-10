@@ -307,3 +307,6 @@ Codex implementou cursor de horário/ID para consultar eventos anteriores, com a
 
 ## C021 — Consulta da rede por páginas
 Codex implementou cursor de cadastro/ID para navegar entre páginas de clínicas com RLS, autorização e validação estrita. Salvamento confirmado recarrega a lista no servidor. 234 testes aprovados; build e lint sem erros. Homologação real aguarda entrada do titular; nenhuma conta/vínculo ou migração foi criada nesta etapa.
+
+## C022 — Dependências e divergência do preview
+Codex revisou o lockfile Bun, corrigiu esbuild e cinco famílias transitivas, preservando ranges declarados dos módulos. Instalação frozen, bun audit sem alertas, 234 testes/tsc/build aprovados, lint 0 erros/7 avisos. Lovable recebeu commits até 921a02d mas mostrou Build unsuccessful / Preview is out of date; diagnóstico somente leitura enviado. Chrome perdeu disponibilidade e API respondeu 404, resposta ainda não lida. Não considerar preview remoto atualizado/homologado.

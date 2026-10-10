@@ -151,3 +151,8 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Paginação por cadastro/ID, navegação para registros anteriores e retorno aos recentes.
 - [x] Lista recarregada no servidor após gravação confirmada; respostas tardias descartadas após logout.
 - [ ] Homologar com sessão real e continuar vínculos/recursos administrativos.
+
+## C022 — Segurança de dependências
+- [x] Dependências sinalizadas no lockfile atualizadas, sem troca das versões declaradas dos módulos.
+- [x] Instalação frozen e bun audit sem alertas; 234 testes, tsc/build aprovados.
+- [ ] Recuperar diagnóstico e build do preview Lovable; homologar sessão real do titular.

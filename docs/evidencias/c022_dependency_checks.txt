@@ -1,0 +1,8 @@
+C022: npm install --ignore-scripts --package-lock=false
+C022: bun 1.4.3 update brace-expansion js-yaml nanoid shell-quote source-map-js --lockfile-only --ignore-scripts
+C022: bun 1.4.3 install --frozen-lockfile --ignore-scripts: exit 0
+C022: declared dependencies/devDependencies unchanged; bun lockfileVersion remains 1.
+C022: drizzle-kit --version: 0.31.11; drizzle-orm 0.45.4; exit 0.
+C022: @esbuild-kit/core-utils transformSync TypeScript constant: CORE_UTILS_TRANSFORM_OK; exit 0.
+C022: bun audit --json: {}; exit 0. See c022_bun_audit.txt.
+Legacy untracked npm package-lock.json preserved; npm audit without --package-lock=false can read that stale lock and is not evidence for the tracked Bun lock.
