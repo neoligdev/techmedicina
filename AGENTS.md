@@ -25,6 +25,7 @@
 - Keep visual preference validation, browser storage adapter, and contrast-aware CSS variable mapping in separate browser-safe demo modules; this allows replacing persistence without coupling the form to storage.
 - Persist only whitelisted visual preferences keyed by immutable clinic ID and load after hydration; clinic selection stays temporary and never supplies authorization.
 - Apply the reviewed tenant SQL verbatim through Lovable Cloud managed migrations and regenerate database types through managed tooling; opaque account IDs must be verified through Auth during future provisioning, not through foreign keys to managed Auth tables.
+- Use the managed Database type after migration deployment and omit optional RPC arguments on creation so PostgreSQL applies its NULL defaults; this avoids stale contract intersections without changing protected-write behavior.
 
 ## Coordenação e Desenvolvimento (Adicionado)
 

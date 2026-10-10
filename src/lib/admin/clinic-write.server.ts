@@ -78,8 +78,9 @@ export const writePlatformClinic = createClinicWriter(
     const result = await client.rpc("tm_save_clinic", {
       p_name: input.name,
       p_is_active: input.isActive,
-      p_clinic_id: input.operation === "update" ? input.id : null,
-      p_expected_revision: input.operation === "update" ? input.expectedRevision : null,
+      ...(input.operation === "update"
+        ? { p_clinic_id: input.id, p_expected_revision: input.expectedRevision }
+        : {}),
     });
     if (result.error) {
       if (result.error.code === "40001")
