@@ -189,11 +189,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <AreaSelector area={area} />
           {!branded && (
-            <Button asChild variant="outline" size="sm" className="project-status-top-link">
-              <Link to="/staus">
-                Status do projeto<span className="project-status-temporary"> · temporário</span>
-              </Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline" size="sm" className="project-status-top-link">
+                <Link to="/staus">
+                  Status do projeto<span className="project-status-temporary"> · temporário</span>
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Link to="/login">Entrar</Link>
+              </Button>
+            </div>
           )}
           {!branded && (
             <Button

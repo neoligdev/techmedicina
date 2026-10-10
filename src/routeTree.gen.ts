@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as StausRouteImport } from './routes/staus'
 import { Route as ApiAccessCheckRouteImport } from './routes/api/access-check'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -24,6 +25,11 @@ import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$sec
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StausRoute = StausRouteImport.update({
@@ -79,6 +85,7 @@ const SuperAdminSectionRoute = SuperAdminSectionRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/staus': typeof StausRoute
   '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/staus': typeof StausRoute
   '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
@@ -106,6 +114,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/staus': typeof StausRoute
   '/api/access-check': typeof ApiAccessCheckRoute
   '/app/$section': typeof AppSectionRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/staus'
     | '/api/access-check'
     | '/app/$section'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/staus'
     | '/api/access-check'
     | '/app/$section'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/login'
     | '/staus'
     | '/api/access-check'
     | '/app/$section'
@@ -161,6 +173,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   StausRoute: typeof StausRoute
   ApiAccessCheckRoute: typeof ApiAccessCheckRoute
   AppSectionRoute: typeof AppSectionRoute
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/staus': {
@@ -257,6 +277,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   StausRoute: StausRoute,
   ApiAccessCheckRoute: ApiAccessCheckRoute,
   AppSectionRoute: AppSectionRoute,

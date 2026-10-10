@@ -85,3 +85,12 @@ Próximo Passo Planejado: C012 (Login visual e E2E) e fechamento do fluxo RLS Au
 - **Notas da nuvem**: API Lovable retornou 404 `project_not_found` para conexão externa, e o preview remoto continuou `build unsuccessful`. Nenhum DDL, nem adminclient criados.
 
 - **Codex QA**: Validado via `curl` sem credenciais retornando `HTTP 401 Missing session` limpo, sem alegar login real.
+## Adendo C012 — Login Cloud e UX Premium (10/10/2026)
+
+- Usuário substituiu a coordenação com Antigravity por **execução direta do Codex**, incluindo testes, status e commit/push. Antigravity cancelado antes das correções; OpenCode ocioso. Um único executor.
+- Antigravity iniciou o login; Codex revisou e corrigiu fluxo de login sem evento, renovação de token, restauração atrasada, concorrência entre probes, logout e falhas de configuração. API agora bloqueia cache nas respostas; UI usa cores semânticas e marca PlugPix.
+- SDK gerado preservado. Senha sem trim; nenhuma permissão clínica derivada de metadados. Confirmar identidade não libera dados ou área administrativa real.
+- Evidências válidas desta revisão: `c012_codex_*`, tsc/lint exit 0 e suíte 137/137. R1 não é aprovação: seu lint registra exit 1/50 erros, apesar do relato anterior.
+- Cloud já habilitado pelo usuário/Lovable; nenhuma migração ou conta criada nesta entrega. Login real E2E e RLS continuam pendentes.
+- Controle do navegador retornou `Transport closed`; preview/QA visual desta revisão não confirmados. Push autorizado pelo usuário, normal em main com PlugPix, após validação.
+- Próxima C013: preparar domínio persistido de clínicas e vínculos, com testes de isolamento e negação por padrão. Não usar o Supabase externo como segundo runtime.

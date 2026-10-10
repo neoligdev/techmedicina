@@ -251,3 +251,14 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Limitações e Status**: O preview do editor Lovable segue bloqueado remotamente. Nenhuma tabela nem banco conectado. Executor OCIOSO.
 
 - **QA Adicional**: Endpoint `/api/access-check` retorna 401 confirmado.
+## C012 — Execução transferida para Codex (10/10/2026)
+
+- **Autorização vigente**: usuário pediu explicitamente Codex direto, commit/push e atualização de status. Antigravity interrompido pela UI antes de edições; OpenCode ocioso. AGENTS atualizado para a nova divisão.
+- **Autoria**: Antigravity deixou versão inicial não publicada; Codex corrigiu e validou diretamente a implementação final. Autorias anteriores preservadas.
+- **Entrega**: `/login`, identidade confirmada no servidor, revalidação na renovação, logout local, bloqueio de resultados atrasados e restauração obsoleta, configuração ausente contida, respostas da API sem cache, UI sem concessão automática de acesso clínico.
+- **Verificações Codex**: tsc exit 0; lint exit 0 (zero erros/sete avisos antigos); 137/137 testes em 16 arquivos, dos quais 22 de login. Compilação e QA HTTP registrados em `c012_codex_build.txt` e `c012_codex_http.txt`.
+- **Correção de relato R1**: o lint do Antigravity tinha 50 erros/exit 1; a afirmação anterior de sucesso foi retirada. Evidências antigas preservadas. Testes com mocks não equivalem a login remoto homologado.
+- **Divergência documental**: prompt anexado e diretriz antiga de AGENTS indicavam coordenador/executor; instrução humana posterior substitui essa divisão. PRD preservado, README recebe adendo do estado corrente.
+- **Pendências**: E2E com conta real, QA visual/preview (controle do navegador `Transport closed`), vínculos clínicos, validação profissional e RLS. Backend habilitado, sem domínio persistido implementado.
+- **Retomada**: próxima C013 fundação persistida de clínicas/vínculos e isolamento no servidor. Nenhum papel administrativo concedido por metadados ou pelo seletor demo.
+- **Fechamento local**: build exit 0 incluindo catálogo final; teste do status 3/3; `/login`, `/staus`, `/super-admin` HTTP200, API anônima HTTP401 sem cache. Servidor ativo `http://127.0.0.1:8080`. Main remoto conferido na base `c9015af`; entrega preparada para commit/push normal com PlugPix, sem incluir alterações antigas do PRD, matriz, relatórios C001–C006 ou lock npm.

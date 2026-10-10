@@ -82,10 +82,21 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 ## C011 — Próxima etapa (planejada)
 
 - **Estado (10/10/2026)**: liberada pelo Codex como próxima após o fechamento do push da C010; executor OpenCode **pára** ao fim desta rodada para o coordenador verificar o remoto e iniciar a C011.
-- [x] Mapear o auth gerado e o `getClaims` confiável e preparar acesso clinic-aware no servidor.
+- [x] Mapear auth gerado e validar identidade via `getUser(token)` no servidor.
+- [ ] Resolver vínculos clinic-aware a partir da persistência confiável; não entregue pela C011.
 - [x] Não presumir tenant no cliente; não atribuir acesso clínico ao Super ADM.
 
 ## C011 — Adaptador Auth Server-only (10/10/2026)
 - [x] Substituído `getSession` nulo por adaptador confiável de `getUser(token)`.
 - [x] Suíte isolada de testes garantindo ausência de bypass por parte de claims forjadas.
 - [ ] Conectar autenticação real, E2E login, RLS e esquema final.
+
+## C012 — Login Cloud (Frontend e Validação)
+- [x] Rota `/login` desenhada (azul-marinho, verde-cana) apartada de AppShell.
+- [x] Formulário com autocomplete, toggle senha e proteção de double submit.
+- [x] Integração `signInWithPassword` e `signOut({ scope: "local" })`.
+- [x] Envio de Bearer na restauração com `AbortController` controlando concorrência (sem deadlocks).
+- [x] Mensagens genéricas para erros de auth.
+- [ ] Implementar e atestar E2E de login Cloud completo real e configuração de RLS vinculando tenant de clínica.
+
+Revisão final C012: Antigravity iniciou; usuário transferiu execução direta ao Codex, que corrigiu e testou restauração/renovação, logout, concorrência e indisponibilidade. 22 testes de login, 137 na suíte, tsc/lint sem erros. API responde sem cache. Evidências `c012_codex_*`; não confundir mocks com E2E. Próxima C013: persistência de clínicas/vínculos e isolamento, preservando negação por padrão.

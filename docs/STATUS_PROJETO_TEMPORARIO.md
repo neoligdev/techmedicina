@@ -1,15 +1,16 @@
 # Status Temporário do Projeto
 
-> **Aviso**: Este documento é gerado automaticamente a partir de `catalog.json`. Ele reflete o progresso das entregas.
+Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex
 - **Entregue**: PRD preservado, matriz de requisitos e registros de continuidade criados.
 - **Próximo Passo**: Consolidar decisões abertas e manter este relatório a cada etapa.
 
 **Requisitos**:
+
 - DEFINIDO: requisito expresso pelo usuário nesta conversa ou retomado do histórico disponível.
 - RECOMENDADO: detalhamento proposto para avaliação do usuário.
 - PENDENTE: escolha, integração ou validação ainda necessária.
@@ -18,12 +19,13 @@
 
 ## 2 - Visão e arquitetura funcional 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex, OpenCode
-- **Entregue**: Quatro áreas navegáveis, identidade PlugPix, preferências visuais por clínica, UI fosca e base PWA entregues como demonstração. Auditoria C009 (executor OpenCode, local) confirmou ausência de banco, sessão e isolamento reais; permanece parcial. Cloud Lovable ativado pelo usuário/Lovable: scaffold de integração Supabase chegou em origin/main (805bcce) com @supabase/supabase-js, esquema drizzle vazio e middleware/auth, sem fluxo de login/tenant real.
-- **Próximo Passo**: Implementar fundamentos da fundação Cloud (auth confiável getClaims, acesso clinic-aware no servidor, RLS/tenancy) antes de concluir SaaS, domínio e integrações reais.
+- **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática.
+- **Próximo Passo**: Homologar login real ponta a ponta; implementar vínculos persistidos, RLS e isolamento entre clínicas antes de concluir os requisitos de produção.
 
 **Requisitos**:
+
 - Plataforma por assinatura (SaaS), completa e robusta, com prioridade alta em segurança de dados. Hierarquia: Super ADM → CMDs/clínicas → pacientes. Dentro do ambiente da clínica haverá um módulo Médico com acesso profissional próprio.
 - Super ADM utiliza PlugPix Techmedicina; cria e administra clínicas e habilita módulos.
 - Módulos habilitáveis inicialmente definidos: Telemedicina 2.0/4.0, Pulseira Inteligente e Protocolos. Os demais módulos descritos nas seções posteriores ampliam o escopo; suas regras de liberação por contrato ainda serão consolidadas.
@@ -36,22 +38,24 @@
 
 ## 3 - Módulo Médico 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
 - **Entregue**: Prévia médica navegável e painel de indicadores demonstrativos compartilhado com o cliente.
 - **Próximo Passo**: Concluir identificação, prontuário, exames, agenda e comunicação com segurança real.
 
 **Requisitos**:
+
 - O módulo integra prontuário, dados de saúde, exames, agenda, consultas agendadas, chat, documentos e chamada de vídeo. O acesso clínico descrito é exclusivo do perfil médico identificado por seu registro no conselho profissional.
 
 ## 3.1 - Identificação e autorização 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, OpenCode
 - **Entregue**: Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod.
-- **Próximo Passo**: Conectar autenticação real e validação de identidade/registro profissional e vínculo com a clínica.
+- **Próximo Passo**: C012 entrega UI de login sem permissões clínicas; faltam login real ponta a ponta, validação do registro profissional, vínculos persistidos e RLS.
 
 **Requisitos**:
+
 - DEFINIDO: associar o profissional à sua identidade e número de conselho; as evoluções exibem nome e CRM do autor.
 - RECOMENDADO: cadastro de CRM e UF, validação da identidade e situação profissional antes da liberação, conta individual e autenticação com segundo fator. O CRM identifica o profissional; não funciona como senha ou prova suficiente de identidade.
 - RECOMENDADO: administradores e Super ADM não recebem permissão de leitura clínica pelo simples cargo administrativo. Acesso de suporte, se futuramente necessário, exige regra específica.
@@ -60,12 +64,13 @@
 
 ## 3.2 - Prontuário e evoluções 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: OpenCode
 - **Entregue**: Ainda não há prontuário funcional validado. C010 (executor OpenCode) implementa unidade de criptografia server-only AES-256-GCM para o texto clínico, com testes unitários e endurecimento R1 (snapshot de contexto, IV/limites estritos); sem persistência, guarda, UI ou assinatura.
 - **Próximo Passo**: Falta implementar e validar prontuário e evoluções, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Caixa de texto onde o médico escreve orientações e conclusões e salva um novo registro.
 - Histórico cronológico com data, hora, nome do médico e CRM. RECOMENDADO: registrar também UF e identidade interna imutável do autor.
 - Depois de salvo, o registro não pode ser editado ou apagado por usuários. A interface e o servidor devem aplicar essa regra.
@@ -77,12 +82,13 @@
 
 ## 3.3 - Dados de saúde e IA 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Bioimpedância e pulseira com números fictícios, gráficos, histórico e tabelas na visão médica.
 - **Próximo Passo**: Integrar coleta real e IA validada; estados emocionais e análise clínica ainda pendentes.
 
 **Requisitos**:
+
 - Ao abrir o paciente, o médico acessa junto ao prontuário:
 - Indicadores efetivamente coletados pela pulseira e sincronizados ao sistema.
 - Dados inseridos pelo paciente no aplicativo.
@@ -94,11 +100,13 @@
 
 ## 3.4 - Exames e documentos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar exames e documentos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Paciente envia exames de sangue e de imagem pelo aplicativo.
 - Médico consulta os arquivos ao lado do prontuário, no contexto do paciente.
 - Médico envia arquivos de orientação ao paciente e recebe arquivos dele pelo chat.
@@ -109,11 +117,13 @@
 
 ## 3.5 - Agenda e pacientes 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar agenda e pacientes, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Médico disponibiliza horários de atendimento.
 - Possui lista de todos os pacientes da mesma clínica, com prontuários e dados de saúde compartilhados entre os médicos dela, conforme seção 5.
 - Possui área com os pacientes agendados para ele.
@@ -123,11 +133,13 @@
 
 ## 3.6 - Chat e vídeo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar chat e vídeo, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Chat escrito entre médico e paciente, com envio/recebimento de arquivos nos dois sentidos.
 - Área de chamada de vídeo ao vivo por transmissão de áudio e vídeo (stream).
 - RECOMENDADO: sessão restrita aos participantes autorizados, credenciais temporárias para entrada e proteção dos arquivos; tratamento claro de queda e retorno da conexão.
@@ -136,12 +148,13 @@
 
 ## 4 - Segurança — definição e recomendações 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, OpenCode
 - **Entregue**: Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes.
 - **Próximo Passo**: Implementar autenticação, isolamento persistente, criptografia, auditoria e demais controles produtivos.
 
 **Requisitos**:
+
 - DEFINIDO: proteção de dados como prioridade, isolamento entre clínicas, autorização no servidor, prontuário criptografado e registros clínicos definitivos sem edição/exclusão.
 - RECOMENDADO para detalhamento técnico futuro:
 - Criptografia dos textos clínicos na aplicação antes de persistir; chaves administradas separadamente do banco, sem segredos no navegador ou código-fonte. Definir rotação, cópias de segurança e recuperação de chaves.
@@ -155,12 +168,13 @@
 
 ## 5 - Compartilhamento dentro da mesma clínica 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: OpenCode
 - **Entregue**: Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real.
 - **Próximo Passo**: Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - O usuário esclareceu que o compartilhamento se limita aos médicos da mesma clínica. O prontuário, seu histórico, os dados de saúde, as conversas com a IA Médica e os exames do paciente são acessíveis aos médicos cadastrados e com acesso ativo nessa clínica.
 - O médico pode consultar o histórico produzido pelos demais médicos da mesma clínica, com preservação da autoria de cada registro.
 - Ser médico cadastrado em outra clínica da plataforma não concede acesso aos pacientes dessa clínica.
@@ -176,23 +190,26 @@
 
 ## 6 - Dispositivo e contexto anterior 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar dispositivo e contexto anterior, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Integração planejada: H59MAX → Bluetooth BLE → aplicativo → API → banco → IA.
 - Compatibilidade H59MAX, protocolo e viabilidade da conexão no PWA ainda não confirmados. OpenH59 é referência a investigar, não prova de compatibilidade.
 - Contexto anterior do Doutor IA: coleta/organização de dados para acompanhamento médico, prontuário e WhatsApp. Segunda IA para atendimento, dúvidas, cadastro e acesso a serviços. Validar a relação desse contexto com a IA Médica recém-descrita antes de fixar arquitetura ou nomes.
 
 ## 7 - Critérios de aceite propostos para o módulo Médico 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: OpenCode
 - **Entregue**: Ainda não há implementação funcional validada; critério 3 (texto clínico cifrado em repouso) iniciado parcialmente por C010 (executor OpenCode), com unidade de criptografia sem persistência. Demais critérios pendentes.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos para o módulo médico, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Usuário sem perfil médico autorizado não lê prontuários, dados clínicos ou exames, mesmo tentando acessar diretamente a API ou endereço de arquivo.
 - 2. CRM informado sem validação de identidade/conta não libera acesso médico, conforme regra de verificação a definir.
 - 3. Ao salvar uma evolução, o servidor registra autoria, paciente, clínica, data/hora e texto protegido; leitura direta da coluna clínica não revela o texto em claro quando a criptografia na aplicação for adotada.
@@ -206,30 +223,33 @@
 
 ## 8 - Aplicativo do cliente/paciente 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
 - **Entregue**: Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde.
 - **Próximo Passo**: Implementar dados e serviços reais, rotina, exames, IA e regras dos subitens.
 
 ## 8.1 - Experiência e dados de saúde 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Painel do cliente com oito indicadores principais, tabelas, filtro e os mesmos dados demonstrativos vistos pelo médico.
 - **Próximo Passo**: Coleta/sincronização real, estado emocional e permissões do paciente ainda não implementados.
 
 **Requisitos**:
+
 - Aplicativo da clínica, com a personalização descrita na seção 2. O paciente consulta todas as informações efetivamente coletadas e sincronizadas da pulseira, seus dados de saúde e gráficos, e informa seu estado emocional e como está se sentindo. Os dados ficam disponíveis aos médicos da mesma clínica conforme a seção 5.
 - RECOMENDADO: apresentar origem, data/hora, unidades, período e última sincronização. Um período sem dados não representa resultado zero ou normal. Métricas da pulseira dependem de compatibilidade e validação do dispositivo; não presumir medições que ele não disponibilize com qualidade suficiente.
 - PENDENTE: tela inicial, navegação, indicadores disponíveis, cadastro, responsáveis/dependentes, sincronização, correção dos dados inseridos e permissões de notificações.
 
 ## 8.2 - Exames e histórico 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar exames e histórico, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Envio de PDF ou imagem de exames pelo paciente.
 - IA organiza os documentos, gera histórico, interpreta e explica os resultados em linguagem compreensível.
 - Quando houver resultados alterados, recomenda consulta médica para apresentação dos resultados ao médico.
@@ -246,11 +266,13 @@
 
 ## 8.3 - Hidratação 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar hidratação, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Meta diária de água.
 - Lembretes configurados pelo cliente.
 - Registro do consumo e histórico diário, semanal, mensal e anual, com gráficos.
@@ -261,11 +283,13 @@
 
 ## 8.4 - Medicamentos e adesão 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar medicamentos e adesão, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Paciente anexa a prescrição médica no aplicativo.
 - IA organiza os medicamentos conforme a prescrição, cria os lembretes nos horários correspondentes e explica a importância da regularidade.
 - IA explica por que o medicamento foi prescrito, sem recomendar alteração de dose, cancelamento, substituição ou nova prescrição sem consulta ao médico.
@@ -280,11 +304,13 @@
 
 ## 8.5 - Chat da IA Médica e chat com o profissional 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar chat da ia médica e chat com o profissional, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - DEFINIDO: área dedicada à conversa com a IA Médica, de nome ainda a definir. A expressão “chat médico para conversar com ela” foi interpretada como referência à IA; esclarecer se o usuário desejar outro sentido.
 - DEFINIDO anteriormente: chat com o médico humano no contexto do atendimento, com arquivos nos dois sentidos.
 - RECOMENDADO: distinguir claramente IA Médica, médico humano e agente de suporte, com identidade visível de quem responde.
@@ -294,11 +320,13 @@
 
 ## 8.6 - Vencer hábitos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar vencer hábitos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Paciente escolhe um hábito ruim que quer vencer.
 - Mecânica de jogo com pontuação dia a dia e a cada ação vencida.
 - Histórico do progresso e estímulo à continuidade.
@@ -307,11 +335,13 @@
 
 ## 8.7 - Benefícios e atendimento 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar benefícios e atendimento, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Clube de vantagens com descontos nacionais.
 - Acesso à telemedicina 24 horas.
 - Agendamento em 32 áreas de atendimento, incluindo psicologia e nutrição. Esta é a quantidade solicitada para este aplicativo; não importar automaticamente quantidades de outras ofertas PlugPix.
@@ -323,11 +353,13 @@
 
 ## 8.8 - Alimentação 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar alimentação, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Paciente envia foto do prato/refeição.
 - IA identifica e registra os alimentos, mantém histórico e mostra textos e gráficos de consumo diário, semanal e mensal.
 - Exibe o que mais consome e composição, incluindo fibras, frutas, carboidratos e calorias.
@@ -337,11 +369,13 @@
 
 ## 8.9 - Treino de academia 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar treino de academia, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Treino do dia e da semana, podendo ser montado com ajuda da IA.
 - Exercícios, séries, repetições, peso/carga e histórico de carga.
 - Registro dos dias em que treinou e faltou.
@@ -352,11 +386,13 @@
 
 ## 8.10 - Visão integrada, índices e incentivo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar visão integrada, índices e incentivo, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Cruzar dados dos módulos, inclusive pulseira, saúde, exames, hidratação, medicamentos, estado emocional, alimentação, treino e hábitos.
 - Gerar índices de saúde e qualidade de vida com pontuações (scores), jogos, dicas e recomendações de saúde.
 - RECOMENDADO: começar distinguindo pontuação de constância dos hábitos, adesão registrada e indicadores clínicos. Definir fórmulas, origem dos dados, pesos, períodos, mínimos de dados, explicação e versão de cada índice. Não atribuir automaticamente uma nota de saúde a partir de pontos de participação.
@@ -365,17 +401,20 @@
 
 ## 9 - Loja do Super ADM e loja da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar loja do super adm e loja da clínica, respeitando as decisões pendentes do PRD.
 
 ## 9.1 - Catálogo central 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar catálogo central, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM possui módulo Loja para cadastrar produtos e serviços.
 - Define preço-base e libera itens para clínicas disponibilizarem aos seus clientes.
 - Clínica pode selecionar os itens liberados e acrescentar seu lucro ao preço-base.
@@ -383,11 +422,13 @@
 
 ## 9.2 - Catálogo e venda da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar catálogo e venda da clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - ADM da clínica pode disponibilizar produtos próprios.
 - Pode oferecer produtos/serviços liberados pelo Super ADM.
 - Pode aplicar acréscimo sobre o preço-base (markup) e/ou receber comissão, conforme modelo comercial a definir.
@@ -397,22 +438,26 @@
 
 ## 9.3 - Operação comercial 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar operação comercial, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Definir quem vende e emite o documento fiscal, recebe o pagamento, entrega e atende o comprador; meios de pagamento; taxa de processamento; comissão e repasse; responsabilidade por frete, estoque e serviços; cancelamentos, devoluções, estornos e disputas; preço-base alterado e efeito em itens já publicados/pedidos; regras de desconto; devolução da comissão em venda estornada.
 - RECOMENDADO: separar produto central e produto próprio, preservar autoria/fornecedor, manter preço e condições contratadas no pedido e registrar pedidos, pagamentos e remunerações com trilha de auditoria. Uma clínica não consulta pedidos ou resultados comerciais de outra.
 - RECOMENDADO: explicações clínicas da IA não são influenciadas pela comissão ou margem dos produtos. Definir os tipos de produto permitidos; não presumir comercialização de medicamentos ou outros itens regulados.
 
 ## 10 - Integração dos módulos e notificações 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar integração dos módulos e notificações, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Dados vinculados ao paciente e clínica, com origem, momento do evento e do recebimento; separar arquivo original, registro do paciente, extração da IA, interpretação e registro profissional.
 - Processamento de documentos/fotos indica andamento, sucesso ou falha e evita duplicar históricos/lembretes em tentativas repetidas.
 - Ao corrigir uma extração ou registro, atualizar gráficos/índices dependentes sem alterar o arquivo original ou evoluções médicas definitivas.
@@ -423,11 +468,13 @@
 
 ## 11 - Critérios de aceite propostos — aplicativo e loja 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — aplicativo e loja, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Paciente acessa apenas seus dados no ambiente da clínica; tentativa de acesso a outro paciente ou clínica é recusada no servidor e nos anexos.
 - 2. Arquivo de exame original é preservado; sua extração, interpretação e histórico são rastreáveis. Falhas de leitura não geram resultados inventados.
 - 3. Testes clínicos e de limites da IA verificam ausência de prescrição, recomendação de novos medicamentos e alteração/suspensão de tratamento. Resultado alterado segue o protocolo de encaminhamento aprovado.
@@ -448,19 +495,20 @@
 
 ## 12 - Super ADM — gestão global e visão da clínica 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
 - **Entregue**: Lista/busca de clínicas e gráficos administrativos derivados dos cadastros fictícios.
 - **Próximo Passo**: Implementar gestão, vínculos, agenda e fechamento financeiro reais.
 
 ## 12.1 - Clínicas e acesso administrativo 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
 - **Entregue**: Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix.
 - **Próximo Passo**: Cadastro e administração reais, permissões, contratos e liberação de módulos ainda pendentes.
 
 **Requisitos**:
+
 - Super ADM visualiza todas as clínicas.
 - Ao selecionar uma clínica, pode entrar no ambiente e ter a visão do ADM daquela clínica.
 - Mantém visão global e visão individual por clínica.
@@ -470,11 +518,13 @@
 
 ## 12.2 - Médicos, cadastro e vínculos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar médicos, cadastro e vínculos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Ver todos os médicos de uma clínica ou todos os médicos de todas as clínicas.
 - Atribuir um médico a uma nova clínica.
 - Editar o cadastro do médico.
@@ -485,11 +535,13 @@
 
 ## 12.3 - Clientes, uso, agenda e pagamentos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar clientes, uso, agenda e pagamentos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM vê os clientes de uma clínica e uma tabela global de clientes de todas as clínicas, organizada com:
 - Clínica à qual o cliente pertence.
 - Médicos pelos quais já foi atendido.
@@ -505,12 +557,13 @@
 
 ## 12.4 - Vidas e faturamento mensal da clínica 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Codex
 - **Entregue**: Contagens demonstrativas de vidas habilitadas e distribuição por clínica; nenhum faturamento inventado.
 - **Próximo Passo**: Implementar fechamento mensal, cobrança por vida e registros financeiros persistentes.
 
 **Requisitos**:
+
 - Uma vida representa uma pessoa.
 - Super ADM acompanha quantas vidas a clínica possui.
 - Sistema identifica as vidas que estiveram ativas no período de um mês.
@@ -525,18 +578,20 @@
 
 ## 13 - Planos comerciais e configuração dos serviços 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex
 - **Entregue**: Catálogo local de rascunhos de telemedicina e pulseira com validação e tratamento de erro no navegador.
 - **Próximo Passo**: Implementar contratos, venda e ativação real; consolidar condições comerciais pendentes.
 
 ## 13.1 - Contrato de uso da clínica com a PlugPix 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar contrato de uso da clínica com a plugpix, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM cria o plano de uso da clínica, configurando:
 - Valor do setup de implementação.
 - Se existe mensalidade e seu valor.
@@ -548,12 +603,13 @@
 
 ## 13.2 - Catálogo-base de telemedicina e venda pela clínica 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex
 - **Entregue**: CRUD local de rascunhos, sete opções de serviço, coparticipação e condições opcionais sem ativação comercial.
 - **Próximo Passo**: Consolidar Grupo32, carência/fidelidade e implementar venda e persistência no servidor.
 
 **Requisitos**:
+
 - Super ADM cria planos-base de telemedicina 24h e agendada.
 - Clínica aplica seu preço e vende os planos aos clientes.
 - No escopo descrito pelo usuário como Telemedicina 2.0, planos podem habilitar/desabilitar:
@@ -572,12 +628,13 @@
 
 ## 13.3 - Pulseira inteligente — plano-base 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex
 - **Entregue**: Rascunhos com preço de ativação/mensalidade e opções independentes de médico, IA e fidelidade.
 - **Próximo Passo**: Definir modalidades e condições pendentes e integrar plano comercial e dispositivo reais.
 
 **Requisitos**:
+
 - Super ADM configura planos-base com:
 - Preço-base de ativação.
 - Preço-base de mensalidade.
@@ -589,11 +646,13 @@
 
 ## 13.4 - Três camadas comerciais 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar três camadas comerciais, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Contrato da clínica com a PlugPix: setup, mensalidade e cobrança por vidas.
 - 2. Catálogo-base: produtos/serviços/planos disponibilizados pelo Super ADM à clínica.
 - 3. Oferta ao paciente: seleção de serviços pela clínica e preço final vendido ao cliente.
@@ -602,11 +661,13 @@
 
 ## 14 - Critérios de aceite propostos — Super ADM e planos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — super adm e planos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Super ADM lista clínicas e seleciona uma visão administrativa; identidade do operador e clínica alvo permanecem explícitas e auditáveis.
 - 2. Visão administrativa não libera leitura de prontuário/exames; controles de acesso continuam aplicados pelo servidor.
 - 3. Listas global/por clínica de médicos e pacientes respeitam filtros e mostram vínculos corretos; ADM local não obtém alcance global.
@@ -622,11 +683,13 @@
 
 ## 15 - Blog central e blog no aplicativo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar blog central e blog no aplicativo, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM possui módulo Blog e disponibiliza conteúdos neutros, reutilizáveis por clínicas com marca própria.
 - Conteúdo pode conter imagem e texto, vídeo ou áudio de podcast.
 - Clínica escolhe os conteúdos que deseja disponibilizar aos clientes.
@@ -637,11 +700,13 @@
 
 ## 16 - Academy para clínicas 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar academy para clínicas, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM possui módulo Academy para disponibilizar vídeos e treinamentos.
 - Finalidade: ensinar a clínica a utilizar a plataforma e vender seus produtos/serviços.
 - RECOMENDADO: organizar cursos, aulas, materiais e progresso do usuário, com diferenciação entre capacitação operacional e comercial.
@@ -649,17 +714,20 @@
 
 ## 17 - Indique e Ganhe 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar indique e ganhe, respeitando as decisões pendentes do PRD.
 
 ## 17.1 - Configuração da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar configuração da clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Clínica pode ativar/desativar o programa para todos os clientes ou somente clientes selecionados e definir:
 - Valor pago pela indicação.
 - Quantidade de indicações permitidas.
@@ -669,11 +737,13 @@
 
 ## 17.2 - Aplicativo do cliente 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar aplicativo do cliente, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Quando ativado e autorizado para o cliente, o módulo aparece no aplicativo.
 - Mostra quanto já ganhou, saldo, histórico e lista de indicados.
 - Desativação/inelegibilidade bloqueia o programa no servidor, não somente oculta o menu.
@@ -684,11 +754,13 @@
 
 ## 18 - Dependentes e plano familiar 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar dependentes e plano familiar, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Aplicativo tem módulo Dependentes.
 - Titular agrega e cadastra dependentes que recebem os benefícios do seu plano dentro do mesmo pagamento.
 - Cliente possui um plano ativo por vez, podendo ampliar benefícios por upgrade.
@@ -698,17 +770,20 @@
 
 ## 19 - Financeiro do cliente, inadimplência e plano ativo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar financeiro do cliente, inadimplência e plano ativo, respeitando as decisões pendentes do PRD.
 
 ## 19.1 - Financeiro no aplicativo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar financeiro no aplicativo, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Cliente consulta fatura do mês e histórico de cobranças.
 - Pagamento familiar reúne o titular e dependentes conforme o plano.
 - Cliente inadimplente, ao entrar, acessa apenas o módulo Financeiro.
@@ -721,11 +796,13 @@
 
 ## 19.2 - Um plano ativo e upgrade 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar um plano ativo e upgrade, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Cada cliente possui somente um plano ativo por vez.
 - Pode fazer upgrade para outro plano com mais benefícios.
 - Acesso aos módulos/benefícios depende dos itens efetivamente contratados nesse plano.
@@ -734,11 +811,13 @@
 
 ## 20 - Planos & Produtos do ADM da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar planos & produtos do adm da clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Clínica monta seus próprios planos selecionando itens-base disponibilizados pelo Super ADM para ela.
 - Pode criar diversos planos e configurar seu preço final.
 - Sistema libera ao cliente somente os recursos/benefícios incluídos no plano contratado e com condições válidas.
@@ -748,17 +827,20 @@
 
 ## 21 - CRM de vendas e agente de IA 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar crm de vendas e agente de ia, respeitando as decisões pendentes do PRD.
 
 ## 21.1 - Funis e leads 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar funis e leads, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - ADM da clínica possui CRM de vendas com quadro de etapas (Kanban).
 - Pode criar funis de venda.
 - Tem agente de IA integrado ao WhatsApp da clínica para vendas e gestão de contatos comerciais (leads).
@@ -769,11 +851,13 @@
 
 ## 22 - Integrações por clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar integrações por clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Cada clínica possui módulo Integrações.
 - Integrações iniciais: Asaas, OpenAI e API de WhatsApp.
 - Estrutura permite outras integrações a especificar.
@@ -786,17 +870,20 @@
 
 ## 23 - Equipe de vendas, hierarquia e comissões 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar equipe de vendas, hierarquia e comissões, respeitando as decisões pendentes do PRD.
 
 ## 23.1 - Estrutura 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar estrutura, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Três níveis: Diretor → Coordenador → Vendedor.
 - Diretor pode ter vários coordenadores abaixo dele.
 - Coordenador pode ter várias equipes de vendedores.
@@ -808,11 +895,13 @@
 
 ## 23.2 - Links, ofertas e atribuição 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar links, ofertas e atribuição, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Cada participante possui link pessoal rastreável de cada produto/plano disponível para ele.
 - ADM da clínica cria a oferta e pode atribuí-la aos vendedores selecionados.
 - Compra por link registra automaticamente as comissões dos participantes da cadeia comercial correspondente.
@@ -822,11 +911,13 @@
 
 ## 23.3 - Cálculo e estados da comissão 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar cálculo e estados da comissão, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - DEFINIDO: comissões em percentual ou reais, relacionadas ao produto/plano; registro automático quando a compra pelo link ocorre. Participantes consultam valores, histórico e se a comissão foi paga.
 - RECOMENDADO: distinguir comissão registrada/prevista, em análise, liberada, paga e estornada. Registro na compra não significa liberação imediata de dinheiro. Definir critério de liberação, preferencialmente vinculado à confirmação financeira segundo a regra escolhida.
 - RECOMENDADO: salvar base de cálculo, regra/versão, valor, beneficiário, venda e pagamento correspondente. Cálculo repetido por retorno duplicado não cria nova comissão. Estorno, cancelamento, inadimplência e upgrade seguem regras explícitas.
@@ -835,11 +926,13 @@
 
 ## 23.4 - Painéis e alcance 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar painéis e alcance, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Diretor vê vendas próprias e as dos coordenadores/vendedores abaixo dele.
 - Coordenador vê vendas próprias e as de seus vendedores.
 - Vendedor vê suas próprias vendas.
@@ -851,11 +944,13 @@
 
 ## 24 - Critérios de aceite propostos — conteúdo, indicações e operação comercial 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — conteúdo, indicações e operação comercial, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Super ADM disponibiliza mídia/texto no blog; clínica seleciona/publica e somente o conteúdo publicado no contexto correto aparece no aplicativo.
 - 2. Academy apresenta treinamentos aos perfis autorizados da clínica; não concede automaticamente acesso a pacientes.
 - 3. Indique e Ganhe pode ser ativado globalmente na clínica ou para clientes selecionados; cliente elegível consulta saldo, histórico, ganhos e indicados com privacidade.
@@ -879,17 +974,20 @@
 
 ## 25 - Pulseira Inteligente — gestão central no Super ADM 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar pulseira inteligente — gestão central no super adm, respeitando as decisões pendentes do PRD.
 
 ## 25.1 - Cadastro, estoque e expedição 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar cadastro, estoque e expedição, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM possui módulo Pulseira Inteligente para gerenciar o ciclo operacional dos dispositivos.
 - Cadastra pulseiras novas e gerencia o estoque.
 - Gerencia envio para a clínica e status de expedição.
@@ -901,11 +999,13 @@
 
 ## 25.2 - Firmware, identificação e autorização 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar firmware, identificação e autorização, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - DEFINIDO: liberação central pelo Super ADM, com cadastro/informações do firmware de cada pulseira. Pulseira não liberada não participa da integração do sistema.
 - RECOMENDADO: separar versão do programa interno (firmware) e identificador da unidade. Versão de firmware identifica uma revisão de software e pode se repetir em várias unidades; não é, por si só, identificação individual nem prova de autenticidade.
 - RECOMENDADO: cadastro de modelos/versões homologados mais autorização de cada unidade física e vinculação válida ao paciente/clínica. A autenticação técnica do dispositivo deve ser validada com o fabricante/protocolo; número de série, etiqueta ou código de ativação, isoladamente, não comprovam que um equipamento não foi clonado.
@@ -916,11 +1016,13 @@
 
 ## 25.3 - Monitoramento e vínculo 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar monitoramento e vínculo, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM visualiza:
 - Pulseiras ativas no momento.
 - Status/nível da bateria de cada pulseira.
@@ -935,11 +1037,13 @@
 
 ## 25.4 - Inativação e cancelamento 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar inativação e cancelamento, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Super ADM pode inativar uma pulseira em caso de cancelamento do plano.
 - A inativação impede o uso autorizado da integração dessa unidade na plataforma.
 - RECOMENDADO: registrar data/hora, operador, motivo e vínculo afetado, bloquear pareamento/reativação não autorizados e novas sincronizações segundo a política definida. Preservar histórico já recebido; inativação não apaga prontuários nem transfere dados.
@@ -949,11 +1053,13 @@
 
 ## 25.5 - Pulseiras e estoque no ADM da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar pulseiras e estoque no adm da clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - ADM da clínica possui visão operacional das pulseiras liberadas para sua clínica pelo Super ADM.
 - Pode ativar essas unidades para seus clientes, respeitando a liberação central e as condições do serviço contratado.
 - Acompanha, por cliente, status da pulseira ativada, bateria e uso.
@@ -967,11 +1073,13 @@
 
 ## 26 - Critérios de aceite propostos — ciclo da pulseira 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — ciclo da pulseira, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Cadastro individual relaciona unidade, modelo/firmware, estoque e autorização; versão repetida de firmware não impede distinguir unidades.
 - 2. Movimentação/expedição identifica as unidades e clínica destinatária, mantém histórico e não duplica baixa de estoque em repetição da operação.
 - 3. Apenas unidades autorizadas podem ser vinculadas/sincronizadas, com verificações no servidor e mecanismo de identificação/autenticação validado para o hardware escolhido.
@@ -991,19 +1099,20 @@
 
 ## 27 - Bioimpedância — balança integrada 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Interface de bioimpedância com medições fictícias compartilhada entre cliente e médico.
 - **Próximo Passo**: Escolher balança, validar protocolo, integrar medidas e implementar gestão operacional e acesso real.
 
 ## 27.1 - Escopo e aplicativo do paciente 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Oito medições fictícias, três gráficos de composição corporal, unidades, horários, filtro e tabelas.
 - **Próximo Passo**: Integrar uma balança homologada e apresentar somente métricas efetivamente suportadas.
 
 **Requisitos**:
+
 - Incluir módulo Bioimpedância com integração a balança.
 - Aplicativo apresenta todas as informações efetivamente coletadas e disponibilizadas pela integração da balança para aquele paciente.
 - Dados compõem o histórico de saúde individual, com consulta e evolução.
@@ -1015,12 +1124,13 @@
 
 ## 27.2 - Histórico clínico, IA e visibilidade administrativa 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Médico e cliente consomem o mesmo componente e a mesma fonte estática de dados demonstrativos.
 - **Próximo Passo**: Implementar histórico persistente, autorização clínica, auditoria e IA; alcance administrativo clínico permanece pendente.
 
 **Requisitos**:
+
 - DEFINIDO: dados da balança ficam no histórico de saúde do paciente no acesso Médico da mesma clínica, junto dos demais indicadores; interpretação contextual de “acesso pedido da clínica” conforme os módulos previamente descritos.
 - DEFINIDO: Super ADM e ADM da clínica possuem gestão operacional dos equipamentos, com alcance global e local respectivamente, conforme seções 27.3 e 27.4.
 - SOLICITADO, A ESCLARECER: usuário disse que as informações “aparecem para o Super ADM também”. Registrar a intenção sem decidir se isso significa metadados de gestão ou valores individuais de saúde. Acesso aos valores clínicos pelo perfil administrativo precisa ser conciliado com a exclusividade de acesso profissional Médico definida anteriormente; nenhuma permissão clínica nova é concedida implicitamente.
@@ -1029,11 +1139,13 @@
 
 ## 27.3 - Gestão central no Super ADM 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar gestão central no super adm, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Aplicar à balança a gestão operacional equivalente à das pulseiras:
 - Cadastro individual, modelo, informações de firmware quando disponíveis e autorização/liberação central.
 - Gestão de estoque e unidades.
@@ -1048,11 +1160,13 @@
 
 ## 27.4 - Gestão no ADM da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar gestão no adm da clínica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Clínica acompanha apenas balanças liberadas para ela pelo Super ADM.
 - Possui estoque local vinculado ao cadastro central.
 - Consulta envio/expedição, status e uso dos equipamentos no seu ambiente.
@@ -1064,11 +1178,13 @@
 
 ## 27.5 - Uso individual ou compartilhado e identificação do paciente 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar uso individual ou compartilhado e identificação do paciente, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - PENDENTE PRIORITÁRIO: definir se balança é pessoal, compartilhada pela família, utilizada na clínica ou suporta mais de um desses modos.
 - RECOMENDADO: cada medição tem paciente/clinica inequivocamente identificados por sessão/perfil autorizado. Peso semelhante não é identificação suficiente. Dado sem paciente confirmado fica em fluxo restrito de atribuição, não entra automaticamente em prontuário/histórico/IA.
 - RECOMENDADO: uso compartilhado tem sessões/perfis separados e não expõe resultados de outro paciente. Troca de usuário ou unidade preserva históricos e não associa leituras antigas ao usuário novo. Definir tratamento de medições armazenadas no dispositivo e enviadas posteriormente.
@@ -1077,11 +1193,13 @@
 
 ## 27.6 - Integração e status em tempo real 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar integração e status em tempo real, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - DEFINIDO: objetivo de mostrar status de uso em tempo real na gestão global/local.
 - RECOMENDADO: especificar separadamente autorizado, conectado, medição em andamento, leitura concluída e última sincronização. Disponibilidade desses eventos depende do protocolo. “Sem evento recente” não significa equipamento certamente desligado.
 - PENDENTE: interface oficial de programação (API), biblioteca do fabricante (SDK) ou protocolo Bluetooth validado, acesso aos dados brutos versus calculados, licença/condições da integração, conexão direta ou por nuvem, compatibilidade com PWA e comportamento com aplicativo fechado.
@@ -1091,21 +1209,25 @@
 
 ## 27.7 - Plano, habilitação e cobrança 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar plano, habilitação e cobrança, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Definir em quais planos a bioimpedância entra, se há ativação/mensalidade específica, preço-base, preço final da clínica, entrega/cessão da balança e cobrança por unidade/uso. O número de balanças não representa quantidade de vidas; cada pessoa habilitada continua sendo uma vida conforme regra contratual definida.
 - Cancelamento/inadimplência aplica a política consolidada de benefícios e vínculos; não apagar histórico nem presumir desativação física remota.
 
 ## 28 - Critérios de aceite propostos — bioimpedância 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — bioimpedância, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. Paciente consulta apenas suas medições da balança, métricas efetivamente disponibilizadas e histórico, com origem, unidades e datas.
 - 2. Médico autorizado da mesma clínica vê esses dados no histórico de saúde; novas permissões administrativas clínicas dependem de decisão explícita.
 - 3. Super ADM vê gestão global e clínica vê somente suas unidades autorizadas, com estoque/expedição e status coerentes.
@@ -1123,181 +1245,210 @@
 
 ## 29 - Inovações aprovadas — Super ADM 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity
 - **Entregue**: Simulador de rentabilidade (29.1) concluído em modo didático local.
 - **Próximo Passo**: Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo. Finalizar as demais inovações.
 
 **Requisitos**:
+
 - Todas as recomendações apresentadas na resposta anterior foram aprovadas pelo usuário para inclusão no PRD. As funções abaixo passam a ser requisitos definidos; fórmulas, telas e políticas operacionais ainda precisam ser especificadas. A aprovação não resolve pendências anteriores nem comprova conformidade, compatibilidade ou validação clínica.
 
 ## 29.1 - Simulador de rentabilidade 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity
 - **Entregue**: Simulador didático puro com validações e gráfico em barras proporcionais integrado à UI (C008).
 - **Próximo Passo**: Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo.
 
 **Requisitos**:
+
 - Antes de liberar/ofertar um plano, simular vidas, dependentes, preços, custos médicos, IA, dispositivos e comissões. Mostrar resultados em diferentes cenários para identificar ofertas de baixo resultado financeiro.
 - RECOMENDADO: cenários conservador/base/expansão, entradas rastreáveis, custos únicos versus recorrentes, receita bruta/líquida, resultado de contribuição e ponto de equilíbrio. Não rotular diferença entre preço-base e venda como lucro líquido sem considerar demais custos.
 - PENDENTE: fórmulas, custos reais por fornecedor/serviço, impostos/taxas, amortização de dispositivos, tratamento de uso variável, número de cenários e persistência/exportação. Projeção é estimativa baseada em premissas, não garantia de resultado.
 
 ## 29.2 - Central de funcionamento da plataforma 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar central de funcionamento da plataforma, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Painel global com clínicas afetadas por integração interrompida, pagamento sem conciliação, mensagens não entregues, dispositivos sem sincronizar e falhas da IA. Finalidade: ajudar a identificar e resolver problemas antes de reclamações.
 - Metadados operacionais não dão acesso automático aos resultados individuais de saúde; alcance clínico do Super ADM permanece pendente na seção 27.2.
 - PENDENTE: estados de incidente, prioridades, responsáveis, limiares, notificações, ações de recuperação e tempos de atendimento. Falha operacional é diferente de alerta clínico.
 
 ## 29.3 - Implantação guiada de clínicas 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar implantação guiada de clínicas, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Modelos de configuração por tipo de operação, com etapas de domínio, marca, planos, integrações, equipe e testes, para reduzir trabalho manual e padronizar implantação.
 - RECOMENDADO: progresso por etapa e verificação de configurações; copiar somente configuração permitida, nunca credenciais, pacientes ou dados de outra clínica. Aplicar processo de forma repetível sem duplicar planos/vínculos.
 - PENDENTE: modelos iniciais, campos obrigatórios, verificações automáticas/manuais, quem acompanha e critério de conclusão. Conclusão do roteiro não declara conformidade legal completa.
 
 ## 29.4 - Laboratório de qualidade da IA 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar laboratório de qualidade da ia, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Testar versões/modelos/configurações antes de sua liberação, com casos sintéticos de receita ilegível, pedido de medicamento, exame ambíguo, dúvidas comerciais e tentativa de acesso a outra clínica. Evitar introdução silenciosa de falhas.
 - RECOMENDADO: conjuntos de casos e critérios de aprovação versionados, registro de resultados, comparação entre versões e retorno à anterior quando necessário. Dados reais identificáveis não são usados no laboratório por padrão.
 - PENDENTE: avaliadores, métricas de qualidade/segurança, revisão clínica, critérios mínimos, modelos/provedores e política de liberação por clínica.
 
 ## 30 - Inovações aprovadas — clínica e equipe 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar inovações aprovadas — clínica e equipe, respeitando as decisões pendentes do PRD.
 
 ## 30.1 - Jornadas configuráveis 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar jornadas configuráveis, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Clínica monta sequência de entrada, avaliação inicial, consulta, registros periódicos e retorno, com responsável, prazo e condição de conclusão por etapa. Vincular essas jornadas ao módulo Protocolos da seção 32, evitando criação de dois mecanismos desconectados.
 
 ## 30.2 - Fila de próximos passos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar fila de próximos passos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Exibir pendências como primeira consulta não agendada, retorno vencido, receita aguardando conferência e entrada no serviço não concluída. Pendências clínicas ficam com o profissional autorizado; administrativas com equipe permitida.
 - RECOMENDADO: responsável, prazo, motivo, status e vínculo ao próximo passo. Ausência de registro/sincronização não comprova abandono nem urgência médica.
 - PENDENTE: critérios de inclusão, prioridade, redistribuição e encerramento; alcance de visualização. Título/resumo da tarefa administrativa não revela conteúdo clínico.
 
 ## 30.3 - Resumo preparatório da consulta 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar resumo preparatório da consulta, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - No acesso Médico, reunir mudanças recentes, exames novos, relatos e registros de adesão, com origem e link ao dado/documento original, reduzindo procura manual.
 - RECOMENDADO: distinguir fatos registrados, relatos e interpretação da IA; profissional verifica o resumo. Não incluir diagnóstico inventado, substituir o prontuário ou inserir automaticamente texto na evolução definitiva.
 - DEFINIDO como direção de estudo: considerar interoperabilidade com padrões de resumo de paciente, como HL7 FHIR/International Patient Summary. PENDENTE: decidir adoção técnica, campos e integração; não presumir conformidade ao padrão.
 
 ## 30.4 - Retenção orientada por relacionamento 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar retenção orientada por relacionamento, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Identificar sinais comerciais de afastamento, como falta de utilização, atendimento de suporte sem solução, consultas canceladas e reclamações, sugerindo ação ao responsável.
 - RECOMENDADO: sugestões explicáveis com eventos e período, sem usar diagnósticos/dados clínicos privados para influenciar vendas. Separar comunicação assistencial de oferta comercial.
 - PENDENTE: regras/modelo, prioridades, janela de análise, canais e avaliação das ações. Sinal comercial não é certeza de cancelamento.
 
 ## 31 - Inovações aprovadas — aplicativo do cliente 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
 - **Entregue**: Novo painel Meu dia e navegação móvel adaptada ao acompanhamento demonstrativo.
 - **Próximo Passo**: Integrar rotina real, preparação da consulta, linha do tempo, metas e privacidade.
 
 ## 31.1 - Meu dia 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Meu dia apresenta composição corporal, atividade e descanso fictícios com acesso aos demais módulos.
 - **Próximo Passo**: Conectar agenda, medicamentos, hidratação e demais próximos passos reais do paciente.
 
 **Requisitos**:
+
 - Tela reúne próximos lembretes, consulta, treino previsto e ações do acompanhamento em sequência simples, reduzindo navegação entre módulos. Exibe somente recursos/ações autorizados pelo plano e estado de acesso, respeitando bloqueio financeiro e protocolo ainda não liberado.
 - PENDENTE: posição na navegação, ordenação/prioridades, personalização e interação com notificações.
 
 ## 31.2 - Preparação para a consulta 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar preparação para a consulta, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Antes do atendimento, perguntar o que mudou, quais dúvidas o paciente quer levar e quais documentos deseja apresentar; informações ficam disponíveis ao profissional autorizado.
 - PENDENTE: momento do convite, perguntas, prazo, edição e vínculo à consulta. Não criar evolução definitiva em nome do médico.
 
 ## 31.3 - Linha do tempo contextual 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar linha do tempo contextual, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Sobrepor registros de alimentação, treino, estado emocional, peso e eventos do acompanhamento para ajudar a compreender a evolução. Apresentar padrões observados sem afirmar causalidade.
 - RECOMENDADO: sinalizar períodos incompletos, mudanças de dispositivo/algoritmo e origem dos dados; acesso apenas ao próprio paciente/representante autorizado e equipe clínica autorizada.
 - PENDENTE: métricas, períodos, filtros, visualização e regras da análise.
 
 ## 31.4 - Metas pequenas e adaptáveis 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar metas pequenas e adaptáveis, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Propor poucos compromissos por vez, dentro das orientações profissionais, com frequência/horários ajustados às preferências do cliente.
 - Pontuação valoriza constância, aprendizado e execução das ações, com retomada acolhedora após interrupções. Peso perdido, volume de água e intensidade de treino não são critérios isolados para premiação.
 - PENDENTE: número de metas, algoritmos de adaptação, aprovação profissional quando pertinente e convivência com as metas de protocolos. Adaptação de rotina não autoriza mudança de medicamento, dose ou conduta clínica.
 
 ## 31.5 - Central de privacidade 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar central de privacidade, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Paciente vê quem acessou seus dados, consulta autorizações e solicita/exporta informações próprias.
 - RECOMENDADO: trilha com ator, data/hora e categoria de acesso, sem expor segredos de segurança ou dados de outras pessoas; compartilhamento explícito e rastreável. A inclusão não cria compartilhamento automático entre clínicas.
 - PENDENTE: granularidade, identificação dos acessos de sistema/IA, formatos, atendimento de solicitações, representação de dependentes e fluxo acessível durante bloqueio comercial, conforme direitos aplicáveis.
 
 ## 32 - Protocolos de acompanhamento da clínica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar protocolos de acompanhamento da clínica, respeitando as decisões pendentes do PRD.
 
 ## 32.1 - Criação e composição 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar criação e composição, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - ADM da clínica possui módulo Protocolos de acompanhamento.
 - Cria cada protocolo e sua composição.
 - Primeira etapa é consulta agendada com médico de avaliação.
@@ -1310,11 +1461,13 @@
 
 ## 32.2 - Avaliação e decisão médica 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar avaliação e decisão médica, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Agendar consulta de avaliação inicial antes da liberação do acompanhamento.
 - Médico acessa o histórico/dados disponíveis do paciente no ambiente clínico autorizado.
 - Registra decisão de aptidão específica para o protocolo e orientações correspondentes, identificadas por médico, CRM, paciente, clínica e data/hora.
@@ -1324,11 +1477,13 @@
 
 ## 32.3 - Apto — liberação do acompanhamento 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar apto — liberação do acompanhamento, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Após decisão “apto”, liberar o módulo correspondente no aplicativo. Mostrar acompanhamento, etapas, próximas ações, metas e retornos conforme composição/jornada contratada.
 - RECOMENDADO: estado clínico de aptidão separado de contratação, vigência e situação financeira. Aprovação clínica não regulariza inadimplência nem concede benefícios não contratados. A decisão é preservada mesmo quando acesso comercial estiver temporariamente bloqueado.
 - RECOMENDADO: paciente vê linguagem clara sobre aprovação e próximos passos; tarefas/resumos usam as permissões dos módulos associados. Aptidão não é garantia de resultado.
@@ -1336,22 +1491,26 @@
 
 ## 32.4 - Não apto — encaminhamento 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar não apto — encaminhamento, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - Se não apto, encaminhar o paciente para outro plano mais simples de acompanhamento, sem liberar o protocolo recusado.
 - RECOMENDADO: médico registra a orientação clínica/encaminhamento; equipe comercial organiza adesão ao plano indicado dentro das suas permissões. Não atribuir o motivo clínico aos vendedores nem deixar a IA selecionar tratamento por margem de venda.
 - PENDENTE: quem escolhe o plano alternativo, opções elegíveis, se encaminhamento depende de avaliação adicional, comunicação ao paciente, cobrança da avaliação, valores já pagos e cancelamento/reembolso. Encaminhamento não significa contratação automática ou alteração de cobrança sem fluxo definido.
 
 ## 32.5 - Estados, plano ativo e evolução 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar estados, plano ativo e evolução, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - RECOMENDADO: acompanhar estados “aguardando agendamento”, “avaliação agendada”, “avaliação pendente”, “apto”, “não apto/encaminhado”, “acompanhamento liberado”, “em acompanhamento” e “concluído/pausado/cancelado”, distinguindo estado clínico e comercial. Lista final de estados ainda será aprovada.
 - PENDENTE PRIORITÁRIO: protocolo é composição do único plano ativo, benefício dentro de um plano ou contratação complementar? Consolidar modelo sem violar a regra de um plano ativo por cliente e sem presumir segundo plano ativo. Encaminhamento ao plano simples e upgrade preservam histórico.
 - RECOMENDADO: mudanças na composição são versionadas e não reescrevem jornadas/condições já contratadas. Mudanças clínicas individuais precisam do profissional competente; IA auxilia registros/organização dentro dos limites existentes.
@@ -1359,11 +1518,13 @@
 
 ## 32.6 - Critérios de aceite propostos — protocolos 🟡
 
-- **Status**: 🟡 Pendente (Não Iniciado)
+- **Status**: 🟡 Não implementado / pendente
+- **Autores**: Sem implementação
 - **Entregue**: Ainda não há implementação funcional deste requisito validada.
 - **Próximo Passo**: Falta implementar e validar critérios de aceite propostos — protocolos, respeitando as decisões pendentes do PRD.
 
 **Requisitos**:
+
 - 1. ADM cria protocolo com composição e etapa inicial de avaliação agendada; itens indisponíveis à clínica não são concedidos por essa configuração.
 - 2. Sem decisão médica de aptidão para o protocolo, cliente não acessa seu acompanhamento, inclusive por endereço/API direto. A consulta inicial permanece acessível por fluxo definido fora do acompanhamento bloqueado.
 - 3. Somente médico autorizado registra aptidão; ADM, paciente, IA e equipe de vendas não conseguem liberar por alteração direta do estado.
@@ -1377,12 +1538,13 @@
 
 ## 33 - Critérios de aceite propostos — inovações aprovadas 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity
 - **Entregue**: Critério 1 resolvido apenas no escopo do cálculo didático em frontend.
 - **Próximo Passo**: Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo. Demais critérios pendentes.
 
 **Requisitos**:
+
 - 1. Simulador mostra premissas e cenários; repetir cálculo com mesmas entradas/versão produz resultado consistente e custos/receitas não são contados duas vezes.
 - 2. Central operacional mostra incidentes e atualização por clínica/integração sem expor conteúdo clínico indevidamente.
 - 3. Implantação guiada copia configuração autorizada, nunca dados ou segredos de outra clínica, e registra progresso/verificações.
@@ -1396,14 +1558,101 @@
 
 ## 34 - Prioridade recomendada e decisões pendentes 🔵
 
-- **Status**: 🔵 Em Andamento (Parcial)
+- **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex, OpenCode
 - **Entregue**: Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real.
 - **Próximo Passo**: C011: mapear auth gerado (getClaims confiável) e preparar acesso clinic-aware no servidor, sem presumir tenant cliente nem atribuir acesso clínico ao Super ADM.
 
 **Requisitos**:
+
 - As 13 inovações foram aprovadas para o escopo. Prioridade sugerida na resposta anterior, sem cronograma fechado: Meu dia; jornadas configuráveis/protocolos; resumo preparatório da consulta; central de funcionamento; simulador de rentabilidade. Demais funções permanecem incluídas, com sequência de implementação a definir.
 - Novas prioridades de decisão: composição/validação dos protocolos, avaliação e registros, cobrança/adesão, alternativa para não apto, protocolo versus único plano ativo, critérios de aptidão/reavaliação e etapas do acompanhamento.
 - Permanecem pendentes os detalhes de cada módulo e as decisões anteriores: balança/modelo/uso compartilhado/acesso clínico do Super ADM; dispositivos/estoque/telemetria; indicação/dependentes; inadimplência/cobrança por vidas; upgrade; integrações; vendas/comissões; 32 áreas; loja; IA/índices e segurança.
 - PRD permanece em construção. Comandos Lovable/Antigravity só serão gerados quando o usuário declarar as especificações prontas.
+
+# Entregas validadas
+
+## D1 - Quatro áreas e navegação demonstrativa 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Lovable, Antigravity
+- **Entregue**: Base Super ADM, clínica, médico e cliente criada e navegável.
+- **Próximo Passo**: Módulos funcionais produtivos continuam nas pendências do PRD.
+
+## D2 - Personalização visual no navegador 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Lovable, Antigravity
+- **Entregue**: Nome, cores, tema, logomarca e favicon salvos por clínica; Super ADM preserva PlugPix.
+- **Próximo Passo**: Domínio, identidade de instalação e persistência real ainda pendentes no item2.
+
+## D3 - Design global azul marinho e superfícies foscas 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Lovable, Codex
+- **Entregue**: Cartões, campos, navegação e gráficos com tokens semânticos e tema claro preservado.
+- **Próximo Passo**: Manter o padrão nos próximos módulos.
+
+## D4 - Catálogo demonstrativo de planos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity, Codex
+- **Entregue**: Salvar, recarregar, editar e excluir rascunhos locais de telemedicina/pulseira; validação e falhas cobertas.
+- **Próximo Passo**: Ativação, venda e cobrança real permanecem nos itens13 e20.
+
+## D5 - Painéis de saúde com números fictícios 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Cliente e médico usam a mesma fonte de medições, seis gráficos e tabelas, com QA móvel e desktop.
+- **Próximo Passo**: Integração H59/H59MAX e balança real permanecem nos itens6,25 e27.
+
+## D6 - Base PWA de rede sem cache de saúde 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Manifest, ícone SVG, service worker e mensagem de desconexão implementados e testados unitariamente.
+- **Próximo Passo**: Homologar instalação em aparelhos e ícones por clínica; histórico clínico offline não implementado.
+
+## D7 - Verificação local da entrega C006 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: 64 testes passaram; tipos e build válidos; lint sem erros e7avisos Fast Refresh.
+- **Próximo Passo**: Build remoto Lovable ainda apresenta aviso, apesar de recebimento/renderização do commit.
+
+## D8 - Relatório temporário Status do projeto 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: 101 títulos do PRD organizados com requisitos, situações, executores, busca e filtros na rota /staus.
+- **Próximo Passo**: Atualizar em cada entrega; excluir página, botão e catálogo ao concluir o projeto.
+
+## D9 - Simulador local de estimativas 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Escopo limitado, três cenários/barras e campos explícitos.
+- **Próximo Passo**: Homologar visual, fórmulas/custos oficiais e persistência futura.
+
+## D10 - Unidade de criptografia clínica server-only 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: OpenCode
+- **Entregue**: Módulo AES-256-GCM server-only com WebCrypto nativa, envelope tipado v1, AAD (clínica/paciente/registro/tipo/kid) e KeyProvider injetado; 23 testes unitários em Node. Apenas escopo unitário.
+- **Próximo Passo**: Keystore real, guardas, persistência, auditoria, backup e rotação de produção permanecem pendentes; PRD 3.2/4/7 seguem parciais.
+
+## D11 - Adaptador Auth Server-only 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Implementado adaptador server-only request-bound src/lib/auth/supabase-adapter.server.ts e testes isolados. getUser(token) aplicado sem trust no client.
+- **Próximo Passo**: Conectar autenticação real, E2E login, RLS e isolamento.
+
+## D12 - Login Cloud com UI premium e validação no servidor 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity, Codex
+- **Entregue**: Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks.
+- **Próximo Passo**: Homologar conta real e preview Lovable; criar vínculos persistidos e RLS. Isso não conclui autenticação/isolamento de produção.
 

@@ -1,5 +1,7 @@
 # PlugPix Techmedicina
 
+> Estado em 10/10/2026: Lovable Cloud habilitado e scaffold conectado. `/login` integra o SDK de autenticação e confirma identidade no servidor; testes locais com mocks aprovados, login real ponta a ponta ainda pendente. Não há vínculos clínicos persistidos nem RLS de domínio; a conta autenticada aguarda autorização. As quatro áreas continuam demonstrações públicas com dados fictícios. O texto de base abaixo descreve o estágio inicial e não comprova segurança de produção. Status temporário em `/staus`; executor atual Codex, conforme instrução humana posterior.
+
 Base demonstrativa em português do Brasil, construída com React, TypeScript, TanStack Start e Tailwind CSS. Inclui interface azul marinho com superfícies foscas, catálogo local de rascunhos e painéis de saúde com dados fictícios compartilhados entre cliente e médico. Não possui banco, autenticação real ou integrações de dispositivos.
 
 ## Execução

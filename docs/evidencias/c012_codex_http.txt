@@ -1,0 +1,4 @@
+/login HTTP 200
+/staus HTTP 200
+/super-admin HTTP 200
+/api/access-check HTTP 401 Cache-Control: no-store, private

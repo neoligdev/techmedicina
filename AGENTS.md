@@ -31,6 +31,8 @@
 
 ## Status temporário do projeto
 
+- Diretriz humana vigente (10/10/2026): Codex implementa diretamente, testa, atualiza status e faz commit/push autorizados. Substitui a divisão coordenador/Antigravity de 09/10; manter Antigravity e OpenCode parados durante estas alterações. Preservar autorias históricas e registrar a transferência de execução.
+
 - Em cada implementação, atualizar `src/features/project-status/catalog.json`, a data em `catalog.ts` e os registros de progresso no mesmo commit. Registrar executor real (Codex, Lovable ou Antigravity), entrega validada e próximo passo; não atribuir autoria ao coordenador quando outro agente executou.
 - A rota `/staus` e o botão temporário do Super ADM são relatório manual. Verde é entrega concluída no escopo descrito; azul é requisito iniciado/parcial; amarelo é não implementado. Dados demo ou uma prévia não concluem requisitos de produção.
 - Manter cobertura das 34 seções e todos os subitens do PRD; o teste de cobertura deve continuar passando quando o PRD mudar.
