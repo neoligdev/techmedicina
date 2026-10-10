@@ -2078,6 +2078,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D25",
+      "title": "Homologação administrativa com sessão real no Cloud",
+      "parent": "34",
+      "status": "done",
+      "done": "Codex verificou login real do primeiro Super ADM, criou uma clínica QA inativa, alterou seu nome e confirmou os dois eventos de auditoria com a conta autora correta no preview Lovable. Sem dados clínicos, contas ou concessões adicionais.",
+      "next": "Integrar persistência de identidade visual; testar isolamento com contas e vínculos próprios antes de declarar autorização clínica homologada.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

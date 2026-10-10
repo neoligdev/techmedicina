@@ -1740,3 +1740,10 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex preparou tabela com RLS, gravação por RPC autorizada, revisão contra sobrescritas, validação de preferências e auditoria de campos. 243 testes, TypeScript, lint dos arquivos alterados e compilação aprovados. Nenhuma migração aplicada no Cloud nesta etapa.
 - **Próximo Passo**: Aplicar migração revisada pelo fluxo gerenciado, regenerar tipos e integrar API/formulário com sessão real. Personalização atual continua salva no navegador.
 
+## D25 - Homologação administrativa com sessão real no Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex verificou login real do primeiro Super ADM, criou uma clínica QA inativa, alterou seu nome e confirmou os dois eventos de auditoria com a conta autora correta no preview Lovable. Sem dados clínicos, contas ou concessões adicionais.
+- **Próximo Passo**: Integrar persistência de identidade visual; testar isolamento com contas e vínculos próprios antes de declarar autorização clínica homologada.
+

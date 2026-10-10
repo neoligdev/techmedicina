@@ -161,6 +161,10 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Fundação SQL/RLS/RPC e contrato validados localmente com revisão e auditoria.
 - [ ] Aplicar no Cloud, regenerar tipos e integrar API/formulário com sessão real.
 
+## C025 — Homologação administrativa
+- [x] Sessão real do Super ADM, criação/edição de clínica QA inativa e auditoria conferidas no preview.
+- [ ] Homologar isolamento entre contas e fluxos clínicos conforme seus requisitos; não concluídos pelo teste administrativo.
+
 ## C023 — Runtime do preview
 - [x] Reconexão Chrome e confirmação da C022 R1 renderizada.
 - [x] Reinício do preview pelo Lovable; formulário de login/hidratação verificados por Codex.

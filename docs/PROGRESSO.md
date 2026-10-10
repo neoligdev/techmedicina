@@ -318,3 +318,6 @@ Codex preparou migração com RLS, RPC autorizada, revisão e auditoria de campo
 
 ## C023 — Preview recuperado
 Chrome reconectado. Codex confirmou C022 R1 renderizada, mas login falhava na importação do cliente TanStack. Lovable reiniciou somente runtime, informando build 7a6e6cc succeeded/in_sync e módulo HTTP 200. Codex confirmou formulário com campos e botão Entrar habilitado, sem espera de sessão. Capturas c023_*.jpg e erros anteriores c023_module_errors.json. Nenhuma publicação, alteração de banco/permissões ou credenciais. Entrada do titular ainda pendente.
+
+## C025 — Homologação administrativa real
+Codex confirmou sessão do Super ADM no preview, criação/edição de clínica QA inativa e eventos com autor correto. Evidência c025_auditoria_real.jpg. Não valida acesso clínico ou isolamento entre contas; C024 ainda aguarda implantação e API/formulário.
