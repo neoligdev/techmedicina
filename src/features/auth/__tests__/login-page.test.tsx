@@ -124,8 +124,8 @@ describe("Login Cloud — identidade confirmada pelo servidor", () => {
     await screen.findByText("Conta autenticada");
     fireEvent.click(screen.getByRole("button", { name: "Sair desta sessão" }));
     await waitFor(() => expect(mocks.signOut).toHaveBeenCalled());
-    expect(mocks.cancelQueries.mock.invocationCallOrder[0]).toBeLessThan(mocks.clear.mock.invocationCallOrder[0]);
-    expect(mocks.clear.mock.invocationCallOrder[0]).toBeLessThan(mocks.signOut.mock.invocationCallOrder[0]);
+    expect(mocks.cancelQueries.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(mocks.clear.mock.invocationCallOrder[0] ?? 0);
+    expect(mocks.clear.mock.invocationCallOrder[0] ?? Infinity).toBeLessThan(mocks.signOut.mock.invocationCallOrder[0] ?? 0);
   });
   it("mantém a marca, rótulos, autocomplete e distinção da demonstração", async () => {
     render(<LoginPage />);

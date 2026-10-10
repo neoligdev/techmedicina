@@ -132,5 +132,6 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [ ] Paginação integral, auditoria clínica/recusas e fluxos assistenciais.
 
 ## Cadastro e entrada — Lovable (10/10/2026)
-- [ ] Cadastro por e-mail com confirmação, entrada Google, indicação de sessão e saída; sem perfil, tabelas ou grants novos.
-- [ ] Testes dos fluxos e atualização do relatório manual.
+- [x] Cadastro por e-mail com confirmação, entrada Google, indicação de sessão e saída; sem perfil, tabelas ou grants novos.
+- [x] 230 testes aprovados e tela de cadastro verificada no navegador; relatório manual atualizado.
+- [ ] Homologar confirmação recebida por e-mail e OAuth com conta real (depende de interação do titular); não criar contas de teste ou vínculos automaticamente.
