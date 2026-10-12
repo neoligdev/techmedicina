@@ -33,10 +33,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       const activeId =
         qClinic && clinics.some((item) => item.id === qClinic) ? qClinic : (clinics[0]?.id ?? "");
       const baseClinic = clinics.find((c) => c.id === activeId) ?? clinics[0];
-      const basePref =
-        loaded[activeId] ??
-        (baseClinic ? defaultPreferences(baseClinic) : defaultPreferences(clinics[0]));
-      loaded[activeId] = { ...basePref, mode: qMode };
+      if (baseClinic) {
+        const basePref = loaded[activeId] ?? defaultPreferences(baseClinic);
+        loaded[activeId] = { ...basePref, mode: qMode };
+      }
     }
     setSaved(loaded);
     setReady(true);

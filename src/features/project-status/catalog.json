@@ -237,7 +237,7 @@
       "title": "Aplicativo do cliente/paciente",
       "parent": null,
       "status": "progress",
-      "done": "Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde. C028 (Antigravity): novo visual resumido mobile-first com topo limpo, fontes ampliadas (28–32px), avisos compactos, protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação rápida '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em 2 colunas mobile, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos com modais interativos e suporte a tema claro e escuro e bloqueio por inadimplência.",
+      "done": "Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde. C028 (Antigravity): novo visual resumido mobile-first com topo limpo, fontes ampliadas (28–32px), avisos compactos, protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação rápida '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em 3 colunas mobile com textura e vidro fosco translúcido, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos com modais interativos e suporte a tema claro e escuro e bloqueio por inadimplência.",
       "next": "Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.",
       "authors": ["Lovable", "Antigravity", "Codex"],
       "requirements": []
@@ -1972,7 +1972,7 @@
       "title": "Novo visual resumido do aplicativo do paciente",
       "parent": "8",
       "status": "done",
-      "done": "Antigravity implementou tela inicial resumida (PatientHome) com topo limpo, saudação grande (28–32px), avisos compactos, card de protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação única '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em duas colunas mobile, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos (Início, Telemedicina, Água, IA, Alimentação, Perfil) com suporte a tema claro e escuro e bloqueio por inadimplência. 272 testes aprovados.",
+      "done": "Antigravity implementou tela inicial resumida (PatientHome) com topo limpo, saudação grande (28–32px), avisos compactos, card de protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação única '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em três colunas mobile com textura e vidro fosco translúcido, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos (Início, Telemedicina, Água, IA, Alimentação, Perfil) com suporte a tema claro e escuro e bloqueio por inadimplência. 273 testes aprovados.",
       "next": "Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.",
       "authors": ["Antigravity"],
       "requirements": []

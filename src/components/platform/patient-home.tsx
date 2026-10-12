@@ -1,4 +1,4 @@
-import { useState, useId } from "react";
+import { useState, useId, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
@@ -78,6 +78,37 @@ function setDemoStorage(key: string, value: string): void {
 export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   const navigate = useNavigate();
   const { clinic, preferences } = useDemoClinic();
+
+  // Detecção estrita de apresentação para celular:
+  // Combina largura de smartphone (<= 640px) com interação de toque (hover: none + pointer: coarse)
+  // ou identificador móvel no User-Agent / parâmetro de teste (?device=mobile ou ?mobile=true).
+  // Computadores (mesmo com janela redimensionada com mouse) e tablets mantêm isMobilePresentation = false.
+  const [isMobilePresentation, setIsMobilePresentation] = useState<boolean>(false);
+
+  useEffect(() => {
+    function checkPresentation() {
+      if (typeof window === "undefined") return;
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("device") === "mobile" || params.get("mobile") === "true") {
+        setIsMobilePresentation(true);
+        return;
+      }
+      if (params.get("device") === "desktop" || params.get("desktop") === "true") {
+        setIsMobilePresentation(false);
+        return;
+      }
+      const isPhoneWidth = window.innerWidth <= 640;
+      const isTouchPointer =
+        window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const isMobileUA = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+      );
+      setIsMobilePresentation(isPhoneWidth && (isTouchPointer || isMobileUA));
+    }
+    checkPresentation();
+    window.addEventListener("resize", checkPresentation);
+    return () => window.removeEventListener("resize", checkPresentation);
+  }, []);
 
   // Estados dos registros interativos com persistência demonstrativa local
   const [mood, setMood] = useState<{ emoji: string; label: string } | null>(() => {
@@ -238,7 +269,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   const waterPercent = Math.min(100, Math.round((waterMl / waterTarget) * 100));
 
   return (
-    <div className="patient-app-wrapper">
+    <div
+      className={`patient-app-wrapper ${isMobilePresentation ? "patient-home-mobile" : "patient-home-desktop"}`}
+      data-presentation={isMobilePresentation ? "mobile" : "desktop"}
+    >
       {/* TOPO: Cabeçalho compacto com Logo da clínica e Notificações */}
       <header className="patient-home-header">
         <div className="patient-header-brand">
@@ -487,7 +521,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           <h2 className="section-main-title">Acessos rápidos</h2>
         </div>
 
-        {/* Grade de atalhos estritamente quadrados (aspect-ratio: 1 / 1) em duas colunas no mobile */}
+        {/* Grade de atalhos estritamente quadrados (aspect-ratio: 1 / 1) em três colunas no mobile */}
         <div className="patient-shortcuts-grid">
           {/* 1. Financeiro */}
           <button
@@ -499,7 +533,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Financeiro"
           >
             <div className="shortcut-icon-container">
-              <Wallet size={48} strokeWidth={1.8} />
+              <Wallet size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Financeiro</span>
           </button>
@@ -512,7 +546,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Água"
           >
             <div className="shortcut-icon-container">
-              <Droplets size={48} strokeWidth={1.8} />
+              <Droplets size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Água</span>
           </button>
@@ -525,7 +559,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Clube de benefícios"
           >
             <div className="shortcut-icon-container">
-              <Gift size={48} strokeWidth={1.8} />
+              <Gift size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Clube de benefícios</span>
           </button>
@@ -538,7 +572,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Balança e bioimpedância"
           >
             <div className="shortcut-icon-container">
-              <Scale size={48} strokeWidth={1.8} />
+              <Scale size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Balança</span>
           </button>
@@ -551,9 +585,12 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Pulseira inteligente e sinais vitais"
           >
             <div className="shortcut-icon-container">
-              <Watch size={48} strokeWidth={1.8} />
+              <Watch size={32} strokeWidth={1.8} />
             </div>
-            <span className="shortcut-text-label">Pulseira inteligente</span>
+            <span className="shortcut-text-label" aria-hidden="true">
+              <span className="label-full">Pulseira inteligente</span>
+              <span className="label-short">Pulseira</span>
+            </span>
           </button>
 
           {/* 6. Protocolo */}
@@ -564,7 +601,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Protocolo"
           >
             <div className="shortcut-icon-container">
-              <ClipboardList size={48} strokeWidth={1.8} />
+              <ClipboardList size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Protocolo</span>
           </button>
@@ -577,7 +614,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Sono"
           >
             <div className="shortcut-icon-container">
-              <Moon size={48} strokeWidth={1.8} />
+              <Moon size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Sono</span>
           </button>
@@ -590,7 +627,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Score"
           >
             <div className="shortcut-icon-container">
-              <Award size={48} strokeWidth={1.8} />
+              <Award size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Score</span>
           </button>
@@ -603,7 +640,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Exames laboratoriais"
           >
             <div className="shortcut-icon-container">
-              <FileText size={48} strokeWidth={1.8} />
+              <FileText size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Exames</span>
           </button>
@@ -616,7 +653,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Adesão ao plano"
           >
             <div className="shortcut-icon-container">
-              <CheckCircle2 size={48} strokeWidth={1.8} />
+              <CheckCircle2 size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Adesão</span>
           </button>
@@ -629,7 +666,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Medicamentos prescritos"
           >
             <div className="shortcut-icon-container">
-              <Pill size={48} strokeWidth={1.8} />
+              <Pill size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Medicamentos</span>
           </button>
@@ -642,7 +679,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             aria-label="Abrir Treinos e atividades físicas"
           >
             <div className="shortcut-icon-container">
-              <Dumbbell size={48} strokeWidth={1.8} />
+              <Dumbbell size={32} strokeWidth={1.8} />
             </div>
             <span className="shortcut-text-label">Treinos</span>
           </button>

@@ -15,7 +15,8 @@ Na C028 (12/10/2026), o aplicativo do paciente foi reformulado com visual de cel
 - Cards duplos lado a lado: Meu plano (situação) e Meu score (pontuação em destaque de 32–40px e modal de critérios).
 - Humor e sono em cards duplos independentes com seleção de 5 emojis e relato opcional.
 - Água de hoje com exibição em fonte grande e ação única de acréscimo rápido (+ Água).
-- Grade de 12 acessos rápidos rigorosamente quadrados (`aspect-ratio: 1 / 1`) em 2 colunas no celular: Financeiro, Água, Clube de benefícios, Balança, Pulseira inteligente, Protocolo, Sono, Score, Exames, Adesão, Medicamentos e Treinos.
+- Grade de 12 acessos rápidos rigorosamente quadrados (`aspect-ratio: 1 / 1`) em 3 colunas no celular: Financeiro, Água, Clube de benefícios, Balança, Pulseira inteligente (com legenda adaptativa "Pulseira" em telas estreitas), Protocolo, Sono, Score, Exames, Adesão, Medicamentos e Treinos.
+- Textura de fundo original (`/patient-mobile-texture.jpg`) e cards com efeito de vidro fosco translúcido (`backdrop-filter`) exclusivos da tela Início no layout de celular, com textos totalmente nítidos e fallback para navegadores sem suporte. Computador, tablet e telas internas mantêm o fundo padrão original.
 - Seção expansível "Mais recursos" preservando acesso a todos os serviços adicionais.
 - Rodapé fixo com seis destinos inegociáveis: INÍCIO | TELEMEDICINA | ÁGUA | IA | ALIMENTAÇÃO | PERFIL, com contraste e espaçamento de segurança inferior.
 

@@ -3239,6 +3239,141 @@ button {
   }
 }
 
+/* ========================================================
+   TEXTURA DE FUNDO E VIDRO FOSCO EXCLUSIVOS DO CELULAR
+   ======================================================== */
+
+/* Apresentação Mobile com Textura (restrita ao celular) */
+.patient-app-wrapper.patient-home-mobile {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Camada comum de textura por trás das superfícies sem interferir em cliques/rolagem */
+.patient-app-wrapper.patient-home-mobile::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background-image: url("/patient-mobile-texture.jpg");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* Conteúdo sobre a textura */
+.patient-app-wrapper.patient-home-mobile > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Contraste aprimorado para títulos sobre a textura no celular */
+.patient-app-wrapper.patient-home-mobile .patient-greeting-title,
+.patient-app-wrapper.patient-home-mobile .section-main-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+}
+
+.patient-app-wrapper.patient-home-mobile .patient-demo-badge {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Vidro Fosco (Glassmorphism) nos cards e botões da Início sobre a textura — Tema Escuro */
+.patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+.patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+.patient-app-wrapper.patient-home-mobile .patient-summary-card,
+.patient-app-wrapper.patient-home-mobile .patient-water-card,
+.patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+.patient-app-wrapper.patient-home-mobile .patient-more-card,
+.patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+  background: rgba(10, 25, 42, 0.58);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
+.patient-app-wrapper.patient-home-mobile .patient-protocol-card:hover,
+.patient-app-wrapper.patient-home-mobile .patient-summary-card:hover,
+.patient-app-wrapper.patient-home-mobile .patient-water-card:hover,
+.patient-app-wrapper.patient-home-mobile .patient-square-shortcut:hover,
+.patient-app-wrapper.patient-home-mobile .patient-more-card:hover,
+.patient-app-wrapper.patient-home-mobile .patient-notif-bell:hover {
+  background: rgba(15, 38, 64, 0.72);
+  border-color: color-mix(in srgb, var(--primary) 50%, rgba(255, 255, 255, 0.25));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Vidro Fosco no Tema Claro ([data-mode="light"]) */
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+  background: rgba(255, 255, 255, 0.76);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  color: #0f172a;
+}
+
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--primary);
+}
+
+/* Fallback quando backdrop-filter não estiver disponível */
+@supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+  .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+  .patient-app-wrapper.patient-home-mobile .patient-summary-card,
+  .patient-app-wrapper.patient-home-mobile .patient-water-card,
+  .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+  .patient-app-wrapper.patient-home-mobile .patient-more-card,
+  .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+    background: var(--card, #0d2138);
+  }
+
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
+  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+    background: #ffffff;
+  }
+}
+
+/* Suporte à preferência por transparência reduzida */
+@media (prefers-reduced-transparency: reduce) {
+  .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+  .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+  .patient-app-wrapper.patient-home-mobile .patient-summary-card,
+  .patient-app-wrapper.patient-home-mobile .patient-water-card,
+  .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+  .patient-app-wrapper.patient-home-mobile .patient-more-card,
+  .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+    background: color-mix(in srgb, var(--card, #0d2138) 94%, transparent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* Cabeçalho da tela inicial */
 .patient-home-header {
   display: flex;
@@ -3750,22 +3885,23 @@ button {
   color: var(--foreground);
 }
 
-/* Grade em duas colunas no celular */
+/* Grade em TRÊS colunas no celular */
 .patient-shortcuts-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 350px) {
   .patient-shortcuts-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   .patient-shortcuts-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
   }
 }
 
@@ -3775,13 +3911,13 @@ button {
   width: 100%;
   background: var(--card, #0d2138);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-  border-radius: 20px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 16px 12px;
+  padding: 10px 6px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--foreground);
@@ -3789,6 +3925,13 @@ button {
   position: relative;
   overflow: hidden;
   user-select: none;
+}
+
+@media (max-width: 350px) {
+  .patient-square-shortcut {
+    padding: 8px 4px;
+    border-radius: 14px;
+  }
 }
 
 .patient-square-shortcut:hover {
@@ -3806,9 +3949,14 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
   color: var(--primary);
   transition: transform 0.2s ease;
+}
+
+.shortcut-icon-container svg {
+  width: clamp(26px, 6.5vw, 32px);
+  height: clamp(26px, 6.5vw, 32px);
 }
 
 .patient-square-shortcut:hover .shortcut-icon-container {
@@ -3816,15 +3964,38 @@ button {
 }
 
 .shortcut-text-label {
-  font-size: clamp(17px, 2.4vw, 19px);
+  font-size: clamp(12.5px, 3.2vw, 14px);
   font-weight: 650;
   color: var(--foreground);
-  line-height: 1.25;
+  line-height: 1.18;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  max-width: 95%;
+  max-width: 98%;
+  text-align: center;
+  word-break: normal;
+  hyphens: auto;
+}
+
+.label-short {
+  display: none;
+}
+
+.label-full {
+  display: inline;
+}
+
+@media (max-width: 360px) {
+  .shortcut-text-label {
+    font-size: 12px;
+  }
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
 }
 
 /* Bloco Mais Recursos (Accordion) */
@@ -4440,3 +4611,30 @@ button {
   border-color: rgba(0, 0, 0, 0.12);
   color: #0f172a;
 }
+
+/* Vidro Fosco no Tema Claro ([data-mode="light"]) exclusivo da tela Início no celular */
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
+  background: rgba(255, 255, 255, 0.78) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut:hover,
+.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: var(--primary) !important;
+}
+

@@ -163,4 +163,12 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
     expect(screen.getByText(/Pendência financeira identificada/i)).toBeInTheDocument();
     expect(screen.queryByLabelText("Simular status financeiro")).not.toBeInTheDocument();
   });
+
+  it("atalho da Pulseira inteligente oferece legenda completa e compacta para telas estreitas", () => {
+    renderWithDemo(<PatientHome />);
+    const pulseiraBtn = screen.getByLabelText(/Abrir Pulseira inteligente/i);
+    expect(pulseiraBtn).toBeInTheDocument();
+    expect(pulseiraBtn.querySelector(".label-full")).toHaveTextContent("Pulseira inteligente");
+    expect(pulseiraBtn.querySelector(".label-short")).toHaveTextContent("Pulseira");
+  });
 });
