@@ -1902,3 +1902,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex atualizou os resumos atuais de arquitetura, identificação, segurança e prioridades para refletir as homologações já feitas e os limites que permanecem. Clarificou que o domínio foi informado/documentado, sem registro ou alteração externa pelo agente. Página local exibiu 46 entregas antes desta revisão, 101 itens e barras de progresso sem contabilizar etapas parciais como conclusão integral.
 - **Próximo Passo**: Continuar atualização por entrega e remover o relatório temporário somente ao concluir o PRD. Homologação visual da sugestão de hosts permanece pendente.
 
+## D48 - Auditoria protegida de reservas de domínio 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou GET /api/platform/domain-audit e painel por reserva, com Super ADM verificado, filtros de clínica/ID, DTOs estritos, consulta sem cache, autor/horário e paginação por cursor. Respostas de outra clínica/reserva são recusadas. Vinte testes, tipos e build aprovados. Sem migração ou novas permissões. Configurações Domains do Lovable inspecionadas em leitura.
+- **Próximo Passo**: Homologar auditoria com sessão real no preview. Configuração de domínio principal/redirecionamentos precisa ser revisada antes de conectar hosts; DNS, TLS, posse e integração SSR continuam pendentes.
+

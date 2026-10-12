@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { domainReservationInputSchema, reservedDomainSchema } from "./domain-reservations";
 import type { ClinicDirectory } from "./clinic-directory";
 import { suggestedWhiteLabelHosts } from "./white-label-hostnames";
+import { DomainAuditPanel } from "./domain-audit-panel";
 const directorySchema = z
   .object({
     domains: z.array(reservedDomainSchema).max(100),
@@ -35,6 +36,7 @@ export function DomainAdministration({
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
   const [after, setAfter] = useState("");
+  const [auditDomainId, setAuditDomainId] = useState("");
   const mounted = useRef(false);
   const writing = useRef(false);
   const abort = useRef<AbortController | null>(null);
@@ -50,6 +52,7 @@ export function DomainAdministration({
     const deadline = setTimeout(() => controller.abort(), 20_000);
     abort.current = controller;
     setDirectory(null);
+    setAuditDomainId("");
     setError("");
     if (!clinicId) {
       clearTimeout(deadline);
@@ -198,6 +201,16 @@ export function DomainAdministration({
               {domain.hostname} ·{" "}
               {domain.environment === "patient_pwa" ? "PWA do paciente" : "Gestão e médico"} ·
               Pendente de verificação
+              <Button
+                type="button"
+                variant="outline"
+                className="ml-2"
+                disabled={busy}
+                onClick={() => setAuditDomainId(domain.id)}
+                aria-label={`Ver auditoria de ${domain.hostname}`}
+              >
+                Auditoria
+              </Button>
             </li>
           ))}
         </ul>
@@ -299,6 +312,14 @@ export function DomainAdministration({
       </form>
       {error && <p role="alert">{error}</p>}
       {notice && <p role="status">{notice}</p>}
+      {directory?.domains.some((domain) => domain.id === auditDomainId) && (
+        <DomainAuditPanel
+          key={`${clinicId}:${auditDomainId}:${token}`}
+          token={token}
+          clinicId={clinicId}
+          domainId={auditDomainId}
+        />
+      )}
     </section>
   );
 }

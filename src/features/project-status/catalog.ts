@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C047: síntese atual do status após homologações White Label.
+export const updatedAt = "12/10/2026"; // C048: consulta protegida da auditoria de domínios.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {

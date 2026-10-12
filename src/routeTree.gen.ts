@@ -25,6 +25,7 @@ import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audi
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
+import { Route as ApiPlatformDomainAuditRouteImport } from './routes/api/platform/domain-audit'
 import { Route as ApiPlatformDomainsRouteImport } from './routes/api/platform/domains'
 
 const IndexRoute = IndexRouteImport.update({
@@ -107,6 +108,11 @@ const ApiPlatformClinicsRoute = ApiPlatformClinicsRouteImport.update({
   path: '/api/platform/clinics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformDomainAuditRoute = ApiPlatformDomainAuditRouteImport.update({
+  id: '/api/platform/domain-audit',
+  path: '/api/platform/domain-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformDomainsRoute = ApiPlatformDomainsRouteImport.update({
   id: '/api/platform/domains',
   path: '/api/platform/domains',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRoutesByTo {
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRoutesById {
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRouteTypes {
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domain-audit'
     | '/api/platform/domains'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domain-audit'
     | '/api/platform/domains'
   id:
     | '__root__'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domain-audit'
     | '/api/platform/domains'
   fileRoutesById: FileRoutesById
 }
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
+  ApiPlatformDomainAuditRoute: typeof ApiPlatformDomainAuditRoute
   ApiPlatformDomainsRoute: typeof ApiPlatformDomainsRoute
 }
 
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformClinicsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/domain-audit': {
+      id: '/api/platform/domain-audit'
+      path: '/api/platform/domain-audit'
+      fullPath: '/api/platform/domain-audit'
+      preLoaderRoute: typeof ApiPlatformDomainAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/domains': {
       id: '/api/platform/domains'
       path: '/api/platform/domains'
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
+  ApiPlatformDomainAuditRoute: ApiPlatformDomainAuditRoute,
   ApiPlatformDomainsRoute: ApiPlatformDomainsRoute,
 }
 export const routeTree = rootRouteImport
