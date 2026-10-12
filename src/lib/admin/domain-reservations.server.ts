@@ -10,7 +10,7 @@ import { AuthError } from "../auth/guards.server";
 
 export function createDomainReservationHandlers<C extends { identity: AuthenticatedIdentity }>(
   resolve: () => Promise<C | null>,
-  read: (context: C, clinicId: string) => Promise<unknown>,
+  read: (context: C, clinicId: string, after?: string) => Promise<unknown>,
   reserve: (context: C, input: DomainReservationInput) => Promise<unknown>,
 ) {
   const headers = { "Cache-Control": "private, no-store" };
@@ -22,15 +22,26 @@ export function createDomainReservationHandlers<C extends { identity: Authentica
       if (!writing) {
         const params = new URL(request.url).searchParams;
         const clinic = z.string().uuid().safeParse(params.get("clinicId"));
-        if (!clinic.success || params.size !== 1 || params.getAll("clinicId").length !== 1)
+        const after = params.has("after")
+          ? domainReservationInputSchema.shape.hostname.safeParse(params.get("after"))
+          : null;
+        if (
+          !clinic.success ||
+          (after && !after.success) ||
+          [...params.keys()].some((key) => key !== "clinicId" && key !== "after") ||
+          params.getAll("clinicId").length !== 1 ||
+          params.getAll("after").length > 1
+        )
           throw new AuthError("Invalid input", 400);
         const rows = z
           .array(reservedDomainSchema)
           .max(101)
-          .parse(await read(context, clinic.data));
+          .parse(await read(context, clinic.data, after?.success ? after.data : undefined));
         if (rows.some((item) => item.clinic_id !== clinic.data)) throw new Error("Tenant mismatch");
+        const domains = rows.slice(0, 100);
+        const hasMore = rows.length > 100;
         return Response.json(
-          { domains: rows.slice(0, 100), hasMore: rows.length > 100 },
+          { domains, hasMore, nextCursor: hasMore ? domains.at(-1)?.hostname : null },
           { headers },
         );
       }

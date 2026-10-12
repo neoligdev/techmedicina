@@ -8,13 +8,14 @@ import { createDomainReservationHandlers } from "./domain-reservations.server";
 // Reuse the verified request bearer/publishable transport; never a service-role client.
 export const domainReservationHandlers = createDomainReservationHandlers(
   resolveRequestContext,
-  (context, clinicId) => {
+  (context, clinicId, after) => {
     const params = new URLSearchParams({
       clinic_id: `eq.${clinicId}`,
       select: "id,clinic_id,hostname,environment,status,revision,created_at",
       order: "hostname.asc,id.asc",
       limit: "101",
     });
+    if (after) params.set("hostname", `gt.${after}`);
     return requestDatabaseQuery(context, `rest/v1/tm_clinic_domains?${params}`);
   },
   (context, input) =>

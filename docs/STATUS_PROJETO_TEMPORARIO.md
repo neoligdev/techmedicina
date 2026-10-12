@@ -1867,3 +1867,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex corrigiu o resolvedor local para negar caminhos desconhecidos, APIs não declaradas, prefixos semelhantes, codificação e caminhos ambíguos. Área exige segmento exato; status temporário permitido somente em central/demo. Dezoito testes de host/rotas aprovados. Sem ativação de hosts ou mudança no design.
 - **Próximo Passo**: Integrar contrato ao servidor após contexto de host/registro confiável; assets e APIs exigem políticas explícitas próprias. Não representa isolamento multi-host em produção já homologado.
 
+## D43 - Reservas: paginação por cursor e recuperação homologada 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou páginas de até cem reservas com cursor de hostname validado, filtro obrigatório da clínica e controles Próxima/Primeira página. Reserva confirmada recarrega a primeira página, preservando ordem do servidor. 24 testes de painel/handlers/transporte aprovados; tipos e build aprovados. Preview comprovou timeout C041 e recuperação por recarga.
+- **Próximo Passo**: Homologar paginação remota com massa QA apropriada e investigar demora do erro de duplicidade. Prova de posse, TLS, ativação e contexto SSR continuam pendentes; nenhum domínio foi ativado.
+

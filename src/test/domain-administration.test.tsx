@@ -3,6 +3,42 @@ import { act, cleanup, render, screen, fireEvent, waitFor } from "@testing-libra
 import { DomainAdministration } from "../features/auth/domain-administration";
 const id = "00000000-0000-4000-8000-000000000001";
 const clinics = [{ id, name: "QA", is_active: false, created_at: "2026-10-12T12:00:00Z" }];
+it("percorre reservas além de cem e retorna à primeira página", async () => {
+  const domains = Array.from({ length: 100 }, (_, index) => ({
+    id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+    clinic_id: id,
+    hostname: `d${String(index).padStart(3, "0")}.qa.test`,
+    environment: "clinic_portal",
+    status: "pending_verification",
+    revision: 1,
+    created_at: "2026-10-12T12:00:00Z",
+  }));
+  const fetcher = vi.fn().mockImplementation((url) =>
+    Promise.resolve(
+      Response.json(
+        String(url).includes("after=")
+          ? {
+              domains: [{ ...domains[0], hostname: "d100.qa.test" }],
+              hasMore: false,
+              nextCursor: null,
+            }
+          : { domains, hasMore: true, nextCursor: domains.at(-1)?.hostname },
+      ),
+    ),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  render(<DomainAdministration token="fixture" clinics={clinics} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Próxima página de reservas" }));
+  await screen.findByText(/d100.qa.test/);
+  expect(fetcher).toHaveBeenLastCalledWith(
+    expect.stringContaining(`clinicId=${id}&after=d099.qa.test`),
+    expect.any(Object),
+  );
+  expect(screen.queryByText(/d000.qa.test/)).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Primeira página de reservas" }));
+  await screen.findByText(/d000.qa.test/);
+  expect(screen.queryByText(/d100.qa.test/)).toBeNull();
+});
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
@@ -11,7 +47,7 @@ afterEach(() => {
 it("encerra reserva sem resposta e exige recarga antes de outro envio", async () => {
   const fetcher = vi.fn().mockImplementation((_url, init) => {
     if (init?.method !== "POST")
-      return Promise.resolve(Response.json({ domains: [], hasMore: false }));
+      return Promise.resolve(Response.json({ domains: [], hasMore: false, nextCursor: null }));
     return new Promise((_resolve, reject) => {
       init.signal.addEventListener("abort", () =>
         reject(new DOMException("Aborted", "AbortError")),
@@ -48,9 +84,12 @@ it("reserva sem exibir domínio como ativo nem criar link público", async () =>
   };
   const fetcher = vi.fn().mockImplementation((_url, init) =>
     Promise.resolve(
-      Response.json(init?.method === "POST" ? { domain } : { domains: [], hasMore: false }, {
-        status: init?.method === "POST" ? 201 : 200,
-      }),
+      Response.json(
+        init?.method === "POST" ? { domain } : { domains: [], hasMore: false, nextCursor: null },
+        {
+          status: init?.method === "POST" ? 201 : 200,
+        },
+      ),
     ),
   );
   vi.stubGlobal("fetch", fetcher);
@@ -95,6 +134,7 @@ it("rejeita lista de outra clínica sem mostrar hostname alheio", async () => {
           },
         ],
         hasMore: false,
+        nextCursor: null,
       }),
     ),
   );

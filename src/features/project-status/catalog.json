@@ -2295,6 +2295,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D43",
+      "title": "Reservas: paginação por cursor e recuperação homologada",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex implementou páginas de até cem reservas com cursor de hostname validado, filtro obrigatório da clínica e controles Próxima/Primeira página. Reserva confirmada recarrega a primeira página, preservando ordem do servidor. 24 testes de painel/handlers/transporte aprovados; tipos e build aprovados. Preview comprovou timeout C041 e recuperação por recarga.",
+      "next": "Homologar paginação remota com massa QA apropriada e investigar demora do erro de duplicidade. Prova de posse, TLS, ativação e contexto SSR continuam pendentes; nenhum domínio foi ativado.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

@@ -5,8 +5,17 @@ import { Input } from "@/components/ui/input";
 import { domainReservationInputSchema, reservedDomainSchema } from "./domain-reservations";
 import type { ClinicDirectory } from "./clinic-directory";
 const directorySchema = z
-  .object({ domains: z.array(reservedDomainSchema).max(100), hasMore: z.boolean() })
-  .strict();
+  .object({
+    domains: z.array(reservedDomainSchema).max(100),
+    hasMore: z.boolean(),
+    nextCursor: domainReservationInputSchema.shape.hostname.nullable(),
+  })
+  .strict()
+  .refine((value) =>
+    value.hasMore
+      ? value.domains.length === 100 && value.nextCursor === value.domains.at(-1)?.hostname
+      : value.nextCursor === null,
+  );
 type Directory = z.infer<typeof directorySchema>;
 export function DomainAdministration({
   token,
@@ -23,6 +32,7 @@ export function DomainAdministration({
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
+  const [after, setAfter] = useState("");
   const mounted = useRef(false);
   const writing = useRef(false);
   const abort = useRef<AbortController | null>(null);
@@ -39,7 +49,6 @@ export function DomainAdministration({
     abort.current = controller;
     setDirectory(null);
     setError("");
-    setNotice("");
     if (!clinicId) {
       clearTimeout(deadline);
       return () => controller.abort();
@@ -47,7 +56,7 @@ export function DomainAdministration({
     void (async () => {
       try {
         const response = await fetch(
-          `/api/platform/domains?clinicId=${encodeURIComponent(clinicId)}`,
+          `/api/platform/domains?clinicId=${encodeURIComponent(clinicId)}${after ? `&after=${encodeURIComponent(after)}` : ""}`,
           {
             headers: { Authorization: `Bearer ${token}` },
             cache: "no-store",
@@ -73,7 +82,7 @@ export function DomainAdministration({
       clearTimeout(deadline);
       controller.abort();
     };
-  }, [token, clinicId, reload]);
+  }, [token, clinicId, reload, after]);
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (writing.current || !directory) return;
@@ -118,15 +127,9 @@ export function DomainAdministration({
       )
         throw new Error("Reservation mismatch");
       if (!mounted.current) return;
-      setDirectory((current) =>
-        current
-          ? {
-              ...current,
-              domains: [result.domain, ...current.domains].slice(0, 100),
-              hasMore: current.hasMore || current.domains.length >= 100,
-            }
-          : null,
-      );
+      setDirectory(null);
+      setAfter("");
+      setReload((value) => value + 1);
       setHostname("");
       setNotice("Domínio reservado. Verificação de posse e HTTPS ainda pendentes.");
     } catch {
@@ -155,7 +158,12 @@ export function DomainAdministration({
           aria-label="Clínica da reserva"
           value={clinicId}
           disabled={busy}
-          onChange={(event) => setClinicId(event.target.value)}
+          onChange={(event) => {
+            setDirectory(null);
+            setAfter("");
+            setNotice("");
+            setClinicId(event.target.value);
+          }}
           className="login-input w-full"
         >
           <option value="">Selecione uma clínica</option>
@@ -170,7 +178,12 @@ export function DomainAdministration({
         type="button"
         variant="outline"
         disabled={busy || !clinicId}
-        onClick={() => setReload((value) => value + 1)}
+        onClick={() => {
+          setDirectory(null);
+          setAfter("");
+          setNotice("");
+          setReload((value) => value + 1);
+        }}
       >
         Recarregar reservas
       </Button>
@@ -186,11 +199,33 @@ export function DomainAdministration({
         </ul>
       )}
       {directory?.domains.length === 0 && <p>Nenhum domínio reservado nesta clínica.</p>}
+      {after && (
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            setDirectory(null);
+            setAfter("");
+            setNotice("");
+          }}
+        >
+          Primeira página de reservas
+        </Button>
+      )}
       {directory?.hasMore && (
-        <p>
-          Exibidos até cem registros. Há mais reservas; consulta de páginas anteriores ainda
-          pendente.
-        </p>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            setDirectory(null);
+            setAfter(directory.nextCursor ?? "");
+            setNotice("");
+          }}
+        >
+          Próxima página de reservas
+        </Button>
       )}
       <form onSubmit={submit} className="space-y-3" aria-label="Reservar domínio">
         <label className="block">

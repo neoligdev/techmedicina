@@ -32,7 +32,7 @@ it("consulta limitada com contexto validado e filtro exato", async () => {
     new Request(`https://example.test/api/platform/domains?clinicId=${id}`),
   );
   expect(response.status).toBe(200);
-  expect(await response.json()).toEqual({ domains: [domain], hasMore: false });
+  expect(await response.json()).toEqual({ domains: [domain], hasMore: false, nextCursor: null });
   expect(mocks.query).toHaveBeenCalledWith(context, expect.stringContaining(`clinic_id=eq.${id}`));
   expect(mocks.query.mock.calls[0]?.[1]).toContain("limit=101");
 });
@@ -74,4 +74,28 @@ it("indica mais resultados sem devolver além de cem", async () => {
   const result = await response.json();
   expect(result.domains).toHaveLength(100);
   expect(result.hasMore).toBe(true);
+  expect(result.nextCursor).toBe(domain.hostname);
 });
+it("usa cursor validado sem remover filtro da clínica", async () => {
+  mocks.query.mockResolvedValue([]);
+  const response = await domainReservationHandlers.GET(
+    new Request(`https://example.test/api/platform/domains?clinicId=${id}&after=gestao.a.test`),
+  );
+  expect(response.status).toBe(200);
+  const params = new URLSearchParams(mocks.query.mock.calls[0]?.[1].split("?")[1]);
+  expect(params.get("clinic_id")).toBe(`eq.${id}`);
+  expect(params.get("hostname")).toBe("gt.gestao.a.test");
+  expect(params.get("order")).toBe("hostname.asc,id.asc");
+});
+it.each(["a.test,clinic_id.eq.other", "a.test&clinicId=other", "", "A.test"])(
+  "nega cursor inválido antes do transporte: %s",
+  async (after) => {
+    const response = await domainReservationHandlers.GET(
+      new Request(
+        `https://example.test/api/platform/domains?clinicId=${id}&after=${encodeURIComponent(after)}`,
+      ),
+    );
+    expect(response.status).toBe(400);
+    expect(mocks.query).not.toHaveBeenCalled();
+  },
+);
