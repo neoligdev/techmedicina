@@ -1768,3 +1768,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Antigravity implementou tela inicial resumida (PatientHome) com topo limpo, saudação grande (28–32px), avisos compactos, card de protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação única '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em três colunas mobile com textura e vidro fosco translúcido, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos (Início, Telemedicina, Água, IA, Alimentação, Perfil) com suporte a tema claro e escuro e bloqueio por inadimplência. 273 testes aprovados.
 - **Próximo Passo**: Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.
 
+## D29 - Seleção e envio de texturas por clínica no app do paciente 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity implementou seleção e envio de texturas de fundo para o app do paciente na personalização do ADM da clínica. Inclui catálogo padrão com 5 opções (4 texturas reais fornecidas: Luzes Bokeh, Brilho Esmeralda, Azul Meia-Noite, Vidro Água, e 5ª opção registrada como pendente de anexo sem dados fictícios), destaque de textura salva vs selecionada em edição, seção 'Minhas texturas' com upload de até 5MB (JPG/PNG/WebP, validando magic bytes, rejeitando SVG/executáveis), botões 'Salvar alterações' e 'Cancelar', simulação de smartphone com cards e vidro fosco no painel ADM, migração incremental 004_clinic_texture_branding.sql com suporte a textureId, textureUrl e customTextures no banco e isolamento rigoroso por clínica. 282 testes aprovados.
+- **Próximo Passo**: Aplicar a migração 004 no SQL Editor do Lovable Cloud e homologar persistência remota e bucket de Storage para assets quando liberado; computadores e tablets mantêm interface padrão.
+

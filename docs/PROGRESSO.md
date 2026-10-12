@@ -366,3 +366,35 @@ Executor: Antigravity (autorizado por diretriz humana do titular em 12/10/2026, 
   - Linter ESLint (`eslint .`) aprovado com 0 erros (7 avisos conhecidos de exportação).
   - Processo de build de produção (`vite build`) exit 0 sem erros.
   - Capturas visuais reais em headless Chrome geradas em `docs/evidencias/c028_screenshots/`: 320px (legenda adaptativa "Pulseira"), 360px (Dark/Light), 390px (Dark/Light/Fullpage com 3 colunas e vidro fosco sobre textura), 430px, comparativo entre clínicas (Clínica Viva Saúde vs Clínica Horizonte), desktop 1280px (fundo original), desktop estreito 390px (fundo original) e tablet 768px (fundo original).
+
+## C029 — Seleção e envio de texturas por clínica no app do paciente (12/10/2026)
+
+Executor: Antigravity (execução direta autorizada pelo proprietário; Codex e OpenCode parados).
+
+- Escopo e Interface de Personalização:
+  - Adicionado o bloco "Fundo do aplicativo" dentro da página de Personalização do ADM da clínica (`src/components/platform/personalization-page.tsx`), sem criar sistemas de temas paralelos.
+  - Galeria de miniaturas com as 5 opções do catálogo padrão:
+    1. Luzes Bokeh (`/textures/texture-1.jpg`)
+    2. Brilho Esmeralda (`/textures/texture-2.jpg`)
+    3. Azul Meia-Noite (`/textures/texture-3.jpg`)
+    4. Vidro Água (`/textures/texture-4.jpg`)
+    5. Opção Padrão 5 (marcada e exibida explicitamente como "Pendente de anexo do proprietário", sem inventar imagens falsas ou duplicar opções anteriores).
+  - Badges de estado claras: "Salva" (publicada na clínica) vs "Em edição" (selecionada no rascunho) vs "Pendente".
+  - Seção "Minhas texturas" com listagem de imagens enviadas pela clínica, seleção para teste e botão para exclusão.
+  - Botão "Enviar textura": suporta JPG, JPEG, PNG e WebP com limite estrito de 5 MB exibido claramente ao usuário. Validação completa de tipo MIME, Magic Bytes binários no cliente e no servidor e verificação de integridade contra corrupção, bloqueando SVG, scripts e executáveis.
+  - Botões "Salvar alterações" e "Cancelar": seleção de textura atualiza apenas a prévia até clicar em Salvar; Cancelar restaura imediatamente o estado salvo; confirmação de salvamento só após gravação confirmada.
+  - Prévia de smartphone interativa no painel administrativo: moldura de celular com notch, status bar, logo da clínica, cards de avisos, atalhos em 3 colunas, hidratação e barra de 6 destinos sob efeito de vidro fosco (`backdrop-filter: blur(14px)`), renderizando a textura em edição com fidelidade máxima.
+- Aplicação no Aplicativo do Paciente:
+  - Textura da clínica injetada dinamicamente via variável CSS `--patient-mobile-texture` na tela inicial do celular (`patient-home-mobile`).
+  - Tablet e computador mantêm o fundo institucional neutro sem distorção.
+  - Camada de compatibilidade preservada com fallback seguro caso nenhuma textura seja selecionada.
+- Banco de Dados, Isolamento e Backend:
+  - Migração incremental `database/migrations/004_clinic_texture_branding.sql`: atualiza `public.tm_valid_branding` para aceitar `textureId`, `textureUrl` e `customTextures` com limites de até 8MB para JSONs com texturas, e atualiza `public.tm_save_branding` com auditoria detalhada de campos modificados.
+  - Isolamento estrito por tenant (`clinic_id`): Clínica A e Clínica B salvam texturas totalmente independentes; uma clínica não visualiza nem acessa uploads de outra; pacientes e médicos bloqueados para alteração de identidade institucional.
+  - Endpoint `clinic-branding.server.ts` atualizado para receber payloads de até 8MB para upload de texturas personalizadas.
+- Validação e Qualidade:
+  - 30 arquivos de teste e 282 testes aprovados (`vitest run`).
+  - Novo arquivo de testes `src/test/clinic-texture-customization.test.ts` cobrindo catálogo, magic bytes, isolamento entre clínicas, rejeição de não autorizados e validação de handlers.
+  - `tsc --noEmit` aprovado com 0 erros.
+  - ESLint (`eslint src/`) aprovado com 0 erros.
+  - `vite build` gerou bundles client e SSR sem erros.

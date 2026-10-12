@@ -1,4 +1,9 @@
-import { validPreferences, validImageBase64, type ClinicPreferences } from "./personalization";
+import {
+  validPreferences,
+  validImageBase64,
+  validTextureUrl,
+  type ClinicPreferences,
+} from "./personalization";
 
 const key = (id: string) => `plugpix:clinic-visual:v1:${id}`;
 // Visual preferences only. Replace this adapter for future server persistence.
@@ -11,6 +16,7 @@ export function loadPreferences(id: string): ClinicPreferences | undefined {
     const p = value as Record<string, unknown>;
     if (!validImageBase64(p["logo"])) delete p["logo"];
     if (!validImageBase64(p["favicon"])) delete p["favicon"];
+    if (p["textureUrl"] && !validTextureUrl(p["textureUrl"])) delete p["textureUrl"];
     return validPreferences(p)
       ? {
           name: p.name.trim(),
@@ -19,6 +25,9 @@ export function loadPreferences(id: string): ClinicPreferences | undefined {
           mode: p.mode,
           logo: p.logo,
           favicon: p.favicon,
+          textureId: p.textureId,
+          textureUrl: p.textureUrl,
+          customTextures: p.customTextures,
         }
       : undefined;
   } catch {
@@ -36,6 +45,9 @@ export function storePreferences(id: string, preferences: ClinicPreferences) {
       mode: preferences.mode,
       logo: preferences.logo,
       favicon: preferences.favicon,
+      textureId: preferences.textureId,
+      textureUrl: preferences.textureUrl,
+      customTextures: preferences.customTextures,
     }),
   );
 }

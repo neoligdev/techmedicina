@@ -268,10 +268,17 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
   const waterPercent = Math.min(100, Math.round((waterMl / waterTarget) * 100));
 
+  const resolvedTextureUrl = preferences.textureUrl || "/textures/texture-3.jpg";
+
   return (
     <div
       className={`patient-app-wrapper ${isMobilePresentation ? "patient-home-mobile" : "patient-home-desktop"}`}
       data-presentation={isMobilePresentation ? "mobile" : "desktop"}
+      style={
+        isMobilePresentation
+          ? ({ "--patient-mobile-texture": `url("${resolvedTextureUrl}")` } as React.CSSProperties)
+          : undefined
+      }
     >
       {/* TOPO: Cabeçalho compacto com Logo da clínica e Notificações */}
       <header className="patient-home-header">

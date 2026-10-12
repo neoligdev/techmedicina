@@ -96,7 +96,7 @@ describe("Fronteira HTTP da identidade visual", () => {
   });
   it("limita o corpo mesmo sem Content-Length", async () => {
     const { handlers, write } = setup();
-    expect((await handlers.PUT(request({ padding: "a".repeat(560001) }))).status).toBe(413);
+    expect((await handlers.PUT(request({ padding: "a".repeat(8000001) }))).status).toBe(413);
     expect(write).not.toHaveBeenCalled();
   });
   it("não retorna dados de outra clínica nem detalhes internos", async () => {

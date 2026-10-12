@@ -1,7 +1,17 @@
 import { z } from "zod";
-import { validImageBase64 } from "../demo/personalization";
+import { validImageBase64, validTextureUrl } from "../demo/personalization";
 
 const image = z.string().max(275000).refine(validImageBase64, "Imagem inválida").optional();
+
+export const customTextureSchema = z
+  .object({
+    id: z.string().min(1).max(64),
+    name: z.string().min(1).max(60),
+    url: z.string().min(1).max(7000000).refine(validTextureUrl, "Textura inválida"),
+    createdAt: z.string(),
+  })
+  .strict();
+
 export const clinicBrandingPreferencesSchema = z
   .object({
     name: z
@@ -14,6 +24,9 @@ export const clinicBrandingPreferencesSchema = z
     mode: z.enum(["light", "dark"]),
     logo: image,
     favicon: image,
+    textureId: z.string().max(64).optional(),
+    textureUrl: z.string().max(7000000).refine(validTextureUrl, "Textura inválida").optional(),
+    customTextures: z.array(customTextureSchema).max(20).optional(),
   })
   .strict();
 export const clinicBrandingWriteSchema = z

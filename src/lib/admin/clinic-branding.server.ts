@@ -35,8 +35,8 @@ async function readInput(request: Request): Promise<unknown> {
       const part = await reader.read();
       if (part.done) break;
       size += part.value.byteLength;
-      // Two 200KB images plus bounded metadata; independent of Content-Length.
-      if (size > 560000) {
+      // Imagens institucionais, preferências visuais e texturas personalizadas até 8MB; independente de Content-Length.
+      if (size > 8000000) {
         await reader.cancel();
         throw new AuthError("Dados excedem o limite", 413);
       }
