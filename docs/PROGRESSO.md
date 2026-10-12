@@ -446,3 +446,6 @@ Codex revisou WL-1 do Antigravity e corrigiu portas ambíguas, cabeçalhos dupli
 
 ## C036 — Reserva de domínios local
 Codex preparou 006_domain_reservations.sql: hostname canônico único, finalidade gestão/PWA, FK de clínica, status somente pending_verification, RLS e auditoria. RPC autoriza operador ativo e recusa takeover; não ativa domínio. Sete testes PostgreSQL aprovados. Sem Cloud/DNS/TLS/design alterados. Próxima etapa: DTOs e API administrativa com limites/erros seguros.
+
+## C037 — Contratos e fronteira HTTP local
+Codex implementou DTOs estritos e fábrica GET/POST protegida para reservas. Dez testes aprovados; TypeScript e lint aprovados. Sem rota/transportes produtivos ainda, sem SQL remoto, design ou DNS alterados. Próximo: adapter autenticado e rota, depois administração visual.

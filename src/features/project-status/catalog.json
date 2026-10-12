@@ -2223,6 +2223,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D37",
+      "title": "Reservas de domínio: contratos e fronteira HTTP local",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex preparou DTOs estritos e handlers GET/POST injetáveis de reservas, com autorização de Super ADM antes da leitura, hostname canônico, limite real de corpo, resposta sem cache e validação de clínica/destino retornados. Dez testes aprovados; não há endpoint operacional integrado nesta entrega.",
+      "next": "Conectar transporte autenticado ao backend e rota, depois UI. Migração 006, DNS, prova de posse e ativação ainda pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

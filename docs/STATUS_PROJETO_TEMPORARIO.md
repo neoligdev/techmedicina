@@ -1825,3 +1825,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex preparou migração aditiva 006 com hostname único, vínculo ao UUID da clínica, finalidade gestão/PWA, reserva pendente, RLS e auditoria. RPC exclusiva de operador ativo recusa colisões e não ativa hosts. Sete testes PostgreSQL aprovados. Sem alterações de design, DNS ou Cloud nesta etapa.
 - **Próximo Passo**: Criar contratos/API/UI de reserva, revisar posse e TLS antes de ativação; aplicar migração somente no fluxo validado e integrar contexto SSR. Domínios centrais e configuração de produção ainda pendentes.
 
+## D37 - Reservas de domínio: contratos e fronteira HTTP local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou DTOs estritos e handlers GET/POST injetáveis de reservas, com autorização de Super ADM antes da leitura, hostname canônico, limite real de corpo, resposta sem cache e validação de clínica/destino retornados. Dez testes aprovados; não há endpoint operacional integrado nesta entrega.
+- **Próximo Passo**: Conectar transporte autenticado ao backend e rota, depois UI. Migração 006, DNS, prova de posse e ativação ainda pendentes.
+
