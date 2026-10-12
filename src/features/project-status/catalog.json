@@ -24,8 +24,8 @@
       "title": "Visão e arquitetura funcional",
       "parent": null,
       "status": "progress",
-      "done": "Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente.",
-      "next": "Implementar resolvedor de host e mapeamento de domínios incrementalmente; configurações externas requerem confirmação concreta antes de produção.",
+      "done": "Quatro áreas demonstrativas e design preservados. Cloud multi-tenant com Auth, RLS, cadastro/auditoria e marca por UUID; Super ADM e salvar/recarregar marca QA homologados. Reservas White Label pendentes persistem no Cloud, com mensagem de duplicidade verificada. Paginação e contratos locais de host/rota/identidade testados. Domínio techmedicina.com.br e Registro.br informados pelo proprietário; sugestões de hosts implementadas sem ativação.",
+      "next": "Integrar registro e contexto confiável ao SSR/APIs, layouts e PWA por origem; verificar posse/TLS, callbacks e duas clínicas autorizadas antes de ativar hosts. A demo unificada continua disponível.",
       "authors": [
         "Lovable",
         "Antigravity",
@@ -66,8 +66,8 @@
       "title": "Identificação e autorização",
       "parent": "3",
       "status": "progress",
-      "done": "Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
-      "next": "C012 entrega UI de login sem permissões clínicas; faltam login real ponta a ponta, validação do registro profissional, vínculos persistidos e RLS.",
+      "done": "Auth getUser e identidade persistida com vínculos/grants e RLS implementados. Login real do Super ADM homologado, sem acesso clínico automático. Contrato local por host restringe clínica/papel e conta multivínculo; ainda sem integração ao SSR. Validação de registro médico produtiva não implementada.",
+      "next": "Provisionar vínculos somente após verificar contas e aprovar concessões específicas; homologar médico/paciente e isolamento real entre clínicas, além da verificação profissional e contexto por domínio.",
       "authors": [
         "Antigravity",
         "OpenCode",
@@ -180,8 +180,8 @@
       "title": "Segurança — definição e recomendações",
       "parent": null,
       "status": "progress",
-      "done": "Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente. C022: dependências registradas revisadas, instalação frozen e auditoria do Bun sem alertas conhecidos; verificações locais aprovadas, sem atestar segurança integral. C026: migração de preferências por clínica aplicada no Cloud; API protegida implementada.",
-      "next": "Conectar formulário e homologar a personalização com sessão real; concluir demais requisitos de persistência.",
+      "done": "Negação por padrão, Auth verificado, RLS nas fundações Cloud, escritas administrativas por RPC e auditoria, revisão de marca e validação de texturas implementados. Cadastro/marca/reserva QA testados com sessão real. Contratos locais de host/rota/identidade e criptografia AES-256-GCM unitária testados. Revisão de dependências registrada; isso não atesta segurança integral ou conformidade.",
+      "next": "Concluir contexto de host no runtime, keystore/rotação/backup reais, recursos clínicos autorizados e auditados, retenção e validações de produção. Criptografia unitária não equivale a prontuário implantado.",
       "authors": [
         "Antigravity",
         "OpenCode",
@@ -1762,8 +1762,8 @@
       "title": "Prioridade recomendada e decisões pendentes",
       "parent": null,
       "status": "progress",
-      "done": "Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C023: runtime do preview recuperado por Lovable e formulário de login verificado no Chrome por Codex, após erro de importação do cliente. Sem publicação.",
-      "next": "Homologar login/JWT/gateway/cadastro/auditoria no preview com o titular. Continuar vínculos, persistência das preferências e recursos clínicos; chaves, dispositivos e integrações seguem pendentes.",
+      "done": "PRD v0.11.1, adendo e decisões preservados nos registros. Codex retomou implementação direta após Antigravity, manteve design e status por entrega. Cloud administrativo e marca QA homologados; reservas/paginação e contratos White Label avançaram. Domínio techmedicina.com.br no Registro.br informado, sem DNS ou ativação. Última regressão completa: 363 testes aprovados antes da sugestão de hosts, que tem oito testes direcionados aprovados.",
+      "next": "Continuar auditoria e contexto White Label e recursos independentes. Hospedagem/DNS/TLS, contas QA clínicas, keystore, protocolo H59MAX/balança, fornecedores e condições comerciais/clínicas abertas exigem definição antes dos respectivos fluxos produtivos.",
       "authors": [
         "Antigravity",
         "Codex",
@@ -2337,8 +2337,20 @@
       "title": "White Label: sugestão de hosts no domínio informado",
       "parent": "2",
       "status": "done",
-      "done": "Codex registrou techmedicina.com.br no Registro.br informado pelo proprietário e implementou sugestão opcional de hostname para gestão/médico e PWA. Identificador canônico recusa nomes reservados; botão somente preenche e mantém domínio próprio livre, sem envio automático. Oito testes aprovados, tipos/build registrados. Design preservado pelos controles existentes.",
+      "done": "Codex documentou o domínio techmedicina.com.br e o provedor Registro.br informados pelo proprietário e implementou sugestão opcional de hostname para gestão/médico e PWA. Identificador canônico recusa nomes reservados; botão somente preenche e mantém domínio próprio livre, sem envio automático. Oito testes aprovados, tipos/build registrados. Design preservado pelos controles existentes.",
       "next": "Convenção é proposta, sem DNS/TLS/ativação. Validar hospedagem e ingresso; inspeção Domains bloqueada por falha de controle. Sugestão e paginação ainda exigem homologação visual da versão sincronizada.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
+    },
+    {
+      "id": "D47",
+      "title": "Relatório de status: síntese atual e conferência local",
+      "parent": "1",
+      "status": "done",
+      "done": "Codex atualizou os resumos atuais de arquitetura, identificação, segurança e prioridades para refletir as homologações já feitas e os limites que permanecem. Clarificou que o domínio foi informado/documentado, sem registro ou alteração externa pelo agente. Página local exibiu 46 entregas antes desta revisão, 101 itens e barras de progresso sem contabilizar etapas parciais como conclusão integral.",
+      "next": "Continuar atualização por entrega e remover o relatório temporário somente ao concluir o PRD. Homologação visual da sugestão de hosts permanece pendente.",
       "authors": [
         "Codex"
       ],
