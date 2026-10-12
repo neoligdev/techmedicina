@@ -2307,6 +2307,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D44",
+      "title": "Reservas: colisão como violação de unicidade",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex criou e aplicou migração aditiva 007, alterando somente o código SQL de colisão para 23505. Transporte mapeia esse código para HTTP 409 sem expor detalhes internos. Dezesseis testes SQL/transporte, tipos e build aprovados. Cloud confirmou novo código, uma reserva/uma auditoria e manutenção dos bloqueios de escrita direta e RPC anônima.",
+      "next": "Após sincronização, homologar mensagem específica de duplicidade no preview. A causa da demora anterior não foi comprovada. Posse, TLS, ativação e contexto SSR continuam pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

@@ -35,7 +35,7 @@ export async function query(
   if (!response.ok) {
     const raw: unknown = await response.json().catch(() => null);
     const code = raw && typeof raw === "object" && "code" in raw ? raw.code : null;
-    if (code === "40001") throw new AuthError("Conflict", 409);
+    if (code === "40001" || code === "23505") throw new AuthError("Conflict", 409);
     if (code === "42501" || response.status === 403) throw new AuthError("Denied", 403);
     if (response.status === 401) throw new AuthError("Session expired", 401);
     if (code === "22023") throw new AuthError("Invalid input", 400);

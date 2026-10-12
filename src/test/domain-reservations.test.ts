@@ -10,7 +10,11 @@ beforeAll(async () => {
   await db.exec(`CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN; CREATE SCHEMA auth;
   CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
   GRANT USAGE ON SCHEMA auth TO anon,authenticated; GRANT EXECUTE ON FUNCTION auth.uid() TO anon,authenticated;`);
-  for (const file of ["001_tenant_foundation.sql", "006_domain_reservations.sql"])
+  for (const file of [
+    "001_tenant_foundation.sql",
+    "006_domain_reservations.sql",
+    "007_domain_collision_code.sql",
+  ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
     );
@@ -33,7 +37,7 @@ it("reserva hostname sem ativar e sem permitir takeover", async () => {
   );
   expect(saved.rows[0]?.saved.status).toBe("pending_verification");
   await expect(db.query("SELECT public.tm_reserve_domain($1,$2,$3)", args)).rejects.toMatchObject({
-    code: "40001",
+    code: "23505",
   });
   expect((await db.query("SELECT * FROM public.tm_domain_audit")).rows).toHaveLength(1);
   await expect(

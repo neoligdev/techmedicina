@@ -62,6 +62,7 @@ describe("Transporte de personalização com sessão validada", () => {
   });
   it.each([
     ["40001", 409],
+    ["23505", 409],
     ["42501", 403],
     ["22023", 400],
     ["PGRST202", 503],

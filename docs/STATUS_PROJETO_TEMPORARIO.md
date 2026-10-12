@@ -1874,3 +1874,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex implementou páginas de até cem reservas com cursor de hostname validado, filtro obrigatório da clínica e controles Próxima/Primeira página. Reserva confirmada recarrega a primeira página, preservando ordem do servidor. 24 testes de painel/handlers/transporte aprovados; tipos e build aprovados. Preview comprovou timeout C041 e recuperação por recarga.
 - **Próximo Passo**: Homologar paginação remota com massa QA apropriada e investigar demora do erro de duplicidade. Prova de posse, TLS, ativação e contexto SSR continuam pendentes; nenhum domínio foi ativado.
 
+## D44 - Reservas: colisão como violação de unicidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou e aplicou migração aditiva 007, alterando somente o código SQL de colisão para 23505. Transporte mapeia esse código para HTTP 409 sem expor detalhes internos. Dezesseis testes SQL/transporte, tipos e build aprovados. Cloud confirmou novo código, uma reserva/uma auditoria e manutenção dos bloqueios de escrita direta e RPC anônima.
+- **Próximo Passo**: Após sincronização, homologar mensagem específica de duplicidade no preview. A causa da demora anterior não foi comprovada. Posse, TLS, ativação e contexto SSR continuam pendentes.
+
