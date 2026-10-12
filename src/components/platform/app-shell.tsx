@@ -15,6 +15,8 @@ import { Brand } from "./brand";
 import { AreaSelector } from "./area-selector";
 import { AreaNavigation } from "./navigation";
 import { AccountButton } from "@/features/auth/account-button";
+import { PatientBottomNav } from "./patient-bottom-nav";
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -158,101 +160,118 @@ export function AppShell({ children }: { children: ReactNode }) {
           </aside>
         </>
       )}
-      <div className="main-area" inert={mobile && menuOpen}>
-        <header className={`topbar ${!branded ? "platform-logo-topbar" : ""}`}>
-          {!branded && (
-            <Link
-              to="/super-admin"
-              className="platform-logo-link"
-              aria-label="PlugPix Techmedicina — início do Super ADM"
-            >
-              <img
-                src="/plugpix-techmedicina.png"
-                alt="PlugPix Techmedicina Avançada 6.0"
-                className="platform-logo-image"
-              />
-            </Link>
-          )}
-          <div className="breadcrumb">
-            {area !== "app" ? (
-              <>
-                <Button
-                  ref={menuTrigger}
-                  variant="ghost"
-                  size="icon"
-                  className="open-menu"
-                  aria-label="Abrir menu"
-                  aria-expanded={menuOpen}
-                  aria-controls="area-sidebar"
-                  onClick={() => setMenuOpen(true)}
-                >
-                  <Menu />
-                </Button>
-                <span>{areaLabels[area]}</span>
-                <ChevronRight size={14} />
-                <strong>{title}</strong>
-              </>
-            ) : (
-              <Brand
-                name={identity.name}
-                clinic
-                initials={identity.initials}
-                logo={preferences.logo}
-              />
-            )}
-          </div>
-          <AreaSelector area={area} />
-          {!branded && (
-            <div className="flex items-center gap-2">
-              <Button asChild variant="outline" size="sm" className="project-status-top-link">
-                <Link to="/staus">
-                  Status do projeto<span className="project-status-temporary"> · temporário</span>
+
+      {area === "app" ? (
+        <div className="main-area patient-main-area">
+          {section !== "" && (
+            <header className="patient-subpage-topbar">
+              <Button asChild variant="ghost" size="sm" className="patient-back-btn">
+                <Link to="/app">
+                  <ArrowLeft size={18} />
+                  <span>Início</span>
                 </Link>
               </Button>
-            </div>
+              <div className="patient-subpage-title">
+                <strong>{title}</strong>
+              </div>
+              <div className="patient-subpage-brand">
+                <Brand
+                  name={identity.name}
+                  clinic
+                  initials={identity.initials}
+                  logo={preferences.logo}
+                />
+              </div>
+            </header>
           )}
-          <AccountButton />
-          {!branded && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="mode-toggle"
-              aria-label={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-              title={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-              onClick={() => setAdminMode(adminMode === "dark" ? "light" : "dark")}
-            >
-              {adminMode === "dark" ? <Sun /> : <Moon />}
-            </Button>
-          )}
-          <div className="user-avatar" aria-label="Ambiente demonstrativo">
-            {area === "super-admin"
-              ? "SA"
-              : area === "clinica"
-                ? clinic.initials
-                : area === "medico"
-                  ? "MD"
-                  : "PC"}
-          </div>
-        </header>
-        <div className="demo-notice">
-          <span className="notice-dot" />
-          <span>
-            Ambiente de demonstração{" "}
-            <span className="notice-detail">
-              — dados fictícios, sem acesso a informações reais.
-            </span>
-          </span>
-          <span className="notice-badge">DEMO</span>
+          <main className="patient-content-container">{children}</main>
+          {section !== "" && <PatientBottomNav />}
         </div>
-        {area === "app" && <AreaNavigation area={area} section={section} />}
-        <main>{children}</main>
-        <footer className="main-footer">
-          <span>© PlugPix Techmedicina</span>
-          <span>
-            Plataforma de gestão em saúde<span className="footer-dot">•</span>Demonstração
-          </span>
-        </footer>
-      </div>
+      ) : (
+        <div className="main-area" inert={mobile && menuOpen}>
+          <header className={`topbar ${!branded ? "platform-logo-topbar" : ""}`}>
+            {!branded && (
+              <Link
+                to="/super-admin"
+                className="platform-logo-link"
+                aria-label="PlugPix Techmedicina — início do Super ADM"
+              >
+                <img
+                  src="/plugpix-techmedicina.png"
+                  alt="PlugPix Techmedicina Avançada 6.0"
+                  className="platform-logo-image"
+                />
+              </Link>
+            )}
+            <div className="breadcrumb">
+              <Button
+                ref={menuTrigger}
+                variant="ghost"
+                size="icon"
+                className="open-menu"
+                aria-label="Abrir menu"
+                aria-expanded={menuOpen}
+                aria-controls="area-sidebar"
+                onClick={() => setMenuOpen(true)}
+              >
+                <Menu />
+              </Button>
+              <span>{areaLabels[area]}</span>
+              <ChevronRight size={14} />
+              <strong>{title}</strong>
+            </div>
+            <AreaSelector area={area} />
+            {!branded && (
+              <div className="flex items-center gap-2">
+                <Button asChild variant="outline" size="sm" className="project-status-top-link">
+                  <Link to="/staus">
+                    Status do projeto<span className="project-status-temporary"> · temporário</span>
+                  </Link>
+                </Button>
+              </div>
+            )}
+            <AccountButton />
+            {!branded && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mode-toggle"
+                aria-label={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+                title={adminMode === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+                onClick={() => setAdminMode(adminMode === "dark" ? "light" : "dark")}
+              >
+                {adminMode === "dark" ? <Sun /> : <Moon />}
+              </Button>
+            )}
+            <div className="user-avatar" aria-label="Ambiente demonstrativo">
+              {area === "super-admin"
+                ? "SA"
+                : area === "clinica"
+                  ? clinic.initials
+                  : area === "medico"
+                    ? "MD"
+                    : "PC"}
+            </div>
+          </header>
+          <div className="demo-notice">
+            <span className="notice-dot" />
+            <span>
+              Ambiente de demonstração{" "}
+              <span className="notice-detail">
+                — dados fictícios, sem acesso a informações reais.
+              </span>
+            </span>
+            <span className="notice-badge">DEMO</span>
+          </div>
+          <main>{children}</main>
+          <footer className="main-footer">
+            <span>© PlugPix Techmedicina</span>
+            <span>
+              Plataforma de gestão em saúde<span className="footer-dot">•</span>Demonstração
+            </span>
+          </footer>
+        </div>
+      )}
     </div>
   );
 }

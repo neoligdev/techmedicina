@@ -662,6 +662,58 @@ add(
   [],
   ["Acessos", "Autorizações", "Solicitação", "Resposta"],
 );
+add(
+  "app",
+  "sono",
+  "Sono e descanso",
+  "Acompanhamento",
+  "day",
+  "Registros de descanso percebido e rotina de sono.",
+  "8.2",
+  "journey",
+  ["Registro", "Qualidade percebida"],
+  [],
+  ["Registro diário", "Qualidade percebida", "Histórico de descanso", "Revisão profissional"],
+);
+add(
+  "app",
+  "score",
+  "Meu score",
+  "Acompanhamento",
+  "sparkles",
+  "Evolução e critérios da pontuação de cuidado.",
+  "31.4",
+  "journey",
+  ["Período", "Critérios"],
+  [],
+  ["Critérios autorizados", "Constância", "Evolução do período", "Acompanhamento"],
+);
+add(
+  "app",
+  "adesao",
+  "Adesão ao plano",
+  "Acompanhamento",
+  "protocols",
+  "Constância das ações previstas e registradas na rotina de cuidado.",
+  "8.4, 32",
+  "journey",
+  ["Ação prevista", "Situação"],
+  [],
+  ["Ações do protocolo", "Registros confirmados", "Constância", "Acompanhamento"],
+);
+add(
+  "app",
+  "exames",
+  "Exames laboratoriais",
+  "Cuidado",
+  "health",
+  "Resultados e histórico de exames com revisão profissional.",
+  "8.1",
+  "content",
+  ["Exame", "Resultado"],
+  ["Hemograma completo", "Perfil lipídico e glicemia", "Painel hormonal"],
+  ["Solicitação médica", "Coleta", "Resultado disponível", "Revisão"],
+);
 
 export const moduleCatalog = modules;
 export function moduleSpec(area: Area, slug: string) {

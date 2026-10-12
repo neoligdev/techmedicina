@@ -203,7 +203,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
   - `isAuthorized` (`core.ts`) é regra pura de autorização, não autenticação: `AuthContext` é montado pelo chamador, sem login/provider/token.
   - Tenant demo (seleção de clínica em React context, DemoProvider) não é isolamento real de tenant (`AGENTS.md:20`).
 - **Verificação por nomes** (sem abrir secrets/env): sem `migrations/`, sem `sql`/`supabase`/`db/`, sem `config.*`; `package.json` sem cliente de banco/ORM (ocorrência transitiva `db0` em lockfiles apenas); nenhum uso de `node:crypto`/WebCrypto `subtle` em `src`.
-- **Infraestrutura**: Lovable Cloud escolhida; **não criar Supabase externo**. **Usuário habilitou manualmente** o Lovable Cloud; *screenshot* de Database com **nenhuma tabela** e editor SQL **disponível** — ativação não atribuída ao Codex/OpenCode e executada pelo usuário/Lovable. **Cloud remoto incorporado (pós-auditoria)**: `origin/main` avançou para `805bcce` (*Activated Supabase cloud*), trazendo scaffold (`@supabase/supabase-js`, `drizzle` vazio, middleware/auth) ainda **sem** fluxo login/tenant real. O editor SQL executou **somente leitura** (SELECT de contagem de tabelas → **0**); nenhum DDL/dado criado; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). Cloud mantido como principal; repositório Supabase externo separado no GitHub **não implica** runtime ligado. Cloud remoto não verificável antes do scaffold: coordenação registrou `Reconnecting`, timeout no navegador e `Failed to fetch`; a origem remota confirmou `1d996b0` via `git ls-remote`, e a URL pública `/super-admin/simulador` retornou 404 — o que não prova o estado do preview no editor.
+- **Infraestrutura**: Lovable Cloud escolhida; **não criar Supabase externo**. **Usuário habilitou manualmente** o Lovable Cloud; _screenshot_ de Database com **nenhuma tabela** e editor SQL **disponível** — ativação não atribuída ao Codex/OpenCode e executada pelo usuário/Lovable. **Cloud remoto incorporado (pós-auditoria)**: `origin/main` avançou para `805bcce` (_Activated Supabase cloud_), trazendo scaffold (`@supabase/supabase-js`, `drizzle` vazio, middleware/auth) ainda **sem** fluxo login/tenant real. O editor SQL executou **somente leitura** (SELECT de contagem de tabelas → **0**); nenhum DDL/dado criado; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). Cloud mantido como principal; repositório Supabase externo separado no GitHub **não implica** runtime ligado. Cloud remoto não verificável antes do scaffold: coordenação registrou `Reconnecting`, timeout no navegador e `Failed to fetch`; a origem remota confirmou `1d996b0` via `git ls-remote`, e a URL pública `/super-admin/simulador` retornou 404 — o que não prova o estado do preview no editor.
 - **Plano concreto** (roadmap, aguardando aprovação): sessão confiável no servidor, vínculo clínica, RLS, médico aprovado, prontuário append-only e auditoria.
 - **Proposta C010 (não implementada)**: criptografia server-only AES-256-GCM com KeyProvider injetado e testes de adulteração/AAD (clínica, paciente, registro). Aguarda aprovação da coordenação.
 - **Status**: OpenCode **OCIOSO**. Próximo passo: decisão da coordenação sobre C010.
@@ -215,7 +215,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **R1 aplicada**: IV base64 com exatamente 16 caracteres antes de decode; limite de `plaintext.length` antes do `TextEncoder` e validação UTF-8 round-trip; limite de ciphertext derivado de `maxPlaintextBytes + 16` (porte base64 e porte de bytes); IDs só com espaços rejeitados sem normalizar; provider captura throw síncrono e rejeição assíncrona; snapshot de contexto/envelope/kid antes de awaits; `usages`/`algorithm` malformado sem vazar `TypeError`.
 - **R2 aplicada**: snapshot de `kid`/`key` copiados **antes** de `crypto.subtle.encrypt` (mutações tardias do objeto ativo não alteram envelope/AAD); pré-limite de plaintext por unidades UTF-16 (sem o fator `* 2`); catches **nunca** repropagam `ClinicalCryptoError` do provedor/externos — sempre falha genérica nova, sem vazar mensagem adulterada; comentários documentam snapshot de contexto antes do provedor e kid após o provedor.
 - **Testes**: `src/test/clinical-crypto.test.ts` — **23/23** em Node real (`@vitest-environment node`); 3 novos testes R2 (mutação de `active.kid` durante `subtle.encrypt` via spy; envelope mutado durante `getKeyForKid`; provedor gerando `ClinicalCryptoError` adulterado). Ajuste defensivo em `src/test/setup.ts` (stubs de `window` condicionais).
-- **Cloud incorporado (evidência)**: `origin/main` avançou para `805bcce` (*Activated Supabase cloud*); fast-forward sem conflitos (sem `.env` local). Scaffold `@supabase/supabase-js` + `drizzle` vazio + middleware/auth; **sem** fluxo login/tenant real. O editor SQL do Cloud executou **somente leitura** pelo Codex (`SELECT count(*) ... public_tables` → **0**); nenhum DDL/dado criado; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). Lint do scaffold: autorizado pelo Coordenador — `eslint --fix` mecânico (formatação + `let`→`const` sem alterar auth) em `src/integrations/supabase/*.ts`.
+- **Cloud incorporado (evidência)**: `origin/main` avançou para `805bcce` (_Activated Supabase cloud_); fast-forward sem conflitos (sem `.env` local). Scaffold `@supabase/supabase-js` + `drizzle` vazio + middleware/auth; **sem** fluxo login/tenant real. O editor SQL do Cloud executou **somente leitura** pelo Codex (`SELECT count(*) ... public_tables` → **0**); nenhum DDL/dado criado; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). Lint do scaffold: autorizado pelo Coordenador — `eslint --fix` mecânico (formatação + `let`→`const` sem alterar auth) em `src/integrations/supabase/*.ts`.
 - **Checks finais (EXIT_CODE=0)**: `tsc`, `eslint` (0 erros/7 avisos), cripto **23/23**, suíte completa **104/104** em 14 arquivos, `vite build` — evidências novas `docs/evidencias/c010_r2_*` e `docs/evidencias/c010_cloud_*`. Histórico: uma rodada completa teve 2 timeouts no teste do simulador (**causa não comprovada**, não diagnosticado como contenção); o arquivo passou 6/6 isoladamente e as rodadas seguintes passaram — **sem** aumentar timeout global nem desabilitar testes.
 - **npm install**: atualizou o `package-lock.json` local preexistente (untracked) ao instalar as novas dependências do scaffold; registrado, **não** será stage nem removido.
 - **Limites mantidos**: AAD não impede replay no mesmo registro; segurança continua parcial (keystore real, guardas, persistência, RLS, auditoria, backup e rotação de produção pendentes). PRD 3.2/4/7 permanecem **parciais**.
@@ -251,6 +251,7 @@ Testes móveis no preview do editor: Super ADM, Clínica, Médico e Mais do apli
 - **Limitações e Status**: O preview do editor Lovable segue bloqueado remotamente. Nenhuma tabela nem banco conectado. Executor OCIOSO.
 
 - **QA Adicional**: Endpoint `/api/access-check` retorna 401 confirmado.
+
 ## C012 — Execução transferida para Codex (10/10/2026)
 
 - **Autorização vigente**: usuário pediu explicitamente Codex direto, commit/push e atualização de status. Antigravity interrompido pela UI antes de edições; OpenCode ocioso. AGENTS atualizado para a nova divisão.
@@ -291,36 +292,76 @@ C016 Codex: formulário administrativo integrado e API de revisão por ID proteg
 C017 Codex: API/painel global de auditoria administrativa restrita, DTO sem conteúdo/valores clínicos, leitura explícita e invalidação no logout. 226 testes aprovados, tsc/lint/build exit 0. Cloud C013 verificada; C015 Cloud pendente por créditos/conexão Chrome, primeiro operador aguarda identificação humana. Nenhum privilégio ou compra criado. Evidências c017_* e relatório de retomada.
 
 ## Cadastro e entrada — Lovable (10/10/2026)
+
 - Executor desta extensão: Lovable; autorias Antigravity/Codex da base preservadas. Cadastro sem perfil adicional, e-mail/senha habilitado e Google configurado via ferramentas Cloud. Confirmação de e-mail preservada; retorno OAuth público na origem.
 - Login existente continua validando identidade e vínculos no servidor; cadastro não provisiona papéis, vínculos ou grants. Nenhuma migração, seed, conta de teste ou alteração de billing.
 - Indicação Minha conta/Entrar baseada em getUser; logout cancela consultas, limpa cache e remove sessão local. Tela de cadastro e alternância verificadas no Playwright, sem erros de execução; 230/230 testes (25 arquivos), incluindo quatro testes novos. O aviso preexistente de chave repetida na fixture de diretório permanece.
 - Testes de integração com e-mail recebido e OAuth real não executados; homologação com conta e vínculos reais permanece pendente. Relatório temporário regenerado do catálogo.
 
 ## C018 — 10/10/2026
+
 Cloud C015 aplicada por Lovable; tipos e cadastro sincronizados até bedb68a. Codex corrigiu lint, validou 230 testes/tsc/build e confirmou RLS remota. Primeiro Super ADM ativado após autorização específica do titular, sem acesso clínico. E2E autenticado pendente. Ver docs/RELATORIO_C018.md.
 
 ## C019 — Logo oficial
+
 Codex incorporou a logo fornecida pelo titular ao topo do Super ADM, responsiva e com proporção original. Asset local public/plugpix-techmedicina.png. Personalização por clínica preservada.
 
 ## C020 — Paginação administrativa
+
 Codex implementou cursor de horário/ID para consultar eventos anteriores, com autorização antes da validação/leitura, limite por página e preservação da página em falha temporária; acesso negado limpa resultados. 232 testes/25 arquivos aprovados, tsc/build aprovados, lint 0 erros/7 avisos existentes. Login real ainda depende da entrada do titular. Logo C019 conferida visualmente no navegador.
 
 ## C021 — Consulta da rede por páginas
+
 Codex implementou cursor de cadastro/ID para navegar entre páginas de clínicas com RLS, autorização e validação estrita. Salvamento confirmado recarrega a lista no servidor. 234 testes aprovados; build e lint sem erros. Homologação real aguarda entrada do titular; nenhuma conta/vínculo ou migração foi criada nesta etapa.
 
 ## C022 — Dependências e divergência do preview
+
 Codex revisou o lockfile Bun, corrigiu esbuild e cinco famílias transitivas, preservando ranges declarados dos módulos. Instalação frozen, bun audit sem alertas, 234 testes/tsc/build aprovados, lint 0 erros/7 avisos. Lovable recebeu commits até 921a02d mas mostrou Build unsuccessful / Preview is out of date; diagnóstico somente leitura enviado. Chrome perdeu disponibilidade e API respondeu 404, resposta ainda não lida. Não considerar preview remoto atualizado/homologado.
 
 C022 R1: remoto Lovable 095f9d1 incorporado por merge normal após rejeição de push não fast-forward. Ajuste ESLint cosmético restrito aos dois arquivos regenerados; sem afrouxar regras de autorização. Diagnóstico remoto continua pendente.
 
 ## C024 — Fundação da identidade visual
+
 Codex preparou migração com RLS, RPC autorizada, revisão e auditoria de campos; contrato estrito e nove testes novos. 243 testes/26 arquivos, TypeScript, lint dos arquivos alterados e build aprovados. Cloud ainda não recebeu a migração; API/formulário e sessão real são próximos passos. Identidade PlugPix preservada.
 
 ## C023 — Preview recuperado
+
 Chrome reconectado. Codex confirmou C022 R1 renderizada, mas login falhava na importação do cliente TanStack. Lovable reiniciou somente runtime, informando build 7a6e6cc succeeded/in_sync e módulo HTTP 200. Codex confirmou formulário com campos e botão Entrar habilitado, sem espera de sessão. Capturas c023_*.jpg e erros anteriores c023_module_errors.json. Nenhuma publicação, alteração de banco/permissões ou credenciais. Entrada do titular ainda pendente.
 
 ## C025 — Homologação administrativa real
+
 Codex confirmou sessão do Super ADM no preview, criação/edição de clínica QA inativa e eventos com autor correto. Evidência c025_auditoria_real.jpg. Não valida acesso clínico ou isolamento entre contas; C024 ainda aguarda implantação e API/formulário.
 
+## C027 — Incorporação documental do adendo v0.11.1
+
+10/10/2026. Solicitação humana posterior à C026 limita esta fase a documentação/análise: não implementar código nem infraestrutura sem nova autorização. PRD atualizado com catálogo comercial, públicos, Dr. IA proativo, score, suplementos, corporativo futuro e URLs White Label (seção 9 do adendo). Fonte e versão anterior preservadas em docs/referencias. Plano e inventário em docs/PLANO_INCREMENTAL_WHITE_LABEL_v0_11_1.md.
+
+Validação: 700 linhas não vazias anteriores preservadas em ordem (exceto cabeçalho de versão), 101 identificadores mantidos, seção White Label integral, teste de cobertura 3/3 aprovado. Nenhuma alteração em src/public/database/drizzle/configuração/pacotes nesta revisão. Não foi atualizado o catálogo da aplicação /staus, por ser código sujeito à autorização atual. Nenhum prompt Ask Lovable, SQL remoto, DNS, deploy, compra ou configuração externa nesta fase. C026 continua como última implementação; editor autenticado de marca ainda pendente. Próxima execução proposta WL-1 aguarda autorização; não prosseguir automaticamente com desenvolvimento.
+
 ## C026 — Migração e API de personalização
+
 Codex aplicou 003 pelo SQL Editor, sem Ask Lovable. Pré-condições confirmadas; Query succeeded e RLS/privilegios verificados. API GET/PUT implementada com sessão validada, DTOs, autorização, limite de corpo e conflitos. Formulário ainda pendente. Tipos gerados preservados; transporte PostgREST retorna unknown validado pelo contrato.
+
+## C028 — Novo visual resumido do paciente (12/10/2026)
+
+Executor: Antigravity (autorizado por diretriz humana do titular em 12/10/2026, com Codex e OpenCode parados).
+
+- Implementação da tela inicial resumida do paciente (`PatientHome`) com layout mobile-first:
+  - Topo limpo sem seletores administrativos ou Super ADM, preservando White Label, logo e tema da clínica ativa.
+  - Saudação em fonte grande (28–32px): "Olá, Alex".
+  - Faixa compacta de Avisos com contagem ("2 novos") e modal da Central de Avisos com detalhes e marcação de lidos.
+  - Card principal "Meu protocolo" exibindo acompanhamento, etapa 2 de 5 e barra de progresso, com navegação ao módulo completo.
+  - Cards duplos: "Meu plano" (situação Ativo com acesso ao financeiro) e "Meu score" (pontuação em 32–40px, 785 pontos, com modal transparente de critérios de engajamento sem alegações diagnósticas).
+  - Cards duplos de Humor e Sono independentes: seleção interativa de 5 emojis (Muito mal, Indisposto, Regular, Bem, Excelente / Péssimo, Ruim, Regular, Bom, Revigorante), relato opcional e feedback de salvamento confirmado.
+  - Card "Água de hoje": números em destaque (32–40px), progresso visual e botão único "+ Água" abrindo registro rápido de consumo; destino ÁGUA no rodapé abre o módulo completo de hidratação.
+  - Grade de 12 acessos rápidos rigorosamente quadrados (`aspect-ratio: 1 / 1`) em 2 colunas no celular: Financeiro, Água, Clube de benefícios, Balança, Pulseira inteligente, Protocolo, Sono, Score, Exames, Adesão, Medicamentos e Treinos.
+  - Seção recolhível "Mais recursos" preservando acesso a Alimentação, Hábitos, Preparação de consulta, Dependentes, Indique e Ganhe, Loja, Blog, Linha do tempo, Suporte e Privacidade.
+  - Rodapé inferior fixo com seis destinos rigorosamente preservados: INÍCIO | TELEMEDICINA | ÁGUA | IA | ALIMENTAÇÃO | PERFIL, com modais para Telemedicina (plantão 24h, consultas, nutrição, psicologia, especialidades), Dr. IA (assistente virtual Dra. Sofia) e Perfil (dados, dependentes, privacidade, suporte e alternância de temas claro/escuro).
+  - Bloqueio financeiro: botão de simulação removido do cabeçalho do paciente; estado restrito a props/contrato do servidor; em inadimplência, restringe recursos clínicos liberando exclusivamente o Financeiro.
+  - Persistência e ambiente: identificação de perfil demonstrativo na saudação; humor, sono e água persistidos no localStorage do navegador por ID de clínica para continuidade sem alegação de dados clínicos reais; integração de hardware e telemedicina identificadas como simuladas/pendentes.
+- Validação e Evidências:
+  - 29 arquivos de teste e 272 testes unitários/integração aprovados (`vitest run`).
+  - Verificação de tipos TypeScript (`tsc --noEmit`) aprovada com 0 erros.
+  - Linter ESLint (`eslint .`) aprovado com 0 erros (7 avisos conhecidos de exportação).
+  - Processo de build de produção (`vite build`) exit 0 sem erros.
+  - Capturas visuais reais em headless Chrome geradas em `docs/evidencias/c028_screenshots/`: 320px, 360px (Dark/Light), 390px (Dark/Light/Fullpage), 430px e comparativo entre as duas clínicas (Clínica Viva Saúde vs Clínica Horizonte).

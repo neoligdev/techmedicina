@@ -1,4 +1,5 @@
-import { HealthDashboard } from "../health-dashboard";
+import { PatientHome } from "../patient-home";
+
 export function PacienteDashboard() {
-  return <HealthDashboard />;
+  return <PatientHome />;
 }

@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "10/10/2026"; // C026: migração e API de personalização; formulário pendente.
+export const updatedAt = "12/10/2026"; // C028: novo visual resumido do aplicativo do paciente (Antigravity).
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export const statusLabels: Record<ProjectStatus, string> = {

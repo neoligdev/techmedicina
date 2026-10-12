@@ -23,6 +23,21 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       const p = loadPreferences(item.id);
       if (p) loaded[item.id] = p;
     }
+    const params = new URLSearchParams(window.location.search);
+    const qClinic = params.get("clinic");
+    if (qClinic && clinics.some((item) => item.id === qClinic)) {
+      setClinicId(qClinic);
+    }
+    const qMode = params.get("mode");
+    if (qMode === "light" || qMode === "dark") {
+      const activeId =
+        qClinic && clinics.some((item) => item.id === qClinic) ? qClinic : (clinics[0]?.id ?? "");
+      const baseClinic = clinics.find((c) => c.id === activeId) ?? clinics[0];
+      const basePref =
+        loaded[activeId] ??
+        (baseClinic ? defaultPreferences(baseClinic) : defaultPreferences(clinics[0]));
+      loaded[activeId] = { ...basePref, mode: qMode };
+    }
     setSaved(loaded);
     setReady(true);
   }, []);

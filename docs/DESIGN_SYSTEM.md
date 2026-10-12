@@ -4,9 +4,20 @@ Revisão C-002-R2, 08/10/2026. Esta entrega organiza as quatro áreas e os módu
 
 ## Direção visual
 
-Direção atual C006 (09/10/2026): azul marinho profundo, superfícies translúcidas foscas, textura discreta, bordas suaves e cartões com espaçamento generoso. Verde cana é a cor principal padrão; ciano, violeta e rosa distinguem séries e indicadores. Campos e botões têm cantos arredondados e foco visível. O tema claro continua disponível e preferências anteriores são preservadas. A identidade PlugPix permanece no Super ADM; as três áreas da clínica usam suas preferências visuais.
+Direção atual C006 (09/10/2026) e C028 (12/10/2026): azul marinho profundo, superfícies translúcidas foscas, textura discreta, bordas suaves e cartões com espaçamento generoso. Verde cana é a cor principal padrão; ciano, violeta e rosa distinguem séries e indicadores. Campos e botões têm cantos arredondados e foco visível. O tema claro continua disponível e preferências anteriores são preservadas. A identidade PlugPix permanece no Super ADM; as três áreas da clínica usam suas preferências visuais.
 
-A navegação administrativa é agrupada por função. O aplicativo oferece quatro acessos principais e um botão Mais para os demais recursos. Listagens têm busca e filtro; conteúdo usa cartões; CRM usa colunas; jornadas e integrações mostram etapas e estado sem dados ou conexão.
+Na C028 (12/10/2026), o aplicativo do paciente foi reformulado com visual de celular e tela inicial resumida:
+
+- Topo limpo sem seletores administrativos ou Super ADM, destacando a clínica ativa e o sino de avisos.
+- Saudação ampla "Olá, [primeiro nome]" (28–32px), sem parágrafos de apresentação.
+- Faixa compacta de Avisos com badge e central dedicada.
+- Card principal Meu protocolo com acompanhamento, etapa e barra de progresso.
+- Cards duplos lado a lado: Meu plano (situação) e Meu score (pontuação em destaque de 32–40px e modal de critérios).
+- Humor e sono em cards duplos independentes com seleção de 5 emojis e relato opcional.
+- Água de hoje com exibição em fonte grande e ação única de acréscimo rápido (+ Água).
+- Grade de 12 acessos rápidos rigorosamente quadrados (`aspect-ratio: 1 / 1`) em 2 colunas no celular: Financeiro, Água, Clube de benefícios, Balança, Pulseira inteligente, Protocolo, Sono, Score, Exames, Adesão, Medicamentos e Treinos.
+- Seção expansível "Mais recursos" preservando acesso a todos os serviços adicionais.
+- Rodapé fixo com seis destinos inegociáveis: INÍCIO | TELEMEDICINA | ÁGUA | IA | ALIMENTAÇÃO | PERFIL, com contraste e espaçamento de segurança inferior.
 
 ## Cobertura
 

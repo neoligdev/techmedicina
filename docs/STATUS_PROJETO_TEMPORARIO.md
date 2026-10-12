@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -225,8 +225,8 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex
-- **Entregue**: Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde.
-- **Próximo Passo**: Implementar dados e serviços reais, rotina, exames, IA e regras dos subitens.
+- **Entregue**: Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde. C028 (Antigravity): novo visual resumido mobile-first com topo limpo, fontes ampliadas (28–32px), avisos compactos, protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação rápida '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em 2 colunas mobile, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos com modais interativos e suporte a tema claro e escuro e bloqueio por inadimplência.
+- **Próximo Passo**: Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.
 
 ## 8.1 - Experiência e dados de saúde 🔵
 
@@ -1753,4 +1753,18 @@ Atualizado em 10/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex aplicou a migração 003 diretamente no SQL Editor e verificou RLS, bloqueio de acesso anônimo e ausência de escrita direta. Implementou API GET/PUT com sessão validada, limites, autorização por clínica, revisão e DTOs estritos. Sem prompts ao Lovable; formulário ainda não conectado.
 - **Próximo Passo**: Conectar editor autenticado e homologar salvar/recarregar com a clínica QA. Regeneração gerenciada dos tipos ainda pendente; transporte PostgREST usa DTOs estritos sem alterar arquivos gerados.
+
+## D27 - Incorporação documental do adendo v0.11.1 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex incorporou o adendo v0.11.1 ao PRD com catálogo comercial, públicos, Dr. IA proativo, score e diretrizes White Label preservando seções anteriores e IDs.
+- **Próximo Passo**: Implementação dos requisitos operacionais aprovados no adendo conforme autorização.
+
+## D28 - Novo visual resumido do aplicativo do paciente 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity implementou tela inicial resumida (PatientHome) com topo limpo, saudação grande (28–32px), avisos compactos, card de protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação única '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em duas colunas mobile, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos (Início, Telemedicina, Água, IA, Alimentação, Perfil) com suporte a tema claro e escuro e bloqueio por inadimplência. 272 testes aprovados.
+- **Próximo Passo**: Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.
 
