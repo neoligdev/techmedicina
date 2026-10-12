@@ -2187,6 +2187,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D34",
+      "title": "Homologação real: salvar e recarregar marca no Cloud",
+      "parent": "4",
+      "status": "done",
+      "done": "Codex abriu a personalização da clínica QA inativa com sessão existente no preview Lovable, salvou nome visual e recebeu confirmação Cloud. Após Refresh, o formulário recuperou o mesmo nome. Evidência de ponta a ponta desse fluxo, sem modificar o design, conceder acesso ou publicar.",
+      "next": "Homologar múltiplas clínicas, conflito de revisão e uploads personalizados reais; integrar identidade no contexto White Label. Não comprova distribuição da marca aos portais dos pacientes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

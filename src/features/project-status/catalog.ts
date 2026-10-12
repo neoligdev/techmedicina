@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C033: Codex retomou, validou Cloud e preservou design.
+export const updatedAt = "12/10/2026"; // C034: salvar e recarregar personalização QA homologados por Codex.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {

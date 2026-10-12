@@ -1804,3 +1804,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex revisou C032, preservou design e migrações anteriores, incorporou migração 005 e aplicou pelo SQL Editor. Cloud recusou objeto vazio e caminho arbitrário, manteve RPC anônima e escrita direta bloqueadas. Formulário valida retorno/ID, não grava marca real na demo e não cai em salvamento local quando a rede falha. 319 testes, tipos, lint da alteração e build aprovados.
 - **Próximo Passo**: Homologar salvar/recarregar com sessão real e múltiplas clínicas; integrar contexto White Label e identidade produtiva. Assinatura binária não comprova decodificação integral nem bucket de arquivos.
 
+## D34 - Homologação real: salvar e recarregar marca no Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex abriu a personalização da clínica QA inativa com sessão existente no preview Lovable, salvou nome visual e recebeu confirmação Cloud. Após Refresh, o formulário recuperou o mesmo nome. Evidência de ponta a ponta desse fluxo, sem modificar o design, conceder acesso ou publicar.
+- **Próximo Passo**: Homologar múltiplas clínicas, conflito de revisão e uploads personalizados reais; integrar identidade no contexto White Label. Não comprova distribuição da marca aos portais dos pacientes.
+
