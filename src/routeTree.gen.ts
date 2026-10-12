@@ -25,6 +25,7 @@ import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audi
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
+import { Route as ApiPlatformDomainsRouteImport } from './routes/api/platform/domains'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const ApiPlatformClinicsRoute = ApiPlatformClinicsRouteImport.update({
   path: '/api/platform/clinics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformDomainsRoute = ApiPlatformDomainsRouteImport.update({
+  id: '/api/platform/domains',
+  path: '/api/platform/domains',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
+  '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domains'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domains'
   id:
     | '__root__'
     | '/'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
+    | '/api/platform/domains'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
+  ApiPlatformDomainsRoute: typeof ApiPlatformDomainsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -352,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformClinicsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/domains': {
+      id: '/api/platform/domains'
+      path: '/api/platform/domains'
+      fullPath: '/api/platform/domains'
+      preLoaderRoute: typeof ApiPlatformDomainsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
+  ApiPlatformDomainsRoute: ApiPlatformDomainsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -4,7 +4,7 @@ import { resolveSupabaseContext } from "../auth/supabase-adapter.server";
 import { AuthError } from "../auth/guards.server";
 import { createClinicBrandingHandlers } from "./clinic-branding.server";
 
-async function resolveBrandingContext() {
+export async function resolveBrandingContext() {
   const context = await resolveSupabaseContext();
   if (!context) return null;
   const authorization = getRequest().headers.get("authorization");
@@ -17,7 +17,7 @@ async function resolveBrandingContext() {
 // The request identity is validated by getUser and tm_resolve_identity first.
 // PostgREST uses that same bearer and publishable key, retaining RLS and RPC checks.
 // JSON is parsed by strict DTOs, without editing generated managed database types.
-async function query(
+export async function query(
   context: NonNullable<Awaited<ReturnType<typeof resolveBrandingContext>>>,
   path: string,
   init?: RequestInit,

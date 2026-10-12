@@ -2235,6 +2235,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D38",
+      "title": "Reservas: rota e transporte autenticado integrados no código",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex ligou GET/POST /api/platform/domains ao transporte da sessão verificada, com chave pública, RLS/RPC, limite por consulta e indicação hasMore. Reutilização do transporte validada em 22 testes; tipos, lint e build aprovados. Código integrado; migração 006 ainda não aplicada no Cloud.",
+      "next": "Aplicar e conferir 006 no Cloud, criar UI administrativa e homologar reserva. Paginação de resultados anteriores e ativação/posse/TLS ainda pendentes; não há domínio ativo.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

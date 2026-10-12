@@ -449,3 +449,6 @@ Codex preparou 006_domain_reservations.sql: hostname canônico único, finalidad
 
 ## C037 — Contratos e fronteira HTTP local
 Codex implementou DTOs estritos e fábrica GET/POST protegida para reservas. Dez testes aprovados; TypeScript e lint aprovados. Sem rota/transportes produtivos ainda, sem SQL remoto, design ou DNS alterados. Próximo: adapter autenticado e rota, depois administração visual.
+
+## C038 — Rota e transporte de reservas
+Codex integrou GET/POST /api/platform/domains ao transporte request-bound já validado por Auth. Sem service_role; preserva RLS/RPC e mapeamento de erros. Consulta até 101 linhas retorna 100 e hasMore, sem ocultar que há mais resultados. 22 testes, tsc/lint/build aprovados. Migração 006 ainda local; sem homologação de reserva remota, UI ou DNS. Próxima etapa: implantação/conferência e interface administrativa.

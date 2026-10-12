@@ -1832,3 +1832,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex preparou DTOs estritos e handlers GET/POST injetáveis de reservas, com autorização de Super ADM antes da leitura, hostname canônico, limite real de corpo, resposta sem cache e validação de clínica/destino retornados. Dez testes aprovados; não há endpoint operacional integrado nesta entrega.
 - **Próximo Passo**: Conectar transporte autenticado ao backend e rota, depois UI. Migração 006, DNS, prova de posse e ativação ainda pendentes.
 
+## D38 - Reservas: rota e transporte autenticado integrados no código 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex ligou GET/POST /api/platform/domains ao transporte da sessão verificada, com chave pública, RLS/RPC, limite por consulta e indicação hasMore. Reutilização do transporte validada em 22 testes; tipos, lint e build aprovados. Código integrado; migração 006 ainda não aplicada no Cloud.
+- **Próximo Passo**: Aplicar e conferir 006 no Cloud, criar UI administrativa e homologar reserva. Paginação de resultados anteriores e ativação/posse/TLS ainda pendentes; não há domínio ativo.
+

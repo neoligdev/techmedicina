@@ -24,13 +24,15 @@ export function createDomainReservationHandlers<C extends { identity: Authentica
         const clinic = z.string().uuid().safeParse(params.get("clinicId"));
         if (!clinic.success || params.size !== 1 || params.getAll("clinicId").length !== 1)
           throw new AuthError("Invalid input", 400);
-        const domains = z
+        const rows = z
           .array(reservedDomainSchema)
-          .max(100)
+          .max(101)
           .parse(await read(context, clinic.data));
-        if (domains.some((item) => item.clinic_id !== clinic.data))
-          throw new Error("Tenant mismatch");
-        return Response.json({ domains }, { headers });
+        if (rows.some((item) => item.clinic_id !== clinic.data)) throw new Error("Tenant mismatch");
+        return Response.json(
+          { domains: rows.slice(0, 100), hasMore: rows.length > 100 },
+          { headers },
+        );
       }
       if (new URL(request.url).searchParams.size) throw new AuthError("Invalid input", 400);
       if (request.headers.get("content-type")?.split(";")[0]?.trim() !== "application/json")
