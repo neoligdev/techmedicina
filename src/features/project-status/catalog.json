@@ -2151,6 +2151,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D31",
+      "title": "Auditoria de texturas compatível e homologação do preview",
+      "parent": "34",
+      "status": "done",
+      "done": "Codex acrescentou os campos de textura ao contrato e às descrições da auditoria, limitou nove campos e recusou duplicação. Quinze testes de auditoria aprovados. Preview Lovable confirmou barras de progresso C030 e menu fixed com base alinhada ao viewport; capturas registradas, sem Ask Lovable.",
+      "next": "Reforçar SQL de validação das texturas, verificar implantação real e integrar persistência Cloud; não declarar upload remoto concluído.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

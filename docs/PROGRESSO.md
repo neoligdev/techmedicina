@@ -401,3 +401,6 @@ Executor: Antigravity (execução direta autorizada pelo proprietário; Codex e 
 
 ## C030 — Retomada Codex e auditoria
 12/10/2026: proprietário autorizou novamente Codex a implementar diretamente e continuar o PRD. Regra de textura position:relative em todos os filhos sobrescrevia position:fixed do rodapé; excluído o menu dessa regra. Barras de conclusão e cobertura iniciada no status, sem crédito artificial a demos. TypeScript herdado falhava por globalRole user inexistente, removido do teste de administrador local. Cloud de texturas ainda não homologado: migração 004 aceita strings/arrays sem validar conteúdo integral; persistência da tela é localStorage, não sincronização com pacientes. Próxima etapa reforça contrato/SQL/persistência. Nenhum Ask Lovable.
+
+## C031 — Auditoria e validação remota
+Codex reassumiu a execução por novo pedido humano, conferiu main/origin/HEAD d73d999 e preservou alterações documentais locais. Chrome/Lovable reconectados; status com barras e menu fixo confirmados no preview, bottom=798 e viewport=798. Contrato da auditoria reconhece textureId/textureUrl/customTextures, até nove campos sem repetição, com rótulos legíveis. Quinze testes aprovados; tsc e lint da alteração aprovados. Sem Ask Lovable, publicação, SQL remoto ou alteração de permissões. Próxima etapa: reforçar validação SQL e persistência de texturas.

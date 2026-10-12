@@ -117,6 +117,9 @@ export function AdministrativeAuditPanel({ token }: { token: string }) {
                           mode: "tema",
                           logo: "logo",
                           favicon: "ícone",
+                          textureId: "textura selecionada",
+                          textureUrl: "imagem de fundo",
+                          customTextures: "texturas enviadas",
                         })[field],
                     )
                     .join(", ") || "sem alteração de campos"}

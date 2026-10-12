@@ -1783,3 +1783,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex corrigiu regra CSS da textura que sobrescrevia a posição fixa do menu, corrigiu papel inexistente em teste herdado e adicionou barras de conclusão integral e cobertura iniciada calculadas sem duplicar seções pais. Revisou limites reais da personalização e manteve autoria das entregas Antigravity.
 - **Próximo Passo**: Reforçar validação das texturas no servidor, contrato de auditoria e persistência Cloud; avançar White Label e demais dependências aprovadas do PRD.
 
+## D31 - Auditoria de texturas compatível e homologação do preview 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex acrescentou os campos de textura ao contrato e às descrições da auditoria, limitou nove campos e recusou duplicação. Quinze testes de auditoria aprovados. Preview Lovable confirmou barras de progresso C030 e menu fixed com base alinhada ao viewport; capturas registradas, sem Ask Lovable.
+- **Próximo Passo**: Reforçar SQL de validação das texturas, verificar implantação real e integrar persistência Cloud; não declarar upload remoto concluído.
+

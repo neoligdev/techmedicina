@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createAuditDirectory } from "../lib/admin/audit-directory.server";
 import type { AuthenticatedIdentity } from "../lib/auth/core";
+import { administrativeAuditRowsSchema } from "../features/auth/administrative-audit";
 const id = "00000000-0000-4000-8000-000000000001";
 const event = {
   id,
@@ -12,6 +13,33 @@ const event = {
 };
 const identity: AuthenticatedIdentity = { userId: id, globalRole: "super_admin", links: [] };
 describe("Consulta global de auditoria administrativa", () => {
+  it("aceita os nove campos visuais sem aceitar dados clínicos ou duplicação", () => {
+    const branding = {
+      ...event,
+      action: "branding_updated",
+      changed_fields: [
+        "name",
+        "primary",
+        "secondary",
+        "mode",
+        "logo",
+        "favicon",
+        "textureId",
+        "textureUrl",
+        "customTextures",
+      ],
+    };
+    expect(administrativeAuditRowsSchema.safeParse([branding]).success).toBe(true);
+    expect(
+      administrativeAuditRowsSchema.safeParse([{ ...branding, changed_fields: ["medical_text"] }])
+        .success,
+    ).toBe(false);
+    expect(
+      administrativeAuditRowsSchema.safeParse([
+        { ...branding, changed_fields: ["textureUrl", "textureUrl"] },
+      ]).success,
+    ).toBe(false);
+  });
   it("nega anônimo antes de consultar banco", async () => {
     const read = vi.fn();
     const response = await createAuditDirectory(async () => null, read)();
