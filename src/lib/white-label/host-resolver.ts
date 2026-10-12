@@ -120,11 +120,13 @@ export function normalizeHost(rawHost: unknown): { host: string | null; error?: 
   const portColonIndex = cleaned.lastIndexOf(":");
   if (portColonIndex !== -1) {
     const portStr = cleaned.slice(portColonIndex + 1);
+    if (!/^\d+$/.test(portStr)) return { host: null, error: "Porta inválida" };
     const port = Number(portStr);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
       return { host: null, error: "Porta inválida" };
     }
     cleaned = cleaned.slice(0, portColonIndex);
+    if (cleaned.endsWith(".")) cleaned = cleaned.slice(0, -1);
   }
 
   if (!cleaned) {
@@ -178,13 +180,24 @@ export function extractTrustedHost(
       return headers.get(key);
     }
     const rec = headers as Record<string, string | string[] | undefined>;
-    const val = rec[key] ?? rec[key.toLowerCase()];
-    if (Array.isArray(val)) return val[0] ?? null;
+    const matches = Object.entries(rec).filter(
+      ([name]) => name.toLowerCase() === key.toLowerCase(),
+    );
+    if (matches.length > 1) return "[ambiguous]";
+    const val = matches[0]?.[1];
+    if (Array.isArray(val)) return val.length === 1 ? (val[0] ?? null) : "[ambiguous]";
     return typeof val === "string" ? val : null;
   };
 
   const hostHeader = getHeader("host");
   const forwardedHost = getHeader("x-forwarded-host");
+  if (
+    hostHeader === "[ambiguous]" ||
+    forwardedHost === "[ambiguous]" ||
+    forwardedHost?.includes(",")
+  ) {
+    return { host: null, error: "Cabeçalhos de host ambíguos" };
+  }
 
   let candidate: string | null = null;
 
@@ -240,6 +253,7 @@ export class HostResolver {
     for (const entry of initialEntries) {
       const norm = normalizeHost(entry.hostname);
       if (norm.host) {
+        if (this.domains.has(norm.host)) throw new Error("Catálogo de hosts contém duplicação");
         this.domains.set(norm.host, { ...entry, hostname: norm.host });
       }
     }
@@ -249,6 +263,9 @@ export class HostResolver {
     const norm = normalizeHost(entry.hostname);
     if (!norm.host) {
       return { ok: false, error: norm.error || "Hostname inválido" };
+    }
+    if (this.domains.has(norm.host)) {
+      return { ok: false, error: "Hostname já cadastrado; atualização exige operação própria" };
     }
 
     const firstSubdomain = norm.host.split(".")[0];

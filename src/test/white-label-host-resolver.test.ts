@@ -8,6 +8,58 @@ import {
 } from "../lib/white-label/host-resolver";
 
 describe("White Label Gate WL-1: Normalização de Host e Confiança de Proxy", () => {
+  it("rejeita portas numéricas ambíguas e aceita FQDN com porta", () => {
+    expect(normalizeHost("clinica.test:1e3").host).toBeNull();
+    expect(normalizeHost("clinica.test:+443").host).toBeNull();
+    expect(normalizeHost("clinica.test.:443").host).toBe("clinica.test");
+  });
+  it("não escolhe um host de cabeçalhos duplicados ou listas de proxy", () => {
+    expect(extractTrustedHost({ Host: "a.test", host: "b.test" }).host).toBeNull();
+    expect(extractTrustedHost({ host: ["a.test", "b.test"] }).host).toBeNull();
+    expect(extractTrustedHost({ Host: "a.test" }).host).toBe("a.test");
+    expect(
+      extractTrustedHost(new Headers({ host: "proxy.test", "x-forwarded-host": "a.test,b.test" }), {
+        trustedProxy: true,
+      }).host,
+    ).toBeNull();
+  });
+  it("não transfere silenciosamente um domínio para outra clínica", () => {
+    const resolver = new HostResolver([
+      {
+        hostname: "gestao.clinica.test",
+        environment: "clinic_portal",
+        clinicId: "A",
+        status: "active",
+      },
+    ]);
+    expect(
+      resolver.registerDomain({
+        hostname: "GESTAO.CLINICA.TEST",
+        environment: "clinic_portal",
+        clinicId: "B",
+        status: "active",
+      }).ok,
+    ).toBe(false);
+    const result = resolver.resolveHost("gestao.clinica.test");
+    expect(result.ok && result.clinicId).toBe("A");
+    expect(
+      () =>
+        new HostResolver([
+          {
+            hostname: "gestao.clinica.test",
+            environment: "clinic_portal",
+            clinicId: "A",
+            status: "active",
+          },
+          {
+            hostname: "GESTAO.CLINICA.TEST",
+            environment: "clinic_portal",
+            clinicId: "B",
+            status: "active",
+          },
+        ]),
+    ).toThrow("duplicação");
+  });
   it("normaliza hostname removendo trailing dots, portas e aplicando lowercase", () => {
     expect(normalizeHost("ClInIcA-A.PlUgPiX.CoM.").host).toBe("clinica-a.plugpix.com");
     expect(normalizeHost("clinica-b.plugpix.com:3000").host).toBe("clinica-b.plugpix.com");
@@ -46,7 +98,7 @@ describe("White Label Gate WL-1: Normalização de Host e Confiança de Proxy", 
     // 3) Com trustedProxy ativo: aceita o cliente original de X-Forwarded-Host
     const trustedHeaders = new Headers({
       host: "internal-loadbalancer.local",
-      "x-forwarded-host": "portal.clinica-alpha.com.br, internal-loadbalancer.local",
+      "x-forwarded-host": "portal.clinica-alpha.com.br",
     });
     const resultTrusted = extractTrustedHost(trustedHeaders, { trustedProxy: true });
     expect(resultTrusted.host).toBe("portal.clinica-alpha.com.br");

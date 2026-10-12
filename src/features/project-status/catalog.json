@@ -2199,6 +2199,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D35",
+      "title": "White Label: rejeição de hosts ambíguos e colisões",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex endureceu o contrato local WL-1: portas somente em dígitos, FQDN com porta normalizado, cabeçalhos duplicados/listas de proxy recusados e registro de domínio existente não sobrescreve clínica. Catálogo inicial duplicado falha explicitamente. Dezesseis testes passaram; tipos e lint aprovados. Layout, DNS e servidor produtivo preservados.",
+      "next": "Construir catálogo persistido de domínios com unicidade e estados, depois integrar contexto confiável ao SSR/APIs. Contrato local não comprova isolamento multi-host de produção.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

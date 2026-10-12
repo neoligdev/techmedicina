@@ -1811,3 +1811,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex abriu a personalização da clínica QA inativa com sessão existente no preview Lovable, salvou nome visual e recebeu confirmação Cloud. Após Refresh, o formulário recuperou o mesmo nome. Evidência de ponta a ponta desse fluxo, sem modificar o design, conceder acesso ou publicar.
 - **Próximo Passo**: Homologar múltiplas clínicas, conflito de revisão e uploads personalizados reais; integrar identidade no contexto White Label. Não comprova distribuição da marca aos portais dos pacientes.
 
+## D35 - White Label: rejeição de hosts ambíguos e colisões 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex endureceu o contrato local WL-1: portas somente em dígitos, FQDN com porta normalizado, cabeçalhos duplicados/listas de proxy recusados e registro de domínio existente não sobrescreve clínica. Catálogo inicial duplicado falha explicitamente. Dezesseis testes passaram; tipos e lint aprovados. Layout, DNS e servidor produtivo preservados.
+- **Próximo Passo**: Construir catálogo persistido de domínios com unicidade e estados, depois integrar contexto confiável ao SSR/APIs. Contrato local não comprova isolamento multi-host de produção.
+

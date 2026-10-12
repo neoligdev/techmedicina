@@ -440,3 +440,6 @@ Codex retomou após relatório Antigravity 85a7953 e instrução humana. Migraç
 
 ## C034 — Homologação Cloud pela tela
 Codex usou preview Lovable com clinicId QA verificado (clínica inativa). Salvou nome visual QA PlugPix — identidade Cloud e confirmou resposta de gravação. Após Refresh, o nome retornou do Cloud. Captura c034_cloud_reload.jpg. Sem CSS/assets alterados, contas/grants ou dados clínicos criados, Ask Lovable ou publicação. Teste cobre uma clínica e campos visuais; múltiplos tenants/conflitos/uploads reais continuam pendentes.
+
+## C035 — White Label local reforçado
+Codex revisou WL-1 do Antigravity e corrigiu portas ambíguas, cabeçalhos duplicados/listas de proxy e transferência silenciosa de domínio. Catálogo inicial duplicado rejeitado. 16 testes aprovados, tsc/lint da alteração aprovados. Contrato ainda não integrado ao SSR/API; nenhum DNS, domínio real, permissão ou design alterado. Próximo: catálogo persistido de hosts e integração incremental.
