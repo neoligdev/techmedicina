@@ -1881,3 +1881,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex criou e aplicou migração aditiva 007, alterando somente o código SQL de colisão para 23505. Transporte mapeia esse código para HTTP 409 sem expor detalhes internos. Dezesseis testes SQL/transporte, tipos e build aprovados. Cloud confirmou novo código, uma reserva/uma auditoria e manutenção dos bloqueios de escrita direta e RPC anônima.
 - **Próximo Passo**: Após sincronização, homologar mensagem específica de duplicidade no preview. A causa da demora anterior não foi comprovada. Posse, TLS, ativação e contexto SSR continuam pendentes.
 
+## D45 - White Label: fronteira entre domínio, clínica e identidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou contrato server-only que exige domínio ativo e sessão verificada, cruza clínica/papel com vínculo ativo e remove vínculos de outras clínicas e privilégio global em origem tenant. Central exige Super ADM sem importar vínculos clínicos. 43 testes de host/autorização aprovados. Preview confirmou mensagem específica de duplicidade da C044. Regressão completa aprovada: 38 arquivos e 363 testes.
+- **Próximo Passo**: Acoplar ao SSR/APIs somente com registro e ingresso de host confiáveis; contrato ainda não está integrado ao runtime. Posse, TLS e ativação de domínios continuam pendentes. Não há isolamento multi-host produtivo homologado.
+

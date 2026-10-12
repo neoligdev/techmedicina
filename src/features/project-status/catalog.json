@@ -2319,6 +2319,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D45",
+      "title": "White Label: fronteira entre domínio, clínica e identidade",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex preparou contrato server-only que exige domínio ativo e sessão verificada, cruza clínica/papel com vínculo ativo e remove vínculos de outras clínicas e privilégio global em origem tenant. Central exige Super ADM sem importar vínculos clínicos. 43 testes de host/autorização aprovados. Preview confirmou mensagem específica de duplicidade da C044. Regressão completa aprovada: 38 arquivos e 363 testes.",
+      "next": "Acoplar ao SSR/APIs somente com registro e ingresso de host confiáveis; contrato ainda não está integrado ao runtime. Posse, TLS e ativação de domínios continuam pendentes. Não há isolamento multi-host produtivo homologado.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }
