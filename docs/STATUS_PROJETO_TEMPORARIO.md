@@ -1888,3 +1888,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex preparou contrato server-only que exige domínio ativo e sessão verificada, cruza clínica/papel com vínculo ativo e remove vínculos de outras clínicas e privilégio global em origem tenant. Central exige Super ADM sem importar vínculos clínicos. 43 testes de host/autorização aprovados. Preview confirmou mensagem específica de duplicidade da C044. Regressão completa aprovada: 38 arquivos e 363 testes.
 - **Próximo Passo**: Acoplar ao SSR/APIs somente com registro e ingresso de host confiáveis; contrato ainda não está integrado ao runtime. Posse, TLS e ativação de domínios continuam pendentes. Não há isolamento multi-host produtivo homologado.
 
+## D46 - White Label: sugestão de hosts no domínio informado 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex registrou techmedicina.com.br no Registro.br informado pelo proprietário e implementou sugestão opcional de hostname para gestão/médico e PWA. Identificador canônico recusa nomes reservados; botão somente preenche e mantém domínio próprio livre, sem envio automático. Oito testes aprovados, tipos/build registrados. Design preservado pelos controles existentes.
+- **Próximo Passo**: Convenção é proposta, sem DNS/TLS/ativação. Validar hospedagem e ingresso; inspeção Domains bloqueada por falha de controle. Sugestão e paginação ainda exigem homologação visual da versão sincronizada.
+

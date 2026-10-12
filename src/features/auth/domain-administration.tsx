@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { domainReservationInputSchema, reservedDomainSchema } from "./domain-reservations";
 import type { ClinicDirectory } from "./clinic-directory";
+import { suggestedWhiteLabelHosts } from "./white-label-hostnames";
 const directorySchema = z
   .object({
     domains: z.array(reservedDomainSchema).max(100),
@@ -26,6 +27,7 @@ export function DomainAdministration({
 }) {
   const [clinicId, setClinicId] = useState(clinics[0]?.id ?? "");
   const [hostname, setHostname] = useState("");
+  const [slug, setSlug] = useState("");
   const [environment, setEnvironment] = useState<"clinic_portal" | "patient_pwa">("clinic_portal");
   const [directory, setDirectory] = useState<Directory | null>(null);
   const [error, setError] = useState("");
@@ -162,6 +164,8 @@ export function DomainAdministration({
             setDirectory(null);
             setAfter("");
             setNotice("");
+            setHostname("");
+            setSlug("");
             setClinicId(event.target.value);
           }}
           className="login-input w-full"
@@ -228,6 +232,40 @@ export function DomainAdministration({
         </Button>
       )}
       <form onSubmit={submit} className="space-y-3" aria-label="Reservar domínio">
+        <label className="block">
+          Identificador para sugestão
+          <Input
+            aria-label="Identificador para sugestão de domínio"
+            value={slug}
+            onChange={(event) => setSlug(event.target.value)}
+            disabled={busy}
+            maxLength={63}
+            placeholder="minha-clinica"
+          />
+        </label>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy || !directory}
+          onClick={() => {
+            const suggestion = suggestedWhiteLabelHosts(slug);
+            if (!suggestion) {
+              setError(
+                "Use um identificador em minúsculas, com letras, números e hífens, sem nome reservado.",
+              );
+              return;
+            }
+            setError("");
+            setNotice("");
+            setHostname(suggestion[environment]);
+          }}
+        >
+          Sugerir hostname
+        </Button>
+        <p className="text-xs text-muted-foreground">
+          A sugestão usa techmedicina.com.br. Você também pode informar um domínio próprio abaixo.
+          Ambos exigem verificação antes da ativação.
+        </p>
         <label className="block">
           Hostname
           <Input

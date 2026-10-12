@@ -3,6 +3,38 @@ import { act, cleanup, render, screen, fireEvent, waitFor } from "@testing-libra
 import { DomainAdministration } from "../features/auth/domain-administration";
 const id = "00000000-0000-4000-8000-000000000001";
 const clinics = [{ id, name: "QA", is_active: false, created_at: "2026-10-12T12:00:00Z" }];
+it("sugere gestão e PWA sem reservar automaticamente nem alterar domínio próprio", async () => {
+  const fetcher = vi
+    .fn()
+    .mockResolvedValue(Response.json({ domains: [], hasMore: false, nextCursor: null }));
+  vi.stubGlobal("fetch", fetcher);
+  render(<DomainAdministration token="fixture" clinics={clinics} />);
+  await screen.findByText("Nenhum domínio reservado nesta clínica.");
+  fireEvent.change(screen.getByLabelText("Identificador para sugestão de domínio"), {
+    target: { value: "viva-saude" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Sugerir hostname" }));
+  expect(screen.getByLabelText("Hostname da reserva")).toHaveValue(
+    "viva-saude.techmedicina.com.br",
+  );
+  fireEvent.change(screen.getByLabelText("Finalidade da reserva"), {
+    target: { value: "patient_pwa" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Sugerir hostname" }));
+  expect(screen.getByLabelText("Hostname da reserva")).toHaveValue(
+    "app.viva-saude.techmedicina.com.br",
+  );
+  fireEvent.change(screen.getByLabelText("Hostname da reserva"), {
+    target: { value: "app.clinica-propria.test" },
+  });
+  fireEvent.change(screen.getByLabelText("Identificador para sugestão de domínio"), {
+    target: { value: "admin" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Sugerir hostname" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("sem nome reservado");
+  expect(screen.getByLabelText("Hostname da reserva")).toHaveValue("app.clinica-propria.test");
+  expect(fetcher.mock.calls.some((call) => call[1]?.method === "POST")).toBe(false);
+});
 it("percorre reservas além de cem e retorna à primeira página", async () => {
   const domains = Array.from({ length: 100 }, (_, index) => ({
     id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,

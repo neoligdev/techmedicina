@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C045: contrato de identidade por host e colisão homologada.
+export const updatedAt = "12/10/2026"; // C046: sugestões no domínio informado pelo proprietário.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {

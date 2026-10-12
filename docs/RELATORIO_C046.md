@@ -1,0 +1,5 @@
+# C046 — Sugestões de domínio White Label
+
+12/10/2026. Codex. Proprietário informou techmedicina.com.br no Registro.br. Convenção proposta documentada em WHITE_LABEL_DOMINIOS_PROPOSTOS.md: central admin, portal identificado por clínica e PWA como app subdomínio da clínica. Builder retorna nomes, sem estados ativos nem operação externa. UI oferece identificador e Sugerir hostname; não faz POST automático, mantém campo próprio editável e recusa nomes reservados/labels inválidos. Alternar clínica limpa campos para evitar reaproveitamento acidental. Componentes existentes, CSS e assets preservados.
+
+Oito testes aprovados (builder e painel), incluindo ausência de POST automático, gestão/PWA distintos e domínio próprio preservado ao recusar identificador reservado. Tipos/build registrados. Nenhuma reserva ou DNS real criado nesta etapa. Homologação visual após push pendente. Configurações Lovable inspecionadas em leitura; seção Domains encontrada, controle falhou ao abrir. Nenhum Ask Lovable.

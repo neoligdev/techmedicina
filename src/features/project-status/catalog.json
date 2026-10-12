@@ -2331,6 +2331,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D46",
+      "title": "White Label: sugestão de hosts no domínio informado",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex registrou techmedicina.com.br no Registro.br informado pelo proprietário e implementou sugestão opcional de hostname para gestão/médico e PWA. Identificador canônico recusa nomes reservados; botão somente preenche e mantém domínio próprio livre, sem envio automático. Oito testes aprovados, tipos/build registrados. Design preservado pelos controles existentes.",
+      "next": "Convenção é proposta, sem DNS/TLS/ativação. Validar hospedagem e ingresso; inspeção Domains bloqueada por falha de controle. Sugestão e paginação ainda exigem homologação visual da versão sincronizada.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }
