@@ -434,3 +434,6 @@ Executor: Antigravity (execução direta solicitada pelo usuário conforme PRD v
   - Build de produção (`vite build`) exit 0 gerando bundles client e SSR em 2.98s.
   - Catálogo `/staus` atualizado com entrega D32 e regenerado `docs/STATUS_PROJETO_TEMPORARIO.md`.
 
+
+## C033 — Retomada e correção Cloud
+Codex retomou após relatório Antigravity 85a7953 e instrução humana. Migração 005 adicional aplicada via SQL Editor: Query succeeded; vazio=false, traversal=false, conhecido=true, escrita direta=false, RPC anon=false. Nenhum registro criado ou permissão expandida. Marca Cloud não é gravada na demo; falha de rede/sessão/revisão não vira sucesso local; resposta tem DTO/ID validados. 319 testes/33 arquivos, tsc/lint/build aprovados. CSS e assets preservados. Próxima etapa: homologação real de salvar/recarregar, depois White Label.

@@ -32,6 +32,7 @@ import {
 } from "@/features/demo/personalization";
 import { brandColorAdjusted, clinicThemeStyle } from "@/features/demo/theme";
 import { supabase } from "@/integrations/supabase/client";
+import { savedClinicBrandingSchema } from "@/features/auth/clinic-branding";
 
 export function PersonalizationPage({ clinicId: propClinicId }: { clinicId?: string } = {}) {
   const { clinic, preferences, ready } = useDemoClinic();
@@ -69,6 +70,7 @@ function PersonalizationForm({
   const { defaults, savePreferences } = useDemoClinic();
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clinicId);
   const [draft, setDraft] = useState<ClinicPreferences>(initial);
+  const savedSnapshot = React.useRef(initial);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [textureError, setTextureError] = useState("");
@@ -98,6 +100,8 @@ function PersonalizationForm({
       const { data } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }));
       const token = data?.session?.access_token;
       if (!token) {
+        setCloudRevision(null);
+        setError("Entre com uma conta autorizada para carregar a personalização da clínica.");
         setCloudStatus("idle");
         return;
       }
@@ -112,25 +116,34 @@ function PersonalizationForm({
       if (response.ok) {
         const result = await response.json();
         if (result.branding) {
-          setDraft(result.branding.preferences);
-          setCloudRevision(result.branding.revision);
+          const branding = savedClinicBrandingSchema.parse(result.branding);
+          if (branding.clinic_id !== clinicId) throw new Error("Clínica incompatível");
+          setDraft(branding.preferences);
+          savedSnapshot.current = branding.preferences;
+          setCloudRevision(branding.revision);
           setCloudStatus("synced");
-          try {
-            savePreferences(result.branding.preferences);
-          } catch {
-            // ignore local storage issues
-          }
-        } else {
+          setError("");
+        } else if (result.branding === null) {
           setCloudRevision(0);
           setCloudStatus("synced");
+          setError("");
+        } else {
+          throw new Error("Resposta inválida");
         }
+      } else {
+        throw new Error("Carregamento não confirmado");
       }
     } catch {
-      // Falha de rede ou offline mantém o rascunho local
+      if (mounted.current) {
+        setCloudRevision(null);
+        setError(
+          "Não foi possível confirmar a personalização na nuvem. Recarregue antes de salvar.",
+        );
+      }
     } finally {
       if (mounted.current) setCloudLoading(false);
     }
-  }, [clinicId, isUuid, savePreferences]);
+  }, [clinicId, isUuid]);
 
   React.useEffect(() => {
     if (isUuid) {
@@ -148,13 +161,17 @@ function PersonalizationForm({
   }
 
   function handleCancel() {
-    setDraft(initial);
+    setDraft(isUuid ? savedSnapshot.current : initial);
     setError("");
     setTextureError("");
     setMessage("Alterações descartadas. Configuração salva restaurada.");
   }
 
   async function save(value: ClinicPreferences, restored = false) {
+    if (isUuid && (cloudLoading || cloudRevision === null)) {
+      setError("Carregue a versão da nuvem antes de salvar.");
+      return;
+    }
     if (!value.name.trim()) {
       setError("Informe o nome de exibição.");
       return;
@@ -195,10 +212,14 @@ function PersonalizationForm({
 
           if (response.status === 200) {
             const res = await response.json();
-            if (res.branding) {
-              setCloudRevision(res.branding.revision);
+            const branding = savedClinicBrandingSchema.parse(res.branding);
+            if (branding.clinic_id !== clinicId) throw new Error("Clínica incompatível");
+            if (branding) {
+              setCloudRevision(branding.revision);
               setCloudStatus("synced");
               savedToCloud = true;
+              setDraft(branding.preferences);
+              savedSnapshot.current = branding.preferences;
             }
           } else if (response.status === 409) {
             setCloudStatus("conflict");
@@ -221,10 +242,30 @@ function PersonalizationForm({
             setMessage("");
             return;
           }
+        } else {
+          setError("Sessão ausente. Entre novamente antes de salvar na nuvem.");
+          setCloudStatus("idle");
+          return;
         }
       } catch {
-        // Falha de rede na nuvem
+        if (mounted.current) {
+          setCloudStatus("idle");
+          setError(
+            "Gravação não confirmada na nuvem. Recarregue a versão antes de tentar novamente.",
+          );
+          setMessage("");
+          setCloudRevision(null);
+        }
+        return;
       }
+    }
+
+    if (savedToCloud) {
+      setError("");
+      setMessage(
+        "Personalização salva na nuvem. Aplicação nos portais dos pacientes ainda depende da integração de identidade por clínica.",
+      );
+      return;
     }
 
     try {

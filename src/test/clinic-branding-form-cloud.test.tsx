@@ -82,6 +82,37 @@ describe("Conexão do formulário de personalização ao Lovable Cloud (/api/pla
         cache: "no-store",
       }),
     );
+    expect(localStorage.length).toBe(0);
+  });
+
+  it("não salva na demo quando a gravação Cloud falha na rede", async () => {
+    const branding = {
+      clinic_id: clinicAId,
+      revision: 1,
+      updated_at: "2026-10-12T10:00:00Z",
+      preferences: { name: "Nome Cloud", primary: "#123456", secondary: "#abcdef", mode: "dark" },
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockImplementation((_url, init) =>
+          init?.method === "PUT"
+            ? Promise.reject(new Error("offline"))
+            : Promise.resolve(Response.json({ branding })),
+        ),
+    );
+    renderPage(clinicAId);
+    await waitFor(() =>
+      expect(
+        screen.getByLabelText("Nome de exibição", { selector: "#clinic-display-name" }),
+      ).toHaveValue("Nome Cloud"),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("Gravação não confirmada"),
+    );
+    expect(localStorage.length).toBe(0);
   });
 
   it("salva na nuvem via PUT enviando Bearer token e expectedRevision", async () => {
@@ -147,9 +178,7 @@ describe("Conexão do formulário de personalização ao Lovable Cloud (/api/pla
     fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Personalização salva na nuvem e sincronizada para os pacientes da clínica.",
-      );
+      expect(screen.getByRole("status")).toHaveTextContent("Personalização salva na nuvem.");
     });
 
     // Verifica que o PUT foi chamado com a revisão esperada
@@ -273,6 +302,7 @@ describe("Conexão do formulário de personalização ao Lovable Cloud (/api/pla
                   textureUrl: "/textures/texture-1.jpg",
                 },
                 revision: 1,
+                updated_at: "2026-10-12T10:00:00Z",
               },
             },
             { status: 200 },
@@ -290,10 +320,11 @@ describe("Conexão do formulário de personalização ao Lovable Cloud (/api/pla
                   primary: "#222222",
                   secondary: "#bbbbbb",
                   mode: "light",
-                  textureId: "texture-5",
-                  textureUrl: "/textures/texture-5.jpg",
+                  textureId: "texture-4",
+                  textureUrl: "/textures/texture-4.jpg",
                 },
                 revision: 1,
+                updated_at: "2026-10-12T10:00:00Z",
               },
             },
             { status: 200 },

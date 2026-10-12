@@ -113,7 +113,11 @@ export const validImageBase64 = (value: unknown, maxBytes = 204800): boolean => 
 export const validTextureUrl = (value: unknown): boolean => {
   if (value === undefined) return true;
   if (typeof value !== "string") return false;
-  if (value.startsWith("/textures/") || value.startsWith("/patient-mobile-texture.jpg")) {
+  if (
+    DEFAULT_TEXTURE_CATALOG.some((item) => item.isAvailable && item.url === value) ||
+    value === "/patient-mobile-texture.jpg" ||
+    value === "/patient-mobile-texture.jpg?v=2"
+  ) {
     return true;
   }
   // Custom texture upload allows up to 5MB (5242880 bytes)

@@ -1795,5 +1795,12 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Antigravity
 - **Entregue**: Antigravity reforçou a validação SQL em 004_clinic_texture_branding.sql (rejeição de SVG, checagem estrita de magic bytes PNG/JPEG/WebP até 5MB, validação de schema e chaves estritas de customTextures). Conectou o formulário PersonalizationPage à API /api/platform/branding com sessão Supabase, detecção de conflitos de concorrência (HTTP 409), botão de recarga da nuvem, persistência isolada por tenant UUID e fallback local para modo demonstrativo. Implementou o Gate WL-1 do plano incremental White Label (host-resolver.ts) com normalização estrita RFC 1123, confiança de proxy anti-spoofing, subdomínios reservados e matriz de rotas seguras por ambiente (Central, Gestão Clínica, Médico e PWA Paciente). 318 testes aprovados em 33 arquivos (100% de sucesso), tsc, eslint e build de produção exit 0.
-- **Próximo Passo**: Avançar para o Gate WL-2 (catálogo de domínios no banco, RPCs e verificação de posse) e homologação com o titular quando autorizado; DNS e produção dependem de aprovação externa.
+- **Próximo Passo**: C033 corrigiu tipos obrigatórios ausentes no SQL, restringiu caminhos de textura e separou dados Cloud da demo. WL-1 permanece contrato local; integração SSR, tabela de domínios, sessão por origem e DNS ainda pendentes.
+
+## D33 - Validação Cloud de texturas e separação da demonstração 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex revisou C032, preservou design e migrações anteriores, incorporou migração 005 e aplicou pelo SQL Editor. Cloud recusou objeto vazio e caminho arbitrário, manteve RPC anônima e escrita direta bloqueadas. Formulário valida retorno/ID, não grava marca real na demo e não cai em salvamento local quando a rede falha. 319 testes, tipos, lint da alteração e build aprovados.
+- **Próximo Passo**: Homologar salvar/recarregar com sessão real e múltiplas clínicas; integrar contexto White Label e identidade produtiva. Assinatura binária não comprova decodificação integral nem bucket de arquivos.
 

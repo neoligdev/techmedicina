@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C032: validação SQL de texturas, persistência Cloud e Gate WL-1 White Label por Antigravity.
+export const updatedAt = "12/10/2026"; // C033: Codex retomou, validou Cloud e preservou design.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {
