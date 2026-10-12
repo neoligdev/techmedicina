@@ -2211,6 +2211,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D36",
+      "title": "White Label: fundação local de reserva de domínios",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex preparou migração aditiva 006 com hostname único, vínculo ao UUID da clínica, finalidade gestão/PWA, reserva pendente, RLS e auditoria. RPC exclusiva de operador ativo recusa colisões e não ativa hosts. Sete testes PostgreSQL aprovados. Sem alterações de design, DNS ou Cloud nesta etapa.",
+      "next": "Criar contratos/API/UI de reserva, revisar posse e TLS antes de ativação; aplicar migração somente no fluxo validado e integrar contexto SSR. Domínios centrais e configuração de produção ainda pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

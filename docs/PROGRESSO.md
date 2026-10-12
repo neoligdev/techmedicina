@@ -443,3 +443,6 @@ Codex usou preview Lovable com clinicId QA verificado (clínica inativa). Salvou
 
 ## C035 — White Label local reforçado
 Codex revisou WL-1 do Antigravity e corrigiu portas ambíguas, cabeçalhos duplicados/listas de proxy e transferência silenciosa de domínio. Catálogo inicial duplicado rejeitado. 16 testes aprovados, tsc/lint da alteração aprovados. Contrato ainda não integrado ao SSR/API; nenhum DNS, domínio real, permissão ou design alterado. Próximo: catálogo persistido de hosts e integração incremental.
+
+## C036 — Reserva de domínios local
+Codex preparou 006_domain_reservations.sql: hostname canônico único, finalidade gestão/PWA, FK de clínica, status somente pending_verification, RLS e auditoria. RPC autoriza operador ativo e recusa takeover; não ativa domínio. Sete testes PostgreSQL aprovados. Sem Cloud/DNS/TLS/design alterados. Próxima etapa: DTOs e API administrativa com limites/erros seguros.

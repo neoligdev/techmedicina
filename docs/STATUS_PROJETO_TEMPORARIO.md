@@ -1818,3 +1818,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex endureceu o contrato local WL-1: portas somente em dígitos, FQDN com porta normalizado, cabeçalhos duplicados/listas de proxy recusados e registro de domínio existente não sobrescreve clínica. Catálogo inicial duplicado falha explicitamente. Dezesseis testes passaram; tipos e lint aprovados. Layout, DNS e servidor produtivo preservados.
 - **Próximo Passo**: Construir catálogo persistido de domínios com unicidade e estados, depois integrar contexto confiável ao SSR/APIs. Contrato local não comprova isolamento multi-host de produção.
 
+## D36 - White Label: fundação local de reserva de domínios 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou migração aditiva 006 com hostname único, vínculo ao UUID da clínica, finalidade gestão/PWA, reserva pendente, RLS e auditoria. RPC exclusiva de operador ativo recusa colisões e não ativa hosts. Sete testes PostgreSQL aprovados. Sem alterações de design, DNS ou Cloud nesta etapa.
+- **Próximo Passo**: Criar contratos/API/UI de reserva, revisar posse e TLS antes de ativação; aplicar migração somente no fluxo validado e integrar contexto SSR. Domínios centrais e configuração de produção ainda pendentes.
+

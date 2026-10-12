@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C035: contrato White Label reforçado por Codex.
+export const updatedAt = "12/10/2026"; // C036: fundação local de reserva de domínios.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {
