@@ -98,7 +98,7 @@ describe("C029: Personalização e Envio de Texturas por Clínica", () => {
       "INSERT INTO public.tm_membership_grants(membership_id,resource,action) VALUES($1,'cadastro_clinica','write')",
       [uid(20)],
     );
-  });
+  }, 30000);
 
   describe("1. Catálogo Padrão e Validações de Formato", () => {
     it("possui exatamente 5 opções no catálogo padrão, sendo 4 reais e a 5ª pendente", () => {
@@ -258,6 +258,72 @@ describe("C029: Personalização e Envio de Texturas por Clínica", () => {
 
       await expect(saveBranding(clinicB, payload, 1)).rejects.toThrow(
         "Administrative access denied",
+      );
+    });
+
+    it("rejeita no SQL texturas com formato falso, SVG ou itens malformados em customTextures", async () => {
+      await asUser(admin);
+      // SVG proibido em textureUrl
+      const svgPayload = {
+        name: "Clínica Estrela",
+        primary: "#10b981",
+        secondary: "#065f46",
+        mode: "dark",
+        textureUrl: "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=",
+      };
+      await expect(saveBranding(clinicA, svgPayload, 2)).rejects.toThrow("Invalid branding input");
+
+      // Custom texture com item malformado (sem campo id)
+      const missingIdPayload = {
+        name: "Clínica Estrela",
+        primary: "#10b981",
+        secondary: "#065f46",
+        mode: "dark",
+        customTextures: [
+          { name: "Teste", url: VALID_PNG_BASE64, createdAt: "2026-10-12T12:00:00Z" },
+        ],
+      };
+      await expect(saveBranding(clinicA, missingIdPayload, 2)).rejects.toThrow(
+        "Invalid branding input",
+      );
+
+      // Custom texture com campos estranhos/não autorizados
+      const extraFieldPayload = {
+        name: "Clínica Estrela",
+        primary: "#10b981",
+        secondary: "#065f46",
+        mode: "dark",
+        customTextures: [
+          {
+            id: "t-1",
+            name: "Teste",
+            url: VALID_PNG_BASE64,
+            createdAt: "2026-10-12T12:00:00Z",
+            executable: true,
+          },
+        ],
+      };
+      await expect(saveBranding(clinicA, extraFieldPayload, 2)).rejects.toThrow(
+        "Invalid branding input",
+      );
+
+      // Custom texture com imagem corrompida (magic bytes falsos)
+      const fakeMagicPayload = {
+        name: "Clínica Estrela",
+        primary: "#10b981",
+        secondary: "#065f46",
+        mode: "dark",
+        customTextures: [
+          {
+            id: "t-1",
+            name: "Falso PNG",
+            url: "data:image/png;base64,QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=",
+            createdAt: "2026-10-12T12:00:00Z",
+          },
+        ],
+      };
+      await expect(saveBranding(clinicA, fakeMagicPayload, 2)).rejects.toThrow(
+        "Invalid branding input",
       );
     });
   });

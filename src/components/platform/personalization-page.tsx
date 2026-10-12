@@ -17,6 +17,7 @@ import {
   FileText,
   AlertCircle,
   ImageIcon,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,26 +31,52 @@ import {
   type StandardTextureOption,
 } from "@/features/demo/personalization";
 import { brandColorAdjusted, clinicThemeStyle } from "@/features/demo/theme";
+import { supabase } from "@/integrations/supabase/client";
 
-export function PersonalizationPage() {
+export function PersonalizationPage({ clinicId: propClinicId }: { clinicId?: string } = {}) {
   const { clinic, preferences, ready } = useDemoClinic();
+  const urlClinicId =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("clinicId")
+      : null;
+  const targetClinicId = propClinicId || urlClinicId || clinic.id;
+
   if (!ready)
     return (
       <div className="page-content" role="status">
         Carregando preferências…
       </div>
     );
-  return <PersonalizationForm key={clinic.id} initial={preferences} />;
+  return (
+    <PersonalizationForm
+      key={targetClinicId}
+      clinicId={targetClinicId}
+      clinicName={clinic.name}
+      initial={preferences}
+    />
+  );
 }
 
-function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
+function PersonalizationForm({
+  clinicId,
+  clinicName,
+  initial,
+}: {
+  clinicId: string;
+  clinicName?: string;
+  initial: ClinicPreferences;
+}) {
   const { defaults, savePreferences } = useDemoClinic();
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clinicId);
   const [draft, setDraft] = useState<ClinicPreferences>(initial);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [textureError, setTextureError] = useState("");
   const dirty = JSON.stringify(draft) !== JSON.stringify(initial);
   const [previewError, setPreviewError] = useState(false);
+  const [cloudRevision, setCloudRevision] = useState<number | null>(null);
+  const [cloudStatus, setCloudStatus] = useState<"idle" | "synced" | "saving" | "conflict">("idle");
+  const [cloudLoading, setCloudLoading] = useState(false);
   const mounted = React.useRef(true);
   const uploadTokens = React.useRef({ logo: 0, favicon: 0, texture: 0 });
 
@@ -63,6 +90,53 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
   React.useEffect(() => {
     setPreviewError(false);
   }, [draft.logo]);
+
+  const loadCloud = React.useCallback(async () => {
+    if (!isUuid) return;
+    setCloudLoading(true);
+    try {
+      const { data } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+      const token = data?.session?.access_token;
+      if (!token) {
+        setCloudStatus("idle");
+        return;
+      }
+      const response = await fetch(
+        `/api/platform/branding?clinicId=${encodeURIComponent(clinicId)}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        },
+      );
+      if (!mounted.current) return;
+      if (response.ok) {
+        const result = await response.json();
+        if (result.branding) {
+          setDraft(result.branding.preferences);
+          setCloudRevision(result.branding.revision);
+          setCloudStatus("synced");
+          try {
+            savePreferences(result.branding.preferences);
+          } catch {
+            // ignore local storage issues
+          }
+        } else {
+          setCloudRevision(0);
+          setCloudStatus("synced");
+        }
+      }
+    } catch {
+      // Falha de rede ou offline mantém o rascunho local
+    } finally {
+      if (mounted.current) setCloudLoading(false);
+    }
+  }, [clinicId, isUuid, savePreferences]);
+
+  React.useEffect(() => {
+    if (isUuid) {
+      void loadCloud();
+    }
+  }, [clinicId, isUuid, loadCloud]);
 
   function update(p: Partial<ClinicPreferences>) {
     if ("logo" in p && p.logo === undefined) uploadTokens.current.logo++;
@@ -80,7 +154,7 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
     setMessage("Alterações descartadas. Configuração salva restaurada.");
   }
 
-  function save(value: ClinicPreferences, restored = false) {
+  async function save(value: ClinicPreferences, restored = false) {
     if (!value.name.trim()) {
       setError("Informe o nome de exibição.");
       return;
@@ -89,6 +163,70 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
       setError("Selecione cores válidas no formato #RRGGBB.");
       return;
     }
+
+    let savedToCloud = false;
+    if (isUuid) {
+      try {
+        setCloudStatus("saving");
+        const { data } = await supabase.auth
+          .getSession()
+          .catch(() => ({ data: { session: null } }));
+        const token = data?.session?.access_token;
+        if (token) {
+          const expectedRevision = cloudRevision ?? 0;
+          const response = await fetch(
+            `/api/platform/branding?clinicId=${encodeURIComponent(clinicId)}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                clinicId,
+                preferences: value,
+                expectedRevision,
+              }),
+              cache: "no-store",
+            },
+          );
+
+          if (!mounted.current) return;
+
+          if (response.status === 200) {
+            const res = await response.json();
+            if (res.branding) {
+              setCloudRevision(res.branding.revision);
+              setCloudStatus("synced");
+              savedToCloud = true;
+            }
+          } else if (response.status === 409) {
+            setCloudStatus("conflict");
+            setError(
+              "A personalização desta clínica foi alterada em outro dispositivo. Recarregue antes de salvar.",
+            );
+            setMessage("");
+            return;
+          } else if (response.status === 401 || response.status === 403) {
+            setCloudStatus("idle");
+            setError(
+              "Acesso não autorizado ou sessão expirada. Entre com uma conta autorizada para salvar na nuvem.",
+            );
+            setMessage("");
+            return;
+          } else {
+            setCloudStatus("idle");
+            const errRes = await response.json().catch(() => null);
+            setError(errRes?.error || "Erro ao salvar na nuvem.");
+            setMessage("");
+            return;
+          }
+        }
+      } catch {
+        // Falha de rede na nuvem
+      }
+    }
+
     try {
       uploadTokens.current.logo++;
       uploadTokens.current.favicon++;
@@ -96,16 +234,22 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
       setDraft({ ...value, name: value.name.trim() });
       setError("");
       setTextureError("");
-      setMessage(
-        restored
-          ? "Padrão restaurado e salvo neste navegador."
-          : "Personalização e fundo salvos neste navegador. Sincronização com pacientes em outros dispositivos ainda pendente.",
-      );
+      if (savedToCloud) {
+        setMessage("Personalização salva na nuvem e sincronizada para os pacientes da clínica.");
+      } else {
+        setMessage(
+          restored
+            ? "Padrão restaurado e salvo neste navegador."
+            : "Personalização e fundo salvos neste navegador. Sincronização com pacientes em outros dispositivos ainda pendente.",
+        );
+      }
     } catch {
-      setError(
-        "Não foi possível salvar neste navegador. Verifique se o armazenamento (quota) está permitido e disponível.",
-      );
-      setMessage("");
+      if (!savedToCloud) {
+        setError(
+          "Não foi possível salvar neste navegador. Verifique se o armazenamento (quota) está permitido e disponível.",
+        );
+        setMessage("");
+      }
     }
   }
 
@@ -563,23 +707,55 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
 
           {/* BOTÕES DE AÇÃO: Salvar alterações e Cancelar */}
           <div className="preference-actions">
-            <Button type="submit" aria-label="Salvar">
-              <Save size={16} />
-              Salvar alterações
+            <Button type="submit" aria-label="Salvar" disabled={cloudStatus === "saving"}>
+              {cloudStatus === "saving" ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Salvando na nuvem…
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Salvar alterações
+                </>
+              )}
             </Button>
-            <Button type="button" variant="outline" onClick={handleCancel} disabled={!dirty}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={!dirty || cloudStatus === "saving"}
+            >
               <RotateCcw size={16} />
               Cancelar
             </Button>
-            <Button type="button" variant="ghost" onClick={() => save(defaults, true)}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => save(defaults, true)}
+              disabled={cloudStatus === "saving"}
+            >
               Restaurar padrão
             </Button>
+            {isUuid && (cloudStatus === "conflict" || error.includes("alterada")) && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void loadCloud()}
+                disabled={cloudLoading}
+              >
+                <RotateCcw size={14} className={cloudLoading ? "animate-spin" : ""} />
+                Recarregar versão da nuvem
+              </Button>
+            )}
           </div>
 
           {dirty && !message && (
             <p className="preference-hint">
-              Alterações em edição ainda não salvas. Salvar atualiza a demonstração neste navegador;
-              a publicação para os dispositivos dos pacientes depende da integração com o Cloud.
+              Alterações em edição ainda não salvas.
+              {isUuid
+                ? " Ao salvar, as alterações serão persistidas no Lovable Cloud e propagadas aos pacientes."
+                : " Salvar atualiza a demonstração neste navegador; a publicação para os dispositivos dos pacientes depende da integração com o Cloud."}
             </p>
           )}
           {error && (

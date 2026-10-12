@@ -404,3 +404,33 @@ Executor: Antigravity (execução direta autorizada pelo proprietário; Codex e 
 
 ## C031 — Auditoria e validação remota
 Codex reassumiu a execução por novo pedido humano, conferiu main/origin/HEAD d73d999 e preservou alterações documentais locais. Chrome/Lovable reconectados; status com barras e menu fixo confirmados no preview, bottom=798 e viewport=798. Contrato da auditoria reconhece textureId/textureUrl/customTextures, até nove campos sem repetição, com rótulos legíveis. Quinze testes aprovados; tsc e lint da alteração aprovados. Sem Ask Lovable, publicação, SQL remoto ou alteração de permissões. Próxima etapa: reforçar validação SQL e persistência de texturas.
+
+## C032 — Validação SQL de texturas, Persistência Cloud de Branding e Gate WL-1 White Label (12/10/2026)
+
+Executor: Antigravity (execução direta solicitada pelo usuário conforme PRD v0.11.1 e plano incremental).
+
+- **1. Validação SQL Robusta em `004_clinic_texture_branding.sql`**:
+  - Implementada verificação canônica de URLs padrão e decodificação estrita de imagens Base64 com validação de magic bytes binários (`PNG: 89504e470d0a1a0a`, `JPEG: ffd8ff`, `WebP: 52494646...57454250`) até 5 MB.
+  - Rejeição estrita no nível do PostgreSQL de formatos inseguros (SVG, scripts e arquivos corrompidos).
+  - Validação estrita das propriedades de cada item em `customTextures` (`id`, `name`, `url`, `createdAt`) e schema JSONB completo via `tm_valid_branding`.
+  - Timeout de inicialização do PGlite ajustado para 30s prevenindo falsos negativos de concorrência.
+- **2. Conexão do Formulário à Persistência Cloud (`/api/platform/branding`)**:
+  - `PersonalizationPage` e `PersonalizationForm` conectados à API de branding quando `clinicId` for UUID e houver sessão Supabase ativa.
+  - Carregamento inicial via GET obtendo personalização e número de revisão (`cloudRevision`).
+  - Salvamento via PUT com `expectedRevision`, incremento atômico de versão e auditoria administrativa automática.
+  - Tratamento de concorrência e conflito (HTTP 409) entre múltiplos dispositivos com aviso amigável e botão "Recarregar versão da nuvem".
+  - Isolamento rigoroso entre clínicas no Cloud e fallback transparente para `localStorage` quando em modo demonstrativo ou offline.
+- **3. Implementação do Gate WL-1 do Plano Incremental White Label**:
+  - Criado módulo `src/lib/white-label/host-resolver.ts` implementando o contrato e normalização de host conforme especificação §9.2.5–§9.2.7.
+  - Normalização RFC 1123: lowercase, remoção de portas válidas, tratamento de FQDN trailing dot e rejeição de injeção de caracteres.
+  - Confiança de proxy e anti-spoofing: verificação confiável de `Host` e `X-Forwarded-Host`.
+  - Reserva de subdomínios de sistema (`api`, `admin`, `super-admin`, `auth`, etc.).
+  - Matriz de rotas seguras por ambiente: Central (`/super-admin`), Gestão Clínica (`/clinica`, `/medico`), PWA Paciente (`/app`), e modo Demonstrativo/Preview.
+  - Suíte `src/test/white-label-host-resolver.test.ts` com 13 testes cobrindo todas as regras do Teste 1 (§9.4).
+- **4. Validação e Qualidade**:
+  - 33 arquivos de teste e 318 testes unitários/integração aprovados (`vitest run`).
+  - TypeScript (`tsc --noEmit`) aprovado com 0 erros.
+  - ESLint (`eslint src/`) aprovado com 0 erros (7 avisos conhecidos de exportação mantidos).
+  - Build de produção (`vite build`) exit 0 gerando bundles client e SSR em 2.98s.
+  - Catálogo `/staus` atualizado com entrega D32 e regenerado `docs/STATUS_PROJETO_TEMPORARIO.md`.
+

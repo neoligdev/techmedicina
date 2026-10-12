@@ -1790,3 +1790,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex acrescentou os campos de textura ao contrato e às descrições da auditoria, limitou nove campos e recusou duplicação. Quinze testes de auditoria aprovados. Preview Lovable confirmou barras de progresso C030 e menu fixed com base alinhada ao viewport; capturas registradas, sem Ask Lovable.
 - **Próximo Passo**: Reforçar SQL de validação das texturas, verificar implantação real e integrar persistência Cloud; não declarar upload remoto concluído.
 
+## D32 - Validação SQL de texturas, Persistência Cloud de Branding e Gate WL-1 White Label 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity reforçou a validação SQL em 004_clinic_texture_branding.sql (rejeição de SVG, checagem estrita de magic bytes PNG/JPEG/WebP até 5MB, validação de schema e chaves estritas de customTextures). Conectou o formulário PersonalizationPage à API /api/platform/branding com sessão Supabase, detecção de conflitos de concorrência (HTTP 409), botão de recarga da nuvem, persistência isolada por tenant UUID e fallback local para modo demonstrativo. Implementou o Gate WL-1 do plano incremental White Label (host-resolver.ts) com normalização estrita RFC 1123, confiança de proxy anti-spoofing, subdomínios reservados e matriz de rotas seguras por ambiente (Central, Gestão Clínica, Médico e PWA Paciente). 318 testes aprovados em 33 arquivos (100% de sucesso), tsc, eslint e build de produção exit 0.
+- **Próximo Passo**: Avançar para o Gate WL-2 (catálogo de domínios no banco, RPCs e verificação de posse) e homologação com o titular quando autorizado; DNS e produção dependem de aprovação externa.
+
