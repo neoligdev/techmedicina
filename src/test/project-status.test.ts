@@ -1,9 +1,26 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { statusItems, deliveries, filterStatusItems } from "@/features/project-status/catalog";
+import {
+  statusItems,
+  deliveries,
+  filterStatusItems,
+  projectProgress,
+} from "@/features/project-status/catalog";
 
 describe("Temporary PRD project status", () => {
+  it("calcula conclusão sem contar seção pai duas vezes nem concluir etapas parciais", () => {
+    const base = statusItems[0]!;
+    expect(
+      projectProgress([
+        { ...base, id: "1", parent: null, status: "progress" },
+        { ...base, id: "1.1", parent: "1", status: "done" },
+        { ...base, id: "1.2", parent: "1", status: "progress" },
+        { ...base, id: "2", parent: null, status: "pending" },
+      ]),
+    ).toEqual({ total: 3, completed: 1, started: 2, completedPercent: 33, startedPercent: 67 });
+    expect(projectProgress([]).completedPercent).toBe(0);
+  });
   it("covers every numbered section and subsection of the unchanged PRD", () => {
     const original = readFileSync(resolve("PRD_Techmedicina.md"), "utf8");
     const ids = Array.from(original.matchAll(/^#{2,3} (\d+(?:\.\d+)?)\.? /gm), (match) => match[1]);

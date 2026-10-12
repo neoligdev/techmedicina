@@ -22,7 +22,7 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex, OpenCode
 - **Entregue**: Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente.
-- **Próximo Passo**: Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.
+- **Próximo Passo**: Implementar resolvedor de host e mapeamento de domínios incrementalmente; configurações externas requerem confirmação concreta antes de produção.
 
 **Requisitos**:
 
@@ -35,6 +35,7 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - Autorizações verificadas no servidor, negadas por padrão quando não concedidas.
 - Registros de auditoria da operação; consulta global dos registros exclusiva do Super ADM. Isso não estabelece acesso administrativo automático ao conteúdo clínico.
 - Evitar marcas, comentários e referências desnecessárias a Lovable/Antigravity no código, respeitando obrigações aplicáveis às dependências utilizadas.
+- Adendo v0.11.1 §9: Super ADM em host central; gestão e PWA em origens próprias por clínica; médico no host da clínica. Resolver host cadastrado no servidor, cruzar sessão/vínculo/permissão, validar domínio próprio e TLS; PWA sem seletor global. Reutilizar backend e componentes.
 
 ## 3 - Módulo Médico 🔵
 
@@ -1773,5 +1774,12 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Antigravity
 - **Entregue**: Antigravity implementou seleção e envio de texturas de fundo para o app do paciente na personalização do ADM da clínica. Inclui catálogo padrão com 5 opções (4 texturas reais fornecidas: Luzes Bokeh, Brilho Esmeralda, Azul Meia-Noite, Vidro Água, e 5ª opção registrada como pendente de anexo sem dados fictícios), destaque de textura salva vs selecionada em edição, seção 'Minhas texturas' com upload de até 5MB (JPG/PNG/WebP, validando magic bytes, rejeitando SVG/executáveis), botões 'Salvar alterações' e 'Cancelar', simulação de smartphone com cards e vidro fosco no painel ADM, migração incremental 004_clinic_texture_branding.sql com suporte a textureId, textureUrl e customTextures no banco e isolamento rigoroso por clínica. 282 testes aprovados.
-- **Próximo Passo**: Aplicar a migração 004 no SQL Editor do Lovable Cloud e homologar persistência remota e bucket de Storage para assets quando liberado; computadores e tablets mantêm interface padrão.
+- **Próximo Passo**: Auditoria C030 (Codex): armazenamento atual é local ao navegador. Migração 004 não foi homologada remotamente; validação SQL de texturas precisa ser reforçada e eventos de auditoria precisam aceitar os novos campos antes da implantação. Concluir persistência real e teste entre dispositivos.
+
+## D30 - Auditoria de retomada, menu fixo e progresso visual 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu regra CSS da textura que sobrescrevia a posição fixa do menu, corrigiu papel inexistente em teste herdado e adicionou barras de conclusão integral e cobertura iniciada calculadas sem duplicar seções pais. Revisou limites reais da personalização e manteve autoria das entregas Antigravity.
+- **Próximo Passo**: Reforçar validação das texturas no servidor, contrato de auditoria e persistência Cloud; avançar White Label e demais dependências aprovadas do PRD.
 

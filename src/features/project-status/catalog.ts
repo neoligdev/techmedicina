@@ -11,9 +11,22 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C029: seleção e envio de texturas por clínica no app do paciente (Antigravity).
+export const updatedAt = "12/10/2026"; // C030: execução retomada por Codex e auditoria registrada.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
+export function projectProgress(items: StatusItem[]) {
+  const leaves = items.filter((item) => !items.some((child) => child.parent === item.id));
+  const total = leaves.length;
+  const completed = leaves.filter((item) => item.status === "done").length;
+  const started = leaves.filter((item) => item.status !== "pending").length;
+  return {
+    total,
+    completed,
+    started,
+    completedPercent: total ? Math.round((completed / total) * 100) : 0,
+    startedPercent: total ? Math.round((started / total) * 100) : 0,
+  };
+}
 export const statusLabels: Record<ProjectStatus, string> = {
   done: "Concluído no escopo descrito",
   progress: "Em implementação / parcial",

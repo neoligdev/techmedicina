@@ -7,6 +7,7 @@ import {
   statusLabels,
   updatedAt,
   filterStatusItems,
+  projectProgress,
   type StatusItem,
 } from "@/features/project-status/catalog";
 import { pageHead } from "@/features/demo/metadata";
@@ -68,11 +69,12 @@ function ProjectStatusPage() {
   const [status, setStatus] = useState("all");
   const results = filterStatusItems(statusItems, query, status);
   const sections = statusItems.filter((item) => item.parent === null);
+  const progress = projectProgress(statusItems);
   return (
     <div className="page-content project-status-page">
       <header className="page-heading">
         <div>
-          <span className="eyebrow">ACOMPANHAMENTO TEMPORÁRIO · PRD V0.10</span>
+          <span className="eyebrow">ACOMPANHAMENTO TEMPORÁRIO · PRD V0.11.1</span>
           <h1>
             Status do projeto<span className="heading-dot">.</span>
           </h1>
@@ -82,6 +84,28 @@ function ProjectStatusPage() {
           <ArrowLeft size={16} /> Super ADM
         </Link>
       </header>
+      <section className="project-status-progress" aria-label="Progresso do PRD">
+        <h2>Conclusão dos requisitos: {progress.completedPercent}%</h2>
+        <progress
+          aria-label="Requisitos integralmente concluídos"
+          value={progress.completed}
+          max={progress.total || 1}
+        />
+        <p>
+          {progress.completed} de {progress.total} itens finais integralmente concluídos.
+        </p>
+        <h3>Cobertura iniciada: {progress.startedPercent}%</h3>
+        <progress
+          aria-label="Requisitos iniciados ou concluídos"
+          value={progress.started}
+          max={progress.total || 1}
+        />
+        <p>
+          {progress.started} itens iniciados ou concluídos. Etapas parciais e demonstrações não
+          contam como conclusão integral. Seções com subitens não são contadas duas vezes; o cálculo
+          usa o catálogo revisado, não tempo ou estimativa de esforço.
+        </p>
+      </section>
       <div className="project-status-note">
         <Clock3 size={19} />
         <div>

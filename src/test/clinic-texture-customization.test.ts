@@ -266,7 +266,6 @@ describe("C029: Personalização e Envio de Texturas por Clínica", () => {
     it("permite leitura segura de branding e impede gravação sem autorização", async () => {
       const mockIdentity: AuthenticatedIdentity = {
         userId: admin,
-        globalRole: "user",
         links: [
           {
             clinicId: clinicA,

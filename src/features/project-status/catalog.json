@@ -7,7 +7,10 @@
       "status": "progress",
       "done": "PRD preservado, matriz de requisitos e registros de continuidade criados.",
       "next": "Consolidar decisões abertas e manter este relatório a cada etapa.",
-      "authors": ["Antigravity", "Codex"],
+      "authors": [
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": [
         "DEFINIDO: requisito expresso pelo usuário nesta conversa ou retomado do histórico disponível.",
         "RECOMENDADO: detalhamento proposto para avaliação do usuário.",
@@ -22,8 +25,13 @@
       "parent": null,
       "status": "progress",
       "done": "Quatro áreas demonstrativas, identidade PlugPix, personalização por clínica, UI fosca e base PWA. Lovable ativou Cloud; C011 (Antigravity) valida identidade no servidor via getUser(token). C012: Antigravity iniciou o login; Codex corrigiu e validou formulário, restauração, renovação e logout local. Sem autorização clínica automática. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C017 (Codex): API/painel de consulta global da auditoria administrativa, exclusiva do operador persistido, com IDs/campos/horário sem valores clínicos; validação local. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente.",
-      "next": "Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.",
-      "authors": ["Lovable", "Antigravity", "Codex", "OpenCode"],
+      "next": "Implementar resolvedor de host e mapeamento de domínios incrementalmente; configurações externas requerem confirmação concreta antes de produção.",
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex",
+        "OpenCode"
+      ],
       "requirements": [
         "Plataforma por assinatura (SaaS), completa e robusta, com prioridade alta em segurança de dados. Hierarquia: Super ADM → CMDs/clínicas → pacientes. Dentro do ambiente da clínica haverá um módulo Médico com acesso profissional próprio.",
         "Super ADM utiliza PlugPix Techmedicina; cria e administra clínicas e habilita módulos.",
@@ -33,7 +41,8 @@
         "Administração da clínica adaptada a computador e celular, com perfis e permissões por menu/função.",
         "Autorizações verificadas no servidor, negadas por padrão quando não concedidas.",
         "Registros de auditoria da operação; consulta global dos registros exclusiva do Super ADM. Isso não estabelece acesso administrativo automático ao conteúdo clínico.",
-        "Evitar marcas, comentários e referências desnecessárias a Lovable/Antigravity no código, respeitando obrigações aplicáveis às dependências utilizadas."
+        "Evitar marcas, comentários e referências desnecessárias a Lovable/Antigravity no código, respeitando obrigações aplicáveis às dependências utilizadas.",
+        "Adendo v0.11.1 §9: Super ADM em host central; gestão e PWA em origens próprias por clínica; médico no host da clínica. Resolver host cadastrado no servidor, cruzar sessão/vínculo/permissão, validar domínio próprio e TLS; PWA sem seletor global. Reutilizar backend e componentes."
       ]
     },
     {
@@ -43,7 +52,11 @@
       "status": "progress",
       "done": "Prévia médica navegável e painel de indicadores demonstrativos compartilhado com o cliente.",
       "next": "Concluir identificação, prontuário, exames, agenda e comunicação com segurança real.",
-      "authors": ["Lovable", "Antigravity", "Codex"],
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": [
         "O módulo integra prontuário, dados de saúde, exames, agenda, consultas agendadas, chat, documentos e chamada de vídeo. O acesso clínico descrito é exclusivo do perfil médico identificado por seu registro no conselho profissional."
       ]
@@ -55,7 +68,12 @@
       "status": "progress",
       "done": "Contratos e motor lógico de autorização com guardas que negam acesso sem sessão. Auditoria C009 (executor OpenCode): getSession() retorna null, resource resolver indefinido; é autorização pura, sem autenticação real. C011 (Antigravity): adaptador server-only request-bound criado com getUser(token), substituindo getSession vazio. 🟢 Unidade testada 11 checks. Sem login E2E, sem bypass em prod. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
       "next": "C012 entrega UI de login sem permissões clínicas; faltam login real ponta a ponta, validação do registro profissional, vínculos persistidos e RLS.",
-      "authors": ["Antigravity", "OpenCode", "Codex", "Lovable"],
+      "authors": [
+        "Antigravity",
+        "OpenCode",
+        "Codex",
+        "Lovable"
+      ],
       "requirements": [
         "DEFINIDO: associar o profissional à sua identidade e número de conselho; as evoluções exibem nome e CRM do autor.",
         "RECOMENDADO: cadastro de CRM e UF, validação da identidade e situação profissional antes da liberação, conta individual e autenticação com segundo fator. O CRM identifica o profissional; não funciona como senha ou prova suficiente de identidade.",
@@ -71,7 +89,9 @@
       "status": "progress",
       "done": "Ainda não há prontuário funcional validado. C010 (executor OpenCode) implementa unidade de criptografia server-only AES-256-GCM para o texto clínico, com testes unitários e endurecimento R1 (snapshot de contexto, IV/limites estritos); sem persistência, guarda, UI ou assinatura.",
       "next": "Falta implementar e validar prontuário e evoluções, respeitando as decisões pendentes do PRD.",
-      "authors": ["OpenCode"],
+      "authors": [
+        "OpenCode"
+      ],
       "requirements": [
         "Caixa de texto onde o médico escreve orientações e conclusões e salva um novo registro.",
         "Histórico cronológico com data, hora, nome do médico e CRM. RECOMENDADO: registrar também UF e identidade interna imutável do autor.",
@@ -90,7 +110,9 @@
       "status": "progress",
       "done": "Bioimpedância e pulseira com números fictícios, gráficos, histórico e tabelas na visão médica.",
       "next": "Integrar coleta real e IA validada; estados emocionais e análise clínica ainda pendentes.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Ao abrir o paciente, o médico acessa junto ao prontuário:",
         "Indicadores efetivamente coletados pela pulseira e sincronizados ao sistema.",
@@ -160,7 +182,12 @@
       "status": "progress",
       "done": "Fundação lógica de autorização, rota de diagnóstico e testes de negação por padrão. Auditoria C009 (executor OpenCode); C010 inicia criptografia server-only AES-256-GCM do texto clínico (ver 3.2). Controles produtivos ainda ausentes. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C015: auditoria administrativa imutável para usuários e gravação transacional de clínicas, testadas em PostgreSQL local; C015 aplicada no Cloud, homologação E2E pendente. C017: consulta global da auditoria administrativa com autorização, sem cache e DTO restrito; C015 aplicada no Cloud, E2E ainda pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C020: navegação da auditoria administrativa por cursor, mantendo limite de página e verificação de autorização, validada localmente. C022: dependências registradas revisadas, instalação frozen e auditoria do Bun sem alertas conhecidos; verificações locais aprovadas, sem atestar segurança integral. C026: migração de preferências por clínica aplicada no Cloud; API protegida implementada.",
       "next": "Conectar formulário e homologar a personalização com sessão real; concluir demais requisitos de persistência.",
-      "authors": ["Antigravity", "OpenCode", "Codex", "Lovable"],
+      "authors": [
+        "Antigravity",
+        "OpenCode",
+        "Codex",
+        "Lovable"
+      ],
       "requirements": [
         "DEFINIDO: proteção de dados como prioridade, isolamento entre clínicas, autorização no servidor, prontuário criptografado e registros clínicos definitivos sem edição/exclusão.",
         "RECOMENDADO para detalhamento técnico futuro:",
@@ -181,7 +208,11 @@
       "status": "progress",
       "done": "Ainda não há implementação funcional validada; C009 (executor OpenCode) registrou apenas auditoria local. Compartilhamento isolado por clínica permanece sem camada real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real.",
       "next": "Falta implementar e validar compartilhamento dentro da mesma clínica, respeitando as decisões pendentes do PRD.",
-      "authors": ["OpenCode", "Codex", "Lovable"],
+      "authors": [
+        "OpenCode",
+        "Codex",
+        "Lovable"
+      ],
       "requirements": [
         "O usuário esclareceu que o compartilhamento se limita aos médicos da mesma clínica. O prontuário, seu histórico, os dados de saúde, as conversas com a IA Médica e os exames do paciente são acessíveis aos médicos cadastrados e com acesso ativo nessa clínica.",
         "O médico pode consultar o histórico produzido pelos demais médicos da mesma clínica, com preservação da autoria de cada registro.",
@@ -218,7 +249,9 @@
       "status": "progress",
       "done": "Ainda não há implementação funcional validada; critério 3 (texto clínico cifrado em repouso) iniciado parcialmente por C010 (executor OpenCode), com unidade de criptografia sem persistência. Demais critérios pendentes.",
       "next": "Falta implementar e validar critérios de aceite propostos para o módulo médico, respeitando as decisões pendentes do PRD.",
-      "authors": ["OpenCode"],
+      "authors": [
+        "OpenCode"
+      ],
       "requirements": [
         "1. Usuário sem perfil médico autorizado não lê prontuários, dados clínicos ou exames, mesmo tentando acessar diretamente a API ou endereço de arquivo.",
         "2. CRM informado sem validação de identidade/conta não libera acesso médico, conforme regra de verificação a definir.",
@@ -239,7 +272,11 @@
       "status": "progress",
       "done": "Aplicativo navegável, design responsivo, seis gráficos, histórico fictício e base PWA sem cache de saúde. C028 (Antigravity): novo visual resumido mobile-first com topo limpo, fontes ampliadas (28–32px), avisos compactos, protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação rápida '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em 3 colunas mobile com textura e vidro fosco translúcido, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos com modais interativos e suporte a tema claro e escuro e bloqueio por inadimplência.",
       "next": "Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.",
-      "authors": ["Lovable", "Antigravity", "Codex"],
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -249,7 +286,9 @@
       "status": "progress",
       "done": "Painel do cliente com oito indicadores principais, tabelas, filtro e os mesmos dados demonstrativos vistos pelo médico.",
       "next": "Coleta/sincronização real, estado emocional e permissões do paciente ainda não implementados.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Aplicativo da clínica, com a personalização descrita na seção 2. O paciente consulta todas as informações efetivamente coletadas e sincronizadas da pulseira, seus dados de saúde e gráficos, e informa seu estado emocional e como está se sentindo. Os dados ficam disponíveis aos médicos da mesma clínica conforme a seção 5.",
         "RECOMENDADO: apresentar origem, data/hora, unidades, período e última sincronização. Um período sem dados não representa resultado zero ou normal. Métricas da pulseira dependem de compatibilidade e validação do dispositivo; não presumir medições que ele não disponibilize com qualidade suficiente.",
@@ -532,7 +571,11 @@
       "status": "progress",
       "done": "Lista/busca de clínicas e gráficos administrativos derivados dos cadastros fictícios.",
       "next": "Implementar gestão, vínculos, agenda e fechamento financeiro reais.",
-      "authors": ["Lovable", "Antigravity", "Codex"],
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -542,7 +585,11 @@
       "status": "progress",
       "done": "Duas clínicas demonstrativas, busca, seleção e personalização por ID imutável; Super ADM conserva PlugPix. C014 (Codex): consulta real de clínicas no login do operador, API autenticada com papel persistido e RLS, campos administrativos validados e sem dados clínicos. C015 (Codex): migração de criação/edição com revisão otimista, auditoria atômica e API POST validadas localmente; C015 agora aplicada no Cloud. C016 (Codex): formulário real de criação/edição integrado ao login do operador, carregamento de revisão no servidor e testes de conflito/duplicação/logout; C015 aplicada no Cloud; E2E pendente. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C021: rede administrativa consultável por páginas de até 100, com cursor validado no servidor, revisão da lista após salvar e respostas após logout ignoradas; validação local.",
       "next": "Homologar login, cadastro, edição e auditoria reais com o primeiro Super ADM ativo. Seguir vínculos e isolamento entre clínicas; integrações, chaves e decisões do PRD continuam pendentes.",
-      "authors": ["Lovable", "Antigravity", "Codex"],
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": [
         "Super ADM visualiza todas as clínicas.",
         "Ao selecionar uma clínica, pode entrar no ambiente e ter a visão do ADM daquela clínica.",
@@ -600,7 +647,10 @@
       "status": "progress",
       "done": "Contagens demonstrativas de vidas habilitadas e distribuição por clínica; nenhum faturamento inventado.",
       "next": "Implementar fechamento mensal, cobrança por vida e registros financeiros persistentes.",
-      "authors": ["Lovable", "Codex"],
+      "authors": [
+        "Lovable",
+        "Codex"
+      ],
       "requirements": [
         "Uma vida representa uma pessoa.",
         "Super ADM acompanha quantas vidas a clínica possui.",
@@ -622,7 +672,10 @@
       "status": "progress",
       "done": "Catálogo local de rascunhos de telemedicina e pulseira com validação e tratamento de erro no navegador.",
       "next": "Implementar contratos, venda e ativação real; consolidar condições comerciais pendentes.",
-      "authors": ["Antigravity", "Codex"],
+      "authors": [
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -651,7 +704,10 @@
       "status": "progress",
       "done": "CRUD local de rascunhos, sete opções de serviço, coparticipação e condições opcionais sem ativação comercial.",
       "next": "Consolidar Grupo32, carência/fidelidade e implementar venda e persistência no servidor.",
-      "authors": ["Antigravity", "Codex"],
+      "authors": [
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": [
         "Super ADM cria planos-base de telemedicina 24h e agendada.",
         "Clínica aplica seu preço e vende os planos aos clientes.",
@@ -677,7 +733,10 @@
       "status": "progress",
       "done": "Rascunhos com preço de ativação/mensalidade e opções independentes de médico, IA e fidelidade.",
       "next": "Definir modalidades e condições pendentes e integrar plano comercial e dispositivo reais.",
-      "authors": ["Antigravity", "Codex"],
+      "authors": [
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": [
         "Super ADM configura planos-base com:",
         "Preço-base de ativação.",
@@ -1187,7 +1246,9 @@
       "status": "progress",
       "done": "Interface de bioimpedância com medições fictícias compartilhada entre cliente e médico.",
       "next": "Escolher balança, validar protocolo, integrar medidas e implementar gestão operacional e acesso real.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1197,7 +1258,9 @@
       "status": "progress",
       "done": "Oito medições fictícias, três gráficos de composição corporal, unidades, horários, filtro e tabelas.",
       "next": "Integrar uma balança homologada e apresentar somente métricas efetivamente suportadas.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Incluir módulo Bioimpedância com integração a balança.",
         "Aplicativo apresenta todas as informações efetivamente coletadas e disponibilizadas pela integração da balança para aquele paciente.",
@@ -1216,7 +1279,9 @@
       "status": "progress",
       "done": "Médico e cliente consomem o mesmo componente e a mesma fonte estática de dados demonstrativos.",
       "next": "Implementar histórico persistente, autorização clínica, auditoria e IA; alcance administrativo clínico permanece pendente.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "DEFINIDO: dados da balança ficam no histórico de saúde do paciente no acesso Médico da mesma clínica, junto dos demais indicadores; interpretação contextual de “acesso pedido da clínica” conforme os módulos previamente descritos.",
         "DEFINIDO: Super ADM e ADM da clínica possuem gestão operacional dos equipamentos, com alcance global e local respectivamente, conforme seções 27.3 e 27.4.",
@@ -1344,7 +1409,9 @@
       "status": "progress",
       "done": "Simulador de rentabilidade (29.1) concluído em modo didático local.",
       "next": "Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo. Finalizar as demais inovações.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": [
         "Todas as recomendações apresentadas na resposta anterior foram aprovadas pelo usuário para inclusão no PRD. As funções abaixo passam a ser requisitos definidos; fórmulas, telas e políticas operacionais ainda precisam ser especificadas. A aprovação não resolve pendências anteriores nem comprova conformidade, compatibilidade ou validação clínica."
       ]
@@ -1356,7 +1423,9 @@
       "status": "progress",
       "done": "Simulador didático puro com validações e gráfico em barras proporcionais integrado à UI (C008).",
       "next": "Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": [
         "Antes de liberar/ofertar um plano, simular vidas, dependentes, preços, custos médicos, IA, dispositivos e comissões. Mostrar resultados em diferentes cenários para identificar ofertas de baixo resultado financeiro.",
         "RECOMENDADO: cenários conservador/base/expansão, entradas rastreáveis, custos únicos versus recorrentes, receita bruta/líquida, resultado de contribuição e ponto de equilíbrio. Não rotular diferença entre preço-base e venda como lucro líquido sem considerar demais custos.",
@@ -1476,7 +1545,11 @@
       "status": "progress",
       "done": "Novo painel Meu dia e navegação móvel adaptada ao acompanhamento demonstrativo.",
       "next": "Integrar rotina real, preparação da consulta, linha do tempo, metas e privacidade.",
-      "authors": ["Lovable", "Antigravity", "Codex"],
+      "authors": [
+        "Lovable",
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1486,7 +1559,9 @@
       "status": "progress",
       "done": "Meu dia apresenta composição corporal, atividade e descanso fictícios com acesso aos demais módulos.",
       "next": "Conectar agenda, medicamentos, hidratação e demais próximos passos reais do paciente.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Tela reúne próximos lembretes, consulta, treino previsto e ações do acompanhamento em sequência simples, reduzindo navegação entre módulos. Exibe somente recursos/ações autorizados pelo plano e estado de acesso, respeitando bloqueio financeiro e protocolo ainda não liberado.",
         "PENDENTE: posição na navegação, ordenação/prioridades, personalização e interação com notificações."
@@ -1666,7 +1741,9 @@
       "status": "progress",
       "done": "Critério 1 resolvido apenas no escopo do cálculo didático em frontend.",
       "next": "Faltam fórmulas oficiais, custos homologados, persistência/exportação e uso produtivo. Demais critérios pendentes.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": [
         "1. Simulador mostra premissas e cenários; repetir cálculo com mesmas entradas/versão produz resultado consistente e custos/receitas não são contados duas vezes.",
         "2. Central operacional mostra incidentes e atualização por clínica/integração sem expor conteúdo clínico indevidamente.",
@@ -1687,7 +1764,12 @@
       "status": "progress",
       "done": "Roadmap e matriz registram etapas, dependências, limites e decisões pendentes. Auditoria C009 (executor OpenCode) e unidade de criptografia C010 (executor OpenCode) registradas. Cloud Lovable ativado pelo usuário/Lovable: scaffold Supabase (805bcce) sem fluxo login/tenant real. C013 (Codex): migração aditiva de clínicas/vínculos/grants, RLS de leitura própria e resolvedor persistido com testes PostgreSQL em memória; aplicação C013 verificada no Cloud, sem E2E com conta real. C018 (Codex/Lovable): C015 gerenciada idêntica ao SQL revisado, RLS remota ativa e escrita direta negada em clínicas/auditoria. Cadastro por e-mail/Google incorporado do Lovable; 230 testes locais aprovados. Primeira conta Auth verificada e Super ADM ativado após autorização específica do titular. C023: runtime do preview recuperado por Lovable e formulário de login verificado no Chrome por Codex, após erro de importação do cliente. Sem publicação.",
       "next": "Homologar login/JWT/gateway/cadastro/auditoria no preview com o titular. Continuar vínculos, persistência das preferências e recursos clínicos; chaves, dispositivos e integrações seguem pendentes.",
-      "authors": ["Antigravity", "Codex", "OpenCode", "Lovable"],
+      "authors": [
+        "Antigravity",
+        "Codex",
+        "OpenCode",
+        "Lovable"
+      ],
       "requirements": [
         "As 13 inovações foram aprovadas para o escopo. Prioridade sugerida na resposta anterior, sem cronograma fechado: Meu dia; jornadas configuráveis/protocolos; resumo preparatório da consulta; central de funcionamento; simulador de rentabilidade. Demais funções permanecem incluídas, com sequência de implementação a definir.",
         "Novas prioridades de decisão: composição/validação dos protocolos, avaliação e registros, cobrança/adesão, alternativa para não apto, protocolo versus único plano ativo, critérios de aptidão/reavaliação e etapas do acompanhamento.",
@@ -1704,7 +1786,10 @@
       "status": "done",
       "done": "Base Super ADM, clínica, médico e cliente criada e navegável.",
       "next": "Módulos funcionais produtivos continuam nas pendências do PRD.",
-      "authors": ["Lovable", "Antigravity"],
+      "authors": [
+        "Lovable",
+        "Antigravity"
+      ],
       "requirements": []
     },
     {
@@ -1714,7 +1799,10 @@
       "status": "done",
       "done": "Nome, cores, tema, logomarca e favicon salvos por clínica; Super ADM preserva PlugPix.",
       "next": "Domínio, identidade de instalação e persistência real ainda pendentes no item2.",
-      "authors": ["Lovable", "Antigravity"],
+      "authors": [
+        "Lovable",
+        "Antigravity"
+      ],
       "requirements": []
     },
     {
@@ -1724,7 +1812,10 @@
       "status": "done",
       "done": "Cartões, campos, navegação e gráficos com tokens semânticos e tema claro preservado.",
       "next": "Manter o padrão nos próximos módulos.",
-      "authors": ["Lovable", "Codex"],
+      "authors": [
+        "Lovable",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1734,7 +1825,10 @@
       "status": "done",
       "done": "Salvar, recarregar, editar e excluir rascunhos locais de telemedicina/pulseira; validação e falhas cobertas.",
       "next": "Ativação, venda e cobrança real permanecem nos itens13 e20.",
-      "authors": ["Antigravity", "Codex"],
+      "authors": [
+        "Antigravity",
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1744,7 +1838,9 @@
       "status": "done",
       "done": "Cliente e médico usam a mesma fonte de medições, seis gráficos e tabelas, com QA móvel e desktop.",
       "next": "Integração H59/H59MAX e balança real permanecem nos itens6,25 e27.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1754,7 +1850,9 @@
       "status": "done",
       "done": "Manifest, ícone SVG, service worker e mensagem de desconexão implementados e testados unitariamente.",
       "next": "Homologar instalação em aparelhos e ícones por clínica; histórico clínico offline não implementado.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1764,7 +1862,9 @@
       "status": "done",
       "done": "64 testes passaram; tipos e build válidos; lint sem erros e7avisos Fast Refresh.",
       "next": "Build remoto Lovable ainda apresenta aviso, apesar de recebimento/renderização do commit.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1774,7 +1874,9 @@
       "status": "done",
       "done": "101 títulos do PRD organizados com requisitos, situações, executores, busca e filtros na rota /staus.",
       "next": "Atualizar em cada entrega; excluir página, botão e catálogo ao concluir o projeto.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1784,7 +1886,9 @@
       "status": "done",
       "done": "Escopo limitado, três cenários/barras e campos explícitos.",
       "next": "Homologar visual, fórmulas/custos oficiais e persistência futura.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": []
     },
     {
@@ -1794,7 +1898,9 @@
       "status": "done",
       "done": "Módulo AES-256-GCM server-only com WebCrypto nativa, envelope tipado v1, AAD (clínica/paciente/registro/tipo/kid) e KeyProvider injetado; 23 testes unitários em Node. Apenas escopo unitário.",
       "next": "Keystore real, guardas, persistência, auditoria, backup e rotação de produção permanecem pendentes; PRD 3.2/4/7 seguem parciais.",
-      "authors": ["OpenCode"],
+      "authors": [
+        "OpenCode"
+      ],
       "requirements": []
     },
     {
@@ -1804,7 +1910,9 @@
       "status": "done",
       "done": "Implementado adaptador server-only request-bound src/lib/auth/supabase-adapter.server.ts e testes isolados. getUser(token) aplicado sem trust no client.",
       "next": "Conectar autenticação real, E2E login, RLS e isolamento.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": []
     },
     {
@@ -1814,7 +1922,11 @@
       "status": "done",
       "done": "Antigravity criou a base inicial. Codex corrigiu diretamente: login e restauração confirmados por HTTP200/JSON ok no servidor; revalidação do token renovado, proteção contra respostas atrasadas, logout local com tratamento de falhas, configurações ausentes contidas, UI sem permissões clínicas e API sem cache. 22 testes de login; suíte completa 137/137. Escopo de código e testes com mocks. Lovable estendeu o cadastro sem perfil adicional com confirmação de e-mail, Google habilitado, indicação de sessão validada por getUser e limpeza de consultas no logout. Tela verificada no navegador; suíte 230/230, incluindo quatro novos testes. Nenhuma conta ou permissão criada automaticamente.",
       "next": "Homologar confirmação por e-mail e OAuth com conta real; preservar vínculos e isolamento negados por padrão. Isso não conclui autenticação/isolamento clínico de produção.",
-      "authors": ["Antigravity", "Codex", "Lovable"],
+      "authors": [
+        "Antigravity",
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1824,7 +1936,10 @@
       "status": "done",
       "done": "Codex concluiu e revisou o SQL (d70f8de), com suíte local 166/166. Lovable aplicou exatamente a revisão no Cloud existente e registrou migração/tipos gerenciados: cinco tabelas vazias com RLS, SELECT restrito, escrita de anon/authenticated negada, associação composta e RPC invoker com search_path vazio confirmados por consultas remotas. Sem contas ou vínculos criados.",
       "next": "Homologar login/JWT/gateway/RLS ponta a ponta com conta e vínculos reais; não atestado nesta aplicação. Provisionamento futuro deverá verificar existência/status da conta pelo Auth. C014: administração e auditoria com escrita autorizada no servidor.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1834,7 +1949,9 @@
       "status": "done",
       "done": "Codex implementou API de leitura global exclusiva do operador persistido, cliente por requisição sujeito a RLS, resumo de acesso sem dados sensíveis e lista de clínicas reais no login. Banco vazio não gera registros demonstrativos. Homologação com operador real pendente.",
       "next": "Paginação adicionada em C021. Homologar gateway/listagem e cadastro com operador real; administração completa e vínculos permanecem em desenvolvimento.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1844,7 +1961,10 @@
       "status": "done",
       "done": "Codex implementou SQL/API de criação e edição administrativas com ator verificado, auditoria atômica, revisão otimista e limites de payload. Testes locais aprovados; C015 aplicada no Cloud por Lovable; formulário C016 e consulta C017 implementados.",
       "next": "Primeiro Super ADM ativo por autorização específica. Homologar criação, edição, conflito e auditoria com login real; OAuth, paginação e demais requisitos produtivos permanecem pendentes.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1854,7 +1974,10 @@
       "status": "done",
       "done": "Codex integrou criar/editar clínica ao login verificado, campos foscos e controles sem duplicação, leitura de revisão por ID protegido, respostas tardias invalidadas e conflitos sem sobrescrita. Código e testes locais; não homologado com conta real.",
       "next": "Primeiro Super ADM ativo por autorização específica. Homologar criação, edição, conflito e auditoria com login real; OAuth, paginação e demais requisitos produtivos permanecem pendentes.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1864,7 +1987,10 @@
       "status": "done",
       "done": "Codex implementou API/painel da auditoria de cadastro exclusiva do Super ADM persistido. Consulta explícita com RLS, limite de 100 eventos, origem/ator/horário/campos alterados e sem textos ou valores clínicos. Testes locais; C015 aplicada no Cloud; E2E com conta real pendente.",
       "next": "Paginação administrativa implementada em C020. Homologação com sessão real e auditoria dos demais recursos permanecem pendentes.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1874,7 +2000,10 @@
       "status": "done",
       "done": "Lovable aplicou C015 e regenerou tipos, adicionou cadastro e entrada por e-mail/Google. Codex incorporou commits, confirmou SQL equivalente e RLS remota, corrigiu formatação dos arquivos gerados e validou 230 testes, TypeScript, lint e build. Primeira conta Auth confirmada; Super ADM ativado após autorização específica do titular, sem permissões clínicas.",
       "next": "Primeiro Super ADM ativo por autorização específica. Homologar criação, edição, conflito e auditoria com login real; OAuth, paginação e demais requisitos produtivos permanecem pendentes.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1884,7 +2013,9 @@
       "status": "done",
       "done": "Codex adicionou a imagem oficial fornecida pelo titular ao cabeçalho do Super ADM, com proporção preservada, tamanho responsivo, descrição acessível e link para início. Personalização das clínicas permanece independente.",
       "next": "Prosseguir homologação autenticada e demais requisitos do PRD.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1894,7 +2025,9 @@
       "status": "done",
       "done": "Codex implementou consulta de eventos anteriores por cursor de horário/ID, páginas limitadas a 100, validação do cursor após autorização e antes da leitura, acesso via cliente sujeito a RLS e limpeza da página em acesso negado. Suíte local 232/232, TypeScript, build e lint sem erros. Não homologado com sessão real.",
       "next": "Homologar auditoria autenticada no Cloud com o titular e ampliar auditoria para os próximos recursos do PRD; sem acesso clínico automático.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1904,7 +2037,9 @@
       "status": "done",
       "done": "Codex adicionou paginação do cadastro real de clínicas por horário/ID, consulta de páginas anteriores e retorno aos cadastros recentes. Servidor autoriza antes de validar cursor e consultar com RLS; lista é recarregada após gravação confirmada. 234 testes locais aprovados; homologação autenticada pendente.",
       "next": "Validar navegação e gravações com sessão real do primeiro Super ADM; seguir vínculos e recursos administrativos do PRD.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1914,7 +2049,10 @@
       "status": "done",
       "done": "Codex unificou esbuild na versão corrigida 0.28.2 e atualizou somente dependências transitivas sinalizadas no lockfile: brace-expansion, js-yaml, nanoid, shell-quote e source-map-js. Instalação frozen do Bun e auditoria do lockfile sem alertas; 234 testes, TypeScript, build e lint sem erros. Não comprova segurança integral ou recuperação do preview remoto. R1: Codex incorporou por merge normal a regeneração Lovable 095f9d1 e limitou exceções de estilo aos dois arquivos gerados, mantendo verificações de correção e autorização.",
       "next": "C023 recuperou runtime do preview, com build 7a6e6cc informado succeeded/in_sync e formulário de login confirmado no navegador. Homologar login e operações com sessão real; dependências não comprovam segurança integral.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1924,7 +2062,10 @@
       "status": "done",
       "done": "Codex reconectou Chrome, confirmou C022 R1 renderizada e diagnosticou falha de importação do cliente TanStack. Lovable reiniciou somente o runtime; informou build 7a6e6cc succeeded/in_sync, módulo HTTP 200 e hidratação após Refresh. Codex confirmou campos E-mail/Senha, Entrar habilitado e espera de sessão ausente. Sem alteração de banco, permissões ou publicação.",
       "next": "Titular entrar no preview para homologar JWT/gateway, criação/edição de clínica QA e auditoria; continuar persistência e vínculos do PRD.",
-      "authors": ["Codex", "Lovable"],
+      "authors": [
+        "Codex",
+        "Lovable"
+      ],
       "requirements": []
     },
     {
@@ -1934,7 +2075,9 @@
       "status": "done",
       "done": "Codex preparou tabela com RLS, gravação por RPC autorizada, revisão contra sobrescritas, validação de preferências e auditoria de campos. 243 testes, TypeScript, lint dos arquivos alterados e compilação aprovados. Nenhuma migração aplicada no Cloud nesta etapa.",
       "next": "Aplicar migração revisada pelo fluxo gerenciado, regenerar tipos e integrar API/formulário com sessão real. Personalização atual continua salva no navegador.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1944,7 +2087,9 @@
       "status": "done",
       "done": "Codex verificou login real do primeiro Super ADM, criou uma clínica QA inativa, alterou seu nome e confirmou os dois eventos de auditoria com a conta autora correta no preview Lovable. Sem dados clínicos, contas ou concessões adicionais.",
       "next": "Integrar persistência de identidade visual; testar isolamento com contas e vínculos próprios antes de declarar autorização clínica homologada.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1954,7 +2099,9 @@
       "status": "done",
       "done": "Codex aplicou a migração 003 diretamente no SQL Editor e verificou RLS, bloqueio de acesso anônimo e ausência de escrita direta. Implementou API GET/PUT com sessão validada, limites, autorização por clínica, revisão e DTOs estritos. Sem prompts ao Lovable; formulário ainda não conectado.",
       "next": "Conectar editor autenticado e homologar salvar/recarregar com a clínica QA. Regeneração gerenciada dos tipos ainda pendente; transporte PostgREST usa DTOs estritos sem alterar arquivos gerados.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1964,7 +2111,9 @@
       "status": "done",
       "done": "Codex incorporou o adendo v0.11.1 ao PRD com catálogo comercial, públicos, Dr. IA proativo, score e diretrizes White Label preservando seções anteriores e IDs.",
       "next": "Implementação dos requisitos operacionais aprovados no adendo conforme autorização.",
-      "authors": ["Codex"],
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
@@ -1974,7 +2123,9 @@
       "status": "done",
       "done": "Antigravity implementou tela inicial resumida (PatientHome) com topo limpo, saudação grande (28–32px), avisos compactos, card de protocolo, plano e score lado a lado, humor e sono interativos independentes com 5 emojis, água com ação única '+ Água', grade de 12 atalhos rigorosamente quadrados (1:1) em três colunas mobile com textura e vidro fosco translúcido, seção expansível 'Mais recursos' e rodapé fixo de 6 destinos (Início, Telemedicina, Água, IA, Alimentação, Perfil) com suporte a tema claro e escuro e bloqueio por inadimplência. 273 testes aprovados.",
       "next": "Integrar telemetria real dos dispositivos (pulseira/balança), serviços de telemedicina e sincronização em nuvem quando as APIs de produção forem liberadas.",
-      "authors": ["Antigravity"],
+      "authors": [
+        "Antigravity"
+      ],
       "requirements": []
     },
     {
@@ -1983,8 +2134,22 @@
       "parent": "4",
       "status": "done",
       "done": "Antigravity implementou seleção e envio de texturas de fundo para o app do paciente na personalização do ADM da clínica. Inclui catálogo padrão com 5 opções (4 texturas reais fornecidas: Luzes Bokeh, Brilho Esmeralda, Azul Meia-Noite, Vidro Água, e 5ª opção registrada como pendente de anexo sem dados fictícios), destaque de textura salva vs selecionada em edição, seção 'Minhas texturas' com upload de até 5MB (JPG/PNG/WebP, validando magic bytes, rejeitando SVG/executáveis), botões 'Salvar alterações' e 'Cancelar', simulação de smartphone com cards e vidro fosco no painel ADM, migração incremental 004_clinic_texture_branding.sql com suporte a textureId, textureUrl e customTextures no banco e isolamento rigoroso por clínica. 282 testes aprovados.",
-      "next": "Aplicar a migração 004 no SQL Editor do Lovable Cloud e homologar persistência remota e bucket de Storage para assets quando liberado; computadores e tablets mantêm interface padrão.",
-      "authors": ["Antigravity"],
+      "next": "Auditoria C030 (Codex): armazenamento atual é local ao navegador. Migração 004 não foi homologada remotamente; validação SQL de texturas precisa ser reforçada e eventos de auditoria precisam aceitar os novos campos antes da implantação. Concluir persistência real e teste entre dispositivos.",
+      "authors": [
+        "Antigravity"
+      ],
+      "requirements": []
+    },
+    {
+      "id": "D30",
+      "title": "Auditoria de retomada, menu fixo e progresso visual",
+      "parent": "34",
+      "status": "done",
+      "done": "Codex corrigiu regra CSS da textura que sobrescrevia a posição fixa do menu, corrigiu papel inexistente em teste herdado e adicionou barras de conclusão integral e cobertura iniciada calculadas sem duplicar seções pais. Revisou limites reais da personalização e manteve autoria das entregas Antigravity.",
+      "next": "Reforçar validação das texturas no servidor, contrato de auditoria e persistência Cloud; avançar White Label e demais dependências aprovadas do PRD.",
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     }
   ]

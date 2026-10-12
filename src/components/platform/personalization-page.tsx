@@ -98,8 +98,8 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
       setTextureError("");
       setMessage(
         restored
-          ? "Padrão restaurado e salvo com sucesso."
-          : "Personalização e fundo do aplicativo salvos com sucesso.",
+          ? "Padrão restaurado e salvo neste navegador."
+          : "Personalização e fundo salvos neste navegador. Sincronização com pacientes em outros dispositivos ainda pendente.",
       );
     } catch {
       setError(
@@ -578,8 +578,8 @@ function PersonalizationForm({ initial }: { initial: ClinicPreferences }) {
 
           {dirty && !message && (
             <p className="preference-hint">
-              Alterações em edição ainda não salvas. Os pacientes só verão as novas escolhas após
-              clicar em "Salvar alterações".
+              Alterações em edição ainda não salvas. Salvar atualiza a demonstração neste navegador;
+              a publicação para os dispositivos dos pacientes depende da integração com o Cloud.
             </p>
           )}
           {error && (

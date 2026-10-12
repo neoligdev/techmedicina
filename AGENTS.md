@@ -36,6 +36,8 @@
 
 ## Status temporário do projeto
 
+- Diretriz humana mais recente (12/10/2026, C030): Codex retoma controle direto da implementação, auditoria, testes e status, após alterações Antigravity. Substitui a pausa documental e a tarefa anterior atribuída ao Antigravity. Não enviar Ask Lovable; preservar autorias e apenas um executor ativo. DNS, compras e publicação exigem decisão concreta quando necessários.
+
 - Diretriz humana de 10/10/2026: não enviar prompts ao Ask Lovable. Codex implementa diretamente; no Lovable usar somente preview, Cloud/SQL, funções e configurações. C026 aplicou o SQL revisado diretamente no SQL Editor, registrando evidência e arquivo fonte; não reaplicar migrações já executadas. Preservar arquivos gerados e validar contratos estritos de respostas até haver regeneração gerenciada disponível sem chat.
 
 - Diretriz humana vigente (10/10/2026): Codex implementa diretamente, testa, atualiza status e faz commit/push autorizados. Substitui a divisão coordenador/Antigravity de 09/10; manter Antigravity e OpenCode parados durante estas alterações. Preservar autorias históricas e registrar a transferência de execução.

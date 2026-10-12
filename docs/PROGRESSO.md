@@ -398,3 +398,6 @@ Executor: Antigravity (execução direta autorizada pelo proprietário; Codex e 
   - `tsc --noEmit` aprovado com 0 erros.
   - ESLint (`eslint src/`) aprovado com 0 erros.
   - `vite build` gerou bundles client e SSR sem erros.
+
+## C030 — Retomada Codex e auditoria
+12/10/2026: proprietário autorizou novamente Codex a implementar diretamente e continuar o PRD. Regra de textura position:relative em todos os filhos sobrescrevia position:fixed do rodapé; excluído o menu dessa regra. Barras de conclusão e cobertura iniciada no status, sem crédito artificial a demos. TypeScript herdado falhava por globalRole user inexistente, removido do teste de administrador local. Cloud de texturas ainda não homologado: migração 004 aceita strings/arrays sem validar conteúdo integral; persistência da tela é localStorage, não sincronização com pacientes. Próxima etapa reforça contrato/SQL/persistência. Nenhum Ask Lovable.
