@@ -2259,6 +2259,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D40",
+      "title": "Reservas White Label no Cloud: persistência e RLS verificadas",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex aplicou a migração 006 revisada no SQL Editor. RLS nas duas tabelas, inserção direta bloqueada e RPC anônima bloqueada. Conta Super ADM reservou hostname fictício da clínica QA; Refresh recuperou a reserva, com uma entrada de auditoria. Regressão completa: 346 testes aprovados. Design preservado.",
+      "next": "Corrigir demora na resposta de duplicidade observada no preview e homologar erro. Prova de posse, TLS, ativação, paginação completa e integração SSR continuam pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

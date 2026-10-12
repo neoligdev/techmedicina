@@ -1846,3 +1846,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex integrou painel de reservas à administração com sessão verificada. Seleção de clínica/finalidade, lista de reservas pendentes, formulário e recarga, com bloqueio de envio sem consulta válida e recusa de retorno de outra clínica. Não transforma hostname em link ativo. 34 testes de painel/login e tipos/lint/build aprovados; CSS e assets preservados.
 - **Próximo Passo**: Aplicar migração 006, conferir RLS/RPC e homologar reserva no Cloud. Ativação, prova de posse, TLS, paginação completa e integração SSR continuam pendentes.
 
+## D40 - Reservas White Label no Cloud: persistência e RLS verificadas 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex aplicou a migração 006 revisada no SQL Editor. RLS nas duas tabelas, inserção direta bloqueada e RPC anônima bloqueada. Conta Super ADM reservou hostname fictício da clínica QA; Refresh recuperou a reserva, com uma entrada de auditoria. Regressão completa: 346 testes aprovados. Design preservado.
+- **Próximo Passo**: Corrigir demora na resposta de duplicidade observada no preview e homologar erro. Prova de posse, TLS, ativação, paginação completa e integração SSR continuam pendentes.
+
