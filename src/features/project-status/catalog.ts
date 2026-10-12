@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "12/10/2026"; // C040: reserva Cloud, persistência e RLS verificadas.
+export const updatedAt = "12/10/2026"; // C041: limite de espera e recarga segura nas reservas.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {

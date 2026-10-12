@@ -1853,3 +1853,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex aplicou a migração 006 revisada no SQL Editor. RLS nas duas tabelas, inserção direta bloqueada e RPC anônima bloqueada. Conta Super ADM reservou hostname fictício da clínica QA; Refresh recuperou a reserva, com uma entrada de auditoria. Regressão completa: 346 testes aprovados. Design preservado.
 - **Próximo Passo**: Corrigir demora na resposta de duplicidade observada no preview e homologar erro. Prova de posse, TLS, ativação, paginação completa e integração SSR continuam pendentes.
 
+## D41 - Reservas: limite de espera e recarga após resultado incerto 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex limitou a espera de consulta e reserva a 20 segundos. Falha ou resultado de gravação incerto não anuncia sucesso e bloqueia reenvio até recarga. Teste simula ausência de resposta e confirma liberação da interface, recarga disponível e gravação bloqueada. Controles e design preservados.
+- **Próximo Passo**: Homologar no preview o comportamento da correção e investigar resposta de colisão. Posse, TLS, ativação, paginação e contexto SSR permanecem pendentes.
+

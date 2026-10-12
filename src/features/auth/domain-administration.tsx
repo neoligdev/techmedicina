@@ -35,11 +35,15 @@ export function DomainAdministration({
   }, []);
   useEffect(() => {
     const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 20_000);
     abort.current = controller;
     setDirectory(null);
     setError("");
     setNotice("");
-    if (!clinicId) return () => controller.abort();
+    if (!clinicId) {
+      clearTimeout(deadline);
+      return () => controller.abort();
+    }
     void (async () => {
       try {
         const response = await fetch(
@@ -59,11 +63,16 @@ export function DomainAdministration({
           throw new Error("Resposta incompatível com a clínica.");
         if (!controller.signal.aborted) setDirectory(result);
       } catch {
-        if (!controller.signal.aborted)
+        if (abort.current === controller && mounted.current)
           setError("Não foi possível carregar as reservas desta clínica.");
+      } finally {
+        clearTimeout(deadline);
       }
     })();
-    return () => controller.abort();
+    return () => {
+      clearTimeout(deadline);
+      controller.abort();
+    };
   }, [token, clinicId, reload]);
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -78,6 +87,7 @@ export function DomainAdministration({
     setError("");
     setNotice("");
     const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 20_000);
     abort.current = controller;
     try {
       const response = await fetch("/api/platform/domains", {
@@ -89,6 +99,7 @@ export function DomainAdministration({
       });
       if (!mounted.current) return;
       if (!response.ok) {
+        if (response.status !== 409) setDirectory(null);
         setError(
           response.status === 409
             ? "Este hostname já está reservado."
@@ -119,9 +130,12 @@ export function DomainAdministration({
       setHostname("");
       setNotice("Domínio reservado. Verificação de posse e HTTPS ainda pendentes.");
     } catch {
-      if (mounted.current)
+      if (mounted.current) {
+        setDirectory(null);
         setError("Reserva não confirmada. Recarregue antes de tentar novamente.");
+      }
     } finally {
+      clearTimeout(deadline);
       writing.current = false;
       if (mounted.current) setBusy(false);
     }

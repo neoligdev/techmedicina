@@ -2271,6 +2271,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D41",
+      "title": "Reservas: limite de espera e recarga após resultado incerto",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex limitou a espera de consulta e reserva a 20 segundos. Falha ou resultado de gravação incerto não anuncia sucesso e bloqueia reenvio até recarga. Teste simula ausência de resposta e confirma liberação da interface, recarga disponível e gravação bloqueada. Controles e design preservados.",
+      "next": "Homologar no preview o comportamento da correção e investigar resposta de colisão. Posse, TLS, ativação, paginação e contexto SSR permanecem pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }
