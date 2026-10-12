@@ -6,6 +6,7 @@ import { Eye, EyeOff, Loader2, LogOut, ShieldCheck } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { ClinicAdministration } from "./clinic-administration";
+import { DomainAdministration } from "./domain-administration";
 import { AdministrativeAuditPanel } from "./administrative-audit-panel";
 import { Brand } from "@/components/platform/brand";
 import { Button } from "@/components/ui/button";
@@ -410,6 +411,13 @@ export function LoginPage() {
                 </p>
                 {verifiedToken && (
                   <AdministrativeAuditPanel key={verifiedToken} token={verifiedToken} />
+                )}
+                {verifiedToken && directory && (
+                  <DomainAdministration
+                    key={verifiedToken}
+                    token={verifiedToken}
+                    clinics={directory.clinics}
+                  />
                 )}
               </section>
             )}

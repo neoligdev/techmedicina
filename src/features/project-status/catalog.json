@@ -2247,6 +2247,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D39",
+      "title": "Painel autenticado de reservas de domínios",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex integrou painel de reservas à administração com sessão verificada. Seleção de clínica/finalidade, lista de reservas pendentes, formulário e recarga, com bloqueio de envio sem consulta válida e recusa de retorno de outra clínica. Não transforma hostname em link ativo. 34 testes de painel/login e tipos/lint/build aprovados; CSS e assets preservados.",
+      "next": "Aplicar migração 006, conferir RLS/RPC e homologar reserva no Cloud. Ativação, prova de posse, TLS, paginação completa e integração SSR continuam pendentes.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

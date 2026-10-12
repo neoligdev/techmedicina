@@ -452,3 +452,6 @@ Codex implementou DTOs estritos e fábrica GET/POST protegida para reservas. Dez
 
 ## C038 — Rota e transporte de reservas
 Codex integrou GET/POST /api/platform/domains ao transporte request-bound já validado por Auth. Sem service_role; preserva RLS/RPC e mapeamento de erros. Consulta até 101 linhas retorna 100 e hasMore, sem ocultar que há mais resultados. 22 testes, tsc/lint/build aprovados. Migração 006 ainda local; sem homologação de reserva remota, UI ou DNS. Próxima etapa: implantação/conferência e interface administrativa.
+
+## C039 — Painel administrativo de reservas
+Codex integrou DomainAdministration ao login confirmado de Super ADM, usando token apenas em cabeçalhos. Consultas canceladas na troca de clínica/desmontagem; envio bloqueado sem catálogo confirmado, duplicatas prevenidas durante envio, resposta conferida por clínica/host/finalidade. Reserva permanece pendente e não vira link público. 34 testes painel/login, tsc/lint/build aprovados. CSS/assets intactos. Migração 006 ainda local; próxima etapa implantação e homologação Cloud.

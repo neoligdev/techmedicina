@@ -1839,3 +1839,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex ligou GET/POST /api/platform/domains ao transporte da sessão verificada, com chave pública, RLS/RPC, limite por consulta e indicação hasMore. Reutilização do transporte validada em 22 testes; tipos, lint e build aprovados. Código integrado; migração 006 ainda não aplicada no Cloud.
 - **Próximo Passo**: Aplicar e conferir 006 no Cloud, criar UI administrativa e homologar reserva. Paginação de resultados anteriores e ativação/posse/TLS ainda pendentes; não há domínio ativo.
 
+## D39 - Painel autenticado de reservas de domínios 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex integrou painel de reservas à administração com sessão verificada. Seleção de clínica/finalidade, lista de reservas pendentes, formulário e recarga, com bloqueio de envio sem consulta válida e recusa de retorno de outra clínica. Não transforma hostname em link ativo. 34 testes de painel/login e tipos/lint/build aprovados; CSS e assets preservados.
+- **Próximo Passo**: Aplicar migração 006, conferir RLS/RPC e homologar reserva no Cloud. Ativação, prova de posse, TLS, paginação completa e integração SSR continuam pendentes.
+
