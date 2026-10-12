@@ -3258,7 +3258,7 @@ button {
   right: 0;
   bottom: 0;
   z-index: 0;
-  background-image: url("/patient-mobile-texture.jpg");
+  background-image: url("/patient-mobile-texture.jpg?v=2");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
