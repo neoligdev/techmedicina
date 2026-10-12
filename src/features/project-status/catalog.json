@@ -2283,6 +2283,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D42",
+      "title": "White Label: contrato de rotas com negação por padrão",
+      "parent": "2",
+      "status": "done",
+      "done": "Codex corrigiu o resolvedor local para negar caminhos desconhecidos, APIs não declaradas, prefixos semelhantes, codificação e caminhos ambíguos. Área exige segmento exato; status temporário permitido somente em central/demo. Dezoito testes de host/rotas aprovados. Sem ativação de hosts ou mudança no design.",
+      "next": "Integrar contrato ao servidor após contexto de host/registro confiável; assets e APIs exigem políticas explícitas próprias. Não representa isolamento multi-host em produção já homologado.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }

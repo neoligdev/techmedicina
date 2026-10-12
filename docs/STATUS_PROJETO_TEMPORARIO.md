@@ -1860,3 +1860,10 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex limitou a espera de consulta e reserva a 20 segundos. Falha ou resultado de gravação incerto não anuncia sucesso e bloqueia reenvio até recarga. Teste simula ausência de resposta e confirma liberação da interface, recarga disponível e gravação bloqueada. Controles e design preservados.
 - **Próximo Passo**: Homologar no preview o comportamento da correção e investigar resposta de colisão. Posse, TLS, ativação, paginação e contexto SSR permanecem pendentes.
 
+## D42 - White Label: contrato de rotas com negação por padrão 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu o resolvedor local para negar caminhos desconhecidos, APIs não declaradas, prefixos semelhantes, codificação e caminhos ambíguos. Área exige segmento exato; status temporário permitido somente em central/demo. Dezoito testes de host/rotas aprovados. Sem ativação de hosts ou mudança no design.
+- **Próximo Passo**: Integrar contrato ao servidor após contexto de host/registro confiável; assets e APIs exigem políticas explícitas próprias. Não representa isolamento multi-host em produção já homologado.
+

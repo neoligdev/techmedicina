@@ -323,4 +323,36 @@ describe("White Label Gate WL-1: Matriz de Rotas por Ambiente", () => {
     expect(resolver.isRouteAllowed(central, "/clinica/agenda")).toBe(false);
     expect(resolver.isRouteAllowed(central, "/medico")).toBe(false);
   });
+  it("nega caminhos desconhecidos, prefixos semelhantes e caminhos ambíguos", () => {
+    const pwa = resolver.resolveHost("app.clinica-a.com.br");
+    for (const path of [
+      "/unknown",
+      "/application",
+      "/app-admin",
+      "/api/health-admin",
+      "/api/platform/clinics",
+      "/app/../super-admin",
+      "/app/%2e%2e/super-admin",
+      "/app\\super-admin",
+      "//app",
+      "/app?area=central",
+      "app",
+      "/app/./agenda",
+    ])
+      expect(resolver.isRouteAllowed(pwa, path), path).toBe(false);
+    expect(resolver.isRouteAllowed(pwa, "/app/agenda")).toBe(true);
+    expect(resolver.isRouteAllowed(pwa, "/api/health")).toBe(true);
+  });
+  it("mantém status temporário somente nos ambientes central e demo", () => {
+    expect(resolver.isRouteAllowed(resolver.resolveHost("central.plugpix.com.br"), "/staus")).toBe(
+      true,
+    );
+    expect(resolver.isRouteAllowed(resolver.resolveHost("localhost"), "/staus")).toBe(true);
+    expect(resolver.isRouteAllowed(resolver.resolveHost("gestao.clinica-a.com.br"), "/staus")).toBe(
+      false,
+    );
+    expect(resolver.isRouteAllowed(resolver.resolveHost("app.clinica-a.com.br"), "/staus")).toBe(
+      false,
+    );
+  });
 });

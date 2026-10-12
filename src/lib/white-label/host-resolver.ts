@@ -368,22 +368,33 @@ export class HostResolver {
   public isRouteAllowed(result: HostResolutionResult, pathname: string): boolean {
     if (!result.ok) return false;
 
-    // Rotas públicas sempre permitidas (login, assets, health)
-    if (pathname === "/login" || pathname.startsWith("/api/health")) {
+    // Contrato de rotas da aplicação; assets e APIs exigem políticas próprias.
+    // Recusa codificação e caminhos não canônicos antes de classificar a área.
+    if (
+      !pathname.startsWith("/") ||
+      /[%\\?#]/.test(pathname) ||
+      pathname.includes("//") ||
+      pathname.split("/").some((segment) => segment === "." || segment === "..")
+    )
+      return false;
+    if (pathname === "/" || pathname === "/login" || pathname === "/api/health") {
       return true;
     }
+    if (pathname === "/staus")
+      return result.environment === "central" || result.environment === "demo";
 
     const area = this.extractAreaFromPath(pathname);
-    if (!area) return true;
+    if (!area) return false;
 
     return result.routingPolicy.allowedAreas.includes(area);
   }
 
   private extractAreaFromPath(pathname: string): RoutingArea | null {
-    if (pathname.startsWith("/super-admin")) return "super-admin";
-    if (pathname.startsWith("/clinica")) return "clinica";
-    if (pathname.startsWith("/medico")) return "medico";
-    if (pathname.startsWith("/app") || pathname.startsWith("/paciente")) return "paciente";
+    const segment = pathname.split("/")[1];
+    if (segment === "super-admin") return "super-admin";
+    if (segment === "clinica") return "clinica";
+    if (segment === "medico") return "medico";
+    if (segment === "app" || segment === "paciente") return "paciente";
     return null;
   }
 }
