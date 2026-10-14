@@ -2077,3 +2077,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex conectou a fronteira HTTP ao resolvedor de host/sessão médica e ao adaptador RPC da mesma sessão. Clínica derivada no servidor, host PWA recusado antes da sessão, corpo sem tenant enviado pelo navegador e grants read/create exigidos. Dez testes de composição e adaptador aprovados.
 - **Próximo Passo**: Homologar SQL 013 e fluxo médico em ambiente autorizado; composição segue não montada. Validar contas QA e vínculos específicos antes de acesso clínico.
 
+## D66 - Jornada: integração PostgreSQL e revisão 013 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex validou cliente, host, sessão, HTTP, adaptador RPC e PostgreSQL local: resposta perdida após commit seguida de reenvio mantém um único rascunho; revogação de create impede replay e preserva histórico. Cinco testes SQL/integração aprovados. Revisão 013 documenta dependências, RLS, privilégios e preflight.
+- **Próximo Passo**: Aguardar autorização específica de 013 no Cloud; continuar homologação local. Auth e registro de domínio simulados não comprovam fluxo remoto; nenhuma conta/vínculo concedido.
+

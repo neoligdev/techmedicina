@@ -2582,6 +2582,18 @@
       "status": "done",
       "title": "Jornada: composição médica de rascunhos",
       "id": "D65"
+    },
+    {
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Codex validou cliente, host, sessão, HTTP, adaptador RPC e PostgreSQL local: resposta perdida após commit seguida de reenvio mantém um único rascunho; revogação de create impede replay e preserva histórico. Cinco testes SQL/integração aprovados. Revisão 013 documenta dependências, RLS, privilégios e preflight.",
+      "requirements": [],
+      "id": "D66",
+      "parent": "8.10",
+      "next": "Aguardar autorização específica de 013 no Cloud; continuar homologação local. Auth e registro de domínio simulados não comprovam fluxo remoto; nenhuma conta/vínculo concedido.",
+      "title": "Jornada: integração PostgreSQL e revisão 013"
     }
   ]
 }

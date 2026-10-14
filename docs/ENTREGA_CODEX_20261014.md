@@ -17,3 +17,5 @@ Verificação D64: nove testes UI/status aprovados, TypeScript aprovado após co
 
 D65: composição local HTTP-host-sessão-RPC para rascunhos médicos, dez testes aprovados. Usa sessão da mesma requisição e grants read/create; host PWA e tenant injetado recusados. SQL 013 ainda local; endpoint não montado.
 Verificação D65: TypeScript aprovado; lint aprovado após ajuste de formatação no novo teste. Quatro testes adicionais do catálogo passaram.
+
+D66: integração cliente-host-sessão-HTTP-RPC-PostgreSQL local aprovada em cinco testes. Primeiro ensaio recusou a requisição sem Host no adaptador de teste; corrigida a simulação da fronteira HTTP, mantendo o servidor intacto. Reenvio após resposta perdida não duplica; revogação create bloqueia replay. Revisão 013 documentada e autorização Cloud solicitada; não aplicada.
