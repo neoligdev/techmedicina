@@ -2751,6 +2751,18 @@
       "title": "Escudos: fronteira HTTP própria no PWA",
       "next": "Implementar mapper RPC e transporte browser; composição ainda não montada. 014 não aplicada no Cloud e homologação remota pendente; nenhuma permissão real concedida.",
       "status": "done"
+    },
+    {
+      "parent": "8.10",
+      "status": "done",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex implementou cliente GET sem query de identidade, com bearer fresco, no-store/sem cookies, recusa de redirecionamento e prazo 20s incluindo sessão/rede/corpo. Valida raiz/estado/histórico por tenant e paciente. Composição PWA exibe carregamento/falha/retry, nega consulta por padrão e descarta respostas antigas após revogação/contexto. Oito testes cliente/UI aprovados; tipos/lint dos componentes aprovados.",
+      "id": "D80",
+      "next": "Conectar mapper SQL/RPC e ambiente autenticado antes de montar na rota. 014 permanece local. Dados reais e preview Lovable ainda não homologados para checkpoint; nenhuma permissão clínica criada.",
+      "title": "Escudos: transporte e composição de leitura PWA",
+      "requirements": []
     }
   ]
 }

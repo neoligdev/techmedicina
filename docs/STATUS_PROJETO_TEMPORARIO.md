@@ -2174,3 +2174,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex compôs GET local com resolvedor de host patient_pwa e sessão da mesma requisição. Recusa query/body e métodos de escrita, deriva escopo do paciente no serviço, usa private/no-store e Vary Authorization/Host. Erros seguros e contrato/tenant revalidados. Onze testes HTTP/serviço aprovados.
 - **Próximo Passo**: Implementar mapper RPC e transporte browser; composição ainda não montada. 014 não aplicada no Cloud e homologação remota pendente; nenhuma permissão real concedida.
+
+## D80 - Escudos: transporte e composição de leitura PWA 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou cliente GET sem query de identidade, com bearer fresco, no-store/sem cookies, recusa de redirecionamento e prazo 20s incluindo sessão/rede/corpo. Valida raiz/estado/histórico por tenant e paciente. Composição PWA exibe carregamento/falha/retry, nega consulta por padrão e descarta respostas antigas após revogação/contexto. Oito testes cliente/UI aprovados; tipos/lint dos componentes aprovados.
+- **Próximo Passo**: Conectar mapper SQL/RPC e ambiente autenticado antes de montar na rota. 014 permanece local. Dados reais e preview Lovable ainda não homologados para checkpoint; nenhuma permissão clínica criada.
