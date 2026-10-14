@@ -7,7 +7,8 @@ export type ResourceType =
   | "agenda"
   | "faturamento"
   | "journey_goals"
-  | "journey_events";
+  | "journey_events"
+  | "journey_shields";
 export type Action = "create" | "read" | "write" | "delete" | "manage";
 
 export interface Permission {

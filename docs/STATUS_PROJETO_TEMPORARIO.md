@@ -2160,3 +2160,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex revisou migração 014 local e removeu exceção que permitia leitura/escrita clínica pelo cargo global Super ADM, contrariando PRD §11.7. Guard compartilhado exige recurso exato, sem usar journey_goals como permissão para outros recursos. Vínculo médico verificado continua necessário para escrita autenticada. Vinte e oito testes PostgreSQL de segurança/persistência aprovados, incluindo bloqueio explícito do operador global.
 - **Próximo Passo**: Revisar fronteira servidor antes de conectar ShieldService; contexto opcional local não comprova autorização. 014 ainda não aplicada no Cloud; revisão e autorização específicas pendentes. Preserve artes e motor como candidatos em homologação.
+
+## D78 - Escudos: leitura própria protegida no servidor 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou leitura local readOwnShields com clínica/paciente derivados do vínculo ativo da sessão, grant journey_shields read obrigatório e recusa de vínculos ambíguos ou papéis administrativos/médicos na consulta específica PWA. Valida contrato e tenant de raiz/estado/histórico antes de retornar. Sete testes do serviço e quatro de status aprovados; tipos/lint válidos.
+- **Próximo Passo**: Conectar host/sessão e adaptador da RPC 014; função não montada. Mapper PostgreSQL e cliente PWA ainda pendentes. Guard genérico de autorização permanece fechado para novo recurso; sem grants ou dados reais criados.

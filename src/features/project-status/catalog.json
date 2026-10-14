@@ -2727,6 +2727,18 @@
         "Codex"
       ],
       "title": "Escudos: corrigido acesso clínico implícito do Super ADM"
+    },
+    {
+      "status": "done",
+      "done": "Codex implementou leitura local readOwnShields com clínica/paciente derivados do vínculo ativo da sessão, grant journey_shields read obrigatório e recusa de vínculos ambíguos ou papéis administrativos/médicos na consulta específica PWA. Valida contrato e tenant de raiz/estado/histórico antes de retornar. Sete testes do serviço e quatro de status aprovados; tipos/lint válidos.",
+      "requirements": [],
+      "parent": "8.10",
+      "next": "Conectar host/sessão e adaptador da RPC 014; função não montada. Mapper PostgreSQL e cliente PWA ainda pendentes. Guard genérico de autorização permanece fechado para novo recurso; sem grants ou dados reais criados.",
+      "authors": [
+        "Codex"
+      ],
+      "title": "Escudos: leitura própria protegida no servidor",
+      "id": "D78"
     }
   ]
 }
