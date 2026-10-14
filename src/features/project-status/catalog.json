@@ -2787,6 +2787,18 @@
       "done": "Codex validou cliente autenticado, host patient_pwa, sessão, fronteira HTTP, adaptador e PostgreSQL 014 local no mesmo fluxo. Nova consulta é recusada após revogação do grant no banco, mesmo com contexto de sessão anteriormente válido; histórico não sofre alteração. Quinze testes de segurança/integração aprovados.",
       "id": "D82",
       "status": "done"
+    },
+    {
+      "parent": "8.10",
+      "requirements": [],
+      "done": "Codex adicionou FOR SHARE de vínculo/grant médico à transição PostgreSQL local, mantendo autorização durante a transação. Teste comprova que revogar write recusa a gravação sem modificar histórico. Trinta testes segurança/persistência passaram. Revisão 014 documenta efeitos, dependências, riscos, preflight e pós-verificação.",
+      "authors": [
+        "Codex"
+      ],
+      "id": "D83",
+      "next": "Aguardar autorização específica de 014 no Cloud. Continuar homologação local e regressão; não ativar cálculo/método clínico ou endpoints de gravação. main permanece intacta.",
+      "title": "Escudos: bloqueios de autorização e revisão 014",
+      "status": "done"
     }
   ]
 }

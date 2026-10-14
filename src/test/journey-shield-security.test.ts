@@ -137,6 +137,27 @@ describe("TECHMEDICINA — Ciclo 004: Consolidação e Segurança de Escudos", (
     );
   }, 60000);
 
+  it("grant médico revogado impede transição sem modificar histórico", async () => {
+    await db.exec("RESET ROLE");
+    const before = await db.query("SELECT * FROM public.tm_shield_history_events ORDER BY id");
+    await db.query(
+      "DELETE FROM public.tm_membership_grants WHERE membership_id='50000000-0000-4000-8000-000000000010' AND resource='journey_shields' AND action='write'",
+    );
+    await asUser(userDoctorA);
+    await expect(
+      db.query(
+        "SELECT public.tm_save_patient_shield_transition($1,$2,'origem','origem',true,NULL,NULL,0,0,'2026-10-14','initial','QA',NULL)",
+        [clinicA, patientA],
+      ),
+    ).rejects.toThrow("Shield transition write denied");
+    await db.exec("RESET ROLE");
+    expect(
+      (await db.query("SELECT * FROM public.tm_shield_history_events ORDER BY id")).rows,
+    ).toEqual(before.rows);
+    await db.query(
+      "INSERT INTO public.tm_membership_grants VALUES('50000000-0000-4000-8000-000000000010','journey_shields','write')",
+    );
+  });
   // 1. Tentativa de atribuição fraudulenta de Plenitude
   it("cargo Super ADM isolado não concede leitura ou escrita clínica de Escudos", async () => {
     await asUser(userSuperAdmin);

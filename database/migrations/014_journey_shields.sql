@@ -145,13 +145,13 @@ BEGIN
   -- Clientes comuns (role = 'paciente') NUNCA podem chamar esta função diretamente ou gravar cálculos manuais
   IF auth.uid() IS NOT NULL THEN
     -- Cargo global não concede acesso clínico. Exige vínculo médico específico.
-    IF EXISTS (
-      SELECT 1 FROM public.tm_memberships m
+    PERFORM 1 FROM public.tm_memberships m
       JOIN public.tm_membership_grants g ON g.membership_id=m.id
       WHERE m.user_id=auth.uid() AND m.clinic_id=p_clinic_id AND m.is_active
       AND m.role='medico' AND m.medical_identity_verified
       AND g.resource='journey_shields' AND g.action IN ('create','write','manage')
-    ) THEN
+      FOR SHARE OF m,g;
+    IF FOUND THEN
       v_is_authorized := true;
     END IF;
   ELSIF current_setting('request.jwt.claim.role', true) = 'service_role' THEN
