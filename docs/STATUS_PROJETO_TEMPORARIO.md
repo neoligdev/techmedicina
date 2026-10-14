@@ -2091,3 +2091,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex completou o ciclo local do formulário: iniciar outra proposta somente após recibo confirmado, gerar novo identificador e manter reenvio da solicitação original em caso de incerteza. Sete testes de interação aprovados. Regressão completa final: 589 testes em 74 arquivos; tipos e lint aprovados.
 - **Próximo Passo**: Homologação Cloud e interface médica operacional continuam pendentes. Autorização específica 013 solicitada; migração não aplicada.
 
+## D68 - Jornada: migração 013 aplicada no Lovable Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex aplicou SQL 013 após autorização específica e preflight: objetos ausentes, cinco tabelas dependentes, Auth/guard e chave paciente prontos. Pós-verificação confirmou tabela vazia, RLS, política SELECT, escrita direta negada, anon sem leitura/execução, RPC SECURITY DEFINER com search_path vazio e corpo igual à fonte revisada. Vínculos/pacientes/grants permanecem zero.
+- **Próximo Passo**: Homologar contas QA e obter aprovação de vínculos específicos antes de ativar fluxo clínico. Endpoints e formulário ainda não montados; não houve DNS ou Publish. Esta entrega substitui a pendência de aplicação 013 nos registros anteriores.
+

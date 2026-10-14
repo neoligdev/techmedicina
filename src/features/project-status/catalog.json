@@ -2606,6 +2606,18 @@
       "id": "D67",
       "title": "Jornada: novas propostas após confirmação",
       "requirements": []
+    },
+    {
+      "parent": "8.10",
+      "next": "Homologar contas QA e obter aprovação de vínculos específicos antes de ativar fluxo clínico. Endpoints e formulário ainda não montados; não houve DNS ou Publish. Esta entrega substitui a pendência de aplicação 013 nos registros anteriores.",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex aplicou SQL 013 após autorização específica e preflight: objetos ausentes, cinco tabelas dependentes, Auth/guard e chave paciente prontos. Pós-verificação confirmou tabela vazia, RLS, política SELECT, escrita direta negada, anon sem leitura/execução, RPC SECURITY DEFINER com search_path vazio e corpo igual à fonte revisada. Vínculos/pacientes/grants permanecem zero.",
+      "requirements": [],
+      "id": "D68",
+      "status": "done",
+      "title": "Jornada: migração 013 aplicada no Lovable Cloud"
     }
   ]
 }

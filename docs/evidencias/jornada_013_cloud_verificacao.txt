@@ -1,0 +1,3 @@
+SQL query results
+anon_execute	anon_read	auth_execute	auth_read	clinical_grants	direct_delete	direct_insert	direct_update	drafts	function_config	memberships	patients	read_policies	rls_enabled	security_definer	source_matches
+false	false	true	true	0	false	false	false	0	{"search_path=\"\""}	0	0	1	true	true	true
