@@ -2202,3 +2202,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex adicionou FOR SHARE de vínculo/grant médico à transição PostgreSQL local, mantendo autorização durante a transação. Teste comprova que revogar write recusa a gravação sem modificar histórico. Trinta testes segurança/persistência passaram. Revisão 014 documenta efeitos, dependências, riscos, preflight e pós-verificação.
 - **Próximo Passo**: Aguardar autorização específica de 014 no Cloud. Continuar homologação local e regressão; não ativar cálculo/método clínico ou endpoints de gravação. main permanece intacta.
+
+## D84 - Escudos: limites de pontuação e integração do menu 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex restringiu médias/valores arredondados de Escudos a 0–100 no contrato e acrescentou rejeição de respostas RPC fora dos limites. Regressão ampla executou 712 testes: 711 passaram e revelou registro ausente app/escudos no catálogo de módulos; registro corrigido preservando menu e rota. Tipos/lint/build anteriores aprovados. Vinte testes direcionados de menu/tela/RPC aprovados após correção, sem alegar regressão integral aprovada.
+- **Próximo Passo**: Concluir revalidação e repetir regressão completa após correção do catálogo. 014 aguarda autorização; main intacta e checkpoint sem preview confirmado.

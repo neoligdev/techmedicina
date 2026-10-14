@@ -47,6 +47,9 @@ it.each([
   { clinic_id: patient },
   { patient_user_id: patient },
   { injected: true },
+  { score_average: -1 },
+  { score_average: 101 },
+  { score_average_rounded: 101 },
 ])("rejects foreign or unknown fields %j", async (change) => {
   await expect(
     createOwnShieldRpcReader(user, async () => ({

@@ -729,6 +729,20 @@ add(
   ["Solicitação médica", "Coleta", "Resultado disponível", "Revisão"],
 );
 
+add(
+  "app",
+  "escudos",
+  "Meus Escudos",
+  "Acompanhamento",
+  "shield",
+  "Escudo ativo, conquistas preservadas e progresso da JORNADA.",
+  "8.10 — adendo v0.11.3 §11.5",
+  "journey",
+  ["Escudo", "Conquista"],
+  [],
+  ["Histórico autorizado", "Escudo ativo", "Conquistas anteriores", "Próximos níveis"],
+);
+
 export const moduleCatalog = modules;
 export function moduleSpec(area: Area, slug: string) {
   return moduleCatalog.find((item) => item.area === area && item.slug === slug);

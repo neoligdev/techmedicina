@@ -2799,6 +2799,18 @@
       "next": "Aguardar autorização específica de 014 no Cloud. Continuar homologação local e regressão; não ativar cálculo/método clínico ou endpoints de gravação. main permanece intacta.",
       "title": "Escudos: bloqueios de autorização e revisão 014",
       "status": "done"
+    },
+    {
+      "parent": "8.10",
+      "next": "Concluir revalidação e repetir regressão completa após correção do catálogo. 014 aguarda autorização; main intacta e checkpoint sem preview confirmado.",
+      "done": "Codex restringiu médias/valores arredondados de Escudos a 0–100 no contrato e acrescentou rejeição de respostas RPC fora dos limites. Regressão ampla executou 712 testes: 711 passaram e revelou registro ausente app/escudos no catálogo de módulos; registro corrigido preservando menu e rota. Tipos/lint/build anteriores aprovados. Vinte testes direcionados de menu/tela/RPC aprovados após correção, sem alegar regressão integral aprovada.",
+      "status": "done",
+      "authors": [
+        "Codex"
+      ],
+      "title": "Escudos: limites de pontuação e integração do menu",
+      "requirements": [],
+      "id": "D84"
     }
   ]
 }
