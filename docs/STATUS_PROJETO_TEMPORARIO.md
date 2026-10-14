@@ -2209,3 +2209,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex restringiu médias/valores arredondados de Escudos a 0–100 no contrato e acrescentou rejeição de respostas RPC fora dos limites. Regressão ampla executou 712 testes: 711 passaram e revelou registro ausente app/escudos no catálogo de módulos; registro corrigido preservando menu e rota. Tipos/lint/build anteriores aprovados. Vinte testes direcionados de menu/tela/RPC aprovados após correção, sem alegar regressão integral aprovada.
 - **Próximo Passo**: Concluir revalidação e repetir regressão completa após correção do catálogo. 014 aguarda autorização; main intacta e checkpoint sem preview confirmado.
+
+## D85 - Escudos: regressão consolidada e PWA móvel 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex concluiu regressão após corrigir catálogo app/escudos: 712 testes em 85 arquivos aprovados, duração 188,46s. TypeScript/lint direcionados/build aprovados antes da correção de catálogo; 20 testes direcionados já validaram essa correção. Verificação visual do estado vazio em 320×568 confirmou ausência de rolagem horizontal (scrollWidth 305) e rodapé fixo com base 568; viewport restaurado.
+- **Próximo Passo**: Homologar visualmente cenários preenchidos, aplicar 014 somente após aprovação e definir sincronização do preview preservando a orientação de main intacta. Testes locais não concluem requisitos produtivos do PRD.
