@@ -10,6 +10,8 @@ import { createJourneyGoalPauseHandler } from "./goal-pause-handler.server";
 import type { pauseJourneyGoal } from "./goal-pause.server";
 import type { submitJourneySelfReport } from "./submit-self-report.server";
 import { createJourneySelfReportHandler } from "./self-report-handler.server";
+import { createJourneyGoalDraftHandler } from "./goal-draft-handler.server";
+import type { createJourneyGoalDraft } from "./goal-draft.server";
 
 /** Unmounted local composition. Providers must retain the verified request session,
  * enforce RPC/RLS and never use a service-role key to bypass tenant authorization.
@@ -20,6 +22,7 @@ export function createJourneyEndpoints<S extends { identity: AuthenticatedIdenti
   preferenceRpc: (session: S) => JourneyPreferenceRpc;
   goalRepository: (session: S) => Parameters<typeof pauseJourneyGoal>[2];
   selfReportRpc: (session: S) => Parameters<typeof submitJourneySelfReport>[2];
+  goalDraftRpc?: (session: S) => Parameters<typeof createJourneyGoalDraft>[2];
 }) {
   const patient = createJourneyHostSessionResolver(
     "patient_pwa",
@@ -51,5 +54,11 @@ export function createJourneyEndpoints<S extends { identity: AuthenticatedIdenti
     const bound = await patient(request);
     return bound ? { context: bound.context, rpc: providers.selfReportRpc(bound.session) } : null;
   });
-  return { participation, goals, pause, selfReport };
+  const drafts = createJourneyGoalDraftHandler(async (request) => {
+    const bound = await doctor(request);
+    return bound && providers.goalDraftRpc
+      ? { context: bound.context, rpc: providers.goalDraftRpc(bound.session) }
+      : null;
+  });
+  return { participation, goals, pause, selfReport, drafts };
 }

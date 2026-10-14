@@ -2570,6 +2570,18 @@
       "next": "Compor endpoint médico e homologar com contas/vínculos autorizados. SQL 013 permanece local; formulário não montado em rota produtiva e não ativa metas ou prescrição.",
       "title": "Jornada: formulário médico local de rascunhos",
       "status": "done"
+    },
+    {
+      "done": "Codex conectou a fronteira HTTP ao resolvedor de host/sessão médica e ao adaptador RPC da mesma sessão. Clínica derivada no servidor, host PWA recusado antes da sessão, corpo sem tenant enviado pelo navegador e grants read/create exigidos. Dez testes de composição e adaptador aprovados.",
+      "requirements": [],
+      "authors": [
+        "Codex"
+      ],
+      "next": "Homologar SQL 013 e fluxo médico em ambiente autorizado; composição segue não montada. Validar contas QA e vínculos específicos antes de acesso clínico.",
+      "parent": "8.10",
+      "status": "done",
+      "title": "Jornada: composição médica de rascunhos",
+      "id": "D65"
     }
   ]
 }

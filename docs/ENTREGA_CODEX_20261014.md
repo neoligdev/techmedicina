@@ -14,3 +14,6 @@ D63: transporte local de rascunhos médicos implementado, dez testes direcionado
 
 D64: formulário médico local e composição com transporte, cinco testes UI aprovados. Rascunho não ativa meta nem prescrição; mantém proposta no reenvio e isola respostas por contexto. Endpoint/migração 013 e homologação clínica seguem pendentes.
 Verificação D64: nove testes UI/status aprovados, TypeScript aprovado após corrigir asserção do mock e prop opcional. Build aprovado; revisão lint final sem erros.
+
+D65: composição local HTTP-host-sessão-RPC para rascunhos médicos, dez testes aprovados. Usa sessão da mesma requisição e grants read/create; host PWA e tenant injetado recusados. SQL 013 ainda local; endpoint não montado.
+Verificação D65: TypeScript aprovado; lint aprovado após ajuste de formatação no novo teste. Quatro testes adicionais do catálogo passaram.

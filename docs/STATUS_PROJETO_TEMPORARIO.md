@@ -2070,3 +2070,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex implementou formulário com áreas não prescritivas e frequência sugerida, transporte autenticado e confirmação apenas por recibo validado. Bloqueia duplo envio, mantém proposta e identificador após incerteza, rejeita paciente divergente e ignora resposta após troca de contexto. Cinco testes de interação aprovados.
 - **Próximo Passo**: Compor endpoint médico e homologar com contas/vínculos autorizados. SQL 013 permanece local; formulário não montado em rota produtiva e não ativa metas ou prescrição.
 
+## D65 - Jornada: composição médica de rascunhos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex conectou a fronteira HTTP ao resolvedor de host/sessão médica e ao adaptador RPC da mesma sessão. Clínica derivada no servidor, host PWA recusado antes da sessão, corpo sem tenant enviado pelo navegador e grants read/create exigidos. Dez testes de composição e adaptador aprovados.
+- **Próximo Passo**: Homologar SQL 013 e fluxo médico em ambiente autorizado; composição segue não montada. Validar contas QA e vínculos específicos antes de acesso clínico.
+

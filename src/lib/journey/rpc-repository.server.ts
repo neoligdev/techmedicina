@@ -5,13 +5,15 @@ import type { pauseJourneyGoal } from "./goal-pause.server";
 import { storedGoalSchema } from "./goal-pause.server";
 import type { JourneyPreferenceRpc } from "./preference-handlers.server";
 import type { submitJourneySelfReport } from "./submit-self-report.server";
+import type { createJourneyGoalDraft } from "./goal-draft.server";
 
 type RpcName =
   | "tm_get_journey_preference"
   | "tm_set_journey_preference"
   | "tm_get_journey_goal_for_doctor"
   | "tm_pause_journey_goal"
-  | "tm_submit_journey_self_report_for_clinic";
+  | "tm_submit_journey_self_report_for_clinic"
+  | "tm_create_journey_goal_draft";
 /** Inject only a transport bound to the Auth-verified request bearer, retaining RLS.
  * Use beneath the goal/preference service guards; this adapter does not grant access.
  */
@@ -67,5 +69,7 @@ export function createJourneyRpcRepository(
   };
   const selfReportRpc: Parameters<typeof submitJourneySelfReport>[2] = (args) =>
     call("tm_submit_journey_self_report_for_clinic", args);
-  return { preferenceRpc, repository, selfReportRpc };
+  const goalDraftRpc: Parameters<typeof createJourneyGoalDraft>[2] = (args) =>
+    call("tm_create_journey_goal_draft", args);
+  return { preferenceRpc, repository, selfReportRpc, goalDraftRpc };
 }
