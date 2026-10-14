@@ -2147,3 +2147,9 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex criou /app/escudos com superfícies existentes, estado vazio sem pontuação inventada e apresentação de escudo ativo/histórico para dados estritos do mesmo paciente/clínica. Artes ainda em aprovação e VITALIDADE indisponível. Dois testes iniciais, TypeScript e build aprovados; homologação visual e casos completos de histórico ainda pendentes.
 - **Próximo Passo**: Ampliar testes de histórico/regressão, conferir layout no navegador e conectar leitura autorizada. Migração 014 não aplicada. Checkpoint remoto preservado; main intacta e preview ainda precisa de decisão de sincronização.
 
+## D76 - PWA: histórico e progresso dos Escudos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex ampliou Meus Escudos com progresso acessível para próximo nível, oculto em estado provisório, e reconhecimento de reconquista. Sete testes cobrem histórico após regressão, fuso America/Bahia, escopo divergente na raiz/estado/eventos e ausência de VITALIDADE inventada. TypeScript/lint aprovados. Rota vazia homologada no navegador local com rodapé presente.
+- **Próximo Passo**: Conectar consulta autorizada e homologar cenários preenchidos/móveis. Artes aguardam aprovação; migração 014 local, sem acesso clínico concedido. Preview Lovable não confirmado para checkpoint.

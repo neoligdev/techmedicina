@@ -63,6 +63,25 @@ export function MyShields({
                 {data.state.scoreAverageRounded !== null ? " pontos" : ""}
               </p>
               <p>{data.state.evaluableDaysCount} dias avaliáveis na janela.</p>
+              {data.state.isProvisional ? (
+                <p>O progresso será mostrado quando houver acompanhamento suficiente.</p>
+              ) : data.nextTier ? (
+                <div className="space-y-2">
+                  <p>Próximo escudo: {data.nextTier.name}</p>
+                  <progress
+                    className="h-2 w-full accent-primary"
+                    aria-label="Progresso para o próximo escudo"
+                    max={100}
+                    value={data.progress.progressPercentage}
+                  />
+                  <p className="text-sm">
+                    {data.progress.pointsNeededToNextTier} pontos até o próximo nível, conforme os
+                    critérios em homologação.
+                  </p>
+                </div>
+              ) : (
+                <p>Você está no último nível da JORNADA.</p>
+              )}
               <p>VITALIDADE: indisponível/não calculada.</p>
               <p className="text-sm text-muted-foreground">
                 Critérios de Escudos em homologação; não representam avaliação clínica.
@@ -74,7 +93,9 @@ export function MyShields({
               const earned = data.history.some(
                 (event) =>
                   event.shield === tier.id &&
-                  (event.action === "promotion" || event.action === "initial"),
+                  (event.action === "promotion" ||
+                    event.action === "initial" ||
+                    event.action === "reacquisition"),
               );
               const active = data.state.activeShield === tier.id;
               return (
