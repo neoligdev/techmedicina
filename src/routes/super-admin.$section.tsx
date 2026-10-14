@@ -4,6 +4,7 @@ import { navigation, areaLabels } from "@/features/demo/navigation";
 import { pageHead } from "@/features/demo/metadata";
 import { PlansCatalog } from "@/features/super-admin/plans";
 import { SimulatorPage } from "@/features/super-admin/simulator";
+import { ShieldsLibraryPage } from "@/features/super-admin/shields";
 export const Route = createFileRoute("/super-admin/$section")({
   loader: ({ params }) => {
     const item = navigation["super-admin"].find(
@@ -23,6 +24,9 @@ function SectionPage() {
   }
   if (slug === "simulador") {
     return <SimulatorPage />;
+  }
+  if (slug === "escudos") {
+    return <ShieldsLibraryPage />;
   }
   return <ModulePage area="super-admin" slug={slug} />;
 }

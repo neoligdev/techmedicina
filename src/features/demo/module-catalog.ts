@@ -199,6 +199,20 @@ add(
   [],
   ["Solicitação", "Verificação de identidade", "Análise autorizada", "Resposta"],
 );
+add(
+  "super-admin",
+  "escudos",
+  "Biblioteca de Escudos",
+  "Jornada",
+  "shield",
+  "Biblioteca Central de Artes dos cinco Escudos e 15 variações gráficas da JORNADA.",
+  "11.5, 11.7",
+  "content",
+  ["Escudo", "Variação e Estado"],
+  ["Origem (Ativo / Conquistado / Bloqueado)", "Ritmo", "Avanço", "Equilíbrio", "Plenitude"],
+  ["Visualização", "Sanitização de SVG", "Versionamento", "Publicação oficial"],
+  "Gerenciar Escudos",
+);
 
 add(
   "clinica",
