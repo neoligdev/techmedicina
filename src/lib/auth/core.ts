@@ -1,7 +1,13 @@
 export type Role = "super_admin" | "admin" | "medico" | "paciente";
 
 export type ResourceType =
-  "cadastro_clinica" | "prontuario" | "paciente" | "agenda" | "faturamento";
+  | "cadastro_clinica"
+  | "prontuario"
+  | "paciente"
+  | "agenda"
+  | "faturamento"
+  | "journey_goals"
+  | "journey_events";
 export type Action = "create" | "read" | "write" | "delete" | "manage";
 
 export interface Permission {
@@ -54,7 +60,15 @@ export function isAuthorized(
   if (!context.identity) return false;
 
   // 0. Allowlists Globais (Zero Trust em runtime contra unknown casts)
-  const validResources = ["cadastro_clinica", "prontuario", "paciente", "agenda", "faturamento"];
+  const validResources = [
+    "cadastro_clinica",
+    "prontuario",
+    "paciente",
+    "agenda",
+    "faturamento",
+    "journey_goals",
+    "journey_events",
+  ];
   const validActions = ["create", "read", "write", "delete", "manage"];
   if (!validResources.includes(resource) || !validActions.includes(action)) {
     return false;
@@ -116,27 +130,41 @@ export function isAuthorized(
     }
   }
 
-  // Médico: só pode atuar em agenda, paciente, prontuario
+  // Médico: recursos clínicos e acompanhamento autorizado.
   if (role === "medico") {
-    if (!["agenda", "paciente", "prontuario"].includes(resource)) return false;
+    if (!["agenda", "paciente", "prontuario", "journey_goals", "journey_events"].includes(resource))
+      return false;
   }
 
-  // Paciente: só pode atuar em agenda (read/create)
+  // Paciente: agenda e participação própria, sem alterar metas.
   if (role === "paciente") {
-    if (resource !== "agenda" || !["read", "create"].includes(action)) return false;
+    if (!(
+      (resource === "agenda" && ["read", "create"].includes(action)) ||
+      (resource === "journey_goals" && action === "read") ||
+      (resource === "journey_events" && ["read", "create"].includes(action))
+    ))
+      return false;
   }
 
-  // Admin: não pode atuar em prontuario
+  // Admin: sem prontuário ou acompanhamento individual.
   if (role === "admin") {
-    if (resource === "prontuario") return false;
+    if (["prontuario", "journey_goals", "journey_events"].includes(resource)) return false;
   }
+
+  if (
+    role === "medico" &&
+    resource === "journey_goals" &&
+    !["read", "create", "write"].includes(action)
+  )
+    return false;
+  if (role === "medico" && resource === "journey_events" && action !== "read") return false;
 
   // 6. Verificar grants EXPLÍCITOS no vínculo
   const hasGrant = currentLink.grants.some((g) => g.resource === resource && g.action === action);
   if (!hasGrant) return false;
 
-  // 7. Regras Específicas de Conteúdo Clínico (agenda, paciente, prontuario)
-  if (resource === "agenda" || resource === "paciente" || resource === "prontuario") {
+  // 7. Recursos clínicos e participação exigem proprietário e vínculo do paciente.
+  if (["agenda", "paciente", "prontuario", "journey_goals", "journey_events"].includes(resource)) {
     // Exige ownerPatientId preenchido
     if (!metadata?.ownerPatientId) return false;
 

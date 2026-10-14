@@ -1,0 +1,15 @@
+# Jornada — cartão e transporte local
+
+13/10/2026 · Codex. Retomada do cartão criado em 12/10: quatro testes anteriores passaram, mas lint tinha um aviso sobre cleanup. Corrigido com callback estável e invalidação explícita da geração da leitura. Preservados componentes visuais, cores semânticas e cartão fosco existentes.
+
+Contrato de participação separado da UI. Transporte usa URL relativa fixa `/api/journey/participation`, bearer da sessão atual, sem cookies, cache ou redirecionamentos. Entrada/saída estritas, confirmação de clínica/paciente e conflito 409 tipado. Cartão conectado usa esse transporte; estado exibido permanece o confirmado pelo servidor até salvar. Falha não confirma alteração; conflito bloqueia sobrescrita até recarga. Troca de paciente invalida respostas antigas.
+
+Integração local: teste percorre cliente HTTP → handlers → repositório → funções PostgreSQL das migrações 001/008/009 em PGlite isolado. Salvar, nova leitura, pausa, auditoria e conflito de revisão comprovados; outro escopo de paciente não recebe confirmação. Resolver de sessão usa fixture QA, não autenticação real: testes não homologam Auth, DNS, múltiplas conexões nem Cloud. Testes React adicionais ligam cartão ao transporte e verificam perda de sessão ao salvar.
+
+Onze testes em três arquivos aprovados em `vje2_participation_integration.txt`; dois testes do cartão conectado aprovados em `vje2_participation_connected_ui.txt`. Tipos/lint/compilação e regressão final serão registrados nos logs desta etapa. Falha de tipos inicial corrigida: GET omite body, respeitando exactOptionalPropertyTypes. Nenhum segredo usado nos testes.
+
+Não há rota pública ativada nem montagem no shell demo. Ativar o PWA real exige resolver autenticado vinculado ao registro de hosts, aplicação revisada das migrações e conta/vínculos QA específicos. O seletor demo não fornece clínica autorizada. O cartão integrado está preparado para esse contexto e não faz chamadas reais nesta entrega. Sem alteração remota, commit/push/deploy, cálculo de pontos ou VITALIDADE. Requisito 8.10 continua parcial.
+
+Verificação final: 451 testes em 51 arquivos passaram (`vje2_participation_final_regression.txt`), TypeScript sem erros (`vje2_participation_integration_tsc.txt`), lint da Jornada sem erros/avisos (`vje2_participation_integration_lint.txt`) e compilação aprovada (`vje2_participation_final_build.txt`). A primeira regressão final encontrou somente D53 em progresso dentro da lista de entregas concluídas; situação corrigida após checks locais e regressão repetida com sucesso. Não houve redução dos testes nem alteração dos requisitos produtivos para obter aprovação.
+
+Página `/staus` conferida no navegador local em 13/10/2026: data atual, 101 itens/53 entregas, D53 e seus limites exibidos. Conclusão integral do PRD permanece 0% (0/86 folhas), cobertura iniciada 23% (20/86); entregas locais não são conclusão de módulos produtivos. Servidor de desenvolvimento iniciado somente em `http://127.0.0.1:8081`. Nenhuma validação remota atribuída a esta entrega.

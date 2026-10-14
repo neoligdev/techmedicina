@@ -74,7 +74,7 @@ function ProjectStatusPage() {
     <div className="page-content project-status-page">
       <header className="page-heading">
         <div>
-          <span className="eyebrow">ACOMPANHAMENTO TEMPORÁRIO · PRD V0.11.1</span>
+          <span className="eyebrow">ACOMPANHAMENTO TEMPORÁRIO · PRD V0.11.3</span>
           <h1>
             Status do projeto<span className="heading-dot">.</span>
           </h1>

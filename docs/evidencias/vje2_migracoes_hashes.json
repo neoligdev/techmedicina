@@ -1,0 +1,22 @@
+[
+  {
+    "Path": "C:\\Users\\marco\\OneDrive\\Desktop\\PROGRAMAÇÃO\\techmedicina\\techmedicina\\database\\migrations\\008_journey_participation.sql",
+    "Hash": "B38A9E67FB4407D3BFBAA93A04BA70394306F9D071FAF49AC3C5D7A4FFDDA28D"
+  },
+  {
+    "Path": "C:\\Users\\marco\\OneDrive\\Desktop\\PROGRAMAÇÃO\\techmedicina\\techmedicina\\database\\migrations\\009_journey_preferences.sql",
+    "Hash": "3E508871F862DAF5719CA2274A256190E0238115314E19C97CB9CDD6F48E6564"
+  },
+  {
+    "Path": "C:\\Users\\marco\\OneDrive\\Desktop\\PROGRAMAÇÃO\\techmedicina\\techmedicina\\database\\migrations\\010_journey_goal_pause.sql",
+    "Hash": "78721FBD00FE88D2276CEAA5841616CC80F674FD2DF2276BBDA189421E0BBB35"
+  },
+  {
+    "Path": "C:\\Users\\marco\\OneDrive\\Desktop\\PROGRAMAÇÃO\\techmedicina\\techmedicina\\database\\migrations\\011_journey_goal_read.sql",
+    "Hash": "7DE72802F37F5B4FAE92768987D35B672D656DF3DE2CEDEBF07D686A0A1DCE95"
+  },
+  {
+    "Path": "C:\\Users\\marco\\OneDrive\\Desktop\\PROGRAMAÇÃO\\techmedicina\\techmedicina\\database\\migrations\\012_journey_self_report_host_scope.sql",
+    "Hash": "AE60511827C36CD662053D9E32F54EBE258F8DF1B7BBB026C66F0EAE762DFA6B"
+  }
+]

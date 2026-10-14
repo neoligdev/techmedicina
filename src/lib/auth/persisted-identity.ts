@@ -3,7 +3,15 @@ import type { AuthenticatedIdentity } from "./core";
 
 const permission = z
   .object({
-    resource: z.enum(["cadastro_clinica", "prontuario", "paciente", "agenda", "faturamento"]),
+    resource: z.enum([
+      "cadastro_clinica",
+      "prontuario",
+      "paciente",
+      "agenda",
+      "faturamento",
+      "journey_goals",
+      "journey_events",
+    ]),
     action: z.enum(["create", "read", "write", "delete", "manage"]),
   })
   .strict();

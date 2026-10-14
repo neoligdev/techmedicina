@@ -1,0 +1,9 @@
+# Entrega Codex — 14/10/2026
+
+Proprietário retomou explicitamente Codex como executor e autorizou desenvolvimento/testes/homologação e commit/push validados para sincronizar preview. Sem Ask Lovable; Antigravity para depois.
+
+Lote: PRD/adendos preservados, fundação e integração local Jornada, participação/autorrelatos idempotentes, suspensão médica auditada, rascunhos locais, status atualizado e ajustes PWA (score fictício explícito, teclado e modais compactos). SQL 008–012 aplicado e conferido por autorização anterior específica; 013 somente local. Layout e autoria histórica preservados.
+
+Build e TypeScript aprovados; lint com zero erros/sete avisos históricos de Fast Refresh. Regressão final aprovada: 567 testes em 71 arquivos, após revisão de grants de criação. A primeira execução terminou com oito falhas de fixtures antigas durante alteração e foi preservada localmente, sem servir de aprovação. Vinte testes direcionados finais passaram. Staging planejado por manifesto explícito, sem git add .; alterações alheias e package-lock.json ficam preservados.
+
+Pendências: contas QA cadastradas/confirmadas, aprovação de vínculos/grants específicos, hosts ativos/TLS/posse, metas/revisão/consentimento/prescrição, regras JORNADA/Escudos e metodologia VITALIDADE. Endpoints Jornada não montados; migração 013 não autorizada no Cloud. Não há DNS, publicação de produção ou alegação de PRD concluído. Push e preview ainda pendentes nesta preparação.

@@ -1,0 +1,44 @@
+# VJE-2 — Fundação local da persistência
+
+12/10/2026 · Codex. Continuidade autorizada pelo proprietário; mantidos os limites locais. Migração 008 criada e executada somente em PGlite isolado. Sem Cloud, DNS, infraestrutura, commit/push/deploy ou cálculo da VITALIDADE.
+
+Metas, preferência de participação (desabilitada por padrão) e ledger de eventos. FK composta amarra paciente/clínica/conta; snapshots de versão/política nos eventos. RPC deriva ator e contexto da sessão/registro; exige paciente ativo, clínica/vínculo/grant ativos e preferência habilitada. Bloqueios compartilhados mantêm verificações de elegibilidade no momento da transação. Estados não elegíveis e metas medication/protocol são recusados até fluxo específico aprovado. Preferência de participação não é comprovação de consentimento clínico/base legal.
+
+Unicidade clínica/paciente/origem/ID de origem impede repetição. Reenvio idêntico retorna o mesmo evento; reutilização com instante diferente gera conflito. Não altera pontos ou histórico clínico. RLS permite paciente próprio e médico verificado com grant; helper definer retorna somente decisão booleana, sem ampliar leitura direta de pacientes. Admin/cargo global não dá acesso clínico. Escritas diretas/exclusão são negadas. Sem seed de conta/grants/metas na migração.
+
+Parser local de identidade persistida estendido aos novos recursos; SQL de grants mantém recursos antigos e acrescenta novos. Isso não provisiona grant ou migra o Cloud. Teste VJE-1 desse parser atualizado para o contrato novo; resultado anterior permanece histórico.
+
+38 testes de migração/contratos/adaptador aprovados; tipos/build/lint registrados. Testes SQL cobrem reenvio, conflito, vínculo composto, dois tenants, médico, cargo global, pausa e bloqueio de medicação. Não representam concorrência multi-conexão de PostgreSQL produtivo. Eventos UTC/timestamptz; mapper de resposta e políticas de fuso ainda precisam de integração.
+
+Esta entrega é fundação parcial: não há endpoint integrado, criação/edição auditada de metas, self-service de preferências, consentimento/prescrição comprovados, algoritmo, Escudos ou valor VITALIDADE. Autoria, design e backend existentes preservados. Próximas etapas locais: controles auditados e contratos de persistência; aplicação remota requer aprovação específica e revisão completa.
+
+Continuidade local: alinhado o construtor de autorrelato ao bloqueio SQL de medication/protocol, mesmo quando há referência de prescrição. Acrescentado mapper estrito de resposta persistida: rejeita campos adicionais, origem diferente, IDs/versões inválidos e evento posterior ao recebimento; normaliza offsets para UTC preservando ID e snapshots. O mapper não concede autorização e ainda não está ligado a um endpoint. Tipos e lint direcionado aprovados; regressão completa registrada separadamente em vje2_regression.txt.
+Resultado desta continuidade: 30 testes em 3 arquivos aprovados (vje2_continuacao_test.txt). Tentativa completa interrompida por falta de progresso do executor, mesmo com um worker; não houve resultado de regressão completa e ela permanece pendente. Nenhum processo de teste desta entrega foi deixado ativo.
+
+## Revisão para o futuro transporte de autorrelatos
+
+A RPC 008 recebe goalId e deriva clinic/patient da meta; validar a associação somente na resposta não impede uma gravação em outra clínica se uma conta tiver vínculos próprios em mais de um tenant. O futuro endpoint deve primeiro consultar a meta sob contexto de host/RLS e verificar clinic/patient; a garantia final deve existir também na transação SQL, com clinicId explícito validado contra a meta, antes de escrever. Não conectar diretamente a RPC atual ao novo host-bound endpoint sem esse reforço. Medicação/protocolo seguem bloqueados. Nenhuma migração ou endpoint foi alterado nesta revisão.
+
+## Correção local do vínculo transacional
+
+Codex preparou 012_journey_self_report_host_scope.sql, aditiva. Nova RPC exige clínica explícita, valida clinic/goal/patient_user com FOR SHARE e chama internamente a RPC existente, mantendo seus grants, preferência, elegibilidade e idempotência. EXECUTE da RPC antiga revogado para clientes; owner interno continua autorizado. Teste PGlite com uma conta em duas clínicas confirmou recusa cross-host antes de escrita, bloqueio da chamada antiga e reenvio idempotente correto. Um teste de integração SQL aprovado. Migração apenas local; não aplicar sem revisão/autorização. Regressão completa iniciada anteriormente não inclui este novo arquivo e continua sem resultado final.
+
+Continuidade: submit-self-report.server.ts exige vínculo paciente único da clínica e grant create antes da RPC, recusa IDs extras e valida recibo contra clínica/paciente/autor/meta/evento/horário esperados. Adaptador RPC oferece a chamada for_clinic e mapeia conflito de idempotência 23505 para 409. Nove testes posteriores de SQL/servidor aprovados. Regressão anterior finalmente concluída: 516 testes em 62 arquivos, log vje2_regressao_atual.txt; não inclui 012 ou este servidor posteriores. Nenhuma ativação remota.
+
+Fronteira self-report-handler.server.ts local: POST, sem query, JSON limitado a 4KB, Auth/contexto paciente antes de RPC, recibo mínimo/no-store e erros seguros. Composição endpoints.server.ts exige fábrica da RPC da mesma sessão resolvida no host PWA. Sete testes de HTTP/composição aprovados; TypeScript posterior em execução nesta anotação (handle 99269). A checagem anterior do adaptador terminou com exit 0. Nenhuma rota pública foi montada.
+Conclusão da checagem HTTP: TypeScript final aprovado (handle 99269, exit 0). Lint dos arquivos alterados corrigido/aprovado; sete testes aprovados.
+
+Cliente self-report-client.ts: endpoint relativo, bearer obtido a cada chamada, deadline compartilhado 20s incluindo sessão/fetch/corpo, credentials omit, no-store/redirect error. Não cria sourceEventId: reenvio usa input original, evitando novo registro após resposta perdida. Recibo estrito compara clínica/paciente/meta/sourceEventId/horário; 409 classificado sem sucesso. Treze testes de cliente/HTTP aprovados; lint corrigido sem erros informados. Tipos finais em execução no handle 69845 nesta anotação. Não montado no PWA demonstrativo ou rota pública.
+Conclusão do cliente: TypeScript apontou quatro acessos potencialmente ausentes ao mock no teste; corrigidos com contagem explícita e chamadas esperadas. Nova checagem de tipos aprovada (handle 85378, exit 0). Lint anterior aprovado. Nenhuma alteração funcional por essa correção de teste.
+
+Cartão local self-report-card.tsx: reutiliza Card/Button e mensagens aria-live; canReport falso por padrão. Evento/horário estáveis fornecidos pela composição, chave inclui clínica/paciente/meta/evento/horário. Recibo confirmado valida todos os IDs e horário; erro permite reenvio do mesmo evento, conflito bloqueia. Dez testes cartão/cliente aprovados; tipos em execução handle 48634. Não montado na demo nem no runtime; não calcula pontos.
+Checagem final do cartão: TypeScript aprovado (handle 48634, exit 0); lint corrigido sem erros registrados.
+
+Fluxo local integrado: journey-self-report-flow.test.ts liga cliente, compositor host/session, handler, adaptador e SQL 012 em PGlite. Auth e registro são simulados; bearer local de teste nunca enviado à rede. Resposta perdida após commit, seguida de reenvio idêntico, mantém exatamente um evento e retorna recibo válido. Teste integrado SQL e três testes de cartão aprovados na execução inicial. self-report-connected-card.tsx liga Card ao cliente autenticado por useMemo. Novo teste dedicado do cartão conectado em execução handle 7814; tipos do conjunto em execução handle 95843 nesta anotação. Não equivale a ponta a ponta remota nem inclui equipamentos.
+Cartão conectado: quatro testes finais aprovados (handle 7814). Tipos apontaram acesso com ponto a argumentos Record no teste SQL; corrigido para acesso por chave. Nova checagem tipos/lint em execução handle 89775.
+Conclusão: tipos e lint aprovados na repetição (handle 89775, exit 0). Preservados o design, a demonstração e os limites de implantação.
+
+Revisão posterior D56: 32 testes em sete arquivos aprovados (servidor, HTTP, cliente, cartão, fluxo PostgreSQL, host-scope SQL e catálogo). RPC 012 mantém preferência/eligibilidade atuais também no replay: pausa ou meta suspensa recusam e preservam o evento anterior. Teste de resposta atrasada após troca de paciente confirma ausência de estado herdado. Tipos em execução handle 38624 nesta anotação. Sem alteração de produção.
+Checagem final da revisão de segurança: TypeScript aprovado (handle 38624, exit 0). Testes e tipos não comprovam permissões reais no Cloud, DNS ou instalação em aparelho.
+
+Revisão do lote 008–012 concluída em REVISAO_MIGRACOES_JORNADA_008_012.md; hashes preservados. Teste da sequência completa aprovado. Solicitação de autorização Cloud apresentada, sem aplicação enquanto pendente. Não inclui contas/grants/DNS/endpoints/commit/push/deploy.

@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -385,12 +385,12 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - RECOMENDADO: assistência da IA respeita experiência, objetivo e limitações declaradas; progressão e treino individualizado exigem critérios profissionais, sem aumentar carga automaticamente por pontuação. Alertas de dor/limitação orientam procurar profissional pertinente.
 - PENDENTE: catálogo de exercícios, divisão semanal, montagem por profissional/IA, ajustes, cronômetro, pausas, regras de progressão e supervisão.
 
-## 8.10 - Visão integrada, índices e incentivo 🟡
+## 8.10 - Visão integrada, índices e incentivo 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar visão integrada, índices e incentivo, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Base local com contratos e permissões por clínica/paciente, metas versionadas, eventos idempotentes, preferências auditadas, suspensão médica e cartões conectados aos contratos HTTP. Autorrelato verifica clínica antes da escrita, preserva ID no reenvio e foi testado até PostgreSQL isolado. Hosts/Auth dos testes simulados. Nenhum cálculo JORNADA/VITALIDADE, regra Escudos ou endpoint produtivo ativado. D60 aplicou e conferiu fundação SQL 008–012 no Cloud após autorização específica; tabelas vazias e nenhum grant clínico criado. Isso não conclui gamificação ou operação real.
+- **Próximo Passo**: Conectar painel médico, concluir criação/revisão de metas e comprovar consentimento/prescrição. Ativação real requer host/contexto confiável, migrações revisadas e QA real; concorrência PostgreSQL, motor JORNADA, Escudos e metodologia VITALIDADE pendentes.
 
 **Requisitos**:
 
@@ -399,6 +399,55 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - RECOMENDADO: começar distinguindo pontuação de constância dos hábitos, adesão registrada e indicadores clínicos. Definir fórmulas, origem dos dados, pesos, períodos, mínimos de dados, explicação e versão de cada índice. Não atribuir automaticamente uma nota de saúde a partir de pontos de participação.
 - RECOMENDADO: dados ausentes e atrasados ficam explícitos; ausência de registro não é doença nem prova de falta de adesão. Uma pontuação boa não neutraliza resultado crítico. Correlações entre módulos não demonstram causa.
 - PENDENTE: modelos dos índices, interpretação, validação clínica, limites de uso, critérios de alerta e regras de recomendação. Índices com finalidade clínica não serão apresentados como validados antes da validação correspondente.
+- - **VITALIDADE** substitui integralmente o nome provisório “Índice VIVA”. É um índice multidimensional de tendências de saúde/bem-estar em escala proposta 0–100, que pode subir ou descer. **A fórmula, os pesos, limiares e a alegação de validade científica estão PENDENTES de avaliação metodológica, clínica e regulatória**. Até aprovação, não exibir nota numérica real ou afirmar que o índice é validado.
+- **JORNADA** substitui “Jornada dos Horizontes” como nome exibido ao paciente. É a mecânica gamificada de **adesão às metas individualmente aplicáveis**, independente da VITALIDADE, com pontos diários 0–100 e Escudo ativo determinado pelo desempenho recente.
+- **ESCUDOS** são distintivos com arte própria. Cinco níveis iniciais: **Origem, Ritmo, Avanço, Equilíbrio, Plenitude**. O Super ADM cadastra, carrega, versiona, aprova, ordena, ativa/inativa e publica as artes e metadados dos Escudos no sistema. A clínica aplica o tema White Label sem alterar a lógica central. O histórico de Escudos conquistados é permanente conforme as políticas de retenção e direitos aplicáveis.
+- Pontos da JORNADA não entram diretamente no cálculo da VITALIDADE. Um paciente pode ter alta adesão e indicadores desfavoráveis, ou vice-versa. **HRV** significa variabilidade da frequência cardíaca e é apenas um sinal fisiológico opcional, não o nome do índice geral.
+- - O catálogo de planos/entitlements determina **quais recursos e fontes estão disponíveis**, não um teto menor de pontuação. Paciente sem dispositivo pode atingir 100 na JORNADA e alcançar Plenitude; dispositivo não concede bônus automático por posse ou sincronização.
+- Fontes manuais: hidratação, alimentação, qualidade/duração do sono, estado emocional, exames enviados ou resultados estruturados, adesão à medicação **quando prescrita**, treinos, academia, esportes e frequência semanal, tabagismo, álcool, sintomas, consultas e acompanhamento de protocolos.
+- Fontes automáticas **somente quando tecnicamente suportadas e confiáveis**: pulseira (atividade/passos, sono, frequência cardíaca, eventualmente HRV); balança (peso e estimativas de composição corporal); outros dispositivos futuros (p.ex. anel). Não presumir que H59MAX, balanças ou anéis oferecem APIs/BLE, HRV ou qualidade clínica sem testes.
+- Todos os dados **pertinentes** podem ser candidatos à avaliação, mas **não somar diretamente cada entrada**: consolidar por domínios, evitar dupla contagem de passos+treino e peso+IMC+bioimpedância, respeitar unidades, temporalidade, proveniência, precisão, outliers e consentimentos.
+- Exames e dados fisiológicos não devem ser inferidos como normais quando ausentes. Exibir **cobertura/completude** e origem (manual, dispositivo, exame, profissional). Sem dados mínimos para cálculo confiável, mostrar **“avaliação parcial”** ou **“dados insuficientes”**, sem nota enganosa. Pacientes com planos distintos não devem receber comparação pública ou classificação discriminatória.
+- Dados de autorrelato são válidos para participação e acompanhamento, com rótulo de autorrelato; não devem ser tratados como equivalentes a medição clínica confirmada. Coleta de álcool/tabaco deve ser não punitiva, confidencial e sem incentivo a consumo.
+- - Domínios candidatos: **cardiometabólico** (pressão, glicemia, lipídios, peso e contexto), **atividade/capacidade física**, **sono/recuperação**, **hábitos/alimentação/hidratação/tabaco/álcool** e **bem-estar emocional**. Adesão à medicação, exames realizados e check-ins são prioritariamente medidas de processo/adesão e não evidência direta de melhora clínica.
+- Pesos **30% cardiometabólico, 20% atividade, 20% sono, 20% hábitos e 10% bem-estar emocional** são apenas **hipótese de pesquisa**, NÃO regra de produção, NÃO comprovação científica. Pesos devem ser definidos após revisão bibliográfica, escolha de instrumentos e avaliação de especialistas; considerar populações, comorbidades, idade, acessibilidade e objetivos.
+- Referências candidatas: *Life's Essential 8* (AHA) para saúde cardiovascular, PSQI para sono, WHO-5 para bem-estar, instrumentos alimentares validados e diretrizes de atividade física. São **referências para estudo**, não autorização para afirmar que uma nova combinação é validada, nem para reproduzir questionários protegidos sem verificar licença.
+- Especificar finalidade de uso, população-alvo, interpretação, pesos, normalização, limites, missingness, confiança, sensibilidade, variabilidade biológica, diferenças por perfil, testes de confiabilidade, validade e equidade, revisão médica, versionamento e eventual enquadramento de software como dispositivo médico. Antes disso, usar interface informativa sem escore clínico numérico.
+- Uma alteração crítica de sinais ou sintomas gera fluxo clínico próprio, independente do escore agregado. Nunca usar VITALIDADE para diagnosticar, prescrever, negar serviço ou classificar urgência sem protocolo clínico aprovado.
+- - A JORNADA mede **cumprimento de metas personalizadas**, não gravidade da doença. **Pontuação diária normalizada de 0 a 100 = 100 × soma dos pesos de metas elegíveis cumpridas / soma dos pesos das metas elegíveis**, com tratamento explícito de metas parciais e validação de evidências; fórmula funcional **RECOMENDADA**, sujeita a testes e decisão final do Super ADM.
+- Exemplos **não vinculantes** de pesos por missão: registrar água 10; alimentação 10; sono 15; check-in emocional 10; adesão a medicação prescrita 20; atividade física indicada 20; check-in Dr. IA 15. **Não publicar estes pesos como regra definitiva.** A meta é atribuída conforme plano, perfil, periodicidade e orientação profissional. Exercício 3x/semana não gera falta nos dias de descanso; ausência de prescrição elimina missão de medicação do denominador.
+- Metas não aplicáveis são retiradas do denominador **por regra controlada e auditada**, nunca manipuláveis livremente pelo paciente. Se não houver metas elegíveis, registrar **dia não avaliável**, sem atribuir zero ou 100 arbitrariamente.
+- Missões concluídas via PWA, WhatsApp ou dispositivo devem gerar evento idempotente; leitura automática pode comprovar uma meta elegível, **sem duplicar** registro manual. Pontos variam diariamente. Ausência de sincronização, internet ou dispositivo não significa não adesão: permitir alternativas, reconciliação e período de tolerância. Não premiar medição excessiva nem hábitos nocivos.
+- Paciente pode pausar gamificação; metas e alertas devem respeitar preferência, acessibilidade, horário e situação clínica. Nenhuma pontuação restringe benefícios contratados.
+- - Escudo ativo calculado a partir de **média móvel dos últimos sete dias avaliáveis**, com política explícita para dias não avaliáveis, pausas e histórico insuficiente. Não preencher dias ausentes com zero; se amostra insuficiente, manter estado anterior ou exibir estado provisório, conforme regra a aprovar.
+- Limiares **iniciais para teste, não definitivos**: Origem 0–29; Ritmo 30–54; Avanço 55–74; Equilíbrio 75–89; Plenitude 90–100.
+- Promoção: ao alcançar o limiar do próximo Escudo segundo a média elegível, observada a regra de estabilidade aprovada. **Regressão:** após **três avaliações diárias consecutivas válidas** com média abaixo do limiar do Escudo ativo; não regredir por um único dia ruim. Regras de estabilidade, histórico mínimo e desempate são **RECOMENDADAS** para homologação.
+- **Escudos já conquistados nunca desaparecem do histórico por regressão.** A pessoa pode exibir Escudo ativo inferior ao máximo histórico. Tela própria **“Meus Escudos”** no PWA apresenta arte, nome, estado atual/histórico, data e hora da conquista com fuso horário, pontos JORNADA, **VITALIDADE no instante da conquista se houver índice validado e calculável**, ou “indisponível/não calculada” — **jamais inventar valor**. Mostrar próximos Escudos bloqueados e critérios simples de progresso.
+- Registrar eventos de conquista, promoção, regressão, reaquisição e correção com IDs estáveis, timestamp UTC + apresentação em fuso local, versão da regra, `tenant_id`, `patient_id`, escudo, pontuação JORNADA e referência a snapshot VITALIDADE quando existente; evitar duplicação de dados clínicos sensíveis no ledger de gamificação. Correções preservam trilha de auditoria.
+- - Se o paciente relata doença aguda, internação, cirurgia, acamamento, tratamento intenso ou limitação funcional, o Dr. IA deve oferecer **revisão contextual de metas**, respeitando orientações clínicas e fluxos de escalonamento quando necessário.
+- Ajustar **missões elegíveis, frequência e esforço apropriado**, em vez de ocultamente diminuir o limiar do Escudo ou presumir que o paciente deixou de se cuidar. Repouso indicado, seguimento de orientações e atividades adaptadas podem ser metas válidas. Em internação, priorizar equipe assistencial e permitir pausa sem perda histórica.
+- A IA não altera prescrição, intensidade de exercício clinicamente contraindicada nem parâmetros médicos de forma autônoma. Mudanças clínicas relevantes requerem protocolo autorizado ou avaliação do profissional responsável.
+- Interface do paciente deve ser **simples e não estigmatizante**; não expor coeficientes matemáticos desnecessários, **mas explicar claramente que metas foram adaptadas, quais estão vigentes, o que afeta a pontuação e como contestar correções**. Não ocultar mudança material das regras.
+- Pausa médica ou técnica e períodos não avaliáveis **não causam regressão automática**. Propor estado protegido/pausado com registro de motivo e controle de acesso; especificação operacional detalhada PENDENTE.
+- - Super ADM: **biblioteca central de Escudos** com upload de SVG/PNG/WebP permitido por política, verificação de tipo real, sanitização rigorosa de SVG (ou preferência por raster), limite de tamanho, armazenamento seguro, versões, pré-visualização, ordem, nome, descrição, critérios, estado de publicação, rollback e auditoria. Arte de Escudo é controlada pelo Super ADM; clínica não altera critérios nem substitui a arte oficial, apenas aplica seu tema e identidade White Label no restante da interface.
+- PWA paciente, sob **URL própria por clínica** conforme seção 9: cartões separados VITALIDADE (quando validada) e JORNADA; Escudo ativo, tendência, próximas missões e Escudo seguinte; tela de histórico com conquistas e respectivas datas/horas e snapshot de VITALIDADE, inclusive após regressão.
+- Painel médico da clínica: visualizar dados de origem, tendências, cobertura, contexto de adaptações e adesão, com separação inequívoca de dados clínicos e gamificação. Somente dados de pacientes autorizados. Super ADM não obtém acesso clínico irrestrito por gerenciar Escudos.
+- Backend multi-tenant, RBAC, validação server-side, versionamento de regras, auditoria, idempotência, limites contra fraude e segregação de dados; reaproveitar módulos/rotas existentes. Não duplicar backend por clínica. Dados clínicos sensíveis seguem LGPD e controles de acesso do PRD principal.
+- O Dr. IA pode **explicar tendências e propor missões**; o motor determinístico autoriza pontuação e alteração de Escudo. Não confundir alertas clínicos com regressão de jogo.
+- 1. Paciente só com app, sem dispositivo ou exame, consegue participar integralmente da JORNADA, atingir 100 e alcançar Plenitude com metas aplicáveis; VITALIDADE informa cobertura parcial ou insuficiência quando necessário.
+2. Planos com pulseira e/ou balança usam fontes extras sem duplicar eventos, dar vantagem automática por hardware ou presumir capacidades não homologadas.
+3. Medicação só é meta se prescrita; descanso, esporte semanal e restrições médicas são respeitados.
+4. VITALIDADE e JORNADA são exibidas separadamente; índice clínico numérico permanece indisponível até validação formal.
+5. Média móvel de sete dias e regra de três avaliações consecutivas para regressão são testáveis; dia sem dados e pausa protegida não equivalem a fracasso.
+6. Tela Meus Escudos mantém conquistas antigas mesmo após regressão e mostra data/hora, pontos da JORNADA e snapshot de VITALIDADE **somente se disponível**.
+7. Super ADM cadastra/publica artes dos Escudos com segurança, versionamento e auditoria; clínicas não conseguem alterar regras globais.
+8. Dr. IA adapta missões a situações de doença e tratamento sem prometer autonomia clínica; mudanças e explicações são auditáveis.
+9. Sem vazamento entre clínicas, sem regressões de autenticação, telemedicina, prontuário, pagamentos, domínios próprios e PWA.
+- 1. Ler `AGENTS.md`, PRD vigente, decisões e código existente; incorporar esta seção como **substituição lógica** das terminologias “Índice VIVA” e “Jornada dos Horizontes”, preservando histórico de versões e demais requisitos anteriores.
+2. Documentar explicitamente o que já existe, parcialmente existe ou falta: cadastro de metas, fontes manuais, integrações de equipamentos, histórico, gamificação, biblioteca de artes e telas PWA.
+3. Propor plano incremental de menor impacto, migrações futuras, dependências, testes, riscos e rollback, sem reconstruir o projeto e sem duplicar estruturas já existentes.
+4. **Não alterar código-fonte, banco, migrações, deploy ou DNS nesta etapa sem autorização expressa. Não gerar Prompt Zero.**
+5. Manter a distinção **DEFINIDO** (identidade, separação, proteção, histórico, gestão central), **RECOMENDADO** (normalização, média e limiares operacionais) e **PENDENTE** (algoritmo VITALIDADE validado, parâmetros definitivos, dispositivos homologados, condições clínicas específicas).
 
 ## 9 - Loja do Super ADM e loja da clínica 🟡
 
@@ -1561,7 +1610,7 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex, OpenCode, Lovable
-- **Entregue**: PRD v0.11.1, adendo e decisões preservados nos registros. Codex retomou implementação direta após Antigravity, manteve design e status por entrega. Cloud administrativo e marca QA homologados; reservas/paginação e contratos White Label avançaram. Domínio techmedicina.com.br no Registro.br informado, sem DNS ou ativação. Última regressão completa: 363 testes aprovados antes da sugestão de hosts, que tem oito testes direcionados aprovados.
+- **Entregue**: PRD v0.11.3 e adendos preservados, com execução direta Codex e design existente mantido. Administração e marca QA têm homologações Cloud históricas; White Label mantém reservas pendentes e contratos locais, sem DNS/ativação. Jornada avançou localmente até preferências, suspensão auditada e autorrelatos idempotentes ligados ao host. Regressão da base anterior: 516 testes/62 arquivos; autorrelato posterior: 32 testes/7 arquivos e sequência SQL 008–012 aprovados. Esses resultados não concluem fluxos produtivos do PRD. Em 14/10, Codex recebeu autorização expressa para commit/push ao preview. Lote revisado: 567 testes em 71 arquivos e tipos/lint aprovados. Cloud 008–012 conferido; 013 e criação de rascunhos somente locais.
 - **Próximo Passo**: Continuar auditoria e contexto White Label e recursos independentes. Hospedagem/DNS/TLS, contas QA clínicas, keystore, protocolo H59MAX/balança, fornecedores e condições comerciais/clínicas abertas exigem definição antes dos respectivos fluxos produtivos.
 
 **Requisitos**:
@@ -1908,4 +1957,102 @@ Atualizado em 12/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou GET /api/platform/domain-audit e painel por reserva, com Super ADM verificado, filtros de clínica/ID, DTOs estritos, consulta sem cache, autor/horário e paginação por cursor. Respostas de outra clínica/reserva são recusadas. Vinte testes, tipos e build aprovados. Sem migração ou novas permissões. Configurações Domains do Lovable inspecionadas em leitura.
 - **Próximo Passo**: Homologar auditoria com sessão real no preview. Configuração de domínio principal/redirecionamentos precisa ser revisada antes de conectar hosts; DNS, TLS, posse e integração SSR continuam pendentes.
+
+## D49 - Adendo v0.11.3: incorporação documental e plano 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex incorporou seções 10 histórica e 11 vigente ao PRD, preservando todos os requisitos anteriores e 101 identificadores. Fonte e PRD anterior preservados; inventário, dependências, riscos, testes e rollback documentados. Sem alteração funcional nessa revisão.
+- **Próximo Passo**: Documento preservado; continuidade posterior avançou localmente por D50–D56. Metodologia, parâmetros e aplicação remota mantêm gates próprios.
+
+## D50 - VJE-1 local: contratos, permissões e isolamento 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou contratos locais e montagem de autorrelato com IDs/autor/versões da fonte confiável. Novos recursos de autorização exigem grants e vínculo ativo; paciente atua apenas no próprio contexto, médico verificado nas metas, ADM sem acesso clínico. Parser Cloud permanece sem grants novos. Testes locais registrados. Regressão completa: 397 testes em 43 arquivos aprovados; tipos, lint e compilação local aprovados.
+- **Próximo Passo**: VJE-1 mantém o escopo validado nesta entrega; persistência e integrações locais posteriores estão em D51–D56. Cloud, DNS, commit/push/deploy não liberados; prescrição/consentimento e cálculos continuam pendentes.
+
+## D51 - VJE-2: fundação local da persistência de participação 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou migração 008 local com metas/preferências/ledger, vínculo composto, RLS, RPC restrita ao próprio paciente com grant e preferência habilitada, snapshots de versão e reenvio idempotente. Medicação/protocolo sem fluxo validado bloqueados. 38 testes direcionados aprovados, incluindo dois tenants. Nada aplicado no Cloud. Continuidade: contrato estrito de resposta com horários UTC e bloqueios clínicos alinhados entre SQL e montagem local. Tipos e lint direcionado aprovados; 30 testes adicionais de contratos, mapper e status aprovados. Regressão posterior da base concluída: 416 testes em 45 arquivos passaram; resultados mais recentes estão em D53.
+- **Próximo Passo**: D56 reforçou localmente a RPC com clínica explícita na transação e integrou autorrelato em testes. Faltam metas configuradas/revisadas, consentimentos/prescrições, concorrência e homologação reais. Sem pontos/Escudos/VITALIDADE e sem implantação remota.
+
+## D52 - Jornada: preferência de participação auditada local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou migração 009 local: paciente próprio habilita/pausa com revisão esperada, registro de ator e horário, bloqueio de sobrescrita e auditoria append-only. Revogar envio não impede desligar participação. Nove testes SQL passaram em banco isolado, incluindo isolamento e histórico preservado. Sem aplicação no Cloud. Mais 31 testes de contratos/mapper/status e lint passaram; TypeScript aprovado. Camada servidor local preparada: contexto de host/paciente verificado, argumentos mínimos e resposta estrita. Dez testes adicionais, tipos e lint aprovados. Leitura inicial desligada sem gravar e handlers HTTP locais GET/PUT preparados, com query/JSON/links ambíguos recusados, no-store e conflito 409. 31 testes SQL/repositório/HTTP, tipos e lint aprovados. Regressão anterior terminou: 416 testes/45 arquivos; adições HTTP verificadas separadamente.
+- **Próximo Passo**: Cartão e HTTP locais avançaram em D53; homologação produtiva e concorrência real continuam pendentes. Preferência não equivale a consentimento clínico ou pausa médica. Sem commit/push/deploy.
+
+## D53 - Jornada: cartão e integração HTTP local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex ligou o cartão fosco de participação ao transporte HTTP autenticado, com estado confirmado, recarga, conflito de revisão, sessão perdida e proteção contra respostas de outro paciente. Fluxo cliente/handler/RPC/SQL isolado testado; onze testes de integração e dois do cartão conectado passaram. Mantido o design atual. Tipos, lint da Jornada sem avisos e compilação local aprovados. Cartão ligado ao contrato HTTP em testes; rota/runtime real não ativados. Regressão final: 451 testes em 51 arquivos aprovados; status conferido no navegador local em 13/10/2026. Recuperação de rede: prazo de 20 segundos, cancelamento e recarga obrigatória após gravação incerta. Resposta perdida após commit testada, sem envio duplicado ou falso sucesso; 17 testes direcionados passaram.
+- **Próximo Passo**: Ativar no PWA real somente após contexto de host confiável, revisão/aplicação das migrações e conta/vínculo QA. Sem Cloud, DNS, commit/push/deploy ou cálculo de pontos/VITALIDADE.
+
+## D54 - Jornada: suspensão auditada de metas — integração local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou SQL 010, servidor/HTTP, transporte e cartão médico conectado localmente. Médico verificado com grants da clínica suspende meta existente com versão e auditoria; outros papéis/tenants recusados. UI exige confirmação e recarga após conflito ou resultado incerto, sem anunciar estado não validado. Histórico preservado. SQL testado separadamente; 40 testes locais de UI/cliente/handler/repositório e prazo compartilhado passaram, com tipos, lint e build aprovados. Consulta/recarga locais completadas: SQL 011 médico com clínica explícita, projeção mínima no servidor, GET/cliente autenticados e recarga padrão do cartão. Conflito→GET atual→nova confirmação testado; 23 testes direcionados, tipos/lint/build aprovados. Revisão local de consulta: cartão oculta suspensão por padrão e exige canPause explícito da composição autorizada; revogação fecha confirmação sem enviar. 14 testes direcionados aprovados.
+- **Próximo Passo**: Conectar runtime servidor ao registro confiável de hosts e à mesma sessão; revisão/aplicação remota das migrações e QA real dependem de autorização. Cartão não montado na demo; endpoints não ativados. Faltam criação/revisão de metas, consentimento/prescrição e pausa clínica protegida completa. Sem Cloud, DNS, commit/push/deploy ou novos cálculos.
+
+## D55 - White Label/Jornada: vínculo local entre host, sessão e clínica 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex compôs contratos existentes para exigir hostname/URL coerentes, registro canônico ativo e sessão verificada da mesma requisição. Contexto conserva somente a clínica do domínio, sem cargo global como atalho; médico verificado no portal e paciente no PWA. Host demo/pendente/suspenso ou spoofing negados. Seleção de clínica do navegador ignorada. 49 testes direcionados, tipos e lint aprovados; fontes simuladas, sem ativação real. Composição local dos handlers de participação, leitura e suspensão exige o resolvedor do ambiente correto antes de criar transporte com a mesma sessão verificada. 12 testes de composição/host passaram. Participação recusa método trocado antes de Auth/banco; 13 testes HTTP/fluxo passaram. Adaptador RPC local preparado para preferências e metas, com clínica explícita na leitura, resposta/associação estritas e classificação segura dos erros SQL; seis testes de adaptador/composição passaram. Compilação de produção local aprovada após composição e adaptador RPC (log vje2_build_atual.txt). Regressão completa posterior concluída: 516 testes/62 arquivos aprovados; não inclui migração 012 e servidor de autorrelato adicionados depois.
+- **Próximo Passo**: Conectar fonte persistida confiável de hosts ativos e transporte/session reais após gates de posse/TLS/proxy/hospedagem. Reservas atuais são somente pendentes; nenhum host ou endpoint foi ativado. Cloud, DNS, commit/push/deploy preservados.
+
+## D56 - Jornada: autorrelato vinculado à clínica na transação local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou migração aditiva 012: RPC exige clínica do host, trava e verifica a meta antes de delegar às regras existentes. Chamada antiga sem clínica revogada para clientes. Teste PostgreSQL com mesma conta em dois tenants recusou gravação cross-host, manteve zero eventos no erro e um evento após reenvio idempotente correto. Somente banco isolado. Servidor local deriva clínica/paciente/autor do contexto, valida input mínimo e recibo da RPC e não expõe versões/ator internos. Adaptador oferece somente a RPC vinculada à clínica. Nove testes posteriores de servidor/SQL passaram. Fronteira POST local e composição patient_pwa preparadas: método/query/JSON/limite de 4KB/sessão validados, recibo mínimo sem cache e conflito sem confirmação falsa. Sete testes HTTP/composição passaram. Rotas públicas não montadas. Cliente local PWA com token renovado por chamada, prazo compartilhado de 20 segundos, POST relativo sem cache/cookies/redirect e recibo estrito. Reenvio conserva sourceEventId/horário originais. Treze testes de cliente/HTTP aprovados. Cartão local preserva Card/Button existentes: confirmação por recibo validado, reenvio do mesmo evento após falha e conflito bloqueado. Ação indisponível por padrão; autorização continua no servidor. Dez testes cartão/cliente aprovados. Fluxo cliente→host/sessão→HTTP→adaptador→SQL 012 testado em PostgreSQL isolado: perda da resposta após commit seguida de reenvio mantém exatamente um evento. Auth/registro simulados, sem backend remoto. Cartão conectado ao cliente preparado localmente. Revisão de segurança concluída em 32 testes/7 arquivos: pausa da participação e suspensão da meta negam replay pela RPC nova sem apagar histórico; resposta atrasada após troca de paciente não confirma a nova tela. Cobertura local com mocks Auth e PostgreSQL isolado. Sequência completa 008–012 validada em PostgreSQL isolado; lote revisado com hashes, preflight, riscos, validação e recuperação documental.
+- **Próximo Passo**: Lote aplicado e conferido em D60. Homologação clínica requer contas/vínculos/grants QA autorizados e hosts confiáveis; endpoints permanecem desmontados. Metas, consentimentos e parâmetros operacionais pendentes. Sem DNS/commit/push/deploy.
+
+## D57 - Paciente: limites explícitos do score demonstrativo 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preservou o design e o valor fictício do card existente, acrescentando identificação demonstrativa e explicação no modal. Retirou alegações de adesão real/prescrição e bônus por aferição/sincronização. VITALIDADE numérica indisponível e JORNADA real não calculada; dez testes da tela aprovados. Conferência no navegador local confirmou rótulo, abertura/fechamento do modal, aviso e preservação visual; captura score_demo_local.png registrada.
+- **Próximo Passo**: Homologar responsividade em aparelhos e integrar metas/pontuação aprovadas somente após gates clínicos e operacionais. Sem índice real ou ativação remota nesta entrega.
+
+## D58 - Paciente: teclado nos cartões interativos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex adicionou ativação por Enter/Espaço aos seis cartões interativos, sem alterar layout. Teclas de controles internos e repetição não disparam ação do cartão pai; Espaço não rola a página durante ativação. Treze testes do PatientHome aprovados, incluindo score por teclado e botão de água sem navegação indevida. Navegador local confirmou Espaço abrindo score e Enter no botão de água abrindo somente modal, sem sair de /app. Rodapé medido fixed, base 884px igual ao viewport 884px; captura local preservada.
+- **Próximo Passo**: Homologar múltiplas larguras, aparelhos e demais controles. Medição atual somente no viewport local; fluxos produtivos e backend não ativados. Sem Cloud/DNS/GitHub.
+
+## D59 - PWA: modais limitados ao viewport compacto 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu modais do paciente que ultrapassavam tela 320×568: largura/altura limitadas, margens e rolagem interna. Navegador mediu topo 16px, base 552px, largura 288px e overflow auto após correção. Visual preservado; viewport restaurado.
+- **Próximo Passo**: Homologar demais modais, teclado virtual e aparelhos reais. Lote SQL 008–012 agora autorizado pelo proprietário para preflight/aplicação Cloud; não inclui contas/grants/DNS/endpoints/GitHub.
+
+## D60 - Jornada: lote 008–012 aplicado e conferido no Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Após autorização específica do proprietário, Codex aplicou os cinco arquivos pelo SQL Editor, sem Ask Lovable. Catálogo remoto confirmou cinco tabelas vazias com RLS, escrita direta authenticated e SELECT anon bloqueados; sete funções com corpos equivalentes à fonte, search_path vazio e sem execução anon. RPC antiga sem clínica revogada para clientes. Pacientes/vínculos/grants continuam vazios.
+- **Próximo Passo**: Contas QA ainda não comprovadas no Auth; domínio do paciente mantido conforme confirmação do proprietário. Vínculos/grants exigem IDs e autorização específicos. Commit/push do código validado agora autorizado; sem ativação de hosts/endpoints ou aplicação de 013.
+
+## D61 - Jornada: fundação local de rascunhos médicos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou SQL 013 local para propostas append-only separadas das metas vigentes, com clínica/paciente/autor/horário, RPC de médico verificado com read/create e reenvio idempotente. Paciente/ADM global negados; rascunho não ativa elegibilidade nem prescrição. Três testes PostgreSQL aprovados. Contrato, serviço e fronteira HTTP locais exigem médico/grants, corpo limitado, entrada estrita e recibo do mesmo tenant/paciente/autor/request. Doze testes servidor/SQL e quinze servidor/HTTP passaram em execuções separadas; tipos/lint do serviço aprovados. Revisão final separa create de write e recusa write como substituto de criação. Vinte testes de rascunhos e regressão completa 567 testes/71 arquivos aprovados; tipos/lint aprovados.
+- **Próximo Passo**: Conectar transporte/formulário e revisão profissional. Commit/push do lote validado agora autorizados; SQL 013 permanece local. Cadastro QA pendente, mantendo paciente no domínio confirmado pelo proprietário; sem concessões ou ativação clínica presumidas.
+
+## D62 - Jornada/PWA: revisão final do lote para sincronização 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex revisou o lote de Jornada, PRD/status e PWA preservando design/autorias. Regressão final 567 testes/71 arquivos e tipos/lint aprovados; sete avisos históricos de Fast Refresh. Staging explícito, sem incluir alterações alheias. Permissão create separada de write nos rascunhos.
+- **Próximo Passo**: Concluir commit/push autorizado e conferir sincronização do preview; nenhuma publicação de produção, concessão clínica ou aplicação Cloud 013 presumida.
 

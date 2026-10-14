@@ -1,4 +1,4 @@
-import { useState, useId, useEffect } from "react";
+import { useState, useId, useEffect, type KeyboardEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
@@ -44,6 +44,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PatientBottomNav } from "./patient-bottom-nav";
+
+function activatePatientCard(event: KeyboardEvent<HTMLElement>, action: () => void) {
+  if (event.target !== event.currentTarget || event.repeat) return;
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    action();
+  }
+}
 
 interface NoticeItem {
   id: string;
@@ -359,7 +367,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           onClick={() => handleProtectedNavigation("protocolos")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && handleProtectedNavigation("protocolos")}
+          onKeyDown={(e) => activatePatientCard(e, () => handleProtectedNavigation("protocolos"))}
           aria-label="Abrir acompanhamento do Meu protocolo"
         >
           <div className="protocol-card-header">
@@ -397,8 +405,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             role="button"
             tabIndex={0}
             onKeyDown={(e) =>
-              e.key === "Enter" &&
-              void navigate({ to: "/app/$section", params: { section: "financeiro" } })
+              activatePatientCard(
+                e,
+                () => void navigate({ to: "/app/$section", params: { section: "financeiro" } }),
+              )
             }
             aria-label="Meu plano: Vitalícia Individual. Toque para abrir detalhes e financeiro"
           >
@@ -416,8 +426,8 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             onClick={() => setScoreModalOpen(true)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && setScoreModalOpen(true)}
-            aria-label="Meu score: 785 pontos. Toque para ver critérios e evolução"
+            onKeyDown={(e) => activatePatientCard(e, () => setScoreModalOpen(true))}
+            aria-label="Meu score demonstrativo: 785 pontos fictícios. Toque para ver os limites deste exemplo"
           >
             <div className="card-top-row">
               <span className="card-label">Meu score</span>
@@ -427,6 +437,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
               <span className="score-big-num">785</span>
               <span className="score-unit">pontos</span>
             </div>
+            <p className="text-xs text-muted-foreground">Exemplo demonstrativo</p>
           </article>
         </div>
       </section>
@@ -440,7 +451,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             onClick={() => setMoodModalOpen(true)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && setMoodModalOpen(true)}
+            onKeyDown={(e) => activatePatientCard(e, () => setMoodModalOpen(true))}
             aria-label={`Como está: ${mood ? mood.label : "Registrar"}. Toque para registrar humor.`}
           >
             <div className="card-top-row">
@@ -459,7 +470,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             onClick={() => setSleepModalOpen(true)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && setSleepModalOpen(true)}
+            onKeyDown={(e) => activatePatientCard(e, () => setSleepModalOpen(true))}
             aria-label={`Seu sono: ${sleep ? sleep.label : "Registrar"}. Toque para registrar sono.`}
           >
             <div className="card-top-row">
@@ -481,7 +492,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           onClick={() => handleProtectedNavigation("hidratacao")}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && handleProtectedNavigation("hidratacao")}
+          onKeyDown={(e) => activatePatientCard(e, () => handleProtectedNavigation("hidratacao"))}
           aria-label={`Água de hoje: ${waterMl} ml de ${waterTarget} ml. Toque para ver histórico completo.`}
         >
           <div className="water-card-header">
@@ -1058,10 +1069,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold">
               <Award className="text-amber-400" size={24} />
-              Meu score · 785 pontos
+              Score demonstrativo · 785 pontos
             </DialogTitle>
             <DialogDescription>
-              Critérios de constância e engajamento no seu plano de saúde.
+              Exemplo visual com valores fictícios, sem cálculo a partir dos seus dados.
             </DialogDescription>
           </DialogHeader>
 
@@ -1088,19 +1099,17 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
             <div className="score-item-row">
               <div>
-                <strong>Adesão medicamentosa</strong>
-                <span className="text-xs text-muted-foreground block">
-                  Rotina de medicamentos cumprida
-                </span>
+                <strong>Registro de bem-estar</strong>
+                <span className="text-xs text-muted-foreground block">Exemplo de autorrelato</span>
               </div>
               <span className="score-pts text-primary">+200 pts</span>
             </div>
 
             <div className="score-item-row">
               <div>
-                <strong>Sinais e bioimpedância</strong>
+                <strong>Acompanhamento da rotina</strong>
                 <span className="text-xs text-muted-foreground block">
-                  Aferições e sincronização ativa
+                  Exemplo visual de participação
                 </span>
               </div>
               <span className="score-pts text-primary">+255 pts</span>
@@ -1109,9 +1118,11 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           <div className="score-disclaimer-box">
             <p>
-              <strong>Critério transparente:</strong> Esta pontuação reflete a sua constância nas
-              tarefas de cuidado e hábitos pactuados com a equipe clínica. Não constitui diagnóstico
-              médico.
+              <strong>Dados demonstrativos:</strong> estes pontos não representam sua saúde ou
+              adesão real e não são a JORNADA. A JORNADA depende de metas aplicáveis e regras
+              aprovadas; possuir ou sincronizar um dispositivo não concede bônus. A VITALIDADE
+              numérica está indisponível até validação metodológica e clínica. Este exemplo não
+              constitui diagnóstico médico.
             </p>
           </div>
 

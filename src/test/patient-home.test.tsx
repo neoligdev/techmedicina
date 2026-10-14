@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { DemoProvider } from "@/features/demo/context";
 import { PatientHome } from "@/components/platform/patient-home";
 import { PatientBottomNav } from "@/components/platform/patient-bottom-nav";
+const navigateMock = vi.hoisted(() => vi.fn());
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
@@ -22,7 +23,7 @@ vi.mock("@tanstack/react-router", () => ({
     }
     return <a href={href}>{children}</a>;
   },
-  useNavigate: () => vi.fn(),
+  useNavigate: () => navigateMock,
   useRouterState: () => "/app",
 }));
 
@@ -31,6 +32,19 @@ function renderWithDemo(ui: React.ReactNode) {
 }
 
 describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, () => {
+  it.each(["Enter", " "])("abre score pelo teclado com %s", (key) => {
+    renderWithDemo(<PatientHome />);
+    fireEvent.keyDown(screen.getByLabelText(/Meu score demonstrativo/), { key });
+    expect(screen.getByText(/Score demonstrativo · 785 pontos/)).toBeInTheDocument();
+  });
+  it("tecla no botão de água não aciona navegação do cartão pai", () => {
+    navigateMock.mockClear();
+    renderWithDemo(<PatientHome />);
+    fireEvent.keyDown(screen.getByRole("button", { name: "Registrar consumo de água" }), {
+      key: "Enter",
+    });
+    expect(navigateMock).not.toHaveBeenCalled();
+  });
   it("renderiza cabeçalho, saudação 'Olá, Alex' e esconde seletores administrativos", () => {
     renderWithDemo(<PatientHome />);
 
@@ -72,9 +86,9 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
     expect(screen.getByText("pontos")).toBeInTheDocument();
 
     // Clicar em Meu score abre os critérios e evolução
-    const scoreCard = screen.getByLabelText(/Meu score: 785 pontos/i);
+    const scoreCard = screen.getByLabelText(/Meu score demonstrativo: 785 pontos fictícios/i);
     fireEvent.click(scoreCard);
-    expect(screen.getByText(/Meu score · 785 pontos/i)).toBeInTheDocument();
+    expect(screen.getByText(/Score demonstrativo · 785 pontos/i)).toBeInTheDocument();
     expect(screen.getByText("Hidratação diária")).toBeInTheDocument();
   });
 

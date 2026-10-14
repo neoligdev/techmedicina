@@ -1,0 +1,17 @@
+# Jornada — participação auditada local
+
+12/10/2026 · Codex. Migração 009 preparada e executada apenas em PGlite, após 001/008. Cloud, DNS, infraestrutura e Git remoto preservados.
+
+Paciente próprio com vínculo/clínica ativos pode alterar sua preferência. Habilitar exige grant de envio; desligar continua disponível sem esse grant. Ator/clínica são derivados no servidor. Revisão esperada evita sobrescrever decisões mais recentes; mudança efetiva registra auditoria na mesma transação. Repetir estado com revisão atual não cria outra auditoria. Histórico de eventos não é alterado. Escritas diretas e exclusão da auditoria são negadas; outra conta não lê ou modifica a preferência.
+
+Contrato de entrada estrito aceita somente paciente, estado booleano e revisão. A preferência não comprova consentimento, base legal ou pausa clínica protegida, nem autoriza medicação/protocolo, pontos ou VITALIDADE. Não há API/UI integrada nesta entrega.
+
+Nove testes SQL aprovados em `docs/evidencias/vje2_preference_test.txt`. Cobrem revisão, ausência de duplicação de auditoria, paciente/tenant, revogação, acesso direto e preservação do ledger. Não comprovam concorrência PostgreSQL multi-conexão produtiva. Tipo/lint e regressão complementar registrados separadamente. Status D52 incluído como entrega local, requisito 8.10 permanece parcial.
+
+Verificação complementar: 31 testes de contratos, mapper e cobertura do status aprovados em `vje2_preference_contracts.txt`; lint direcionado aprovado em `vje2_preference_lint.txt`; TypeScript aprovado em `vje2_preference_tsc.txt`. A execução completa segue pendente, sem conclusão verificável; estes resultados não são homologação remota nem prova de conclusão de todo o PRD.
+
+Integração local posterior: `saveJourneyPreference` recebe contexto autenticado vinculado ao host e um adaptador RPC da mesma sessão, sem usar service role. Nega host ausente, clínica/paciente alheios, papéis administrativos e vínculo inativo antes do envio. Habilitação exige grant; desligamento não. Envia apenas argumentos da função e valida resposta estrita, identidade, estado e revisão antes de retornar DTO. Não há rota pública ou chamada Cloud ativada: a ligação runtime depende da revisão/aplicação das migrações. Dez testes de repositório passaram em `vje2_preference_repository.txt`, com TypeScript e lint aprovados nos logs correspondentes. A fonte do contexto deve ser resolver servidor/host confiável, nunca o seletor demo.
+
+Continuidade GET/PUT local: migração 009 ganhou leitura autenticada, que retorna desligado/revisão 0 quando não existe preferência sem gravar qualquer dado. Exige paciente próprio, vínculo/clínica ativos. Handler HTTP preparado por injeção, sem rota pública: deriva paciente do contexto, recusa parâmetros de query, links ambíguos, JSON inválido/maior que 4096 bytes e campos forjados. Respostas no-store, erros seguros e conflito 409 orientam recarga. Trinta e um testes SQL/repositório/HTTP aprovados em `vje2_preference_http.txt`, tipos e lint aprovados nos logs correspondentes. Não há integração PWA/runtime ainda, nem autorização para Cloud.
+
+A regressão anterior terminou com 416 testes em 45 arquivos aprovados (`vje2_regression.txt`, início 21:00:53). Esse inventário precede os novos arquivos de repositório/HTTP; os testes direcionados posteriores comprovam essas adições. Não confundir a regressão anterior com uma execução completa do estado final desta continuidade.
