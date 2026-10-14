@@ -90,16 +90,12 @@ CREATE OR REPLACE FUNCTION public.tm_can_read_journey_patient(p_clinic_id uuid, 
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $$
   SELECT p_resource IN ('journey_goals','journey_events','journey_shields') AND (
     EXISTS (
-      SELECT 1 FROM public.tm_platform_operators o
-      WHERE o.user_id = auth.uid() AND o.is_active AND o.role = 'super_admin'
-    )
-    OR EXISTS (
       SELECT 1 FROM public.tm_memberships m
       JOIN public.tm_membership_grants g ON g.membership_id=m.id
       JOIN public.tm_clinics c ON c.id=m.clinic_id
       JOIN public.tm_patients p ON p.id=p_patient_id AND p.clinic_id=c.id
       WHERE m.user_id=auth.uid() AND m.clinic_id=p_clinic_id AND m.is_active AND c.is_active AND p.is_active
-      AND g.resource IN (p_resource, 'journey_goals') AND g.action='read'
+      AND g.resource=p_resource AND g.action='read'
       AND ((m.role='paciente' AND m.patient_id=p.id) OR (m.role='medico' AND m.medical_identity_verified))
     )
   );
@@ -148,15 +144,12 @@ BEGIN
   -- 2. Validação estrita de autorização de escrita para escudos
   -- Clientes comuns (role = 'paciente') NUNCA podem chamar esta função diretamente ou gravar cálculos manuais
   IF auth.uid() IS NOT NULL THEN
-    -- Operador da plataforma (Super Admin)
-    IF EXISTS (SELECT 1 FROM public.tm_platform_operators o WHERE o.user_id = auth.uid() AND o.is_active AND o.role = 'super_admin') THEN
-      v_is_authorized := true;
-    -- Profissional médico verificado com grant específico de escrita em journey_shields
-    ELSIF EXISTS (
+    -- Cargo global não concede acesso clínico. Exige vínculo médico específico.
+    IF EXISTS (
       SELECT 1 FROM public.tm_memberships m
       JOIN public.tm_membership_grants g ON g.membership_id=m.id
       WHERE m.user_id=auth.uid() AND m.clinic_id=p_clinic_id AND m.is_active
-      AND m.role IN ('medico','admin_clinica') AND m.medical_identity_verified
+      AND m.role='medico' AND m.medical_identity_verified
       AND g.resource='journey_shields' AND g.action IN ('create','write','manage')
     ) THEN
       v_is_authorized := true;

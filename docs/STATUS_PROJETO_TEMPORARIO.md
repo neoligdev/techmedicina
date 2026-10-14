@@ -2153,3 +2153,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex ampliou Meus Escudos com progresso acessível para próximo nível, oculto em estado provisório, e reconhecimento de reconquista. Sete testes cobrem histórico após regressão, fuso America/Bahia, escopo divergente na raiz/estado/eventos e ausência de VITALIDADE inventada. TypeScript/lint aprovados. Rota vazia homologada no navegador local com rodapé presente.
 - **Próximo Passo**: Conectar consulta autorizada e homologar cenários preenchidos/móveis. Artes aguardam aprovação; migração 014 local, sem acesso clínico concedido. Preview Lovable não confirmado para checkpoint.
+
+## D77 - Escudos: corrigido acesso clínico implícito do Super ADM 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex revisou migração 014 local e removeu exceção que permitia leitura/escrita clínica pelo cargo global Super ADM, contrariando PRD §11.7. Guard compartilhado exige recurso exato, sem usar journey_goals como permissão para outros recursos. Vínculo médico verificado continua necessário para escrita autenticada. Vinte e oito testes PostgreSQL de segurança/persistência aprovados, incluindo bloqueio explícito do operador global.
+- **Próximo Passo**: Revisar fronteira servidor antes de conectar ShieldService; contexto opcional local não comprova autorização. 014 ainda não aplicada no Cloud; revisão e autorização específicas pendentes. Preserve artes e motor como candidatos em homologação.

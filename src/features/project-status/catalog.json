@@ -2715,6 +2715,18 @@
       "id": "D76",
       "title": "PWA: histórico e progresso dos Escudos",
       "parent": "8.10"
+    },
+    {
+      "parent": "8.10",
+      "done": "Codex revisou migração 014 local e removeu exceção que permitia leitura/escrita clínica pelo cargo global Super ADM, contrariando PRD §11.7. Guard compartilhado exige recurso exato, sem usar journey_goals como permissão para outros recursos. Vínculo médico verificado continua necessário para escrita autenticada. Vinte e oito testes PostgreSQL de segurança/persistência aprovados, incluindo bloqueio explícito do operador global.",
+      "status": "done",
+      "id": "D77",
+      "next": "Revisar fronteira servidor antes de conectar ShieldService; contexto opcional local não comprova autorização. 014 ainda não aplicada no Cloud; revisão e autorização específicas pendentes. Preserve artes e motor como candidatos em homologação.",
+      "requirements": [],
+      "authors": [
+        "Codex"
+      ],
+      "title": "Escudos: corrigido acesso clínico implícito do Super ADM"
     }
   ]
 }

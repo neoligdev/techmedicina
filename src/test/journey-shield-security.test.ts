@@ -134,6 +134,25 @@ describe("TECHMEDICINA — Ciclo 004: Consolidação e Segurança de Escudos", (
   }, 60000);
 
   // 1. Tentativa de atribuição fraudulenta de Plenitude
+  it("cargo Super ADM isolado não concede leitura ou escrita clínica de Escudos", async () => {
+    await asUser(userSuperAdmin);
+    const guard = await db.query<{ allowed: boolean }>(
+      "SELECT public.tm_can_read_journey_patient($1,$2,'journey_shields') AS allowed",
+      [clinicA, patientA],
+    );
+    expect(guard.rows[0]?.allowed).toBe(false);
+    await expect(
+      db.query("SELECT public.tm_get_patient_shield_overview($1,$2)", [clinicA, patientA]),
+    ).rejects.toThrow("Access denied");
+    await expect(
+      db.query(
+        "SELECT public.tm_save_patient_shield_transition($1,$2,'origem','origem',true,NULL,NULL,0,0,'2026-10-14','initial','QA',NULL)",
+        [clinicA, patientA],
+      ),
+    ).rejects.toThrow("Shield transition write denied");
+    expect((await db.query("SELECT * FROM public.tm_patient_shield_states")).rows).toHaveLength(0);
+    expect((await db.query("SELECT * FROM public.tm_shield_history_events")).rows).toHaveLength(0);
+  });
   it("1. bloqueia tentativa de paciente comum atribuir fraudulentamente o escudo Plenitude", async () => {
     const repository = new InMemoryShieldRepository();
     const service = new ShieldService(repository);
