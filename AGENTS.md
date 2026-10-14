@@ -52,3 +52,5 @@
 - Ao concluir todo o projeto, remover rota `staus.tsx`, botão/ajuste de breadcrumb em AppShell, pasta `features/project-status`, teste `project-status.test.ts` e estilos `project-status-*`; regenerar rotas, validar e registrar a remoção.
 
 - Regenerar `docs/STATUS_PROJETO_TEMPORARIO.md` a partir do catálogo a cada atualização; removê-lo ao concluir o projeto, junto às variáveis CSS `--project-done`, `--project-progress`, `--project-pending` e seletores temporários `[data-status]`.
+
+- Diretriz humana atual de 14/10/2026: Codex reassume execução direta após D74; preservar design e entregas anteriores. Envios restritos a checkpoint/d69-d74, sem alterar main. bun.lock oficial; package-lock.json local não incluído. Cloud 014 ainda pendente de autorização específica.

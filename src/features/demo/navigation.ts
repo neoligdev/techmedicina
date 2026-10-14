@@ -40,6 +40,7 @@ export const navigation: Record<Area, NavigationItem[]> = {
   ],
   app: [
     { slug: "", label: "Meu dia", icon: "day" },
+    { slug: "escudos", label: "Meus Escudos", icon: "shield", group: "Acompanhamento" },
     { slug: "saude", label: "Saúde", icon: "health", group: "Acompanhamento" },
     { slug: "bioimpedancia", label: "Bioimpedância", icon: "activity", group: "Acompanhamento" },
     { slug: "protocolos", label: "Protocolos", icon: "protocols", group: "Acompanhamento" },

@@ -2691,6 +2691,18 @@
       "id": "D74",
       "status": "done",
       "title": "Jornada: consolidação Git, auditoria da Biblioteca de Escudos e preparação PWA (Ciclo 006)"
+    },
+    {
+      "authors": [
+        "Codex"
+      ],
+      "requirements": [],
+      "next": "Ampliar testes de histórico/regressão, conferir layout no navegador e conectar leitura autorizada. Migração 014 não aplicada. Checkpoint remoto preservado; main intacta e preview ainda precisa de decisão de sincronização.",
+      "title": "PWA: tela inicial Meus Escudos",
+      "status": "done",
+      "done": "Codex criou /app/escudos com superfícies existentes, estado vazio sem pontuação inventada e apresentação de escudo ativo/histórico para dados estritos do mesmo paciente/clínica. Artes ainda em aprovação e VITALIDADE indisponível. Dois testes iniciais, TypeScript e build aprovados; homologação visual e casos completos de histórico ainda pendentes.",
+      "parent": "8.10",
+      "id": "D75"
     }
   ]
 }
