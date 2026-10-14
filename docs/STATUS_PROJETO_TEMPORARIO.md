@@ -2084,3 +2084,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex validou cliente, host, sessão, HTTP, adaptador RPC e PostgreSQL local: resposta perdida após commit seguida de reenvio mantém um único rascunho; revogação de create impede replay e preserva histórico. Cinco testes SQL/integração aprovados. Revisão 013 documenta dependências, RLS, privilégios e preflight.
 - **Próximo Passo**: Aguardar autorização específica de 013 no Cloud; continuar homologação local. Auth e registro de domínio simulados não comprovam fluxo remoto; nenhuma conta/vínculo concedido.
 
+## D67 - Jornada: novas propostas após confirmação 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex completou o ciclo local do formulário: iniciar outra proposta somente após recibo confirmado, gerar novo identificador e manter reenvio da solicitação original em caso de incerteza. Sete testes de interação aprovados. Regressão completa final: 589 testes em 74 arquivos; tipos e lint aprovados.
+- **Próximo Passo**: Homologação Cloud e interface médica operacional continuam pendentes. Autorização específica 013 solicitada; migração não aplicada.
+

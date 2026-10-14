@@ -2594,6 +2594,18 @@
       "parent": "8.10",
       "next": "Aguardar autorização específica de 013 no Cloud; continuar homologação local. Auth e registro de domínio simulados não comprovam fluxo remoto; nenhuma conta/vínculo concedido.",
       "title": "Jornada: integração PostgreSQL e revisão 013"
+    },
+    {
+      "next": "Homologação Cloud e interface médica operacional continuam pendentes. Autorização específica 013 solicitada; migração não aplicada.",
+      "parent": "8.10",
+      "status": "done",
+      "done": "Codex completou o ciclo local do formulário: iniciar outra proposta somente após recibo confirmado, gerar novo identificador e manter reenvio da solicitação original em caso de incerteza. Sete testes de interação aprovados. Regressão completa final: 589 testes em 74 arquivos; tipos e lint aprovados.",
+      "authors": [
+        "Codex"
+      ],
+      "id": "D67",
+      "title": "Jornada: novas propostas após confirmação",
+      "requirements": []
     }
   ]
 }

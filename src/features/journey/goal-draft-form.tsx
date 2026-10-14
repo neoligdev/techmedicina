@@ -130,6 +130,21 @@ function DraftForm({ clinicId, patientId, canCreate = false, send }: Props) {
           ) : (
             <p>Criação indisponível neste contexto.</p>
           )}
+          {canCreate && state === "confirmed" && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (pending.current) return;
+                request.current = null;
+                setKind("hydration");
+                setCadence("daily");
+                setState("ready");
+              }}
+            >
+              Iniciar nova proposta
+            </Button>
+          )}
         </form>
       </CardContent>
     </Card>

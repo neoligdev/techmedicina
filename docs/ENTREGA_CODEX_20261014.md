@@ -19,3 +19,6 @@ D65: composição local HTTP-host-sessão-RPC para rascunhos médicos, dez teste
 Verificação D65: TypeScript aprovado; lint aprovado após ajuste de formatação no novo teste. Quatro testes adicionais do catálogo passaram.
 
 D66: integração cliente-host-sessão-HTTP-RPC-PostgreSQL local aprovada em cinco testes. Primeiro ensaio recusou a requisição sem Host no adaptador de teste; corrigida a simulação da fronteira HTTP, mantendo o servidor intacto. Reenvio após resposta perdida não duplica; revogação create bloqueia replay. Revisão 013 documentada e autorização Cloud solicitada; não aplicada.
+
+D67: novo rascunho após confirmação, com identificador independente. Incerteza e conflito não permitem nova proposta. Sete testes de formulário aprovados; regressão completa em execução.
+Verificação final D67: regressão completa 589 testes/74 arquivos aprovada, duração 197,26s; tipos/lint direcionados aprovados. A execução foi acompanhada pelo mesmo processo até o término, sem reiniciar.

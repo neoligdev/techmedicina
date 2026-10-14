@@ -5,6 +5,37 @@ import { JourneyGoalDraftConnectedForm } from "@/features/journey/goal-draft-con
 import { JourneyGoalDraftConflict } from "@/features/journey/goal-draft-client";
 import type { JourneyGoalDraftInput } from "@/features/journey/goal-draft";
 afterEach(cleanup);
+it("new proposal requires confirmed receipt and generates another request ID", async () => {
+  const send = vi.fn(async (input: JourneyGoalDraftInput) => receipt(input));
+  render(<JourneyGoalDraftForm {...props} canCreate send={send} />);
+  expect(screen.queryByRole("button", { name: "Iniciar nova proposta" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
+  await screen.findByText(/Rascunho confirmado/);
+  fireEvent.click(screen.getByRole("button", { name: "Iniciar nova proposta" }));
+  expect(screen.getByLabelText("Área de cuidado")).not.toBeDisabled();
+  expect(screen.queryByText(/Rascunho confirmado/)).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText("Área de cuidado"), { target: { value: "activity" } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
+  await screen.findByText(/Rascunho confirmado/);
+  const first = send.mock.calls[0]?.[0],
+    second = send.mock.calls[1]?.[0];
+  expect(first?.sourceRequestId).not.toEqual(second?.sourceRequestId);
+  expect(second).toMatchObject({ patientId, kind: "activity", cadence: "daily" });
+});
+it("uncertainty never offers a new proposal", async () => {
+  render(
+    <JourneyGoalDraftForm
+      {...props}
+      canCreate
+      send={async () => {
+        throw new Error("lost");
+      }}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
+  await screen.findByText(/Não foi possível confirmar/);
+  expect(screen.queryByRole("button", { name: "Iniciar nova proposta" })).not.toBeInTheDocument();
+});
 const clinicId = "11111111-1111-4111-8111-111111111111",
   patientId = "22222222-2222-4222-8222-222222222222";
 const props = { clinicId, patientId };
@@ -30,7 +61,7 @@ it("locks fields after uncertain write and resends exact proposal", async () => 
   await screen.findByText(/Rascunho confirmado/);
   expect(send.mock.calls[0]?.[0]).toEqual(send.mock.calls[1]?.[0]);
   expect(send.mock.calls[0]?.[0]).toMatchObject({ patientId, kind: "sleep", cadence: "weekly" });
-  expect(screen.getByRole("button")).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Salvar rascunho" })).toBeDisabled();
 });
 it("does not confirm another patient's receipt", async () => {
   render(
