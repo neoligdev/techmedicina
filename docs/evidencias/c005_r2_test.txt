@@ -1,0 +1,37 @@
+﻿
+> test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina[39m
+
+ [32mÔ£ô[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 6487[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe alerta e bloqueia cria├º├úo quando recoveryNeeded ├® true [33m 2773[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe alerta, bloqueia bot├Áes e permite tentar novamente quando readFailed ├® true [33m 610[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe warning de legacy active mas permite a├º├Áes (migra├º├úo sem perda de dados inv├ílidos) [33m 599[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m permite recuperar acesso quando recoveryNeeded ├® true e aciona backupAndClearPlans preservando v├ílidos [33m 711[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m preserva o editor (n├úo fecha) e exibe erro quando savePlans falha (setItem error ou duplicate) [33m 1766[2mms[22m[39m
+ [32mÔ£ô[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 9684[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m filtra busca e situa├º├úo e restaura resultados [33m 2465[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m cancela e limpa o formul├írio sem criar item [33m 3362[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m valida nome e mant├®m descri├º├úo no detalhe do rascunho [33m 2844[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m descarta rascunhos ao desmontar a tela [33m 1003[2mms[22m[39m
+ [32mÔ£ô[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 20044[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva, alterna sem misturar prefer├¬ncias e recupera ap├│s remontar [33m 8399[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m n├úo confirma nem aplica uma grava├º├úo recusada [33m 1206[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 6487[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m ignora callback stale de imagem [33m 1142[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m dados inv├ílidos de imagem ou quota ignorados de forma segura [33m 1572[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m dados corrompidos acionam erro ass├¡ncrono [33m 1001[2mms[22m[39m
+ [32mÔ£ô[39m src/features/super-admin/plans/__tests__/storage.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32mÔ£ô[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32mÔ£ô[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m58 passed[39m[22m[90m (58)[39m
+[2m   Start at [22m 14:37:05
+[2m   Duration [22m 55.84s[2m (transform 17.48s, setup 8.56s, import 27.39s, tests 36.36s, environment 53.93s)[22m
+
+EXIT_CODE=0

@@ -1,0 +1,104 @@
+﻿
+> test
+> vitest run --run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina[39m
+
+ [31m❯[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 23[2mms[22m[39m
+     [32m✓[39m contém somente duas clínicas com identificadores únicos[32m 6[2mms[22m[39m
+     [32m✓[39m busca por nome sem diferenciar acentos e caixa[32m 3[2mms[22m[39m
+[31m     [31m×[31m oferece os menus previstos para as quatro áreas[39m[32m 10[2mms[22m[39m
+ [32m✓[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 17629[2mms[22m[39m
+     [33m[2m✓[22m[39m salva, alterna sem misturar preferências e recupera após remontar [33m 10905[2mms[22m[39m
+     [33m[2m✓[22m[39m não confirma nem aplica uma gravação recusada [33m 511[2mms[22m[39m
+     [33m[2m✓[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 3963[2mms[22m[39m
+     [33m[2m✓[22m[39m ignora callback stale de imagem [33m 639[2mms[22m[39m
+     [33m[2m✓[22m[39m dados inválidos de imagem ou quota ignorados de forma segura [33m 744[2mms[22m[39m
+     [33m[2m✓[22m[39m dados corrompidos acionam erro assíncrono [33m 482[2mms[22m[39m
+     [33m[2m✓[22m[39m Super ADM e troca de clínica tratam corretamente o callback atrasado de favicon [33m 345[2mms[22m[39m
+ [32m✓[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 11529[2mms[22m[39m
+     [33m[2m✓[22m[39m filtra busca e situação e restaura resultados [33m 3569[2mms[22m[39m
+     [33m[2m✓[22m[39m cancela e limpa o formulário sem criar item [33m 1778[2mms[22m[39m
+     [33m[2m✓[22m[39m valida nome e mantém descrição no detalhe do rascunho [33m 3698[2mms[22m[39m
+     [33m[2m✓[22m[39m descarta rascunhos ao desmontar a tela [33m 2468[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 9975[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta e bloqueia criação quando recoveryNeeded é true [33m 1647[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta, bloqueia botões e permite tentar novamente quando readFailed é true [33m 1664[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe warning de legacy active mas permite ações (migração sem perda de dados inválidos) [33m 895[2mms[22m[39m
+     [33m[2m✓[22m[39m permite recuperar acesso quando recoveryNeeded é true e aciona backupAndClearPlans preservando válidos [33m 1468[2mms[22m[39m
+     [33m[2m✓[22m[39m preserva o editor (não fecha) e exibe erro quando savePlans falha (setItem error ou duplicate) [33m 4293[2mms[22m[39m
+ [32m✓[39m src/test/health-data.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 448[2mms[22m[39m
+     [33m[2m✓[22m[39m formats numbers and timestamps in Brazilian notation independently of host timezone [33m 428[2mms[22m[39m
+ [32m✓[39m src/test/project-status.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/storage.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [31m❯[39m src/features/super-admin/simulator/__tests__/index.test.tsx [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m src/test/app-sw.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/simulator/__tests__/calculator.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+npm.cmd : 
+No C:\Users\marco\OneDrive\Desktop\PROGRAMAÇÃO\techmedicina\techmedicina\run_checks_c008.ps1:10 caractere:1
++ npm.cmd run test -- --run 2>&1 | Out-File -FilePath docs/evidencias/c ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/features/super-admin/simulator/__tests__/index.test.tsx[2m [ 
+src/features/super-admin/simulator/__tests__/index.test.tsx ][22m
+[31m[1mError[22m: Failed to resolve import "@testing-library/user-event" from 
+"src/features/super-admin/simulator/__tests__/index.test.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina/src/features/super-admin/simulator/_
+_tests__/index.test.tsx[39m:4:22
+[33m  2  |  import { describe, it, expect, vi } from "vitest";
+  3  |  import { render, screen } from "@testing-library/react";
+  4  |  import userEvent from "@testing-library/user-event";
+     |                         ^
+  5  |  import { SimulatorPage } from "../index";
+  6  |  var _jsxFileName = 
+"C:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina/src/features/super-admin/si...[39m
+[90m [2m❯[22m TransformPluginContext._formatLog ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_module
+s/vite/dist/node/chunks/node.js:[2m30416:39[22m[39m
+[90m [2m❯[22m TransformPluginContext.error ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_modules/vit
+e/dist/node/chunks/node.js:[2m30413:14[22m[39m
+[90m [2m❯[22m normalizeUrl ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_modules/vite/dist/node/chun
+ks/node.js:[2m27438:18[22m[39m
+[90m [2m❯[22m ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_modules/vite/dist/node/chunks/node.js:[
+2m27506:30[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_modules
+/vite/dist/node/chunks/node.js:[2m27474:4[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_mod
+ules/vite/dist/node/chunks/node.js:[2m30201:14[22m[39m
+[90m [2m❯[22m loadAndTransform ../../../PROGRAMA%C3%87%C3%83O/techmedicina/techmedicina/node_modules/vite/dist/node/
+chunks/node.js:[2m20124:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/test/demo.test.ts[2m > [22mDados administrativos demonstrativos[2m > [22moferece os 
+menus previstos para as quatro áreas
+[31m[1mAssertionError[22m: super-admin/simulador: expected undefined to be defined[39m
+[36m [2m❯[22m src/test/demo.test.ts:[2m21:71[22m[39m
+    [90m 19|[39m       [35mfor[39m ([35mconst[39m item [35mof[39m navigation[area]) {
+    [90m 20|[39m         [35mif[39m (item[33m.[39mslug [33m&&[39m item[33m.[39mslug [33m!==[39m 
+[32m"personalizacao"[39m)
+    [90m 21|[39m           expect(moduleSpec(area, item.slug), `${area}/${item.slug}`).…
+    [90m   |[39m                                                                       [31m^[39m
+    [90m 22|[39m       }
+    [90m 23|[39m       expect(new Set(navigation[area].map((item) => item.slug)).size).…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (13)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m73 passed[39m[22m[90m (74)[39m
+[2m   Start at [22m 18:35:08
+[2m   Duration [22m 90.75s[2m (transform 36.42s, setup 18.29s, import 57.23s, tests 39.81s, environment 96.25s)[22m
+
+EXIT_CODE=1

@@ -1,0 +1,12 @@
+﻿
+> test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina[39m
+
+ [32mÔ£ô[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 7506[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe alerta e bloqueia cria├º├úo quando recoveryNeeded ├® true [33m 2670[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe warning de legacy active mas permite a├º├Áes (migra├º├úo sem perda de dados inv├ílidos) [33m 1253[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m permite recuperar acesso quando recoveryNeeded ├® true e aciona backupAndClearPlans preservando v├ílidos [33m 1063[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m preserva o editor (n├úo fecha) e exibe erro quando savePlans falha (setItem error ou duplicate) [33m 2487[2mms[22m[39m

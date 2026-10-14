@@ -26,6 +26,7 @@ D13 verde somente como entrega de código e validação local; requisitos produt
 Referências: [RLS Supabase](https://supabase.com/docs/guides/database/postgres/row-level-security), [Database Lovable](https://docs.lovable.dev/features/database), [PGlite](https://pglite.dev/docs/).
 
 ### Revisão Cloud — 10/10/2026
+
 Lovable recusou aplicação exata: FKs ao schema auth.users e ordem GRANT/RLS incompatíveis com suas regras gerenciadas. Nenhuma tabela criada nessa tentativa. Removidas as três FKs de conta, mantendo IDs UUID opacos, associação composta paciente/clínica/conta e autorização auth.uid(). Provisionamento futuro precisa confirmar existência/status da conta via Auth API. GRANT/REVOKE agora antecedem RLS dentro da mesma transação. 12/12 testes PostgreSQL aprovados sem tabela auth.users simulada. Incorporados commits gerenciados e corrigido lint do timer/formatação sem alterar destino de tokens. Aplicação remota permanece pendente.
 
 ### Aplicação Cloud confirmada — Lovable, 10/10/2026

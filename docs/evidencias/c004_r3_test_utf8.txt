@@ -1,0 +1,32 @@
+﻿
+> test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina[39m
+
+ [32mÔ£ô[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+[90mstdout[2m | src/test/personalization.test.tsx[2m > [22m[2mPersonaliza├º├úo por cl├¡nica[2m > [22m[2msalva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B
+[22m[39mMOCK IMAGE SRC: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEA
+
+ [32mÔ£ô[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 2946[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m filtra busca e situa├º├úo e restaura resultados [33m 513[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m cancela e limpa o formul├írio sem criar item [33m 923[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m valida nome e mant├®m descri├º├úo no detalhe do rascunho [33m 1125[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m descarta rascunhos ao desmontar a tela [33m 374[2mms[22m[39m
+[90mstdout[2m | src/test/personalization.test.tsx[2m > [22m[2mPersonaliza├º├úo por cl├¡nica[2m > [22m[2msalva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B
+[22m[39mMOCK IMAGE SRC: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIA
+
+ [32mÔ£ô[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 5138[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva, alterna sem misturar prefer├¬ncias e recupera ap├│s remontar [33m 2603[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 1660[2mms[22m[39m
+ [32mÔ£ô[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m   Start at [22m 07:34:54
+[2m   Duration [22m 12.89s[2m (transform 3.63s, setup 2.12s, import 7.09s, tests 8.16s, environment 12.01s)[22m
+
+EXIT_CODE=0

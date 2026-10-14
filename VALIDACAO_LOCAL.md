@@ -53,6 +53,7 @@ Transferência registrada: Antigravity declarou OCIOSO após C-001-R2; Codex ass
 Estado final: executor OCIOSO. Retomada: revisar esta seção e MATRIZ_REQUISITOS.md; concluir a lacuna do seletor nativo de cores. Implementações dependentes de infraestrutura aguardam decisão futura do usuário. Preservar alterações locais existentes e package-lock.json.
 
 ### Encerramento verificável
+
 - Rodada do coordenador: test_coordenador_final.log registra EPERM no cache do sandbox (nenhum teste executado, exit 1); repetição autorizada fora do sandbox em test_coordenador_final_fora_sandbox.log: 8/8 testes, exit 0. tsc_coordenador_final.log: exit 0.
 - A formatação geral feita pelo executor em R2 alterou bytes da cópia do PRD. Coordenador restaurou a cópia a partir do original; SHA256 de ambos: 02C9182511E7BBC14EBB4A034B31A9A69937438AB0BD9D41FC25A5CBF941C035. PRD permanece intocado em conteúdo e bytes.
 - Compilação de produção já aprovada na validação anterior; após ela, mudanças nesta rodada limitadas a testes e registros (além de formatação). Sem publicação.

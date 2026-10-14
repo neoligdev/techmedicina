@@ -1,6 +1,7 @@
 # Relatório Final - Tarefa C-001-R2 (Correção)
 
 ## Arquivos Reais Alterados
+
 - **Criados/Copiados:** `PRD_Techmedicina.md` (da pasta superior, intocado em conteúdo), `docs/COORDENACAO.md`, `docs/PROGRESSO.md`, pasta `docs/evidencias/`.
 - **Modificados:** `AGENTS.md` e `roadmap.md` (somente para adição de regras/fluxos de coordenação).
 - **Código Alterado:** `src/test/personalization.test.tsx` — Teste "salva, alterna sem misturar preferências e recupera após remontar" sofreu lentidão comprovada. O timeout deste bloco específico foi ajustado para evitar falsos negativos sem falsear/mascarar `expect()`. A lógica duplicada de normalização de busca foi substituída pela importação direta e correta da função `filterClinics`.
@@ -9,6 +10,7 @@
 - **Novo Entregável:** `docs/MATRIZ_REQUISITOS.md` — mapeamento definido/pendente e matriz de isolamento para avançar sem backend.
 
 ## Evidência Executada versus Indisponível
+
 - **Executado (C-001-R2):**
   - O log original com histórico observado pelo coordenador (1 falha/6 passes, timeout 5000ms) foi sobrescrito acidentalmente na rodada R1 e está formalmente registrado aqui.
   - O teste com falha de timeout foi isolado, refatorado, corrigido e reformatado.
@@ -19,16 +21,20 @@
   - O agente de navegador falhou (Playwright 404) e o Coordenador fica encarregado da avaliação. Em decorrência, as verificações de responsividade mobile e validação das cores nativas seguem pendentes.
 
 ## Testes e Resultados
+
 - A suíte de 8 testes passa sem falsos sucessos, conforme resultado textual do Vitest via npm. Testes atestam funcionamento das funções centrais, formatados adequadamente.
 
 ## Divergências e Diretrizes do Negócio
+
 - A instrução originária do PRD de adiar comandos está superada por decisão direta de desenvolvimento da presente sessão.
 - **Nova Decisão do Usuário:** Questões de infraestrutura ficam suspensas/postergadas; o fluxo conclui apenas validação e organização independentes (vide MATRIZ_REQUISITOS revisada), sem inserção de backend real ou mecanismos de autenticação de produção. Novas políticas de acesso não devem ser implementadas neste ciclo.
 
 ## Estado Git
+
 - Branch: `main` (mantido inalterado remotamente). Nenhuma ação de commit, push, publish ou intervenção no projeto ERP Marale foi engatilhada.
 
 ## Situação
+
 OCIOSO
 
 ## Revisão final do coordenador — 08/10/2026

@@ -28,7 +28,6 @@ Commit 36f7f69 enviado à main e aceito no Lovable. Após Update preview, a nova
 
 Prioridade seguinte: esclarecer o status de compilação remota e configurar/validar autenticação e políticas por clínica no backend. Regras comerciais e integrações dependem das decisões registradas na matriz do PRD.
 
-
 ## Arquivos do lote UX/UI
 
 - README.md
@@ -59,4 +58,3 @@ Prioridade seguinte: esclarecer o status de compilação remota e configurar/val
 - src/styles.css
 - src/test/demo.test.ts
 - src/test/mockups.test.tsx
-

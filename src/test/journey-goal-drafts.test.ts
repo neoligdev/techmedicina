@@ -68,6 +68,85 @@ beforeAll(async () => {
 afterAll(async () => {
   await db?.close();
 });
+it("mesma solicitação em outra clínica não reutiliza recibo e exige vínculo próprio", async () => {
+  const secondClinic = "10000000-0000-4000-8000-000000000001";
+  const secondPatient = "10000000-0000-4000-8000-000000000002";
+  const secondMembership = "10000000-0000-4000-8000-000000000003";
+  const sourceRequest = "10000000-0000-4000-8000-000000000004";
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_clinics(id,name,is_active) VALUES($1,'QA second',true)", [
+    secondClinic,
+  ]);
+  await db.query(
+    "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+    [secondPatient, secondClinic, patient],
+  );
+  await db.query(
+    "INSERT INTO public.tm_membership_grants VALUES($1,'journey_goals','create') ON CONFLICT DO NOTHING",
+    [doctor],
+  );
+  await as(doctor);
+  const first = await db.query<{ value: { id: string } }>(
+    "SELECT public.tm_create_journey_goal_draft($1,$2,$3,'sleep','daily') AS value",
+    [clinic, patient, sourceRequest],
+  );
+  await expect(
+    db.query("SELECT public.tm_create_journey_goal_draft($1,$2,$3,'sleep','daily')", [
+      secondClinic,
+      secondPatient,
+      sourceRequest,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  expect(
+    (
+      await db.query("SELECT id FROM public.tm_journey_goal_drafts WHERE clinic_id=$1", [
+        secondClinic,
+      ])
+    ).rows,
+  ).toHaveLength(0);
+  await db.exec("RESET ROLE");
+  await db.query(
+    "INSERT INTO public.tm_memberships(id,clinic_id,user_id,role,is_active,medical_identity_verified) VALUES($1,$2,$3,'medico',true,true)",
+    [secondMembership, secondClinic, doctor],
+  );
+  await db.query(
+    "INSERT INTO public.tm_membership_grants VALUES($1,'journey_goals','read'),($1,'journey_goals','create')",
+    [secondMembership],
+  );
+  await as(doctor);
+  const second = await db.query<{ value: { id: string } }>(
+    "SELECT public.tm_create_journey_goal_draft($1,$2,$3,'sleep','daily') AS value",
+    [secondClinic, secondPatient, sourceRequest],
+  );
+  expect(second.rows[0]?.value.id).not.toBe(first.rows[0]?.value.id);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_memberships SET is_active=false WHERE id=$1", [
+    secondMembership,
+  ]);
+  await as(doctor);
+  expect(
+    (
+      await db.query("SELECT id FROM public.tm_journey_goal_drafts WHERE clinic_id=$1", [
+        secondClinic,
+      ])
+    ).rows,
+  ).toHaveLength(0);
+  await expect(
+    db.query("SELECT public.tm_create_journey_goal_draft($1,$2,$3,'sleep','daily')", [
+      secondClinic,
+      secondPatient,
+      sourceRequest,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  expect(
+    (
+      await db.query("SELECT id FROM public.tm_journey_goal_drafts WHERE clinic_id=$1", [
+        secondClinic,
+      ])
+    ).rows,
+  ).toHaveLength(1);
+});
 it("grant write sem create não permite rascunho ou replay", async () => {
   await db.exec("RESET ROLE");
   await db.query(
@@ -93,7 +172,13 @@ it("médico cria rascunho auditado idempotente sem modificar meta vigente", asyn
     replay = await draft();
   expect(replay.rows).toEqual(first.rows);
   expect(first.rows[0]!.value).toMatchObject({ state: "draft", actor_user_id: doctor });
-  expect((await db.query("SELECT * FROM public.tm_journey_goal_drafts")).rows).toHaveLength(1);
+  expect(
+    (
+      await db.query("SELECT * FROM public.tm_journey_goal_drafts WHERE source_request_id=$1", [
+        goal,
+      ])
+    ).rows,
+  ).toHaveLength(1);
   expect(
     (await db.query("SELECT status,version FROM public.tm_journey_goals WHERE id=$1", [goal])).rows,
   ).toEqual([{ status: "eligible", version: 1 }]);

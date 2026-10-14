@@ -1,0 +1,77 @@
+
+ RUN  v4.1.11 C:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina
+
+ ❯ src/test/journey-goal-draft-server.test.ts (9 tests | 8 failed) 102ms
+   × deriva clínica/autor da sessão e devolve recibo de rascunho 48ms
+   × input não autoriza prescrição, tenant ou elegibilidade 15ms
+   × input não autoriza prescrição, tenant ou elegibilidade 2ms
+   × input não autoriza prescrição, tenant ou elegibilidade 3ms
+   × retorno com clinic_id trocado não confirma 10ms
+   × retorno com patient_id trocado não confirma 2ms
+   × retorno com actor_user_id trocado não confirma 2ms
+   × retorno com source_request_id trocado não confirma 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/test/journey-goal-draft-server.test.ts > deriva clínica/autor da sessão e devolve recibo de rascunho
+Error: Draft denied
+ ❯ createJourneyGoalDraft src/lib/journey/goal-draft.server.ts:47:11
+     45|     )
+     46|   )
+     47|     throw new AuthError("Draft denied", 403);
+       |           ^
+     48|   const input = journeyGoalDraftInputSchema.safeParse(value);
+     49|   if (!input.success) throw new AuthError("Invalid draft", 400);
+ ❯ src/test/journey-goal-draft-server.test.ts:45:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/test/journey-goal-draft-server.test.ts > input não autoriza prescrição, tenant ou elegibilidade
+ FAIL  src/test/journey-goal-draft-server.test.ts > input não autoriza prescrição, tenant ou elegibilidade
+ FAIL  src/test/journey-goal-draft-server.test.ts > input não autoriza prescrição, tenant ou elegibilidade
+AssertionError: expected Error: Draft denied { status: 403 } to match object { status: 400 }
+
+- Expected
++ Received
+
+- {
+-   "status": 400,
++ AuthError {
++   "status": 403,
+  }
+
+ ❯ src/test/journey-goal-draft-server.test.ts:81:60
+     82| });
+     83| it.each([
+     84|   { ...input, kind: "medication" },
+       |        ^
+     85|   { ...input, clinicId: clinic },
+     86|   { ...input, state: "eligible" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/test/journey-goal-draft-server.test.ts > retorno com clinic_id trocado não confirma
+ FAIL  src/test/journey-goal-draft-server.test.ts > retorno com patient_id trocado não confirma
+ FAIL  src/test/journey-goal-draft-server.test.ts > retorno com actor_user_id trocado não confirma
+ FAIL  src/test/journey-goal-draft-server.test.ts > retorno com source_request_id trocado não confirma
+AssertionError: expected [Function] to throw error including 'Unconfirmed draft' but got 'Draft denied'
+
+Expected: "Unconfirmed draft"
+Received: "Draft denied"
+
+ ❯ src/test/journey-goal-draft-server.test.ts:92:6
+     90|   expect(rpc).not.toHaveBeenCalled();
+     91| });
+     92| it.each(["clinic_id", "patient_id", "actor_user_id", "source_request_i…
+       |      ^
+     93|   "retorno com %s trocado não confirma",
+     94|   async (field) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+
+ Test Files  1 failed | 70 passed (71)
+      Tests  8 failed | 557 passed (565)
+   Start at  09:05:55
+   Duration  530.85s (transform 10.90s, setup 89.97s, import 74.16s, tests 140.57s, environment 163.74s)
+

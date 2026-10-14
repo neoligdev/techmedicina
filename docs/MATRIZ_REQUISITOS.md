@@ -4,42 +4,42 @@ Referência: PRD_Techmedicina.md, preservado integralmente. Esta matriz organiza
 
 Histórico: a validação inicial limitava desenvolvimento a etapas independentes. Atualização de 09/10/2026: usuário indicou Lovable Cloud e autorizou Codex a implementar diretamente a modernização global, gráficos e dados de saúde demonstrativos, com commit/push para o preview. Isso substitui a restrição de execução exclusiva pelo Antigravity e permite a demonstração solicitada, sem concluir segurança, prontuário ou integrações reais.
 
-| Seção PRD | Escopo | Dependência e situação |
-| --- | --- | --- |
-| 1 | Processo e decisões | Pedido atual autoriza coordenação; frase antiga de adiar comandos é divergência registrada. |
-| 2 | Arquitetura funcional | Quatro áreas demonstrativas existentes; arquitetura produtiva depende de infraestrutura. |
-| 3 | Médico | Autorização, prontuário definitivo, dados, documentos, agenda e comunicação dependem de servidor e regras pendentes. |
-| 4 | Segurança | Isolamento, criptografia e autorização reais pendentes; recomendações não são decisões fechadas. |
-| 5 | Compartilhamento na clínica | Exige vínculos e autorização no servidor; seleção demonstrativa não comprova acesso. |
-| 6 | Dispositivo e contexto | Dependente de protocolo, integração e decisões do dispositivo. |
-| 7 | Aceite Médico | Critérios propostos para futuro teste real; não atendidos pela demonstração. |
-| 8 | Paciente | C006: painel, gráficos, histórico e navegação móvel com dados fictícios (8.1). IA, lembretes, dados reais e demais regras continuam pendentes. |
-| 9 | Loja | Catálogos definidos; operação comercial 9.3 pendente. |
-| 10 | Integração e notificações | Recomendado; requer eventos, permissões e canais aprovados. |
-| 11 | Aceite app e loja | Testes de aceitação futuros com serviços reais. |
-| 12 | Super ADM | Gestão e vidas definidas; persistência e fechamento pendentes. Vidas habilitadas não equivalem a uso mensal. |
-| 13 | Planos | Contratos/catálogos definidos; camadas recomendadas e condições pendentes. |
-| 14 | Aceite ADM e planos | Futuro: contratos, vínculos, cobrança e isolamento reais. |
-| 15 | Blog | Escopo definido; conteúdo e publicação pendentes, sem publicação nesta etapa. |
-| 16 | Academy | Escopo definido; conteúdo e acesso dependem de implantação. |
-| 17 | Indique e Ganhe | Configuração definida; critérios/recompensas pendentes. |
-| 18 | Dependentes/família | Escopo definido; representação, permissões e condições pendentes. |
-| 19 | Financeiro/plano ativo | Um plano ativo definido; inadimplência, upgrade e cobrança dependem de decisões. |
-| 20 | Planos e Produtos clínica | Configuração definida; depende do catálogo e regras comerciais. |
-| 21 | CRM/IA de vendas | Funis definidos; integrações e comportamento de IA pendentes. |
-| 22 | Integrações por clínica | Escopo definido; fornecedores, credenciais e contratos pendentes. |
-| 23 | Vendas/comissões | Hierarquia e alcance definidos; cálculo/estados exigem regras aprovadas. |
-| 24 | Aceite conteúdo/comercial | Futuro: verificar permissões, atribuições e operação real. |
-| 25 | Pulseira | Gestão definida; firmware, autorização, estoque e telemetria dependentes. |
-| 26 | Aceite pulseira | Exige dispositivo e ciclo operacional reais. |
-| 27 | Bioimpedância | C006: 8 medições fictícias, cartões, 3 gráficos e tabelas compartilhados com Médico. Modelo, dados reais, integração, permissões e cobrança pendentes. |
-| 28 | Aceite bioimpedância | Exige balança, identificação e integração reais. |
-| 29 | Inovações Super ADM | Simulador, central operacional, implantação guiada e laboratório IA aprovados; premissas/detalhes pendentes. |
-| 30 | Inovações clínica/equipe | Jornadas, fila, resumo de consulta e retenção aprovados; dependem de dados e permissões. |
-| 31 | Inovações paciente | Meu dia, preparação, linha do tempo, metas e privacidade aprovados; dependem de dados e regras. |
-| 32 | Protocolos | Composição/aptidão/encaminhamento definidos em escopo; estados, validação clínica, cobrança e relação com plano ativo pendentes. |
-| 33 | Aceite inovações | Critérios propostos; 13 inovações incluídas, sem cumprimento presumido. |
-| 34 | Prioridades/pendências | Sequência sugerida, não cronograma; decisões detalhadas permanecem abertas. |
+| Seção PRD | Escopo                      | Dependência e situação                                                                                                                                 |
+| --------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1         | Processo e decisões         | Pedido atual autoriza coordenação; frase antiga de adiar comandos é divergência registrada.                                                            |
+| 2         | Arquitetura funcional       | Quatro áreas demonstrativas existentes; arquitetura produtiva depende de infraestrutura.                                                               |
+| 3         | Médico                      | Autorização, prontuário definitivo, dados, documentos, agenda e comunicação dependem de servidor e regras pendentes.                                   |
+| 4         | Segurança                   | Isolamento, criptografia e autorização reais pendentes; recomendações não são decisões fechadas.                                                       |
+| 5         | Compartilhamento na clínica | Exige vínculos e autorização no servidor; seleção demonstrativa não comprova acesso.                                                                   |
+| 6         | Dispositivo e contexto      | Dependente de protocolo, integração e decisões do dispositivo.                                                                                         |
+| 7         | Aceite Médico               | Critérios propostos para futuro teste real; não atendidos pela demonstração.                                                                           |
+| 8         | Paciente                    | C006: painel, gráficos, histórico e navegação móvel com dados fictícios (8.1). IA, lembretes, dados reais e demais regras continuam pendentes.         |
+| 9         | Loja                        | Catálogos definidos; operação comercial 9.3 pendente.                                                                                                  |
+| 10        | Integração e notificações   | Recomendado; requer eventos, permissões e canais aprovados.                                                                                            |
+| 11        | Aceite app e loja           | Testes de aceitação futuros com serviços reais.                                                                                                        |
+| 12        | Super ADM                   | Gestão e vidas definidas; persistência e fechamento pendentes. Vidas habilitadas não equivalem a uso mensal.                                           |
+| 13        | Planos                      | Contratos/catálogos definidos; camadas recomendadas e condições pendentes.                                                                             |
+| 14        | Aceite ADM e planos         | Futuro: contratos, vínculos, cobrança e isolamento reais.                                                                                              |
+| 15        | Blog                        | Escopo definido; conteúdo e publicação pendentes, sem publicação nesta etapa.                                                                          |
+| 16        | Academy                     | Escopo definido; conteúdo e acesso dependem de implantação.                                                                                            |
+| 17        | Indique e Ganhe             | Configuração definida; critérios/recompensas pendentes.                                                                                                |
+| 18        | Dependentes/família         | Escopo definido; representação, permissões e condições pendentes.                                                                                      |
+| 19        | Financeiro/plano ativo      | Um plano ativo definido; inadimplência, upgrade e cobrança dependem de decisões.                                                                       |
+| 20        | Planos e Produtos clínica   | Configuração definida; depende do catálogo e regras comerciais.                                                                                        |
+| 21        | CRM/IA de vendas            | Funis definidos; integrações e comportamento de IA pendentes.                                                                                          |
+| 22        | Integrações por clínica     | Escopo definido; fornecedores, credenciais e contratos pendentes.                                                                                      |
+| 23        | Vendas/comissões            | Hierarquia e alcance definidos; cálculo/estados exigem regras aprovadas.                                                                               |
+| 24        | Aceite conteúdo/comercial   | Futuro: verificar permissões, atribuições e operação real.                                                                                             |
+| 25        | Pulseira                    | Gestão definida; firmware, autorização, estoque e telemetria dependentes.                                                                              |
+| 26        | Aceite pulseira             | Exige dispositivo e ciclo operacional reais.                                                                                                           |
+| 27        | Bioimpedância               | C006: 8 medições fictícias, cartões, 3 gráficos e tabelas compartilhados com Médico. Modelo, dados reais, integração, permissões e cobrança pendentes. |
+| 28        | Aceite bioimpedância        | Exige balança, identificação e integração reais.                                                                                                       |
+| 29        | Inovações Super ADM         | Simulador, central operacional, implantação guiada e laboratório IA aprovados; premissas/detalhes pendentes.                                           |
+| 30        | Inovações clínica/equipe    | Jornadas, fila, resumo de consulta e retenção aprovados; dependem de dados e permissões.                                                               |
+| 31        | Inovações paciente          | Meu dia, preparação, linha do tempo, metas e privacidade aprovados; dependem de dados e regras.                                                        |
+| 32        | Protocolos                  | Composição/aptidão/encaminhamento definidos em escopo; estados, validação clínica, cobrança e relação com plano ativo pendentes.                       |
+| 33        | Aceite inovações            | Critérios propostos; 13 inovações incluídas, sem cumprimento presumido.                                                                                |
+| 34        | Prioridades/pendências      | Sequência sugerida, não cronograma; decisões detalhadas permanecem abertas.                                                                            |
 
 ## Etapas por dependência
 
@@ -52,6 +52,7 @@ Histórico: a validação inicial limitava desenvolvimento a etapas independente
 Não há decisão automática sobre custos, fornecedores, regras clínicas ou comerciais. Próxima ação local possível: finalizar verificação manual do seletor nativo de cores; próxima etapa estrutural depende da decisão de infraestrutura adiada.
 
 ## Infraestrutura e Coordenação (Atualizado 09/10/2026)
+
 - **Infraestrutura**: Lovable Cloud definido pelo usuário. Conexão via GitHub confirmada, porém configuração efetiva de banco de dados (DB) e autenticação real (auth) ainda não verificadas.
 - **Autorizações do Usuário**: Autorizado desenvolvimento contínuo (PRD contínuo). O executor local (Antigravity) atua como único executor, responsável pelos commits e push normais (`git commit`, `git push`) no fluxo, sem precisar pedir permissão prévia a cada passo. O coordenador atua como revisor de QA.
 - **Progresso de Tarefas**: C004 validada. C005 (Catálogo Base de Planos) implementada, formatada e consolidada localmente com testes isolados perfeitos e regras estritas em R4. Aguardando aprovação/QA final (OCIOSO).

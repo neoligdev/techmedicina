@@ -1,0 +1,32 @@
+﻿
+> lint
+> eslint .
+
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\platform\app-shell.tsx
+  64:19  warning  The ref value 'menuTrigger.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'menuTrigger.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\badge.tsx
+  32:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\button.tsx
+  49:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\form.tsx
+  163:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\sidebar.tsx
+  743:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\toggle.tsx
+  42:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\features\demo\context.tsx
+  60:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+Ô£û 8 problems (0 errors, 8 warnings)
+
+EXIT_CODE=0

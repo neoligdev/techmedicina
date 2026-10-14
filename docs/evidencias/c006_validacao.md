@@ -2,12 +2,12 @@
 
 Registro resumido dos comandos realmente executados pelo Codex na raiz Git local. Não é um log bruto.
 
-| Comando | Saída final | Resultado |
-| --- | --- | --- |
-| TypeScript `--noEmit` | 0 | Tipos válidos |
-| `npm run lint` | 0 | 0 erros / 7 avisos Fast Refresh |
-| `npm run test` | 0 | 64 testes / 10 arquivos |
-| `npm run build` | 0 | Cliente e servidor compilados |
+| Comando               | Saída final | Resultado                       |
+| --------------------- | ----------- | ------------------------------- |
+| TypeScript `--noEmit` | 0           | Tipos válidos                   |
+| `npm run lint`        | 0           | 0 erros / 7 avisos Fast Refresh |
+| `npm run test`        | 0           | 64 testes / 10 arquivos         |
+| `npm run build`       | 0           | Cliente e servidor compilados   |
 
 Ocorrências corrigidas: lint inicial no script auxiliar clean.cjs e formatação do módulo de planos; teste do worker inicialmente usava import.meta.url transformado pelo Vite, corrigido para caminho resolvido a partir da raiz. Reexecução completa final passou.
 

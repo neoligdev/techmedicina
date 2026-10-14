@@ -1,0 +1,9 @@
+C027 — 10/10/2026 — revisão documental Codex
+PRD principal: v0.11.1
+Identificadores anteriores preservados: 101 (34 seções e 67 subseções)
+Linhas não vazias anteriores preservadas em ordem: 700, excluído cabeçalho da versão atualizado
+Seção 9 de White Label do adendo: incorporada integralmente, cabeçalhos aprofundados para preservar numeração principal
+vitest run src/test/project-status.test.ts: 3 testes aprovados, 1 arquivo
+git diff --name-only -- src public database drizzle package.json bun.lock vite.config.ts AGENTS.md: saída vazia
+Sem validação funcional multi-host, sem implantação e sem alteração de infraestrutura nesta revisão
+Catálogo da aplicação não modificado; plano e novos requisitos documentados, implementação aguardando autorização

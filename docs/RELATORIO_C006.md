@@ -48,7 +48,6 @@ Autenticação, isolamento no servidor, auditoria, persistência de saúde e req
 
 Scripts auxiliares, package-lock, backup e logs antigos ficaram fora do commit. `clean.cjs` auxiliar preexistente recebeu somente formatação local para permitir o lint e não foi executado nem versionado.
 
-
 ## GitHub e Lovable após envio
 
 Commit de implementação `49e42d26a76dd45bfc8299975f90f5323ed00641`, autor PlugPix <plugpix.brasil@gmail.com>, enviado normalmente para origin/main e confirmado por git ls-remote. No editor Lovable, o commit apareceu como Pushed from GitHub / Accepted. O iframe do preview mostrou o componente novo Indicadores operacionais demonstrativos (Vidas habilitadas / Visão da rede), comprovando recebimento da nova interface.

@@ -1,0 +1,455 @@
+﻿
+> test
+> vitest run --run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina[39m
+
+ [31m❯[39m src/features/super-admin/simulator/__tests__/calculator.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 39[2mms[22m[39m
+     [32m✓[39m deve calcular corretamente um cenário positivo mantendo proporção[32m 9[2mms[22m[39m
+     [32m✓[39m deve rejeitar campos vazios (null, NaN, Infinity)[32m 2[2mms[22m[39m
+     [32m✓[39m deve aceitar zero explícito para todos os valores monetários[32m 1[2mms[22m[39m
+     [32m✓[39m deve validar negatividade em cada entrada[32m 2[2mms[22m[39m
+     [32m✓[39m deve validar lives com isSafeInteger[32m 1[2mms[22m[39m
+[31m     [31m×[31m deve rejeitar overflow extremo[39m[32m 18[2mms[22m[39m
+     [32m✓[39m deve tratar ponto de equilibrio não calculável se margem unitaria <= 0[32m 1[2mms[22m[39m
+ [31m❯[39m src/features/super-admin/simulator/__tests__/index.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 9119[2mms[22m[39m
+     [33m[2m✓[22m[39m deve renderizar a interface base [33m 1621[2mms[22m[39m
+     [33m[2m✓[22m[39m deve preencher inputs sem perder o foco usando fireEvent [33m 1101[2mms[22m[39m
+     [33m[2m✓[22m[39m deve exibir estado incompleto inicialmente [33m 429[2mms[22m[39m
+[31m     [31m×[31m deve calcular o cenário base com o preenchimento de exemplo[39m[33m 2666[2mms[22m[39m
+     [33m[2m✓[22m[39m deve resetar os inputs ao clicar em limpar cenário [33m 2638[2mms[22m[39m
+[31m     [31m×[31m deve alterar entre abas e renderizar comparativo corretamente[39m[33m 626[2mms[22m[39m
+ [32m✓[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 12869[2mms[22m[39m
+     [33m[2m✓[22m[39m salva, alterna sem misturar preferências e recupera após remontar [33m 7457[2mms[22m[39m
+     [33m[2m✓[22m[39m não confirma nem aplica uma gravação recusada [33m 991[2mms[22m[39m
+     [33m[2m✓[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 2531[2mms[22m[39m
+     [33m[2m✓[22m[39m ignora callback stale de imagem [33m 661[2mms[22m[39m
+     [33m[2m✓[22m[39m dados inválidos de imagem ou quota ignorados de forma segura [33m 366[2mms[22m[39m
+     [33m[2m✓[22m[39m dados corrompidos acionam erro assíncrono [33m 402[2mms[22m[39m
+ [32m✓[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 7792[2mms[22m[39m
+     [33m[2m✓[22m[39m filtra busca e situação e restaura resultados [33m 1495[2mms[22m[39m
+     [33m[2m✓[22m[39m cancela e limpa o formulário sem criar item [33m 3691[2mms[22m[39m
+     [33m[2m✓[22m[39m valida nome e mantém descrição no detalhe do rascunho [33m 1813[2mms[22m[39m
+     [33m[2m✓[22m[39m descarta rascunhos ao desmontar a tela [33m 784[2mms[22m[39m
+ [32m✓[39m src/test/health-data.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 135[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 4390[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta e bloqueia criação quando recoveryNeeded é true [33m 746[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe alerta, bloqueia botões e permite tentar novamente quando readFailed é true [33m 712[2mms[22m[39m
+     [33m[2m✓[22m[39m exibe warning de legacy active mas permite ações (migração sem perda de dados inválidos) [33m 389[2mms[22m[39m
+     [33m[2m✓[22m[39m permite recuperar acesso quando recoveryNeeded é true e aciona backupAndClearPlans preservando válidos [33m 497[2mms[22m[39m
+     [33m[2m✓[22m[39m preserva o editor (não fecha) e exibe erro quando savePlans falha (setItem error ou duplicate) [33m 2037[2mms[22m[39m
+ [32m✓[39m src/test/app-sw.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/features/super-admin/plans/__tests__/storage.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m src/test/project-status.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 81[2mms[22m[39m
+npm.cmd : 
+No C:\Users\marco\OneDrive\Desktop\PROGRAMAÇÃO\techmedicina\techmedicina\run_checks_r2_fix.ps1:13 caractere:1
++ npm.cmd run test -- --run 2>&1 | Out-File -FilePath "docs/evidencias/ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/features/super-admin/simulator/__tests__/calculator.test.ts[2m > [22mCalculadora de 
+Rentabilidade[2m > [22mdeve rejeitar overflow extremo
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m src/features/super-admin/simulator/__tests__/calculator.test.ts:[2m94:33[22m[39m
+    [90m 92|[39m       precoDependente[33m:[39m [34m1[39m[33m,[39m
+    [90m 93|[39m     })[33m;[39m
+    [90m 94|[39m     
+[34mexpect[39m(extrem[33m.[39misCalculable)[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   |[39m                                 [31m^[39m
+    [90m 95|[39m     expect(extrem.erros.some((e) => e.includes("Overflow"))).toBe(true…
+    [90m 96|[39m   })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/features/super-admin/simulator/__tests__/index.test.tsx[2m > [22mSimulatorPage RTL UI 
+Tests[2m > [22mdeve calcular o cenário base com o preenchimento de exemplo
+[31m[1mTestingLibraryElementError[22m[39m: Found multiple elements with the text: /Receita após deduções/i
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<strong>[39m
+  [0mReceita após deduções[0m
+[36m</strong>[39m
+
+Ignored nodes: comments, script, style
+[36m<p>[39m
+  [0m• [0m
+  [36m<strong>[39m
+    [0mContribuição Mensal[0m
+  [36m</strong>[39m
+  [0m = Receita após deduções - Custos Recorrentes Totais[0m
+[36m</p>[39m
+
+Ignored nodes: comments, script, style
+[36m<p>[39m
+  [0m• [0m
+  [36m<strong>[39m
+    [0mPonto de Equilíbrio (Vidas)[0m
+  [36m</strong>[39m
+  [0m = Custos Fixos Mensais ÷ [(Receita após deduções ÷ Vidas habilitadas) - Custos Recorrentes Unitários][0m
+[36m</p>[39m
+
+Ignored nodes: comments, script, style
+[36m<p[39m
+  [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+[36m>[39m
+  [0mReceita após deduções[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or 
+`findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container mx-auto px-4 md:px-6 py-6 max-w-7xl"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col gap-4 mb-8"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-3xl font-bold tracking-tight text-primary"[39m
+        [36m>[39m
+          [0mSimulador de Rentabilidade (Didático)[0m
+        [36m</h1>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-muted-foreground text-sm space-y-2 max-w-4xl"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mFerramenta de estimativa didática baseada em premissas explícitas preenchidas pelo usuário. Não 
+utiliza custos hardcoded de backend nem margens reais comerciais embutidas.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"bg-muted/30 p-4 rounded border font-mono text-xs text-muted-foreground mt-4"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mb-2 font-bold uppercase text-foreground"[39m
+            [36m>[39m
+              [0mFórmulas Aplicadas[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mReceita Bruta[0m
+              [36m</strong>[39m
+              [0m = (Titulares × Preço Titular) + (Dependentes × Preço Dependente)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mDeduções[0m
+              [36m</strong>[39m
+              [0m = Receita Bruta × (% Impostos, Taxas e Comissões)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mReceita após deduções[0m
+              [36m</strong>[39m
+              [0m = Receita Bruta - Deduções[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mCustos Recorrentes Unitários[0m
+              [36m</strong>[39m
+              [0m = (Custo Médico + Custo IA + Manutenção Dispositivo)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mCustos Recorrentes Totais[0m
+              [36m</strong>[39m
+              [0m = (Vidas habilitadas × Custos Recorrentes Unitários) + Custos Fixos Mensais[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mContribuição Mensal[0m
+              [36m</strong>[39m
+              [0m = Receita após deduções - Custos Recorrentes Totais[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mPonto de Equilíbrio (Vidas)[0m
+              [36m</strong>[39m
+              [0m = Custos Fixos Mensais ÷ [(Receita após deduções ÷ Vidas habilitadas) - Custos Recorrentes 
+Unitários][0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"space-y-6"[39m
+        [33mdata-orientation[39m=[32m"horizontal"[39m
+        [33mdir[39m=[32m"ltr"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex justify-between items-center flex-wrap gap-4"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-orientation[39m=[32m"horizontal"[39m
+            [33mclass[39m=[32m"inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 
+text-muted-foreground"[39m
+            [33mdata-orientation[39m=[32m"horizontal"[39m
+            [33mrole[39m=[32m"tablist"[39m
+            [33mstyle[39m=[32m"outline: none;"[39m
+            [33mtabindex[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_f_-content-conservador"[39m
+              [33maria-selected[39m=[32m"false"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"inactive"[39m
+              [33mid[39m=[32m"radix-_r_f_-trigger-conservador"[39m
+              [33mrole[39m=[32m"tab"[39m
+              [33mtabindex[39m=[32m"-1"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mConservador[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_f_-content-base"[39m
+              [33maria-selected[39m=[32m"true"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"active"[39m
+              [33mid[39m=[32m"radix-_r_f_-trigger-base"[39m
+              [33mrole[39m=[32m"tab"[39m
+              [33mtabindex[39m=[32m"-1"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mBase[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_f_-content-expansao"[39m
+              [33maria-selected[39m=[32m"false"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"inactive"[39m
+              [33m...
+[90m [2m❯[22m Object.getElementError node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+[90m [2m❯[22m getElementError node_modules/@testing-library/dom/dist/query-helpers.js:[2m20:35[22m[39m
+[90m [2m❯[22m getMultipleElementsFoundError 
+node_modules/@testing-library/dom/dist/query-helpers.js:[2m23:10[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m55:13[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+[36m [2m❯[22m src/features/super-admin/simulator/__tests__/index.test.tsx:[2m51:19[22m[39m
+    [90m 49|[39m     [90m// Deve mostrar as vidas calculadas e as contribuições[39m
+    [90m 50|[39m     expect(screen.getByText("250")).toBeInTheDocument(); // 100+150 vi…
+    [90m 51|[39m     expect(screen.getByText(/Receita após deduções/i)).toBeInTheDocume…
+    [90m   |[39m                   [31m^[39m
+    [90m 52|[39m   })[33m;[39m
+    [90m 53|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/features/super-admin/simulator/__tests__/index.test.tsx[2m > [22mSimulatorPage RTL UI 
+Tests[2m > [22mdeve alterar entre abas e renderizar comparativo corretamente
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: /Comparação de Cenários/i. 
+This could be because the text is broken up by multiple elements. In this case, you can provide a function for your 
+text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container mx-auto px-4 md:px-6 py-6 max-w-7xl"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col gap-4 mb-8"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-3xl font-bold tracking-tight text-primary"[39m
+        [36m>[39m
+          [0mSimulador de Rentabilidade (Didático)[0m
+        [36m</h1>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-muted-foreground text-sm space-y-2 max-w-4xl"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mFerramenta de estimativa didática baseada em premissas explícitas preenchidas pelo usuário. Não 
+utiliza custos hardcoded de backend nem margens reais comerciais embutidas.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"bg-muted/30 p-4 rounded border font-mono text-xs text-muted-foreground mt-4"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mb-2 font-bold uppercase text-foreground"[39m
+            [36m>[39m
+              [0mFórmulas Aplicadas[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mReceita Bruta[0m
+              [36m</strong>[39m
+              [0m = (Titulares × Preço Titular) + (Dependentes × Preço Dependente)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mDeduções[0m
+              [36m</strong>[39m
+              [0m = Receita Bruta × (% Impostos, Taxas e Comissões)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mReceita após deduções[0m
+              [36m</strong>[39m
+              [0m = Receita Bruta - Deduções[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mCustos Recorrentes Unitários[0m
+              [36m</strong>[39m
+              [0m = (Custo Médico + Custo IA + Manutenção Dispositivo)[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mCustos Recorrentes Totais[0m
+              [36m</strong>[39m
+              [0m = (Vidas habilitadas × Custos Recorrentes Unitários) + Custos Fixos Mensais[0m
+            [36m</p>[39m
+
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mContribuição Mensal[0m
+              [36m</strong>[39m
+              [0m = Receita após deduções - Custos Recorrentes Totais[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m• [0m
+              [36m<strong>[39m
+                [0mPonto de Equilíbrio (Vidas)[0m
+              [36m</strong>[39m
+              [0m = Custos Fixos Mensais ÷ [(Receita após deduções ÷ Vidas habilitadas) - Custos Recorrentes 
+Unitários][0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"space-y-6"[39m
+        [33mdata-orientation[39m=[32m"horizontal"[39m
+        [33mdir[39m=[32m"ltr"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex justify-between items-center flex-wrap gap-4"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-orientation[39m=[32m"horizontal"[39m
+            [33mclass[39m=[32m"inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 
+text-muted-foreground"[39m
+            [33mdata-orientation[39m=[32m"horizontal"[39m
+            [33mrole[39m=[32m"tablist"[39m
+            [33mstyle[39m=[32m"outline: none;"[39m
+            [33mtabindex[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_p_-content-conservador"[39m
+              [33maria-selected[39m=[32m"false"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"inactive"[39m
+              [33mid[39m=[32m"radix-_r_p_-trigger-conservador"[39m
+              [33mrole[39m=[32m"tab"[39m
+              [33mtabindex[39m=[32m"-1"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mConservador[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_p_-content-base"[39m
+              [33maria-selected[39m=[32m"true"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"active"[39m
+              [33mid[39m=[32m"radix-_r_p_-trigger-base"[39m
+              [33mrole[39m=[32m"tab"[39m
+              [33mtabindex[39m=[32m"-1"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mBase[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"radix-_r_p_-content-expansao"[39m
+              [33maria-selected[39m=[32m"false"[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 
+text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none 
+focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none 
+disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground 
+data-[state=active]:shadow"[39m
+              [33mdata-orientation[39m=[32m"horizontal"[39m
+              [33mdata-radix-collection-item[39m=[32m""[39m
+              [33mdata-state[39m=[32m"inactive"[39m
+              [33m...
+[90m [2m❯[22m Object.getElementError node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+[36m [2m❯[22m src/features/super-admin/simulator/__tests__/index.test.tsx:[2m74:19[22m[39m
+    [90m 72|[39m     fireEvent[33m.[39m[34mclick[39m(tabComparativo)[33m;[39m
+    [90m 73|[39m
+    [90m 74|[39m     expect(screen.getByText(/Comparação de Cenários/i)).toBeInTheDocum…
+    [90m   |[39m                   [31m^[39m
+    [90m 75|[39m
+    [90m 76|[39m     const incompletos = screen.getAllByText(/Cenário incompleto ou com…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (13)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m77 passed[39m[22m[90m (80)[39m
+[2m   Start at [22m 18:47:13
+[2m   Duration [22m 62.32s[2m (transform 10.98s, setup 14.07s, import 29.63s, tests 34.60s, environment 72.89s)[22m
+
+T E S T   E X I T _ C O D E = 1  
+ 

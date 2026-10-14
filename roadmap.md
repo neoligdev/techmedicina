@@ -87,11 +87,13 @@ Validação local de 08/10/2026: consulte `VALIDACAO_LOCAL.md` para resultados, 
 - [x] Não presumir tenant no cliente; não atribuir acesso clínico ao Super ADM.
 
 ## C011 — Adaptador Auth Server-only (10/10/2026)
+
 - [x] Substituído `getSession` nulo por adaptador confiável de `getUser(token)`.
 - [x] Suíte isolada de testes garantindo ausência de bypass por parte de claims forjadas.
 - [ ] Conectar autenticação real, E2E login, RLS e esquema final.
 
 ## C012 — Login Cloud (Frontend e Validação)
+
 - [x] Rota `/login` desenhada (azul-marinho, verde-cana) apartada de AppShell.
 - [x] Formulário com autocomplete, toggle senha e proteção de double submit.
 - [x] Integração `signInWithPassword` e `signOut({ scope: "local" })`.
@@ -112,65 +114,85 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [ ] C014: administração real de clínicas, vínculos e auditoria com escrita autorizada no servidor. Operador inicial não criado automaticamente.
 
 ## C014 — Consulta administrativa (Codex)
+
 - [x] API/lista de clínicas reais, Super ADM persistido, RLS e ausência de cache.
 - [x] 183 testes, tipos/lint/build aprovados.
 - [ ] C015: criação/edição auditada e provisionamento explícito para E2E.
 
 ## C015 — Cadastro auditado (Codex, local)
+
 - [x] Migração/RPC auditada, revisão otimista, API POST validada e 204 testes.
 - [ ] Aplicação gerenciada Cloud, tipos e E2E real.
 - [ ] C016: formulário administrativo e consulta da auditoria.
 
 ## C016 — Formulário administrativo (local)
+
 - [x] Criar/editar, versão por ID protegido, conflitos, invalidação e 214 testes.
 - [ ] Aplicação C015 Cloud e E2E com operador real.
 - [ ] C017: consulta global de auditoria administrativa.
 
 ## C017 — Consulta de auditoria (local)
+
 - [x] API/painel global restrito, sem conteúdo clínico, 226 testes.
 - [ ] Implantar C015, regenerar tipos e homologar com operador real.
 - [ ] Paginação integral, auditoria clínica/recusas e fluxos assistenciais.
 
 ## Cadastro e entrada — Lovable (10/10/2026)
+
 - [x] Cadastro por e-mail com confirmação, entrada Google, indicação de sessão e saída; sem perfil, tabelas ou grants novos.
 - [x] 230 testes aprovados e tela de cadastro verificada no navegador; relatório manual atualizado.
 - [ ] Homologar confirmação recebida por e-mail e OAuth com conta real (depende de interação do titular); não criar contas de teste ou vínculos automaticamente.
 
 ## C018 — Cloud e primeiro operador
+
 - [x] C015 aplicada, migração gerenciada equivalente e RLS remota conferida.
 - [x] Primeiro Super ADM persistido provisionado após autorização específica.
 - [x] 230 testes, tsc, build e lint sem erros.
 - [ ] Homologar login, criação/edição de clínicas e auditoria reais; continuar vínculos e isolamento.
 
 ## C020 — Consulta administrativa
+
 - [x] Auditoria com navegação por cursor de horário/ID e validação estrita.
 - [x] 232 testes locais, TypeScript, build e lint sem erros.
 - [ ] Homologar consulta com sessão real e eventos Cloud; continuar persistência dos demais recursos.
 
 ## C021 — Rede administrativa
+
 - [x] Paginação por cadastro/ID, navegação para registros anteriores e retorno aos recentes.
 - [x] Lista recarregada no servidor após gravação confirmada; respostas tardias descartadas após logout.
 - [ ] Homologar com sessão real e continuar vínculos/recursos administrativos.
 
 ## C022 — Segurança de dependências
+
 - [x] Dependências sinalizadas no lockfile atualizadas, sem troca das versões declaradas dos módulos.
 - [x] Instalação frozen e bun audit sem alertas; 234 testes, tsc/build aprovados.
 - [ ] Recuperar diagnóstico e build do preview Lovable; homologar sessão real do titular.
 
 ## C024 — Persistência da identidade visual
+
 - [x] Fundação SQL/RLS/RPC e contrato validados localmente com revisão e auditoria.
 - [ ] Aplicar no Cloud, regenerar tipos e integrar API/formulário com sessão real.
 
 ## C025 — Homologação administrativa
+
 - [x] Sessão real do Super ADM, criação/edição de clínica QA inativa e auditoria conferidas no preview.
 - [ ] Homologar isolamento entre contas e fluxos clínicos conforme seus requisitos; não concluídos pelo teste administrativo.
 
 ## C023 — Runtime do preview
+
 - [x] Reconexão Chrome e confirmação da C022 R1 renderizada.
 - [x] Reinício do preview pelo Lovable; formulário de login/hidratação verificados por Codex.
 - [ ] Homologar sessão real e operações administrativas; continuar requisitos de persistência.
 
+## C027 — Adendo v0.11.1 / White Label
+
+- [x] PRD incorporado, fonte e versão anterior preservadas; inventário/risco/dependência/plano de testes documentados.
+- [x] Identificadores preservados e teste de cobertura aprovado sem alterar código.
+- [ ] Aprovação do proprietário para WL-1/código; migração e configuração externa terão gates posteriores.
+- Desenvolvimento automático suspenso nesta fase documental por instrução humana específica. Plano: docs/PLANO_INCREMENTAL_WHITE_LABEL_v0_11_1.md. Status da aplicação ainda não reflete os novos textos do adendo; atualização depende de autorização de código.
+
 ## C026 — API de identidade visual
+
 - [x] Migração 003 aplicada diretamente e privilégios conferidos no Cloud.
 - [x] Fronteira HTTP e transporte PostgREST protegidos implementados.
 - [ ] Conectar formulário e homologar salvar/recarregar no preview.

@@ -44,7 +44,7 @@ O resolvedor de metadados de recurso (dono da clínica, paciente vinculado, rasc
 - O `AuthContext` é construído pelo chamador; não existe função que prove quem é o usuário.
 - Sem fluxo de login/credencial/token, o `identity.userId` e os `links` são dados de entrada arbitrariamente montáveis.
 - Os testes existentes aprovam esses caminhos unitariamente, mas não há integração com um provedor de identidade; não se afirma um número total de testes não comprovado nesta auditoria.
-- Logo: o sistema "nega por padrão" corretamente, porém nada autentica. O estado válido de segurança hoje é *negação universal* para dados clínicos.
+- Logo: o sistema "nega por padrão" corretamente, porém nada autentica. O estado válido de segurança hoje é _negação universal_ para dados clínicos.
 
 ### 2.4 Demo tenant context não é isolamento real
 
@@ -61,7 +61,7 @@ Verificação apenas por nomes — nenhum valor de secret/env foi aberto.
 - **Migrations**: nenhum diretório `migrations/`, `supabase/`, `sql/` ou `db/` no repositório (Glob sem resultados).
 - **Clientes de banco**: `package.json` não contém `@supabase/*`, `pg`, `prisma`, `drizzle-orm`, `kysely` nem ORM/driver. A única ocorrência relevante é `db0` (com `drizzle-orm` como peer opcional e não instalado) em `bun.lock`/`package-lock.json`, transitivo e não usado pelo código.
 - **Configuração de banco**: não foi encontrada nenhuma configuração de banco de dados no repositório (nem por nomes de arquivo, nem por referências no código). Arquivos `.env`/`.env.*`, se existirem, não foram inspecionados por conteúdo. A ausência de um glob `config.*` isolado não é, por si, prova de inexistência de configuração.
-- **Criptografia**: nenhum uso de `node:crypto` (AES) nem WebCrypto `subtle` em `src` (grep sem resultados). *(Estado válido à época da auditoria; posteriormente a C010 criou `src/lib/security/clinical-crypto.server.ts` com WebCrypto `subtle` — ver adendo.)*
+- **Criptografia**: nenhum uso de `node:crypto` (AES) nem WebCrypto `subtle` em `src` (grep sem resultados). _(Estado válido à época da auditoria; posteriormente a C010 criou `src/lib/security/clinical-crypto.server.ts` com WebCrypto `subtle` — ver adendo.)_
 - **Conclusão**: não foi encontrada camada de persistência, sessão ou criptografia no código atual. A fundação C003 permanece como motor de regras puro. (Conclusão limitada ao que foi localizado por nomes neste repositório; não é garantia absoluta de inexistência de configuração remota.)
 
 **Adendo pós-auditoria**: depois desta C009, `origin/main` avançou para o commit `805bcce` (`Activated Supabase cloud`), trazendo scaffold de integração — `@supabase/supabase-js`, `drizzle` (esquema vazio) e middleware/auth em `src/integrations/supabase/*`. Isso não anula os achados da auditoria (não foi testado login/tenant real); representa o início da fundação Cloud — o fluxo de login/tenant ainda não foi implementado/validado na aplicação (não houve teste do serviço Auth).
@@ -69,12 +69,12 @@ Verificação apenas por nomes — nenhum valor de secret/env foi aberto.
 ## 4. Infraestrutura e Estado Remoto
 
 - **Infraestrutura escolhida**: Lovable Cloud (informada pelo usuário e registrada em AGENTS.md/PROGRESSO.md). **Não criar Supabase externo** fora dessa escolha; qualquer banco/RLS deve respeitar a fundação Lovable Cloud ou decisão explícita do usuário.
-- **Habilitação manual pelo usuário (atualização)**: o próprio usuário habilitou manualmente o Lovable Cloud agora. Um *screenshot* da tela Database mostra **nenhuma tabela** criada e o editor SQL **disponível**. Isso **não** foi executado nem ativado pelo Codex nem pelo OpenCode. **Adendo (evidência de leitura, autor Codex)**: posteriormente o Codex abriu o Cloud Database e o editor SQL **executou apenas uma consulta de leitura** — `SELECT count(*) AS public_tables FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';` — com **resultado 0** (nenhuma tabela). **Nenhum** DDL, inserção, dado ou alteração de schema foi criado por qualquer agente; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). O histórico inicial sem SQL foi preservado.
+- **Habilitação manual pelo usuário (atualização)**: o próprio usuário habilitou manualmente o Lovable Cloud agora. Um _screenshot_ da tela Database mostra **nenhuma tabela** criada e o editor SQL **disponível**. Isso **não** foi executado nem ativado pelo Codex nem pelo OpenCode. **Adendo (evidência de leitura, autor Codex)**: posteriormente o Codex abriu o Cloud Database e o editor SQL **executou apenas uma consulta de leitura** — `SELECT count(*) AS public_tables FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';` — com **resultado 0** (nenhuma tabela). **Nenhum** DDL, inserção, dado ou alteração de schema foi criado por qualquer agente; **fluxo de login/tenant ainda não implementado/validado na aplicação** (não houve teste do serviço Auth). O histórico inicial sem SQL foi preservado.
 - **Cloud principal e subdomínio externo**: mantém-se o Lovable Cloud como provedor principal, conforme decisão anterior. Um repositório Supabase externo separado no GitHub **não implica** runtime ligado nem substitui a escolha do Cloud; nenhum vínculo de runtime foi verificado.
 - **Cloud remoto não verificável nesta sessão**: registrado pela coordenação:
   - Coordenador observou conexão instável (`Reconnecting`) e timeout no navegador; Antigravity observou `Failed to fetch`.
   - O commit `1d996b0` (`feat: adiciona simulador didatico de rentabilidade`) foi confirmado na origem remota pelo coordenador via `git ls-remote`. A URL pública `https://techmedicina.lovable.app/super-admin/simulador` retornou **404**; isso não prova o estado do preview no editor, que não foi verificado por esta auditoria.
-  - Alinhado com registros anteriores (C006/C002-R2): *push bem-sucedido não comprova atualização do preview nem publicação*.
+  - Alinhado com registros anteriores (C006/C002-R2): _push bem-sucedido não comprova atualização do preview nem publicação_.
   - **Atualização (pós-auditoria)**: o scaffold de integração chegou via `origin/main` em `805bcce` (`Activated Supabase cloud`) com SDK gerado, `drizzle` vazio e middleware de auth; o Codex registrou leitura via editor SQL com `public_tables=0`. Ainda **sem** fluxo de login/tenant real implementado/validado na aplicação (não houve teste do serviço Auth).
 - **Diretriz mantida**: não alegar validade de ambiente remoto sem evidência direta; continuar testes e execução localmente.
 

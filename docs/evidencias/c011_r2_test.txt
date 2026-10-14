@@ -1,0 +1,40 @@
+﻿
+> test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/marco/OneDrive/Desktop/PROGRAMA├ç├âO/techmedicina/techmedicina[39m
+
+ [32mÔ£ô[39m src/features/super-admin/simulator/__tests__/index.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 2685[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m deve renderizar a interface base [33m 584[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m deve preencher inputs sem perder o foco usando fireEvent [33m 632[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m deve calcular o cen├írio base com o preenchimento de exemplo [33m 654[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m deve resetar os inputs ao clicar em limpar cen├írio [33m 398[2mms[22m[39m
+ [32mÔ£ô[39m src/test/personalization.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 3964[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva, alterna sem misturar prefer├¬ncias e recupera ap├│s remontar [33m 2226[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m salva imagem A/recarregar/alternar B sem vazamento e remover identidade A sem alterar B [33m 984[2mms[22m[39m
+ [32mÔ£ô[39m src/test/mockups.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 1744[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m filtra busca e situa├º├úo e restaura resultados [33m 466[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m cancela e limpa o formul├írio sem criar item [33m 472[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m valida nome e mant├®m descri├º├úo no detalhe do rascunho [33m 481[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m descarta rascunhos ao desmontar a tela [33m 319[2mms[22m[39m
+ [32mÔ£ô[39m src/test/clinical-crypto.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 179[2mms[22m[39m
+ [32mÔ£ô[39m src/test/health-data.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 139[2mms[22m[39m
+ [32mÔ£ô[39m src/features/super-admin/plans/__tests__/catalog.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1343[2mms[22m[39m
+     [33m[2mÔ£ô[22m[39m exibe warning de legacy active mas permite a├º├Áes (migra├º├úo sem perda de dados inv├ílidos) [33m 406[2mms[22m[39m
+ [32mÔ£ô[39m src/features/super-admin/plans/__tests__/storage.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32mÔ£ô[39m src/test/project-status.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32mÔ£ô[39m src/test/app-routing.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32mÔ£ô[39m src/test/app-sw.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32mÔ£ô[39m src/test/auth-adapter.server.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32mÔ£ô[39m src/features/super-admin/simulator/__tests__/calculator.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32mÔ£ô[39m src/test/demo.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m      Tests [22m [1m[32m115 passed[39m[22m[90m (115)[39m
+[2m   Start at [22m 00:45:11
+[2m   Duration [22m 20.79s[2m (transform 3.93s, setup 4.05s, import 13.24s, tests 10.28s, environment 23.15s)[22m
+
+EXIT_CODE=0

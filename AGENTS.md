@@ -36,7 +36,8 @@
 
 ## Status temporário do projeto
 
-- Diretriz humana de 14/10/2026: Codex executa diretamente desenvolvimento, testes, homologação e commit/push validados para preview; Antigravity fica para depois. Substitui limites históricos de execução local/envio ao Git. Não usar Ask Lovable. Autorização específica Cloud 008–012 concluída; 013, concessões clínicas, DNS e publicação produtiva não estão incluídos. Preservar alterações alheias e usar staging explícito.
+- Nova diretriz humana (14/10/2026, Ciclo 001): Coordenador ChatGPT, Executor Antigravity. Transferência de desenvolvimento autorizada para a tarefa VJE-3 (Motor Determinístico da JORNADA). Preservar integralmente histórico, regras de segurança, código existente e alterações não comitadas do Codex. Um único executor ativo. Não executar commit/push ou migrações Cloud sem autorização explícita.
+- Diretriz humana anterior (14/10/2026): Codex executou desenvolvimento, testes, homologação e commit/push validados para preview até a entrega D68. Autorização específica Cloud 008–013 concluída; DNS e publicação produtiva não incluídos.
 
 - Diretriz humana mais recente (12/10/2026, C030): Codex retoma controle direto da implementação, auditoria, testes e status, após alterações Antigravity. Substitui a pausa documental e a tarefa anterior atribuída ao Antigravity. Não enviar Ask Lovable; preservar autorias e apenas um executor ativo. DNS, compras e publicação exigem decisão concreta quando necessários.
 

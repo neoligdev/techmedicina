@@ -18,6 +18,7 @@
 - **Comportamento 401 Genuíno**: Garantido que `/api/access-check` devolve 401 quando o cabeçalho não está presente (sem chamar `getUser`), ou quando validado negativamente pelo `getUser`.
 
 ## Limitações Conhecidas (Logout)
+
 A sessão não é invalidada remotamente de forma instantânea. Tokens emitidos podem continuar sendo validados pelo Auth server até a data de expiração, mesmo após `signOut()` no cliente. Referência: https://supabase.com/docs/reference/javascript/auth-signout
 
 - **E2E e RLS**: Falta integração ponta a ponta (login visual) e implantação do RLS real. A ausência de headers na API resulta em 401 Genuíno observável em testes, sem que getUser seja chamado (evitando consultas desnecessárias ao Auth Server).
@@ -25,5 +26,5 @@ A sessão não é invalidada remotamente de forma instantânea. Tokens emitidos 
 ## Limitações Registradas
 
 - **E2E e RLS**: Falta integração ponta a ponta (login visual).
-- **Remote Preview**: API Lovable retornou `404 project_not_found` na conexão manual do Codex (o que não prova indisponibilidade do editor web), porém o status do preview online permanece "build unsuccessful" sem causa rastreável. 
+- **Remote Preview**: API Lovable retornou `404 project_not_found` na conexão manual do Codex (o que não prova indisponibilidade do editor web), porém o status do preview online permanece "build unsuccessful" sem causa rastreável.
 - **Esquema de Dados**: Nenhum script DDL inserido. Nenhuma conta criada nem cliente admin (adminclient) adicionado na C011.

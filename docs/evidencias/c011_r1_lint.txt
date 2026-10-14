@@ -1,0 +1,74 @@
+﻿
+> lint
+> eslint .
+
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\badge.tsx
+  32:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\button.tsx
+  49:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\form.tsx
+  163:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\sidebar.tsx
+  743:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\components\ui\toggle.tsx
+  42:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\features\demo\context.tsx
+  60:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\lib\auth\supabase-adapter.server.ts
+  79:1  error  Delete `┬À┬À┬À┬À`  prettier/prettier
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\src\test\auth-adapter.server.test.ts
+   56:37  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àinvalid_token"┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àinvalid_token"┬À}),ÔÅÄ┬À┬À┬À`                prettier/prettier
+   62:37  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À}),ÔÅÄ┬À┬À┬À`                                prettier/prettier
+   71:37  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À}),ÔÅÄ┬À┬À┬À`                                prettier/prettier
+   77:1   error  Delete `┬À┬À┬À┬À`                                                                                                                                                                prettier/prettier
+   83:37  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À}),ÔÅÄ┬À┬À┬À`                                prettier/prettier
+   86:20  error  Replace `.fn()` with `ÔÅÄ┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À.fn()ÔÅÄ┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À`                                                                                                                           prettier/prettier
+   89:1   error  Delete `┬À┬À┬À┬À`                                                                                                                                                                prettier/prettier
+   95:37  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À"Bearer┬Àa.b.c"┬À}),ÔÅÄ┬À┬À┬À`                                prettier/prettier
+  124:9   error  Insert `,`                                                                                                                                                                   prettier/prettier
+  134:1   error  Delete `┬À┬À┬À┬À`                                                                                                                                                                prettier/prettier
+  138:78  error  Insert `,`                                                                                                                                                                   prettier/prettier
+  143:18  error  Replace `ÔÅÄ┬À┬À┬À┬À┬À┬ÀstrictGuards.requireAuth("any")ÔÅÄ┬À┬À┬À┬À` with `strictGuards.requireAuth("any")`                                                                                 prettier/prettier
+  150:1   error  Delete `┬À┬À┬À┬À`                                                                                                                                                                prettier/prettier
+  151:47  error  Replace `resolve` with `(resolve)`                                                                                                                                           prettier/prettier
+  156:15  error  Replace `┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À`Bearer┬Àheader.token.${id}`┬À})` with `ÔÅÄ┬À┬À┬À┬À┬À┬À┬À┬Àheaders:┬Ànew┬ÀHeaders({┬Àauthorization:┬À`Bearer┬Àheader.token.${id}`┬À}),ÔÅÄ┬À┬À┬À┬À┬À`  prettier/prettier
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\update-catalog.cjs
+   1:20  error  Replace `'fs'` with `"fs"`                                                                                                                                                       prettier/prettier
+   2:22  error  Replace `'path'` with `"path"`                                                                                                                                                   prettier/prettier
+   4:42  error  Replace `'src/features/project-status/catalog.json'` with `"src/features/project-status/catalog.json"`                                                                           prettier/prettier
+   5:44  error  Replace `'src/features/project-status/catalog.ts'` with `"src/features/project-status/catalog.ts"`                                                                               prettier/prettier
+   6:43  error  Replace `'docs/STATUS_PROJETO_TEMPORARIO.md'` with `"docs/STATUS_PROJETO_TEMPORARIO.md"`                                                                                         prettier/prettier
+   8:55  error  Replace `'utf8'` with `"utf8"`                                                                                                                                                   prettier/prettier
+  11:34  error  Replace `(i` with `((i)`                                                                                                                                                         prettier/prettier
+  13:16  error  Replace `┬À(item31.done┬À?┬Àitem31.done┬À+┬À"┬À"┬À:┬À"")┬À+` with `ÔÅÄ┬À┬À┬À┬À(item31.done┬À?┬Àitem31.done┬À+┬À"┬À"┬À:┬À"")┬À+ÔÅÄ┬À┬À┬À`                                                                     prettier/prettier
+  29:19  error  Insert `,`                                                                                                                                                                       prettier/prettier
+  35:48  error  Replace `'utf8'` with `"utf8"`                                                                                                                                                   prettier/prettier
+  36:31  error  Replace `/export┬Àconst┬ÀupdatedAt┬À=┬À".*?";/,┬À'export┬Àconst┬ÀupdatedAt┬À=┬À"10/10/2026";'` with `ÔÅÄ┬À┬À/export┬Àconst┬ÀupdatedAt┬À=┬À".*?";/,ÔÅÄ┬À┬À'export┬Àconst┬ÀupdatedAt┬À=┬À"10/10/2026";',ÔÅÄ`  prettier/prettier
+  55:13  error  Replace `'Catalog┬Àupdated┬Àand┬ÀMarkdown┬Àgenerated.'` with `"Catalog┬Àupdated┬Àand┬ÀMarkdown┬Àgenerated."`                                                                             prettier/prettier
+
+C:\Users\marco\OneDrive\Desktop\PROGRAMA├ç├âO\techmedicina\techmedicina\update-markdown.cjs
+   1:20  error  Replace `'fs'` with `"fs"`                                                                                                                                                                                                                                                                                                                                                                                                                   prettier/prettier
+   4:21  error  Replace `'roadmap.md'` with `"roadmap.md"`                                                                                                                                                                                                                                                                                                                                                                                                   prettier/prettier
+   5:44  error  Replace `'utf8'` with `"utf8"`                                                                                                                                                                                                                                                                                                                                                                                                               prettier/prettier
+   6:27  error  Replace `/-┬À\[┬À\]┬ÀMapear┬Ào┬Àauth┬Àgerado┬Àe┬Ào┬À`getClaims`┬Àconfi├ível┬Àe┬Àpreparar┬Àacesso┬Àclinic-aware┬Àno┬Àservidor\./,┬À'-┬À[x]┬ÀMapear┬Ào┬Àauth┬Àgerado┬Àe┬Ào┬À`getClaims`┬Àconfi├ível┬Àe┬Àpreparar┬Àacesso┬Àclinic-aware┬Àno┬Àservidor.'` with `ÔÅÄ┬À┬À/-┬À\[┬À\]┬ÀMapear┬Ào┬Àauth┬Àgerado┬Àe┬Ào┬À`getClaims`┬Àconfi├ível┬Àe┬Àpreparar┬Àacesso┬Àclinic-aware┬Àno┬Àservidor\./,ÔÅÄ┬À┬À"-┬À[x]┬ÀMapear┬Ào┬Àauth┬Àgerado┬Àe┬Ào┬À`getClaims`┬Àconfi├ível┬Àe┬Àpreparar┬Àacesso┬Àclinic-aware┬Àno┬Àservidor.",ÔÅÄ`  prettier/prettier
+   7:27  error  Replace `/-┬À\[┬À\]┬ÀN├úo┬Àpresumir┬Àtenant┬Àno┬Àcliente;┬Àn├úo┬Àatribuir┬Àacesso┬Àcl├¡nico┬Àao┬ÀSuper┬ÀADM\./,┬À'-┬À[x]┬ÀN├úo┬Àpresumir┬Àtenant┬Àno┬Àcliente;┬Àn├úo┬Àatribuir┬Àacesso┬Àcl├¡nico┬Àao┬ÀSuper┬ÀADM.'` with `ÔÅÄ┬À┬À/-┬À\[┬À\]┬ÀN├úo┬Àpresumir┬Àtenant┬Àno┬Àcliente;┬Àn├úo┬Àatribuir┬Àacesso┬Àcl├¡nico┬Àao┬ÀSuper┬ÀADM\./,ÔÅÄ┬À┬À"-┬À[x]┬ÀN├úo┬Àpresumir┬Àtenant┬Àno┬Àcliente;┬Àn├úo┬Àatribuir┬Àacesso┬Àcl├¡nico┬Àao┬ÀSuper┬ÀADM.",ÔÅÄ`                                                                      prettier/prettier
+  17:23  error  Replace `'docs/PROGRESSO.md'` with `"docs/PROGRESSO.md"`                                                                                                                                                                                                                                                                                                                                                                                     prettier/prettier
+  18:48  error  Replace `'utf8'` with `"utf8"`                                                                                                                                                                                                                                                                                                                                                                                                               prettier/prettier
+  30:13  error  Replace `'Markdown┬Àfiles┬Àupdated.'` with `"Markdown┬Àfiles┬Àupdated."`                                                                                                                                                                                                                                                                                                                                                                         prettier/prettier
+
+Ô£û 43 problems (36 errors, 7 warnings)
+  36 errors and 0 warnings potentially fixable with the `--fix` option.
+
+EXIT_CODE=1

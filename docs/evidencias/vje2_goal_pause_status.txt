@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 C:/Users/marco/OneDrive/Desktop/PROGRAMAÇÃO/techmedicina/techmedicina
+
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  09:54:45
+   Duration  2.43s (transform 174ms, setup 507ms, import 164ms, tests 21ms, environment 1.22s)
+
