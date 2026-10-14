@@ -2739,6 +2739,18 @@
       ],
       "title": "Escudos: leitura própria protegida no servidor",
       "id": "D78"
+    },
+    {
+      "done": "Codex compôs GET local com resolvedor de host patient_pwa e sessão da mesma requisição. Recusa query/body e métodos de escrita, deriva escopo do paciente no serviço, usa private/no-store e Vary Authorization/Host. Erros seguros e contrato/tenant revalidados. Onze testes HTTP/serviço aprovados.",
+      "requirements": [],
+      "parent": "8.10",
+      "id": "D79",
+      "authors": [
+        "Codex"
+      ],
+      "title": "Escudos: fronteira HTTP própria no PWA",
+      "next": "Implementar mapper RPC e transporte browser; composição ainda não montada. 014 não aplicada no Cloud e homologação remota pendente; nenhuma permissão real concedida.",
+      "status": "done"
     }
   ]
 }

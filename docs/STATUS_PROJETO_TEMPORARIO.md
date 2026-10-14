@@ -2167,3 +2167,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou leitura local readOwnShields com clínica/paciente derivados do vínculo ativo da sessão, grant journey_shields read obrigatório e recusa de vínculos ambíguos ou papéis administrativos/médicos na consulta específica PWA. Valida contrato e tenant de raiz/estado/histórico antes de retornar. Sete testes do serviço e quatro de status aprovados; tipos/lint válidos.
 - **Próximo Passo**: Conectar host/sessão e adaptador da RPC 014; função não montada. Mapper PostgreSQL e cliente PWA ainda pendentes. Guard genérico de autorização permanece fechado para novo recurso; sem grants ou dados reais criados.
+
+## D79 - Escudos: fronteira HTTP própria no PWA 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex compôs GET local com resolvedor de host patient_pwa e sessão da mesma requisição. Recusa query/body e métodos de escrita, deriva escopo do paciente no serviço, usa private/no-store e Vary Authorization/Host. Erros seguros e contrato/tenant revalidados. Onze testes HTTP/serviço aprovados.
+- **Próximo Passo**: Implementar mapper RPC e transporte browser; composição ainda não montada. 014 não aplicada no Cloud e homologação remota pendente; nenhuma permissão real concedida.
