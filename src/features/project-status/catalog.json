@@ -2546,6 +2546,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "id": "D63",
+      "title": "Jornada: transporte local de rascunhos médicos",
+      "parent": "8.10",
+      "status": "done",
+      "done": "Codex implementou cliente HTTP local com sessão fresca, prazo limitado, recibo estrito por clínica/paciente/solicitação, rejeição de estado ativo e reenvio idempotente da mesma entrada após resposta perdida. Dez testes direcionados aprovados.",
+      "next": "Implementar formulário e composição médica autorizada. Endpoint não montado e SQL 013 somente local; não há ativação de metas nem prescrição.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": []
     }
   ]
 }
