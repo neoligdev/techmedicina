@@ -11,3 +11,6 @@ Pendências: contas QA cadastradas/confirmadas, aprovação de vínculos/grants 
 Atualização de sincronização: commit 6e5d9b1 enviado normalmente para origin/main, de f7a0acd para 6e5d9b1. Lovable exibiu o recebimento do título do commit. Preview /staus renderizou PRD v0.11.3, 14/10/2026 e 62 entregas; evidência preview_status_20261014.png. Não foi acionado Publish. A lista Auth agora mostra marcony.rc@gmail.com e marcony.fotos@gmail.com; o segundo difere de marcony.fotos@gmai.com confirmado pelo proprietário. Nenhum vínculo/permissão clínica foi alterado; cadastro correto e confirmação seguem pendentes de homologação.
 
 D63: transporte local de rascunhos médicos implementado, dez testes direcionados passaram. Endpoint não montado, formulário pendente e SQL 013 local. Não cria metas vigentes.
+
+D64: formulário médico local e composição com transporte, cinco testes UI aprovados. Rascunho não ativa meta nem prescrição; mantém proposta no reenvio e isola respostas por contexto. Endpoint/migração 013 e homologação clínica seguem pendentes.
+Verificação D64: nove testes UI/status aprovados, TypeScript aprovado após corrigir asserção do mock e prop opcional. Build aprovado; revisão lint final sem erros.

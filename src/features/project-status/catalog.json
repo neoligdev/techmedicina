@@ -2558,6 +2558,18 @@
         "Codex"
       ],
       "requirements": []
+    },
+    {
+      "requirements": [],
+      "authors": [
+        "Codex"
+      ],
+      "id": "D64",
+      "done": "Codex implementou formulário com áreas não prescritivas e frequência sugerida, transporte autenticado e confirmação apenas por recibo validado. Bloqueia duplo envio, mantém proposta e identificador após incerteza, rejeita paciente divergente e ignora resposta após troca de contexto. Cinco testes de interação aprovados.",
+      "parent": "8.10",
+      "next": "Compor endpoint médico e homologar com contas/vínculos autorizados. SQL 013 permanece local; formulário não montado em rota produtiva e não ativa metas ou prescrição.",
+      "title": "Jornada: formulário médico local de rascunhos",
+      "status": "done"
     }
   ]
 }

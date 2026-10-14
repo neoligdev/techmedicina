@@ -2063,3 +2063,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Codex implementou cliente HTTP local com sessão fresca, prazo limitado, recibo estrito por clínica/paciente/solicitação, rejeição de estado ativo e reenvio idempotente da mesma entrada após resposta perdida. Dez testes direcionados aprovados.
 - **Próximo Passo**: Implementar formulário e composição médica autorizada. Endpoint não montado e SQL 013 somente local; não há ativação de metas nem prescrição.
 
+## D64 - Jornada: formulário médico local de rascunhos 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou formulário com áreas não prescritivas e frequência sugerida, transporte autenticado e confirmação apenas por recibo validado. Bloqueia duplo envio, mantém proposta e identificador após incerteza, rejeita paciente divergente e ignora resposta após troca de contexto. Cinco testes de interação aprovados.
+- **Próximo Passo**: Compor endpoint médico e homologar com contas/vínculos autorizados. SQL 013 permanece local; formulário não montado em rota produtiva e não ativa metas ou prescrição.
+
