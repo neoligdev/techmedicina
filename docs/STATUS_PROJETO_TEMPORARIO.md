@@ -2181,3 +2181,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou cliente GET sem query de identidade, com bearer fresco, no-store/sem cookies, recusa de redirecionamento e prazo 20s incluindo sessão/rede/corpo. Valida raiz/estado/histórico por tenant e paciente. Composição PWA exibe carregamento/falha/retry, nega consulta por padrão e descarta respostas antigas após revogação/contexto. Oito testes cliente/UI aprovados; tipos/lint dos componentes aprovados.
 - **Próximo Passo**: Conectar mapper SQL/RPC e ambiente autenticado antes de montar na rota. 014 permanece local. Dados reais e preview Lovable ainda não homologados para checkpoint; nenhuma permissão clínica criada.
+
+## D81 - Escudos: adaptador protegido da RPC de leitura 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou adaptador server-only tm_get_patient_shield_overview vinculado ao bearer verificado. Converte linhas PostgreSQL para contratos estritos, confere clínica/paciente/conta em cada linha, normaliza instante UTC e remove metadados internos da resposta. Repositório somente leitura; ausência de estado gera Origem provisório sem pontos/conquistas. Sete testes aprovados.
+- **Próximo Passo**: Testar integração completa com PostgreSQL 014 e fronteira HTTP/PWA. 014 ainda local e endpoints não montados; permissões e hosts reais pendentes de homologação.
