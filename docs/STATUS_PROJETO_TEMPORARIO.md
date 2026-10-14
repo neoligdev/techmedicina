@@ -2216,3 +2216,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex concluiu regressão após corrigir catálogo app/escudos: 712 testes em 85 arquivos aprovados, duração 188,46s. TypeScript/lint direcionados/build aprovados antes da correção de catálogo; 20 testes direcionados já validaram essa correção. Verificação visual do estado vazio em 320×568 confirmou ausência de rolagem horizontal (scrollWidth 305) e rodapé fixo com base 568; viewport restaurado.
 - **Próximo Passo**: Homologar visualmente cenários preenchidos, aplicar 014 somente após aprovação e definir sincronização do preview preservando a orientação de main intacta. Testes locais não concluem requisitos produtivos do PRD.
+
+## D86 - Escudos: atomicidade e escopo da persistência local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu repositório local que gravava estado antes de validar o evento: ambos os contratos e escopos são conferidos antes de qualquer mutação. Evento inválido preserva snapshot/ledger e libera lock; estado/evento estrangeiro não contaminam a chave clínica/paciente. Dezessete testes de atomicidade/persistência aprovados; tipos/lint aprovados.
+- **Próximo Passo**: 014 e integração main permanecem aguardando decisões humanas; nenhuma alteração no Cloud nesta etapa.

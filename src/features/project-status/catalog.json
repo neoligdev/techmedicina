@@ -2823,6 +2823,18 @@
       "next": "Homologar visualmente cenários preenchidos, aplicar 014 somente após aprovação e definir sincronização do preview preservando a orientação de main intacta. Testes locais não concluem requisitos produtivos do PRD.",
       "done": "Codex concluiu regressão após corrigir catálogo app/escudos: 712 testes em 85 arquivos aprovados, duração 188,46s. TypeScript/lint direcionados/build aprovados antes da correção de catálogo; 20 testes direcionados já validaram essa correção. Verificação visual do estado vazio em 320×568 confirmou ausência de rolagem horizontal (scrollWidth 305) e rodapé fixo com base 568; viewport restaurado.",
       "id": "D85"
+    },
+    {
+      "requirements": [],
+      "done": "Codex corrigiu repositório local que gravava estado antes de validar o evento: ambos os contratos e escopos são conferidos antes de qualquer mutação. Evento inválido preserva snapshot/ledger e libera lock; estado/evento estrangeiro não contaminam a chave clínica/paciente. Dezessete testes de atomicidade/persistência aprovados; tipos/lint aprovados.",
+      "title": "Escudos: atomicidade e escopo da persistência local",
+      "status": "done",
+      "authors": [
+        "Codex"
+      ],
+      "parent": "8.10",
+      "id": "D86",
+      "next": "014 e integração main permanecem aguardando decisões humanas; nenhuma alteração no Cloud nesta etapa."
     }
   ]
 }

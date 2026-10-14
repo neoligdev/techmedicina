@@ -65,6 +65,14 @@ export class InMemoryShieldRepository implements ShieldRepository {
     try {
       // Validação estrita dos contratos
       const validatedState = patientShieldStateSchema.parse(state);
+      const validatedEvent = event ? shieldHistoryEventSchema.parse(event) : null;
+      if (
+        validatedState.clinicId !== clinicId ||
+        validatedState.patientId !== patientId ||
+        (validatedEvent &&
+          (validatedEvent.clinicId !== clinicId || validatedEvent.patientId !== patientId))
+      )
+        throw new Error("Shield transition scope mismatch");
 
       // Proteção de integridade física: o maior escudo histórico é monotonicamente não-decrescente
       const existingState = this.states.get(key);
@@ -80,8 +88,7 @@ export class InMemoryShieldRepository implements ShieldRepository {
 
       let savedEvent: ShieldHistoryEvent | null = null;
 
-      if (event) {
-        const validatedEvent = shieldHistoryEventSchema.parse(event);
+      if (validatedEvent) {
         const idempotencyKey =
           validatedEvent.idempotencyKey ??
           `${clinicId}:${patientId}:${validatedEvent.evaluatedDate}:${validatedEvent.action}:${validatedEvent.shield}`;
