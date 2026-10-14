@@ -2054,5 +2054,5 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
 - **Entregue**: Codex revisou o lote de Jornada, PRD/status e PWA preservando design/autorias. Regressão final 567 testes/71 arquivos e tipos/lint aprovados; sete avisos históricos de Fast Refresh. Staging explícito, sem incluir alterações alheias. Permissão create separada de write nos rascunhos.
-- **Próximo Passo**: Concluir commit/push autorizado e conferir sincronização do preview; nenhuma publicação de produção, concessão clínica ou aplicação Cloud 013 presumida.
+- **Próximo Passo**: Commit 6e5d9b1 enviado para main e recebido pelo Lovable. Preview /staus conferido com PRD v0.11.3, data 14/10/2026 e 62 entregas. Prosseguir com transporte/formulário de rascunhos e homologação clínica; Cloud 013 e vínculos clínicos ainda pendentes. Sem publicação de produção.
 
