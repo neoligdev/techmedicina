@@ -22,3 +22,4 @@ D66: integração cliente-host-sessão-HTTP-RPC-PostgreSQL local aprovada em cin
 
 D67: novo rascunho após confirmação, com identificador independente. Incerteza e conflito não permitem nova proposta. Sete testes de formulário aprovados; regressão completa em execução.
 Verificação final D67: regressão completa 589 testes/74 arquivos aprovada, duração 197,26s; tipos/lint direcionados aprovados. A execução foi acompanhada pelo mesmo processo até o término, sem reiniciar.
+Sincronização D67: commit 246c2c2 enviado para main e recebido no histórico Lovable. Preview /staus renderiza PRD v0.11.3, data 14/10/2026 e 67 entregas. Evidência preview_status_D67_20261014.png. Publish não acionado; rascunhos ainda em composição local.
