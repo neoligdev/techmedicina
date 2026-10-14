@@ -5,6 +5,10 @@ import { readFile } from "node:fs/promises";
 import { InMemoryShieldRepository } from "../features/journey/shield-repository";
 import { ShieldService } from "../features/journey/shield-service";
 import type { JourneyScoreResult, RequesterContext } from "../features/journey/contracts";
+import { createOwnShieldClient } from "@/features/journey/shield-client";
+import { createOwnShieldEndpoint } from "@/lib/journey/shield-endpoint.server";
+import { createOwnShieldRpcReader } from "@/lib/journey/shield-rpc-reader.server";
+import type { AuthenticatedIdentity } from "@/lib/auth/core";
 
 const clinicA = "10000000-0000-4000-8000-000000000001";
 const clinicB = "10000000-0000-4000-8000-000000000002";
@@ -593,6 +597,73 @@ describe("TECHMEDICINA — Ciclo 004: Consolidação e Segurança de Escudos", (
     expect(overview.progress.pointsNeededToNextTier).toBe(15);
     expect(overview.progress.progressPercentage).toBeGreaterThanOrEqual(0);
     expect(overview.progress.daysRemainingInWindow).toBe(6);
+  });
+
+  it("consulta cliente-host-sessão-HTTP-RPC-PostgreSQL respeita revogação do grant", async () => {
+    const identity: AuthenticatedIdentity = {
+      userId: userPatientA,
+      links: [
+        {
+          clinicId: clinicA,
+          patientId: patientA,
+          role: "paciente",
+          isActive: true,
+          grants: [{ resource: "journey_shields", action: "read" }],
+        },
+      ],
+    };
+    const reader = createOwnShieldRpcReader(userPatientA, async (_name, args) => {
+      await asUser(userPatientA);
+      try {
+        const result = await db.query<{ value: unknown }>(
+          "SELECT public.tm_get_patient_shield_overview($1,$2) AS value",
+          [args.p_clinic_id, args.p_patient_id],
+        );
+        return { data: result.rows[0]?.value, error: null };
+      } catch (error) {
+        return { data: null, error: { code: (error as { code: string }).code } };
+      }
+    });
+    const endpoint = createOwnShieldEndpoint({
+      lookup: async (hostname) => ({
+        hostname,
+        clinicId: clinicA,
+        environment: "patient_pwa",
+        status: "active",
+      }),
+      resolveSession: async (req) =>
+        req.headers.get("authorization") === "Bearer qa" ? { identity } : null,
+      read: () => reader,
+    });
+    const client = createOwnShieldClient(
+      { clinicId: clinicA, patientId: patientA, getAccessToken: async () => "qa" },
+      async (url, options) =>
+        endpoint(
+          new Request(`https://app.example.com${String(url)}`, {
+            ...options,
+            headers: { ...options?.headers, host: "app.example.com" },
+          }),
+        ),
+    );
+    const overview = await client();
+    expect(overview.clinicId).toBe(clinicA);
+    expect(overview.patientId).toBe(patientA);
+    expect(
+      overview.history.every((event) => event.clinicId === clinicA && event.patientId === patientA),
+    ).toBe(true);
+    await db.exec("RESET ROLE");
+    const before = await db.query("SELECT * FROM public.tm_shield_history_events ORDER BY id");
+    await db.query(
+      "DELETE FROM public.tm_membership_grants WHERE membership_id='50000000-0000-4000-8000-000000000001' AND resource='journey_shields' AND action='read'",
+    );
+    await expect(client()).rejects.toThrow("Shields unavailable");
+    await db.exec("RESET ROLE");
+    expect(
+      (await db.query("SELECT * FROM public.tm_shield_history_events ORDER BY id")).rows,
+    ).toEqual(before.rows);
+    await db.query(
+      "INSERT INTO public.tm_membership_grants VALUES('50000000-0000-4000-8000-000000000001','journey_shields','read')",
+    );
   });
 
   // 13. Rejeição de consulta de terceiros

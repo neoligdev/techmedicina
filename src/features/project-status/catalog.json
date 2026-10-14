@@ -2775,6 +2775,18 @@
       "authors": [
         "Codex"
       ]
+    },
+    {
+      "next": "Revisar 014 para homologação Cloud, consolidar regressão e conectar ambiente autenticado real. Auth/registro de domínio são simulados nos testes locais, não comprovação remota. Não há endpoint ativo nem concessões clínicas.",
+      "authors": [
+        "Codex"
+      ],
+      "parent": "8.10",
+      "requirements": [],
+      "title": "Escudos: integração completa de leitura PostgreSQL",
+      "done": "Codex validou cliente autenticado, host patient_pwa, sessão, fronteira HTTP, adaptador e PostgreSQL 014 local no mesmo fluxo. Nova consulta é recusada após revogação do grant no banco, mesmo com contexto de sessão anteriormente válido; histórico não sofre alteração. Quinze testes de segurança/integração aprovados.",
+      "id": "D82",
+      "status": "done"
     }
   ]
 }

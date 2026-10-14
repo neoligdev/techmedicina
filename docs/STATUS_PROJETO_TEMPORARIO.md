@@ -2188,3 +2188,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou adaptador server-only tm_get_patient_shield_overview vinculado ao bearer verificado. Converte linhas PostgreSQL para contratos estritos, confere clínica/paciente/conta em cada linha, normaliza instante UTC e remove metadados internos da resposta. Repositório somente leitura; ausência de estado gera Origem provisório sem pontos/conquistas. Sete testes aprovados.
 - **Próximo Passo**: Testar integração completa com PostgreSQL 014 e fronteira HTTP/PWA. 014 ainda local e endpoints não montados; permissões e hosts reais pendentes de homologação.
+
+## D82 - Escudos: integração completa de leitura PostgreSQL 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex validou cliente autenticado, host patient_pwa, sessão, fronteira HTTP, adaptador e PostgreSQL 014 local no mesmo fluxo. Nova consulta é recusada após revogação do grant no banco, mesmo com contexto de sessão anteriormente válido; histórico não sofre alteração. Quinze testes de segurança/integração aprovados.
+- **Próximo Passo**: Revisar 014 para homologação Cloud, consolidar regressão e conectar ambiente autenticado real. Auth/registro de domínio são simulados nos testes locais, não comprovação remota. Não há endpoint ativo nem concessões clínicas.
