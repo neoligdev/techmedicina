@@ -2328,3 +2328,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex substituiu aceitação de JSON por contagem de 15 entradas por contrato estrito de campos, chaves, identidade Escudo/variante, datas, estados e hashes das artes atuais. Histórico tem estrutura validada e mantém compatibilidade com registros legados sem arquivos. Dados inválidos usam fallback sem apagar conteúdo salvo. Trinta e sete testes de contrato/artes/runtime/rollback aprovados.
 - **Próximo Passo**: Continuar persistência e revisão do upload. Validação local não estabelece autoridade de publicação nem substitui backend. D100 valida integridade dos arquivos históricos no rollback; catálogos legados incompletos não têm restauração inventada. Main permanece D85.
+
+## D102 - Escudos: falhas de salvamento preservam catálogo e edição 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex removeu sucesso falso em erros de quota ou acesso ao armazenamento. Edição, publicação demonstrativa, rollback e reset só atualizam a memória após gravação bem-sucedida; falhas retornam erro e preservam o catálogo anterior. Modal mantém SVG e prévia após falha e permite tentar novamente. Quarenta testes de armazenamento/contrato/artes/rollback e três de modal/prévias aprovados.
+- **Próximo Passo**: Continuar revisão das versões, sanitização e futura persistência remota autorizada. Operações continuam locais/demonstrativas; não houve publicação oficial, Cloud ou integração pós-D85 na main.

@@ -3015,6 +3015,18 @@
       ],
       "requirements": [],
       "id": "D101"
+    },
+    {
+      "next": "Continuar revisão das versões, sanitização e futura persistência remota autorizada. Operações continuam locais/demonstrativas; não houve publicação oficial, Cloud ou integração pós-D85 na main.",
+      "requirements": [],
+      "status": "done",
+      "parent": "11",
+      "title": "Escudos: falhas de salvamento preservam catálogo e edição",
+      "done": "Codex removeu sucesso falso em erros de quota ou acesso ao armazenamento. Edição, publicação demonstrativa, rollback e reset só atualizam a memória após gravação bem-sucedida; falhas retornam erro e preservam o catálogo anterior. Modal mantém SVG e prévia após falha e permite tentar novamente. Quarenta testes de armazenamento/contrato/artes/rollback e três de modal/prévias aprovados.",
+      "id": "D102",
+      "authors": [
+        "Codex"
+      ]
     }
   ]
 }

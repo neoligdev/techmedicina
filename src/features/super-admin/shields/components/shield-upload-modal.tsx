@@ -18,7 +18,7 @@ interface ShieldUploadModalProps {
   asset: ShieldArtAsset | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (assetId: string, sanitizedSvg: string) => void;
+  onSave: (assetId: string, sanitizedSvg: string) => boolean;
 }
 
 export function ShieldUploadModal({ asset, isOpen, onClose, onSave }: ShieldUploadModalProps) {
@@ -52,7 +52,10 @@ export function ShieldUploadModal({ asset, isOpen, onClose, onSave }: ShieldUplo
 
   const handleSave = () => {
     if (!sanitizedPreview) return;
-    onSave(asset.id, sanitizedPreview);
+    if (!onSave(asset.id, sanitizedPreview)) {
+      setValidationError("Não foi possível salvar. Sua edição foi mantida; tente novamente.");
+      return;
+    }
     handleClose();
   };
 

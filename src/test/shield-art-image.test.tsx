@@ -13,7 +13,11 @@ it("stored art remains an image source instead of becoming application DOM", () 
   const asset = { ...catalog["origem_active"]!, svgContent: payload };
   render(
     <ShieldArtCard
-      assets={{ active: asset, earned: catalog["origem_earned"]!, locked: catalog["origem_locked"]! }}
+      assets={{
+        active: asset,
+        earned: catalog["origem_earned"]!,
+        locked: catalog["origem_locked"]!,
+      }}
       onEditAsset={() => {}}
     />,
   );
@@ -30,7 +34,7 @@ it("upload comparison isolates existing stored art even before replacement valid
       asset={{ ...catalog["origem_active"]!, svgContent: payload }}
       isOpen
       onClose={() => {}}
-      onSave={() => {}}
+      onSave={() => true}
     />,
   );
   const { fireEvent } = await import("@testing-library/react");

@@ -48,36 +48,36 @@ let inMemoryCatalog: ShieldCatalogState = createInitialCatalogState();
  * Recupera o catálogo atual de artes dos Escudos.
  */
 export function getShieldCatalog(): ShieldCatalogState {
-  if (typeof window !== "undefined" && window.localStorage) {
-    try {
+  try {
+    if (typeof window !== "undefined") {
       const stored = window.localStorage.getItem(SHIELD_CATALOG_STORAGE_KEY);
       if (stored) {
         const parsed = parseShieldCatalog(JSON.parse(stored));
-        if (parsed) {
-          return parsed;
-        }
+        if (parsed) return parsed;
       }
-    } catch {
-      // Fallback em caso de erro no localStorage
     }
+  } catch {
+    // Browser storage can throw even when reading its property.
   }
   return structuredClone(inMemoryCatalog);
 }
-
 /**
  * Salva o estado do catálogo no storage local e na memória.
  */
-function persistCatalog(state: ShieldCatalogState): void {
-  inMemoryCatalog = structuredClone(state);
-  if (typeof window !== "undefined" && window.localStorage) {
-    try {
+const storageError =
+  "Não foi possível salvar a biblioteca neste navegador. O catálogo anterior foi preservado.";
+function persistCatalog(state: ShieldCatalogState): boolean {
+  // Commit memory only after durable browser storage succeeds.
+  try {
+    if (typeof window !== "undefined") {
       window.localStorage.setItem(SHIELD_CATALOG_STORAGE_KEY, JSON.stringify(state));
-    } catch {
-      // Ignora erro em quota ou restrições de navegação privada
     }
+  } catch {
+    return false;
   }
+  inMemoryCatalog = structuredClone(state);
+  return true;
 }
-
 /**
  * Atualiza o arquivo vetorial de uma arte de escudo no catálogo.
  * Apenas o Super ADM pode executar esta alteração.
@@ -119,7 +119,7 @@ export function updateShieldAsset(params: {
   };
 
   catalog.assets[assetId] = updatedAsset;
-  persistCatalog(catalog);
+  if (!persistCatalog(catalog)) return { success: false, error: storageError };
 
   return { success: true, asset: updatedAsset };
 }
@@ -184,7 +184,7 @@ export function publishCatalogVersion(params: {
   catalog.publishedBy = publisher;
   catalog.history.unshift(versionRecord);
 
-  persistCatalog(catalog);
+  if (!persistCatalog(catalog)) return { success: false, error: storageError };
   return { success: true, catalog };
 }
 
@@ -245,7 +245,7 @@ export function rollbackToVersion(params: {
   catalog.publishedAt = now;
   catalog.publishedBy = `Rollback para ${targetVersion}`;
 
-  persistCatalog(catalog);
+  if (!persistCatalog(catalog)) return { success: false, error: storageError };
   return { success: true, catalog };
 }
 
@@ -265,6 +265,6 @@ export function resetShieldCatalog(userContext: UserAuthContext): {
   }
 
   const freshCatalog = createInitialCatalogState();
-  persistCatalog(freshCatalog);
+  if (!persistCatalog(freshCatalog)) return { success: false, error: storageError };
   return { success: true, catalog: freshCatalog };
 }

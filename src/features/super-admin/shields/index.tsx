@@ -75,6 +75,7 @@ export function ShieldsLibraryPage() {
         message: res.error || "Erro ao salvar ativo.",
       });
     }
+    return res.success;
   };
 
   const handlePublish = () => {

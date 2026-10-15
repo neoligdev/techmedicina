@@ -1,0 +1,21 @@
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
+import { ShieldUploadModal } from "@/features/super-admin/shields/components/shield-upload-modal";
+import { buildDefaultShieldCatalog } from "@/features/super-admin/shields/default-assets";
+afterEach(cleanup);
+it("keeps SVG and preview open on save failure and permits retry", () => {
+  const asset = buildDefaultShieldCatalog()["origem_active"]!;
+  const save = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
+  const close = vi.fn();
+  render(<ShieldUploadModal asset={asset} isOpen onClose={close} onSave={save} />);
+  const input = screen.getByRole("textbox");
+  fireEvent.change(input, { target: { value: asset.svgContent } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar como Rascunho" }));
+  expect(close).not.toHaveBeenCalled();
+  expect(input).toHaveValue(asset.svgContent);
+  expect(screen.getByText(/Sua edição foi mantida/)).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "Prévia do novo Escudo" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Salvar como Rascunho" }));
+  expect(close).toHaveBeenCalledTimes(1);
+  expect(save).toHaveBeenNthCalledWith(2, asset.id, asset.svgContent);
+});
