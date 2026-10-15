@@ -1,3 +1,4 @@
+import { ShieldArtImage } from "./shield-art-image";
 import { useState } from "react";
 import { ShieldArtAsset } from "../types";
 import { validateAndSanitizeSvg } from "../sanitizer";
@@ -118,16 +119,18 @@ export function ShieldUploadModal({ asset, isOpen, onClose, onSave }: ShieldUplo
               <div className="grid grid-cols-2 gap-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <div className="flex flex-col items-center">
                   <span className="text-[10px] text-slate-500 font-medium mb-1">Arte Atual</span>
-                  <div
-                    className="w-20 h-20 bg-white dark:bg-slate-900 border rounded-md p-2 flex items-center justify-center"
-                    dangerouslySetInnerHTML={{ __html: asset.svgContent }}
+                  <ShieldArtImage
+                    className="w-20 h-20 bg-white dark:bg-slate-900 border rounded-md p-2 object-contain"
+                    svg={asset.svgContent}
+                    label="Arte atual do Escudo"
                   />
                 </div>
                 <div className="flex flex-col items-center">
                   <span className="text-[10px] text-emerald-600 font-medium mb-1">Nova Prévia</span>
-                  <div
-                    className="w-20 h-20 bg-white dark:bg-slate-900 border border-emerald-500 rounded-md p-2 flex items-center justify-center"
-                    dangerouslySetInnerHTML={{ __html: sanitizedPreview }}
+                  <ShieldArtImage
+                    className="w-20 h-20 bg-white dark:bg-slate-900 border border-emerald-500 rounded-md p-2 object-contain"
+                    svg={sanitizedPreview}
+                    label="Prévia do novo Escudo"
                   />
                 </div>
               </div>

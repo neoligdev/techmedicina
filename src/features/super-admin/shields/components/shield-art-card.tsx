@@ -1,3 +1,4 @@
+import { ShieldArtImage } from "./shield-art-image";
 import { useState } from "react";
 import { ShieldArtAsset, ShieldArtVariant } from "../types";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
@@ -91,9 +92,10 @@ export function ShieldArtCard({ assets, onEditAsset }: ShieldArtCardProps) {
         {/* Pré-visualização do SVG */}
         <div className="relative w-full aspect-square max-w-[200px] rounded-xl flex items-center justify-center p-4 border transition-colors mb-3">
           <div className={`absolute inset-0 rounded-xl transition-colors ${bgClasses[bgMode]}`} />
-          <div
-            className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none drop-shadow-sm"
-            dangerouslySetInnerHTML={{ __html: currentAsset.svgContent }}
+          <ShieldArtImage
+            className="relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-sm"
+            svg={currentAsset.svgContent}
+            label={currentAsset.accessibilityLabel}
           />
           {/* Seletor de fundo de contraste */}
           <div className="absolute bottom-2 right-2 z-20 flex gap-1 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-1 rounded-md border border-slate-200 dark:border-slate-700">

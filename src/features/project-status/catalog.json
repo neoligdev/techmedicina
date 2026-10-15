@@ -2979,6 +2979,18 @@
       "next": "Concluir regressão completa e compilação antes de registrar aprovação geral do checkpoint. Integração na main continua limitada à autorização D85.",
       "parent": "2",
       "id": "D98"
+    },
+    {
+      "next": "Revisar sanitização completa e persistência remota antes de considerar biblioteca produtiva. Catálogo continua demonstrativo/local; não houve publicação de arte, Cloud, DNS ou integração pós-D85 na main.",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex removeu node:crypto e Buffer do sanitizador, preservando hashes SHA-256 das 15 artes com biblioteca compatível com navegador e bun.lock. Prévia e cards exibem SVG como imagem isolada em vez de HTML inserido. Vinte e nove testes de artes/runtime/prévias aprovados, TypeScript válido. Navegador local confirmou artes e prévia carregadas, sem salvar substituição.",
+      "status": "done",
+      "requirements": [],
+      "id": "D99",
+      "parent": "11",
+      "title": "Escudos: compatibilidade browser e isolamento das prévias"
     }
   ]
 }

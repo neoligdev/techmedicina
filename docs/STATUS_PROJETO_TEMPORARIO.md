@@ -2307,3 +2307,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex atualizou o teste de fallback e recuperação de logo para os textos acessíveis que identificam cada clínica, introduzidos na D91. Os onze testes de personalização passaram após a correção. Nenhum componente, identidade ou design foi alterado nesta etapa.
 - **Próximo Passo**: Concluir regressão completa e compilação antes de registrar aprovação geral do checkpoint. Integração na main continua limitada à autorização D85.
+
+## D99 - Escudos: compatibilidade browser e isolamento das prévias 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex removeu node:crypto e Buffer do sanitizador, preservando hashes SHA-256 das 15 artes com biblioteca compatível com navegador e bun.lock. Prévia e cards exibem SVG como imagem isolada em vez de HTML inserido. Vinte e nove testes de artes/runtime/prévias aprovados, TypeScript válido. Navegador local confirmou artes e prévia carregadas, sem salvar substituição.
+- **Próximo Passo**: Revisar sanitização completa e persistência remota antes de considerar biblioteca produtiva. Catálogo continua demonstrativo/local; não houve publicação de arte, Cloud, DNS ou integração pós-D85 na main.

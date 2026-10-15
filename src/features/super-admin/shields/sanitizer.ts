@@ -1,4 +1,5 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex } from "@noble/hashes/utils.js";
 
 export interface SvgValidationResult {
   isValid: boolean;
@@ -13,7 +14,7 @@ export const MAX_SVG_SIZE_BYTES = 256 * 1024; // 256 KB
  * Calcula o hash SHA-256 determinístico de um conteúdo textual.
  */
 export function calculateSvgHash(content: string): string {
-  return createHash("sha256").update(content.trim(), "utf8").digest("hex");
+  return bytesToHex(sha256(new TextEncoder().encode(content.trim())));
 }
 
 /**
@@ -25,7 +26,7 @@ export function validateAndSanitizeSvg(rawContent: string): SvgValidationResult 
     return { isValid: false, error: "Conteúdo SVG vazio ou inválido." };
   }
 
-  const byteLength = Buffer.byteLength(rawContent, "utf8");
+  const byteLength = new TextEncoder().encode(rawContent).byteLength;
   if (byteLength > MAX_SVG_SIZE_BYTES) {
     return {
       isValid: false,
