@@ -3027,6 +3027,18 @@
       "authors": [
         "Codex"
       ]
+    },
+    {
+      "authors": [
+        "Codex"
+      ],
+      "next": "Consolidar regressão do checkpoint e continuar requisitos pendentes de persistência remota e upload. Não foi inventada política de incremento de versões. Biblioteca ainda demonstrativa; main permanece D85.",
+      "done": "Codex normalizou espaços na versão publicada localmente, bloqueou reutilização de identificadores históricos mesmo após rollback e recusou números SemVer com zeros iniciais. Histórico legado duplicado continua legível, mas rollback ambíguo retorna erro sem escolher arbitrariamente um registro. Trinta e nove testes de versões/persistência/artes/rollback aprovados.",
+      "parent": "11",
+      "title": "Escudos: identidade única das versões e rollback sem ambiguidade",
+      "id": "D103",
+      "requirements": [],
+      "status": "done"
     }
   ]
 }

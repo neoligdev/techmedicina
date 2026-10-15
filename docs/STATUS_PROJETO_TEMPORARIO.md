@@ -2335,3 +2335,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex removeu sucesso falso em erros de quota ou acesso ao armazenamento. Edição, publicação demonstrativa, rollback e reset só atualizam a memória após gravação bem-sucedida; falhas retornam erro e preservam o catálogo anterior. Modal mantém SVG e prévia após falha e permite tentar novamente. Quarenta testes de armazenamento/contrato/artes/rollback e três de modal/prévias aprovados.
 - **Próximo Passo**: Continuar revisão das versões, sanitização e futura persistência remota autorizada. Operações continuam locais/demonstrativas; não houve publicação oficial, Cloud ou integração pós-D85 na main.
+
+## D103 - Escudos: identidade única das versões e rollback sem ambiguidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex normalizou espaços na versão publicada localmente, bloqueou reutilização de identificadores históricos mesmo após rollback e recusou números SemVer com zeros iniciais. Histórico legado duplicado continua legível, mas rollback ambíguo retorna erro sem escolher arbitrariamente um registro. Trinta e nove testes de versões/persistência/artes/rollback aprovados.
+- **Próximo Passo**: Consolidar regressão do checkpoint e continuar requisitos pendentes de persistência remota e upload. Não foi inventada política de incremento de versões. Biblioteca ainda demonstrativa; main permanece D85.

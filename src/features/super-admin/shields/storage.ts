@@ -141,11 +141,18 @@ export function publishCatalogVersion(params: {
     };
   }
 
-  if (!newVersion || !/^\d+\.\d+\.\d+$/.test(newVersion.trim())) {
+  const normalizedVersion = newVersion.trim();
+  if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(normalizedVersion)) {
     return { success: false, error: "Versão inválida. Utilize o formato semântico (ex: 1.1.0)." };
   }
 
   const catalog = getShieldCatalog();
+  if (catalog.history.some((record) => record.version === normalizedVersion)) {
+    return {
+      success: false,
+      error: "Esta versão já existe no histórico. Informe uma versão ainda não utilizada.",
+    };
+  }
   const now = new Date().toISOString();
   const publisher = userContext.userId || "Super ADM";
 
@@ -155,14 +162,14 @@ export function publishCatalogVersion(params: {
     catalog.assets[id] = {
       ...asset,
       status: "published",
-      version: newVersion,
+      version: normalizedVersion,
       publishedAt: now,
       publishedBy: publisher,
     };
   }
 
   const versionRecord: ShieldVersionRecord = {
-    version: newVersion,
+    version: normalizedVersion,
     publishedAt: now,
     publishedBy: publisher,
     changeSummary: changeSummary.trim() || "Publicação de nova revisão de ativos de Escudos.",
@@ -179,7 +186,7 @@ export function publishCatalogVersion(params: {
     ),
   };
 
-  catalog.version = newVersion;
+  catalog.version = normalizedVersion;
   catalog.publishedAt = now;
   catalog.publishedBy = publisher;
   catalog.history.unshift(versionRecord);
@@ -205,7 +212,14 @@ export function rollbackToVersion(params: {
   }
 
   const catalog = getShieldCatalog();
-  const targetRecord = catalog.history.find((h) => h.version === targetVersion);
+  const matches = catalog.history.filter((h) => h.version === targetVersion);
+  if (matches.length > 1) {
+    return {
+      success: false,
+      error: "Histórico ambíguo: há mais de um registro desta versão. O catálogo foi preservado.",
+    };
+  }
+  const targetRecord = matches[0];
   if (!targetRecord) {
     return { success: false, error: `Versão alvo '${targetVersion}' não encontrada no histórico.` };
   }
