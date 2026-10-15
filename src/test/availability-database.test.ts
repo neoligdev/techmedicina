@@ -1,4 +1,6 @@
 // @vitest-environment node
+import { createAvailabilitySqlReader } from "@/lib/agenda/availability-sql-reader.server";
+import { readOwnAvailability } from "@/lib/agenda/availability-read.server";
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { beforeAll, afterAll, expect, it } from "vitest";
@@ -159,4 +161,48 @@ it("client-host-session-HTTP-SQL recovers a committed response without duplicate
       ])
     ).rows,
   ).toEqual([{ id: receipt.id }]);
+});
+
+it("pages own availability through SQL and applies read revocation under RLS", async () => {
+  await as(doctor);
+  const identity: AuthenticatedIdentity = {
+    userId: doctor,
+    links: [
+      {
+        clinicId: clinic,
+        role: "medico",
+        isActive: true,
+        medicalIdentityVerified: true,
+        grants: [{ resource: "agenda", action: "read" }],
+      },
+    ],
+  };
+  const context = { currentClinicId: clinic, identity };
+  const reader = createAvailabilitySqlReader(doctor, (sql, params) => db.query(sql, params));
+  const query = {
+    window: { startsAt: "2026-10-15T00:00:00Z", endsAt: "2026-10-16T00:00:00Z" },
+    limit: 1,
+  };
+  const ids: string[] = [];
+  let after: { startsAt: string; id: string } | undefined;
+  do {
+    const page = await readOwnAvailability(
+      context,
+      { ...query, ...(after ? { after } : {}) },
+      reader,
+    );
+    ids.push(...page.items.map((item) => item.id));
+    after = page.next ?? undefined;
+  } while (after && ids.length < 10);
+  expect(ids).toHaveLength(3);
+  expect(new Set(ids).size).toBe(3);
+  await as(other);
+  expect((await readOwnAvailability(context, query, reader)).items).toEqual([]);
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND action='read'",
+    [doctor],
+  );
+  await as(doctor);
+  expect((await readOwnAvailability(context, query, reader)).items).toEqual([]);
 });

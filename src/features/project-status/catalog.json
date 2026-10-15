@@ -3051,6 +3051,18 @@
       "status": "done",
       "requirements": [],
       "id": "D104"
+    },
+    {
+      "requirements": [],
+      "parent": "3.5",
+      "authors": [
+        "Codex"
+      ],
+      "next": "Preparar fronteira HTTP e interface da leitura usando sessão e executor da mesma identidade. SQL 015 somente local; teste usa PGlite e Auth simulado. Não comprova homologação Cloud ou concorrência real. Main permanece D85.",
+      "title": "Agenda: paginação SQL própria sob RLS local",
+      "status": "done",
+      "id": "D105",
+      "done": "Codex conectou o serviço de leitura a adaptador SQL parametrizado com filtros de clínica/médico, período, cursor composto e limite. Linhas são mapeadas com contrato estrito. Teste PostgreSQL local percorreu três disponibilidades sem duplicação e confirmou retorno vazio sob Super ADM e após revogação de agenda/read. Dezesseis testes de leitura/SQL aprovados."
     }
   ]
 }

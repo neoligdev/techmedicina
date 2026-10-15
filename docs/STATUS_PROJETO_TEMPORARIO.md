@@ -2349,3 +2349,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex criou consulta por período explícito com paginação por início/ID e limite técnico de 50 itens. Escopo deriva da sessão de médico verificado com agenda/read; escrita isolada não concede leitura. Serviço valida propriedade, janela, ordem, duplicatas e limite do retorno antes de expor a página. Vinte e sete testes de leitura e regressão de contratos/HTTP aprovados.
 - **Próximo Passo**: Conectar leitor SQL sob o bearer da requisição, fronteira HTTP e interface de disponibilidade. Serviço ainda não montado; SQL 015 não aplicado no Cloud. Disponibilidade não reserva consultas nem define regras de cancelamento ou duração.
+
+## D105 - Agenda: paginação SQL própria sob RLS local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex conectou o serviço de leitura a adaptador SQL parametrizado com filtros de clínica/médico, período, cursor composto e limite. Linhas são mapeadas com contrato estrito. Teste PostgreSQL local percorreu três disponibilidades sem duplicação e confirmou retorno vazio sob Super ADM e após revogação de agenda/read. Dezesseis testes de leitura/SQL aprovados.
+- **Próximo Passo**: Preparar fronteira HTTP e interface da leitura usando sessão e executor da mesma identidade. SQL 015 somente local; teste usa PGlite e Auth simulado. Não comprova homologação Cloud ou concorrência real. Main permanece D85.
