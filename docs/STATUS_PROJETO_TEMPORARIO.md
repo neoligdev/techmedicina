@@ -2342,3 +2342,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex normalizou espaços na versão publicada localmente, bloqueou reutilização de identificadores históricos mesmo após rollback e recusou números SemVer com zeros iniciais. Histórico legado duplicado continua legível, mas rollback ambíguo retorna erro sem escolher arbitrariamente um registro. Trinta e nove testes de versões/persistência/artes/rollback aprovados.
 - **Próximo Passo**: Consolidar regressão do checkpoint e continuar requisitos pendentes de persistência remota e upload. Não foi inventada política de incremento de versões. Biblioteca ainda demonstrativa; main permanece D85.
+
+## D104 - Agenda: contrato de leitura própria paginada 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou consulta por período explícito com paginação por início/ID e limite técnico de 50 itens. Escopo deriva da sessão de médico verificado com agenda/read; escrita isolada não concede leitura. Serviço valida propriedade, janela, ordem, duplicatas e limite do retorno antes de expor a página. Vinte e sete testes de leitura e regressão de contratos/HTTP aprovados.
+- **Próximo Passo**: Conectar leitor SQL sob o bearer da requisição, fronteira HTTP e interface de disponibilidade. Serviço ainda não montado; SQL 015 não aplicado no Cloud. Disponibilidade não reserva consultas nem define regras de cancelamento ou duração.

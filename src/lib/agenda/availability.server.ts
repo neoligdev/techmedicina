@@ -11,7 +11,7 @@ import {
 /** Local preflight only. It does not reserve or publish a slot. An eventual write
  * must repeat overlap checks atomically under the request bearer in PostgreSQL.
  */
-export function ownAvailabilityScope(context: AuthContext) {
+export function ownAvailabilityScope(context: AuthContext, action: "read" | "write" = "write") {
   const links = context.identity.links.filter(
     (link) => link.clinicId === context.currentClinicId && link.isActive,
   );
@@ -21,7 +21,7 @@ export function ownAvailabilityScope(context: AuthContext) {
     links.length !== 1 ||
     link?.role !== "medico" ||
     !link.medicalIdentityVerified ||
-    !link.grants.some((grant) => grant.resource === "agenda" && grant.action === "write")
+    !link.grants.some((grant) => grant.resource === "agenda" && grant.action === action)
   )
     throw new AuthError("Availability denied", 403);
   return { clinicId: context.currentClinicId, doctorUserId: context.identity.userId };

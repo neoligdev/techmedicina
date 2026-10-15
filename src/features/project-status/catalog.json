@@ -3039,6 +3039,18 @@
       "id": "D103",
       "requirements": [],
       "status": "done"
+    },
+    {
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex criou consulta por período explícito com paginação por início/ID e limite técnico de 50 itens. Escopo deriva da sessão de médico verificado com agenda/read; escrita isolada não concede leitura. Serviço valida propriedade, janela, ordem, duplicatas e limite do retorno antes de expor a página. Vinte e sete testes de leitura e regressão de contratos/HTTP aprovados.",
+      "title": "Agenda: contrato de leitura própria paginada",
+      "parent": "3.5",
+      "next": "Conectar leitor SQL sob o bearer da requisição, fronteira HTTP e interface de disponibilidade. Serviço ainda não montado; SQL 015 não aplicado no Cloud. Disponibilidade não reserva consultas nem define regras de cancelamento ou duração.",
+      "status": "done",
+      "requirements": [],
+      "id": "D104"
     }
   ]
 }
