@@ -22,7 +22,12 @@ export function createInitialCatalogState(): ShieldCatalogState {
     snapshot: Object.fromEntries(
       Object.entries(defaultAssets).map(([id, asset]) => [
         id,
-        { svgHash: asset.svgHash, version: asset.version, updatedAt: asset.updatedAt },
+        {
+          svgHash: asset.svgHash,
+          version: asset.version,
+          updatedAt: asset.updatedAt,
+          asset: structuredClone(asset),
+        },
       ]),
     ),
   };
@@ -55,14 +60,14 @@ export function getShieldCatalog(): ShieldCatalogState {
       // Fallback em caso de erro no localStorage
     }
   }
-  return inMemoryCatalog;
+  return structuredClone(inMemoryCatalog);
 }
 
 /**
  * Salva o estado do catálogo no storage local e na memória.
  */
 function persistCatalog(state: ShieldCatalogState): void {
-  inMemoryCatalog = state;
+  inMemoryCatalog = structuredClone(state);
   if (typeof window !== "undefined" && window.localStorage) {
     try {
       window.localStorage.setItem(SHIELD_CATALOG_STORAGE_KEY, JSON.stringify(state));
@@ -163,7 +168,12 @@ export function publishCatalogVersion(params: {
     snapshot: Object.fromEntries(
       Object.entries(catalog.assets).map(([id, asset]) => [
         id,
-        { svgHash: asset.svgHash, version: asset.version, updatedAt: asset.updatedAt },
+        {
+          svgHash: asset.svgHash,
+          version: asset.version,
+          updatedAt: asset.updatedAt,
+          asset: structuredClone(asset),
+        },
       ]),
     ),
   };
@@ -199,22 +209,37 @@ export function rollbackToVersion(params: {
     return { success: false, error: `Versão alvo '${targetVersion}' não encontrada no histórico.` };
   }
 
-  // Restaura os ativos e registra o evento de reversão
+  // Validate every historical file before replacing any current asset.
+  const restored: Record<string, ShieldArtAsset> = {};
   const now = new Date().toISOString();
   for (const id of Object.keys(catalog.assets)) {
     const snap = targetRecord.snapshot[id];
-    if (snap) {
-      catalog.assets[id] = {
-        ...catalog.assets[id]!,
-        version: snap.version,
-        svgHash: snap.svgHash,
-        status: "published",
-        updatedAt: now,
-        updatedBy: `Rollback por ${userContext.userId || "Super ADM"}`,
+    const asset = snap?.asset;
+    const validation = asset && validateAndSanitizeSvg(asset.svgContent);
+    if (
+      !asset ||
+      !validation?.isValid ||
+      validation.hash !== snap?.svgHash ||
+      asset.svgHash !== snap.svgHash ||
+      asset.version !== snap.version ||
+      asset.id !== id ||
+      asset.shieldId !== catalog.assets[id]?.shieldId ||
+      asset.variant !== catalog.assets[id]?.variant ||
+      asset.status !== "published"
+    ) {
+      return {
+        success: false,
+        error:
+          "Esta versão não contém arquivos íntegros para restauração. O catálogo atual foi preservado.",
       };
     }
+    restored[id] = {
+      ...structuredClone(asset),
+      updatedAt: now,
+      updatedBy: `Rollback por ${userContext.userId || "Super ADM"}`,
+    };
   }
-
+  catalog.assets = restored;
   catalog.version = `${targetVersion}-revert`;
   catalog.publishedAt = now;
   catalog.publishedBy = `Rollback para ${targetVersion}`;

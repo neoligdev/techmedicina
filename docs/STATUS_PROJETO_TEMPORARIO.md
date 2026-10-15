@@ -2314,3 +2314,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex removeu node:crypto e Buffer do sanitizador, preservando hashes SHA-256 das 15 artes com biblioteca compatível com navegador e bun.lock. Prévia e cards exibem SVG como imagem isolada em vez de HTML inserido. Vinte e nove testes de artes/runtime/prévias aprovados, TypeScript válido. Navegador local confirmou artes e prévia carregadas, sem salvar substituição.
 - **Próximo Passo**: Revisar sanitização completa e persistência remota antes de considerar biblioteca produtiva. Catálogo continua demonstrativo/local; não houve publicação de arte, Cloud, DNS ou integração pós-D85 na main.
+
+## D100 - Escudos: rollback restaura a arte e verifica integridade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu rollback que antes restaurava apenas hash/versão mantendo SVG recente. Novos snapshots guardam arte completa; todos os arquivos são validados antes da troca. Histórico antigo sem arquivo ou com hash divergente é recusado sem alteração parcial. Cópias isoladas impedem mutação externa do fallback em memória. Trinta e um testes de artes/runtime/rollback aprovados.
+- **Próximo Passo**: Validar contrato completo do catálogo armazenado e limites de persistência, sem tratar armazenamento local como backend ou autorização real. Históricos legados sem conteúdo não podem ser restaurados. Main no lote D85; mudanças posteriores somente no checkpoint.

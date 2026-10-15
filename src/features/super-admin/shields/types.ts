@@ -26,7 +26,10 @@ export interface ShieldVersionRecord {
   publishedAt: string;
   publishedBy: string;
   changeSummary: string;
-  snapshot: Record<string, { svgHash: string; version: string; updatedAt: string }>;
+  snapshot: Record<
+    string,
+    { svgHash: string; version: string; updatedAt: string; asset?: ShieldArtAsset }
+  >;
 }
 
 export interface ShieldCatalogState {
