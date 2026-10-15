@@ -69,3 +69,33 @@ it.each(["state", "event"] as const)(
     expect(await repository.getState(clinicId, patientId)).toBeNull();
   },
 );
+it("restores a validated snapshot and retains retry idempotency", async () => {
+  const source = new InMemoryShieldRepository();
+  await source.saveTransition({ clinicId, patientId, state, event });
+  const restored = new InMemoryShieldRepository();
+  restored.importSnapshot(source.exportSnapshot());
+  await restored.saveTransition({ clinicId, patientId, state, event });
+  expect(await restored.getHistory(clinicId, patientId)).toHaveLength(1);
+});
+it.each(["scope", "event", "keys", "duplicate", "invalid"])(
+  "rejects poisoned %s snapshot atomically",
+  async (kind) => {
+    const repository = new InMemoryShieldRepository();
+    await repository.saveTransition({ clinicId, patientId, state, event });
+    const before = repository.exportSnapshot();
+    const data = JSON.parse(before);
+    if (kind === "scope") data.states[0][0] = "foreign";
+    if (kind === "event") data.histories[0][1][0].patientId = clinicId;
+    if (kind === "keys") data.idempotencyKeys = [];
+    if (kind === "duplicate") data.states.push(data.states[0]);
+    if (kind === "invalid") data.states[0][1].scoreAverage = 200;
+    expect(() => repository.importSnapshot(JSON.stringify(data))).toThrow();
+    expect(repository.exportSnapshot()).toBe(before);
+  },
+);
+it("restoration cannot clear an active transition lock", () => {
+  const repository = new InMemoryShieldRepository();
+  const before = repository.exportSnapshot();
+  repository.simulateLock(clinicId, patientId);
+  expect(() => repository.importSnapshot(before)).toThrow("locked");
+});

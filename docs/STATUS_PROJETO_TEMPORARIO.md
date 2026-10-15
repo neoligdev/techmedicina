@@ -2223,3 +2223,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex corrigiu repositório local que gravava estado antes de validar o evento: ambos os contratos e escopos são conferidos antes de qualquer mutação. Evento inválido preserva snapshot/ledger e libera lock; estado/evento estrangeiro não contaminam a chave clínica/paciente. Dezessete testes de atomicidade/persistência aprovados; tipos/lint aprovados.
 - **Próximo Passo**: 014 e integração main permanecem aguardando decisões humanas; nenhuma alteração no Cloud nesta etapa.
+
+## D87 - Escudos: restauração validada do histórico local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex substituiu importação de snapshot sem validação por restauração atômica com contratos estritos, chaves clínicas coerentes, estado obrigatório para histórico, eventos únicos e idempotência íntegra. Snapshot inválido preserva dados anteriores; restauração recusa locks ativos. Vinte e quatro testes atomicidade/persistência passaram; dez testes direcionados finais aprovados após recusar chaves repetidas.
+- **Próximo Passo**: D86/D87 continuam no checkpoint; main contém lote autorizado até D85. 014 segue pendente de autorização. Restauração local não é backup Cloud produtivo nem substitui política de retenção do PRD.

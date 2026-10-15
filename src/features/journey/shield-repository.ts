@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   type PatientShieldState,
   type ShieldHistoryEvent,
@@ -141,14 +142,48 @@ export class InMemoryShieldRepository implements ShieldRepository {
    * Restaura um snapshot exportado para validar recuperação após reinicialização do serviço.
    */
   importSnapshot(snapshot: string): void {
-    const data = JSON.parse(snapshot) as {
-      states: [string, PatientShieldState][];
-      histories: [string, ShieldHistoryEvent[]][];
-      idempotencyKeys: string[];
-    };
-    this.states = new Map(data.states);
-    this.histories = new Map(data.histories);
-    this.idempotencyKeys = new Set(data.idempotencyKeys);
+    if (this.locks.size) throw new Error("Cannot restore while shield transition is locked");
+    const data = z
+      .object({
+        states: z.array(z.tuple([z.string(), patientShieldStateSchema])),
+        histories: z.array(z.tuple([z.string(), z.array(shieldHistoryEventSchema)])),
+        idempotencyKeys: z.array(z.string()),
+      })
+      .strict()
+      .parse(JSON.parse(snapshot));
+    const states = new Map(data.states),
+      histories = new Map(data.histories);
+    if (states.size !== data.states.length || histories.size !== data.histories.length)
+      throw new Error("Duplicate shield snapshot scope");
+    for (const [key, state] of states) {
+      if (key !== this.makeKey(state.clinicId, state.patientId))
+        throw new Error("Shield snapshot scope mismatch");
+    }
+    const keys = new Set<string>(),
+      ids = new Set<string>();
+    for (const [key, events] of histories) {
+      if (!states.has(key)) throw new Error("Shield snapshot missing state");
+      for (const event of events) {
+        if (key !== this.makeKey(event.clinicId, event.patientId) || ids.has(event.id))
+          throw new Error("Shield snapshot event mismatch");
+        ids.add(event.id);
+        const idempotencyKey =
+          event.idempotencyKey ??
+          `${event.clinicId}:${event.patientId}:${event.evaluatedDate}:${event.action}:${event.shield}`;
+        const fullKey = `${key}:${idempotencyKey}`;
+        if (keys.has(fullKey)) throw new Error("Duplicate shield snapshot event");
+        keys.add(fullKey);
+      }
+    }
+    if (
+      keys.size !== data.idempotencyKeys.length ||
+      new Set(data.idempotencyKeys).size !== data.idempotencyKeys.length ||
+      data.idempotencyKeys.some((key) => !keys.has(key))
+    )
+      throw new Error("Shield snapshot idempotency mismatch");
+    this.states = states;
+    this.histories = histories;
+    this.idempotencyKeys = keys;
     this.locks.clear();
   }
 
