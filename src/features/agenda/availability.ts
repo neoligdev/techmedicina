@@ -18,6 +18,16 @@ export const availabilityProposalSchema = z
   })
   .strict();
 export type AvailabilityInterval = z.infer<typeof availabilityIntervalSchema>;
+export const availabilityReceiptSchema = z
+  .object({
+    id: z.string().uuid(),
+    clinicId: z.string().uuid(),
+    doctorUserId: z.string().uuid(),
+    sourceRequestId: z.string().uuid(),
+    interval: availabilityIntervalSchema,
+    createdAt: z.string().datetime({ offset: true }),
+  })
+  .strict();
 
 /** Half-open intervals allow adjacent slots. Persisted conflicts need DB locking. */
 export function availabilityOverlaps(first: AvailabilityInterval, second: AvailabilityInterval) {

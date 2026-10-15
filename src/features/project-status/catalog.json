@@ -2943,6 +2943,18 @@
       "status": "done",
       "parent": "3.5",
       "id": "D95"
+    },
+    {
+      "status": "done",
+      "parent": "3.5",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex implementou cliente com bearer fresco, prazo 20s e resposta estrita de clínica/médico/solicitação/intervalo, sem cache/cookies/redirecionamento. Integração cliente-host-sessão-HTTP-RPC-SQL local comprovou reenvio após resposta perdida sem duplicar horário. Vinte e dois testes de contratos/HTTP/SQL e seis do cliente aprovados; tipos/lint válidos.",
+      "title": "Agenda: transporte autenticado e reenvio PostgreSQL",
+      "next": "Implementar formulário e leitura paginada de disponibilidade, mantendo políticas pendentes explícitas. SQL 015 somente local; endpoint não montado e Auth/hosts simulados nos testes. D86–D96 apenas no checkpoint; main no lote D85 autorizado.",
+      "id": "D96",
+      "requirements": []
     }
   ]
 }

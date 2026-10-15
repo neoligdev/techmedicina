@@ -2,6 +2,9 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { beforeAll, afterAll, expect, it } from "vitest";
+import { createAvailabilityClient } from "@/features/agenda/availability-client";
+import { createAvailabilityEndpoint } from "@/lib/agenda/availability-endpoint.server";
+import type { AuthenticatedIdentity } from "@/lib/auth/core";
 const clinic = "11111111-1111-4111-8111-111111111111",
   doctor = "22222222-2222-4222-8222-222222222222",
   other = "33333333-3333-4333-8333-333333333333",
@@ -87,4 +90,73 @@ it("revoked write grant denies replay without removing intervals", async () => {
   await as(doctor);
   await expect(create()).rejects.toMatchObject({ code: "42501" });
   expect((await db.query("SELECT * FROM public.tm_doctor_availability")).rows).toHaveLength(2);
+});
+it("client-host-session-HTTP-SQL recovers a committed response without duplicate", async () => {
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'agenda','write')", [doctor]);
+  const identity: AuthenticatedIdentity = {
+    userId: doctor,
+    links: [
+      {
+        clinicId: clinic,
+        role: "medico",
+        isActive: true,
+        medicalIdentityVerified: true,
+        grants: [{ resource: "agenda", action: "write" }],
+      },
+    ],
+  };
+  const endpoint = createAvailabilityEndpoint({
+    lookup: async (hostname) => ({
+      hostname,
+      clinicId: clinic,
+      environment: "clinic_portal",
+      status: "active",
+    }),
+    resolveSession: async (request) =>
+      request.headers.get("authorization") === "Bearer qa" ? { identity } : null,
+    rpc: () => async (args) => {
+      await as(doctor);
+      try {
+        const result = await db.query<{ value: unknown }>(
+          "SELECT public.tm_create_own_availability($1,$2,$3,$4) AS value",
+          [args.p_clinic_id, args.p_source_request_id, args.p_starts_at, args.p_ends_at],
+        );
+        return { data: result.rows[0]?.value, error: null };
+      } catch (error) {
+        return { data: null, error: { code: (error as { code: string }).code } };
+      }
+    },
+  });
+  let loseResponse = true;
+  const client = createAvailabilityClient(
+    { clinicId: clinic, doctorUserId: doctor, getAccessToken: async () => "qa" },
+    async (url, options) => {
+      const response = await endpoint(
+        new Request(`https://clinic.example.com${String(url)}`, {
+          ...options,
+          headers: { ...options?.headers, host: "clinic.example.com" },
+        }),
+      );
+      if (loseResponse) {
+        loseResponse = false;
+        throw new Error("Response lost after commit");
+      }
+      return response;
+    },
+  );
+  const input = {
+    sourceRequestId: "55555555-5555-4555-8555-555555555555",
+    interval: { startsAt: "2026-10-15T15:00:00-03:00", endsAt: "2026-10-15T16:00:00-03:00" },
+  };
+  await expect(client(input)).rejects.toThrow("Response lost after commit");
+  const receipt = await client(input);
+  expect(receipt.doctorUserId).toBe(doctor);
+  expect(
+    (
+      await db.query("SELECT id FROM public.tm_doctor_availability WHERE source_request_id=$1", [
+        input.sourceRequestId,
+      ])
+    ).rows,
+  ).toEqual([{ id: receipt.id }]);
 });

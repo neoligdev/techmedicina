@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -2286,3 +2286,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex conectou disponibilidade própria a serviço com grant médico e RPC atômica, composição de domínio clinic_portal/sessão da mesma requisição, POST JSON limitado e respostas privadas/no-store. Identidade não vem do corpo. Recibo valida clínica/médico/solicitação e instantes antes da confirmação; conflitos/negações SQL têm mensagens seguras. Dezessete testes de contratos/serviço/HTTP aprovados.
 - **Próximo Passo**: Integrar PostgreSQL local ponta a ponta, transporte/formulário e leitura da agenda. Endpoint não montado; 015 apenas local, sem reservas ou políticas pendentes inventadas. Cloud e integração pós-D85 continuam sob gates separados.
+
+## D96 - Agenda: transporte autenticado e reenvio PostgreSQL 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou cliente com bearer fresco, prazo 20s e resposta estrita de clínica/médico/solicitação/intervalo, sem cache/cookies/redirecionamento. Integração cliente-host-sessão-HTTP-RPC-SQL local comprovou reenvio após resposta perdida sem duplicar horário. Vinte e dois testes de contratos/HTTP/SQL e seis do cliente aprovados; tipos/lint válidos.
+- **Próximo Passo**: Implementar formulário e leitura paginada de disponibilidade, mantendo políticas pendentes explícitas. SQL 015 somente local; endpoint não montado e Auth/hosts simulados nos testes. D86–D96 apenas no checkpoint; main no lote D85 autorizado.
