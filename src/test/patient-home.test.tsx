@@ -41,6 +41,8 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
       "/app/escudos",
     );
     expect(screen.getByLabelText(/Meu score demonstrativo/)).toBeInTheDocument();
+    expect(screen.getByText("Meu cuidado")).toBeInTheDocument();
+    expect(screen.queryByText("Gestão da clínica")).not.toBeInTheDocument();
   });
   it.each(["Enter", " "])("abre score pelo teclado com %s", (key) => {
     renderWithDemo(<PatientHome />);

@@ -115,6 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Brand
                 name={branded ? identity.name : undefined}
                 clinic={branded}
+                subtitle={area === "medico" ? "Área médica" : undefined}
                 initials={identity.initials}
                 logo={branded ? preferences.logo : undefined}
               />
@@ -180,6 +181,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   clinic
                   initials={identity.initials}
                   logo={preferences.logo}
+                  subtitle="Meu cuidado"
                 />
               </div>
             </header>

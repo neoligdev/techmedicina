@@ -2883,6 +2883,18 @@
       "title": "Escudos: limites 0–100 também no PostgreSQL",
       "status": "done",
       "next": "014 permanece não aplicada no Cloud, aguardando autorização. Regras numéricas de nível/metodologia não alteradas. D86–D90 continuam no checkpoint; main no lote D85 autorizado."
+    },
+    {
+      "title": "Identidade visual: distinguir paciente e médico da gestão",
+      "authors": [
+        "Codex"
+      ],
+      "id": "D91",
+      "requirements": [],
+      "status": "done",
+      "done": "Codex corrigiu identificação do cabeçalho PWA para Meu cuidado, inclusive subpáginas, e navegação médica para Área médica, preservando nome/logo/cores por clínica e identidade PlugPix do Super ADM. Alternativa textual da logo usa o nome da marca. Quatorze testes do paciente aprovados e subpágina conferida no navegador local.",
+      "next": "Continuar homologação visual por perfil e conectar identidades reais conforme White Label. D86–D91 permanecem no checkpoint; main no lote D85 autorizado. Sem DNS, grants ou mudança de backend.",
+      "parent": "2"
     }
   ]
 }

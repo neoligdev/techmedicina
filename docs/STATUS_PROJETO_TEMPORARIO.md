@@ -2251,3 +2251,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex adicionou CHECKs de pontuação 0–100 ao estado e histórico na migração 014 local, preservando NULL para ausência de cálculo. Testes de gravação autorizada com média/arredondamento fora do intervalo comprovam recusa e ausência de mutação parcial. Trinta e quatro testes segurança/persistência passaram.
 - **Próximo Passo**: 014 permanece não aplicada no Cloud, aguardando autorização. Regras numéricas de nível/metodologia não alteradas. D86–D90 continuam no checkpoint; main no lote D85 autorizado.
+
+## D91 - Identidade visual: distinguir paciente e médico da gestão 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex corrigiu identificação do cabeçalho PWA para Meu cuidado, inclusive subpáginas, e navegação médica para Área médica, preservando nome/logo/cores por clínica e identidade PlugPix do Super ADM. Alternativa textual da logo usa o nome da marca. Quatorze testes do paciente aprovados e subpágina conferida no navegador local.
+- **Próximo Passo**: Continuar homologação visual por perfil e conectar identidades reais conforme White Label. D86–D91 permanecem no checkpoint; main no lote D85 autorizado. Sem DNS, grants ou mudança de backend.

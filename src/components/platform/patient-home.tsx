@@ -291,7 +291,13 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       {/* TOPO: Cabeçalho compacto com Logo da clínica e Notificações */}
       <header className="patient-home-header">
         <div className="patient-header-brand">
-          <Brand name={clinic.name} clinic initials={clinic.initials} logo={preferences.logo} />
+          <Brand
+            name={clinic.name}
+            clinic
+            initials={clinic.initials}
+            logo={preferences.logo}
+            subtitle="Meu cuidado"
+          />
         </div>
 
         <div className="patient-header-actions">

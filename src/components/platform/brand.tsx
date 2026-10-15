@@ -5,11 +5,13 @@ export function Brand({
   clinic = false,
   initials,
   logo,
+  subtitle,
 }: {
   name?: string | undefined;
   clinic?: boolean;
   initials?: string;
   logo?: string | undefined;
+  subtitle?: string | undefined;
 }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   return (
@@ -18,7 +20,7 @@ export function Brand({
         {logo && failedSrc !== logo ? (
           <img
             src={logo}
-            alt="Logo"
+            alt={`Logo de ${name}`}
             className="brand-logo-img"
             onError={() => setFailedSrc(logo)}
           />
@@ -30,7 +32,7 @@ export function Brand({
       </div>
       <div>
         <strong>{name}</strong>
-        <span>{clinic ? "Gestão da clínica" : "TECHMEDICINA"}</span>
+        <span>{subtitle ?? (clinic ? "Gestão da clínica" : "TECHMEDICINA")}</span>
       </div>
     </div>
   );
