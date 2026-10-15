@@ -158,6 +158,38 @@ describe("TECHMEDICINA — Ciclo 004: Consolidação e Segurança de Escudos", (
       "INSERT INTO public.tm_membership_grants VALUES('50000000-0000-4000-8000-000000000010','journey_shields','write')",
     );
   });
+  it.each([
+    [-1, 20],
+    [101, 20],
+    [20, -1],
+    [20, 101],
+  ])("banco recusa média %s/arredondamento %s sem mutação parcial", async (average, rounded) => {
+    await db.exec("RESET ROLE");
+    const beforeState = await db.query(
+      "SELECT * FROM public.tm_patient_shield_states ORDER BY clinic_id,patient_id",
+    );
+    const beforeHistory = await db.query(
+      "SELECT * FROM public.tm_shield_history_events ORDER BY id",
+    );
+    await asUser(userDoctorA);
+    await expect(
+      db.query(
+        "SELECT public.tm_save_patient_shield_transition($1,$2,'origem','origem',true,$3,$4,0,0,'2026-10-14','initial','QA',NULL)",
+        [clinicA, patientA, average, rounded],
+      ),
+    ).rejects.toMatchObject({ code: "23514" });
+    await db.exec("RESET ROLE");
+    expect(
+      (
+        await db.query(
+          "SELECT * FROM public.tm_patient_shield_states ORDER BY clinic_id,patient_id",
+        )
+      ).rows,
+    ).toEqual(beforeState.rows);
+    expect(
+      (await db.query("SELECT * FROM public.tm_shield_history_events ORDER BY id")).rows,
+    ).toEqual(beforeHistory.rows);
+  });
   // 1. Tentativa de atribuição fraudulenta de Plenitude
   it("cargo Super ADM isolado não concede leitura ou escrita clínica de Escudos", async () => {
     await asUser(userSuperAdmin);

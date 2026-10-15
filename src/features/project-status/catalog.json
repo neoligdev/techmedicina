@@ -2871,6 +2871,18 @@
       ],
       "done": "Codex adicionou link Meus Escudos no painel Mais recursos de cuidado, reutilizando classes e ícone existentes, sem alterar score demonstrativo. Quatorze testes da página inicial aprovados; navegação real no navegador local abriu /app/escudos pelo link e manteve rodapé. Tipos/lint aprovados.",
       "status": "done"
+    },
+    {
+      "parent": "8.10",
+      "requirements": [],
+      "id": "D90",
+      "done": "Codex adicionou CHECKs de pontuação 0–100 ao estado e histórico na migração 014 local, preservando NULL para ausência de cálculo. Testes de gravação autorizada com média/arredondamento fora do intervalo comprovam recusa e ausência de mutação parcial. Trinta e quatro testes segurança/persistência passaram.",
+      "authors": [
+        "Codex"
+      ],
+      "title": "Escudos: limites 0–100 também no PostgreSQL",
+      "status": "done",
+      "next": "014 permanece não aplicada no Cloud, aguardando autorização. Regras numéricas de nível/metodologia não alteradas. D86–D90 continuam no checkpoint; main no lote D85 autorizado."
     }
   ]
 }

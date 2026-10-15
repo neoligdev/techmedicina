@@ -2244,3 +2244,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex adicionou link Meus Escudos no painel Mais recursos de cuidado, reutilizando classes e ícone existentes, sem alterar score demonstrativo. Quatorze testes da página inicial aprovados; navegação real no navegador local abriu /app/escudos pelo link e manteve rodapé. Tipos/lint aprovados.
 - **Próximo Passo**: D86–D89 permanecem no checkpoint até aprovação de integração posterior. Tela segue vazia sem dados autorizados; Cloud 014/hosts/grants e homologação real pendentes.
+
+## D90 - Escudos: limites 0–100 também no PostgreSQL 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex adicionou CHECKs de pontuação 0–100 ao estado e histórico na migração 014 local, preservando NULL para ausência de cálculo. Testes de gravação autorizada com média/arredondamento fora do intervalo comprovam recusa e ausência de mutação parcial. Trinta e quatro testes segurança/persistência passaram.
+- **Próximo Passo**: 014 permanece não aplicada no Cloud, aguardando autorização. Regras numéricas de nível/metodologia não alteradas. D86–D90 continuam no checkpoint; main no lote D85 autorizado.

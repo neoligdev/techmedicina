@@ -16,3 +16,5 @@ Função de transição permite profissional verificado com grant específico e 
 
 ## Aplicação autorizável
 Preflight somente leitura, fonte exata, pós-verificação de definição, RLS, políticas, triggers e ACL, contagens vazias. Sem usuários/vínculos/grants, seeds, domínios/DNS, montagem de endpoints ou Publish. Não apagar dados/tabelas para rollback; correção progressiva revisada. Aplicação direta não prova ledger gerenciado. Aprovação específica do proprietário necessária.
+
+Complemento D90: CHECKs de estado/histórico restringem score_average e score_average_rounded a 0–100, permitindo NULL quando não calculável. Falha preserva transação anterior. Não modifica pesos, limiares dos níveis ou metodologia VITALIDADE; nenhuma aplicação Cloud.
