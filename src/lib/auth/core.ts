@@ -69,6 +69,7 @@ export function isAuthorized(
     "faturamento",
     "journey_goals",
     "journey_events",
+    "journey_shields",
   ];
   const validActions = ["create", "read", "write", "delete", "manage"];
   if (!validResources.includes(resource) || !validActions.includes(action)) {
@@ -133,7 +134,16 @@ export function isAuthorized(
 
   // Médico: recursos clínicos e acompanhamento autorizado.
   if (role === "medico") {
-    if (!["agenda", "paciente", "prontuario", "journey_goals", "journey_events"].includes(resource))
+    if (
+      ![
+        "agenda",
+        "paciente",
+        "prontuario",
+        "journey_goals",
+        "journey_events",
+        "journey_shields",
+      ].includes(resource)
+    )
       return false;
   }
 
@@ -142,6 +152,7 @@ export function isAuthorized(
     if (!(
       (resource === "agenda" && ["read", "create"].includes(action)) ||
       (resource === "journey_goals" && action === "read") ||
+      (resource === "journey_shields" && action === "read") ||
       (resource === "journey_events" && ["read", "create"].includes(action))
     ))
       return false;
@@ -149,7 +160,8 @@ export function isAuthorized(
 
   // Admin: sem prontuário ou acompanhamento individual.
   if (role === "admin") {
-    if (["prontuario", "journey_goals", "journey_events"].includes(resource)) return false;
+    if (["prontuario", "journey_goals", "journey_events", "journey_shields"].includes(resource))
+      return false;
   }
 
   if (
@@ -159,13 +171,23 @@ export function isAuthorized(
   )
     return false;
   if (role === "medico" && resource === "journey_events" && action !== "read") return false;
+  if (resource === "journey_shields" && action !== "read") return false;
 
   // 6. Verificar grants EXPLÍCITOS no vínculo
   const hasGrant = currentLink.grants.some((g) => g.resource === resource && g.action === action);
   if (!hasGrant) return false;
 
   // 7. Recursos clínicos e participação exigem proprietário e vínculo do paciente.
-  if (["agenda", "paciente", "prontuario", "journey_goals", "journey_events"].includes(resource)) {
+  if (
+    [
+      "agenda",
+      "paciente",
+      "prontuario",
+      "journey_goals",
+      "journey_events",
+      "journey_shields",
+    ].includes(resource)
+  ) {
     // Exige ownerPatientId preenchido
     if (!metadata?.ownerPatientId) return false;
 

@@ -2258,3 +2258,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex corrigiu identificação do cabeçalho PWA para Meu cuidado, inclusive subpáginas, e navegação médica para Área médica, preservando nome/logo/cores por clínica e identidade PlugPix do Super ADM. Alternativa textual da logo usa o nome da marca. Quatorze testes do paciente aprovados e subpágina conferida no navegador local.
 - **Próximo Passo**: Continuar homologação visual por perfil e conectar identidades reais conforme White Label. D86–D91 permanecem no checkpoint; main no lote D85 autorizado. Sem DNS, grants ou mudança de backend.
+
+## D92 - Escudos: política central de leitura por perfil 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex integrou journey_shields à política central para leitura própria do paciente ou médico verificado com grant e metadados de vínculo ativo do paciente na mesma clínica. Admin e cargo global isolado não ganham acesso. Ações create/write/delete/manage são negadas na interface, mesmo com grant apresentado. Cinquenta testes de autorização/host em cinco arquivos aprovados; tipos/lint válidos.
+- **Próximo Passo**: Conectar metadados verificados nos fluxos operacionais e homologar com RLS real. Nenhum grant Cloud concedido; 014 e integração pós-D85 ainda pendentes. D86–D92 apenas no checkpoint.
