@@ -2356,3 +2356,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex conectou o serviço de leitura a adaptador SQL parametrizado com filtros de clínica/médico, período, cursor composto e limite. Linhas são mapeadas com contrato estrito. Teste PostgreSQL local percorreu três disponibilidades sem duplicação e confirmou retorno vazio sob Super ADM e após revogação de agenda/read. Dezesseis testes de leitura/SQL aprovados.
 - **Próximo Passo**: Preparar fronteira HTTP e interface da leitura usando sessão e executor da mesma identidade. SQL 015 somente local; teste usa PGlite e Auth simulado. Não comprova homologação Cloud ou concorrência real. Main permanece D85.
+
+## D106 - Agenda: leitura HTTP privada vinculada ao domínio 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou fábrica GET de leitura com domínio clinic_portal e sessão da mesma requisição. Query permite apenas período/limite/cursor, recusa chaves duplicadas ou identidade injetada e responde private/no-store com erros seguros. Integração HTTP-host-sessão-SQL local confirmou página própria e retorno vazio após revogação no banco. Dezesseis testes HTTP/SQL e vinte de HTTP/serviço aprovados.
+- **Próximo Passo**: Implementar transporte de navegador e interface paginada, com invalidação na troca de clínica/médico. Endpoint ainda não montado; Auth/host simulados e SQL 015 apenas local. Sem Cloud ou integração pós-D85 na main.

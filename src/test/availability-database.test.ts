@@ -1,3 +1,4 @@
+import { createAvailabilityReadEndpoint } from "@/lib/agenda/availability-read-endpoint.server";
 // @vitest-environment node
 import { createAvailabilitySqlReader } from "@/lib/agenda/availability-sql-reader.server";
 import { readOwnAvailability } from "@/lib/agenda/availability-read.server";
@@ -179,6 +180,26 @@ it("pages own availability through SQL and applies read revocation under RLS", a
   };
   const context = { currentClinicId: clinic, identity };
   const reader = createAvailabilitySqlReader(doctor, (sql, params) => db.query(sql, params));
+  const readEndpoint = createAvailabilityReadEndpoint({
+    lookup: async (hostname) => ({
+      hostname,
+      clinicId: clinic,
+      environment: "clinic_portal",
+      status: "active",
+    }),
+    resolveSession: async () => ({ identity }),
+    reader: () => reader,
+  });
+  const httpRead = () =>
+    readEndpoint(
+      new Request(
+        "https://clinic.example.com/api/agenda/availability?start=2026-10-15T00%3A00%3A00Z&end=2026-10-16T00%3A00%3A00Z&limit=1",
+        { headers: { host: "clinic.example.com" } },
+      ),
+    );
+  const httpPage = await httpRead();
+  expect(httpPage.status).toBe(200);
+  expect((await httpPage.json()).page.items).toHaveLength(1);
   const query = {
     window: { startsAt: "2026-10-15T00:00:00Z", endsAt: "2026-10-16T00:00:00Z" },
     limit: 1,
@@ -205,4 +226,5 @@ it("pages own availability through SQL and applies read revocation under RLS", a
   );
   await as(doctor);
   expect((await readOwnAvailability(context, query, reader)).items).toEqual([]);
+  expect((await (await httpRead()).json()).page.items).toEqual([]);
 });
