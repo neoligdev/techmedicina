@@ -2967,6 +2967,18 @@
       "authors": [
         "Codex"
       ]
+    },
+    {
+      "done": "Codex atualizou o teste de fallback e recuperação de logo para os textos acessíveis que identificam cada clínica, introduzidos na D91. Os onze testes de personalização passaram após a correção. Nenhum componente, identidade ou design foi alterado nesta etapa.",
+      "requirements": [],
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "title": "Personalização: regressão de identificação acessível da clínica",
+      "next": "Concluir regressão completa e compilação antes de registrar aprovação geral do checkpoint. Integração na main continua limitada à autorização D85.",
+      "parent": "2",
+      "id": "D98"
     }
   ]
 }

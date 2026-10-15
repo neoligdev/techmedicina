@@ -384,16 +384,16 @@ describe("Personalização por clínica", () => {
     const { rerender } = render(
       <Brand name="Clinica A" logo="bad-image" clinic={true} initials="CA" />,
     );
-    const imgA = screen.getByAltText("Logo");
+    const imgA = screen.getByAltText("Logo de Clinica A");
     fireEvent.error(imgA);
     // Should fallback to initials since logo failed
-    expect(screen.queryByAltText("Logo")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("Logo de Clinica A")).not.toBeInTheDocument();
     expect(screen.getByText("CA")).toBeInTheDocument();
 
     // Recover when a new valid logo is provided
     rerender(<Brand name="Clinica B" logo="good-image" clinic={true} initials="CB" />);
     // The image should be in the document again, because error state reset
-    expect(screen.getByAltText("Logo")).toBeInTheDocument();
+    expect(screen.getByAltText("Logo de Clinica B")).toBeInTheDocument();
     expect(screen.queryByText("CB")).not.toBeInTheDocument();
   });
 });

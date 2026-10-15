@@ -2300,3 +2300,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex criou formulário reutilizável de disponibilidade com fuso da clínica explícito, validação de datas e rejeição de horários inexistentes ou ambíguos. Reenvio conserva a mesma solicitação após resultado incerto; troca de médico descarta resposta tardia. Quatro testes aprovados, TypeScript e lint válidos.
 - **Próximo Passo**: Conectar formulário à composição autorizada e preparar leitura de disponibilidade. Componente ainda não montado; SQL 015 somente local e sem consulta reservada. Main permanece no lote D85; D86–D97 no checkpoint.
+
+## D98 - Personalização: regressão de identificação acessível da clínica 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex atualizou o teste de fallback e recuperação de logo para os textos acessíveis que identificam cada clínica, introduzidos na D91. Os onze testes de personalização passaram após a correção. Nenhum componente, identidade ou design foi alterado nesta etapa.
+- **Próximo Passo**: Concluir regressão completa e compilação antes de registrar aprovação geral do checkpoint. Integração na main continua limitada à autorização D85.
