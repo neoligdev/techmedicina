@@ -2321,3 +2321,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex corrigiu rollback que antes restaurava apenas hash/versão mantendo SVG recente. Novos snapshots guardam arte completa; todos os arquivos são validados antes da troca. Histórico antigo sem arquivo ou com hash divergente é recusado sem alteração parcial. Cópias isoladas impedem mutação externa do fallback em memória. Trinta e um testes de artes/runtime/rollback aprovados.
 - **Próximo Passo**: Validar contrato completo do catálogo armazenado e limites de persistência, sem tratar armazenamento local como backend ou autorização real. Históricos legados sem conteúdo não podem ser restaurados. Main no lote D85; mudanças posteriores somente no checkpoint.
+
+## D101 - Escudos: validar catálogo local antes de carregar 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex substituiu aceitação de JSON por contagem de 15 entradas por contrato estrito de campos, chaves, identidade Escudo/variante, datas, estados e hashes das artes atuais. Histórico tem estrutura validada e mantém compatibilidade com registros legados sem arquivos. Dados inválidos usam fallback sem apagar conteúdo salvo. Trinta e sete testes de contrato/artes/runtime/rollback aprovados.
+- **Próximo Passo**: Continuar persistência e revisão do upload. Validação local não estabelece autoridade de publicação nem substitui backend. D100 valida integridade dos arquivos históricos no rollback; catálogos legados incompletos não têm restauração inventada. Main permanece D85.

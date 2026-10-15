@@ -3003,6 +3003,18 @@
       ],
       "status": "done",
       "done": "Codex corrigiu rollback que antes restaurava apenas hash/versão mantendo SVG recente. Novos snapshots guardam arte completa; todos os arquivos são validados antes da troca. Histórico antigo sem arquivo ou com hash divergente é recusado sem alteração parcial. Cópias isoladas impedem mutação externa do fallback em memória. Trinta e um testes de artes/runtime/rollback aprovados."
+    },
+    {
+      "status": "done",
+      "next": "Continuar persistência e revisão do upload. Validação local não estabelece autoridade de publicação nem substitui backend. D100 valida integridade dos arquivos históricos no rollback; catálogos legados incompletos não têm restauração inventada. Main permanece D85.",
+      "parent": "11",
+      "done": "Codex substituiu aceitação de JSON por contagem de 15 entradas por contrato estrito de campos, chaves, identidade Escudo/variante, datas, estados e hashes das artes atuais. Histórico tem estrutura validada e mantém compatibilidade com registros legados sem arquivos. Dados inválidos usam fallback sem apagar conteúdo salvo. Trinta e sete testes de contrato/artes/runtime/rollback aprovados.",
+      "title": "Escudos: validar catálogo local antes de carregar",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": [],
+      "id": "D101"
     }
   ]
 }

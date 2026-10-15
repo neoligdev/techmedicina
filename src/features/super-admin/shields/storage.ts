@@ -1,3 +1,4 @@
+import { parseShieldCatalog } from "./catalog-contract";
 import { ShieldCatalogState, ShieldArtAsset, ShieldVersionRecord } from "./types";
 import { buildDefaultShieldCatalog } from "./default-assets";
 import { validateAndSanitizeSvg } from "./sanitizer";
@@ -51,8 +52,8 @@ export function getShieldCatalog(): ShieldCatalogState {
     try {
       const stored = window.localStorage.getItem(SHIELD_CATALOG_STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored) as ShieldCatalogState;
-        if (parsed && parsed.assets && Object.keys(parsed.assets).length === 15) {
+        const parsed = parseShieldCatalog(JSON.parse(stored));
+        if (parsed) {
           return parsed;
         }
       }

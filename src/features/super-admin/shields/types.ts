@@ -28,7 +28,7 @@ export interface ShieldVersionRecord {
   changeSummary: string;
   snapshot: Record<
     string,
-    { svgHash: string; version: string; updatedAt: string; asset?: ShieldArtAsset }
+    { svgHash: string; version: string; updatedAt: string; asset?: ShieldArtAsset | undefined }
   >;
 }
 
