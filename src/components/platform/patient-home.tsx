@@ -724,6 +724,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           {moreResourcesOpen && (
             <div id="more-resources-panel" className="patient-more-content">
               <div className="patient-more-links-grid">
+                <Link to="/app/$section" params={{ section: "escudos" }} className="more-link-item">
+                  <Shield size={20} aria-hidden="true" />
+                  <span>Meus Escudos</span>
+                </Link>
                 <Link
                   to="/app/$section"
                   params={{ section: "alimentacao" }}

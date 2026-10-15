@@ -2237,3 +2237,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex protegeu idempotência local: evento existente com mesma identidade e conteúdo histórico alterado é recusado antes de modificar o estado. Horário técnico de reprocessamento não causa conflito; primeiro registro permanece preservado. Primeiro ensaio revelou esse detalhe no teste concorrente e foi corrigido; 41 testes finais de atomicidade/persistência/segurança passaram.
 - **Próximo Passo**: D86–D88 continuam apenas no checkpoint. Homologar leitura real após decisões Cloud/hosts/permissões; main segue no lote D85 autorizado. Nenhum cálculo clínico produtivo ativado.
+
+## D89 - PWA: acesso a Meus Escudos pela página inicial 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex adicionou link Meus Escudos no painel Mais recursos de cuidado, reutilizando classes e ícone existentes, sem alterar score demonstrativo. Quatorze testes da página inicial aprovados; navegação real no navegador local abriu /app/escudos pelo link e manteve rodapé. Tipos/lint aprovados.
+- **Próximo Passo**: D86–D89 permanecem no checkpoint até aprovação de integração posterior. Tela segue vazia sem dados autorizados; Cloud 014/hosts/grants e homologação real pendentes.

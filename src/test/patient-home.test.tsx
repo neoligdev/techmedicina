@@ -32,6 +32,16 @@ function renderWithDemo(ui: React.ReactNode) {
 }
 
 describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, () => {
+  it("abre acesso aos Escudos no menu sem confundir com score demo", () => {
+    renderWithDemo(<PatientHome />);
+    expect(screen.queryByRole("link", { name: "Meus Escudos" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Mais recursos de cuidado" }));
+    expect(screen.getByRole("link", { name: "Meus Escudos" })).toHaveAttribute(
+      "href",
+      "/app/escudos",
+    );
+    expect(screen.getByLabelText(/Meu score demonstrativo/)).toBeInTheDocument();
+  });
   it.each(["Enter", " "])("abre score pelo teclado com %s", (key) => {
     renderWithDemo(<PatientHome />);
     fireEvent.keyDown(screen.getByLabelText(/Meu score demonstrativo/), { key });

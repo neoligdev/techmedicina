@@ -2859,6 +2859,18 @@
       "title": "Escudos: conflito de conteúdo em reenvios",
       "id": "D88",
       "status": "done"
+    },
+    {
+      "next": "D86–D89 permanecem no checkpoint até aprovação de integração posterior. Tela segue vazia sem dados autorizados; Cloud 014/hosts/grants e homologação real pendentes.",
+      "title": "PWA: acesso a Meus Escudos pela página inicial",
+      "requirements": [],
+      "parent": "8.10",
+      "id": "D89",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex adicionou link Meus Escudos no painel Mais recursos de cuidado, reutilizando classes e ícone existentes, sem alterar score demonstrativo. Quatorze testes da página inicial aprovados; navegação real no navegador local abriu /app/escudos pelo link e manteve rodapé. Tipos/lint aprovados.",
+      "status": "done"
     }
   ]
 }
