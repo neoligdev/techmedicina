@@ -21,3 +21,9 @@ Adaptador usa SQL parametrizado na tabela tm_doctor_availability com clínica e 
 ## D106 — fronteira GET privada
 
 A fábrica não montada exige host clinic_portal ativo e sessão da própria requisição. A consulta aceita somente início/fim, limite e cursor completo, rejeita parâmetros repetidos, identidade injetada, limite inválido e método diferente de GET. Respostas são private/no-store, variam por Authorization/Host e não expõem diagnósticos internos. Dez testes HTTP novos mais dez de serviço passaram; dez testes HTTP e seis SQL passaram em outra execução, com composição de HTTP-host-sessão-SQL e revogação de leitura no PostgreSQL local. Esses conjuntos se sobrepõem e não devem ser somados como testes únicos. Falta cliente e interface; não há rota ativa ou homologação Cloud.
+
+## D107 — cliente e lista paginada
+
+Cliente usa GET, bearer fresco, prazo de 20s para sessão/rede/corpo, no-store, cookies omitidos e redirecionamentos recusados. Valida propriedade da página e de cada item, período, ordem, limite, duplicatas e correspondência do próximo cursor ao último item. O período não contém IDs de propriedade enviados pelo navegador.
+
+Lista reutilizável tem período explícito convertido no fuso da clínica, paginação incremental, mensagem vazia/erro e bloqueio por padrão sem leitura autorizada. Troca de clínica, médico, fuso ou permissão remonta o contexto e ignora resultados tardios. Não foi montada em rota operacional nem apresentada como agenda real. Cinco testes novos passaram; TypeScript e compilação aprovados. Regressão conjunta teve 52 testes aprovados e seis SQL não executados após timeout de 30s no beforeAll; repetição isolada do SQL passou nos seis testes em 12,40s, sem alterar timeouts ou testes para contornar o resultado.

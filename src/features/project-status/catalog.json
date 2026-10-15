@@ -3075,6 +3075,18 @@
       "id": "D106",
       "title": "Agenda: leitura HTTP privada vinculada ao domínio",
       "requirements": []
+    },
+    {
+      "status": "done",
+      "parent": "3.5",
+      "next": "Compor com sessão operacional e homologar no navegador após aprovação da ativação do backend/rotas. Componentes ainda não montados; sem simular agenda real, consultas, Cloud ou integração pós-D85 na main.",
+      "done": "Codex implementou cliente GET com bearer fresco, prazo de 20s, sem cookies/cache/redirecionamento e validação estrita de escopo, ordem, período e cursor. Lista reutilizável consulta período no fuso explícito da clínica, carrega páginas e descarta resposta após troca de contexto/permissão. Cinco testes novos de cliente e componente aprovados.",
+      "authors": [
+        "Codex"
+      ],
+      "requirements": [],
+      "title": "Agenda: transporte e lista paginada de disponibilidade",
+      "id": "D107"
     }
   ]
 }

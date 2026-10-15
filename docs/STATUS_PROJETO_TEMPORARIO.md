@@ -2363,3 +2363,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex criou fábrica GET de leitura com domínio clinic_portal e sessão da mesma requisição. Query permite apenas período/limite/cursor, recusa chaves duplicadas ou identidade injetada e responde private/no-store com erros seguros. Integração HTTP-host-sessão-SQL local confirmou página própria e retorno vazio após revogação no banco. Dezesseis testes HTTP/SQL e vinte de HTTP/serviço aprovados.
 - **Próximo Passo**: Implementar transporte de navegador e interface paginada, com invalidação na troca de clínica/médico. Endpoint ainda não montado; Auth/host simulados e SQL 015 apenas local. Sem Cloud ou integração pós-D85 na main.
+
+## D107 - Agenda: transporte e lista paginada de disponibilidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou cliente GET com bearer fresco, prazo de 20s, sem cookies/cache/redirecionamento e validação estrita de escopo, ordem, período e cursor. Lista reutilizável consulta período no fuso explícito da clínica, carrega páginas e descarta resposta após troca de contexto/permissão. Cinco testes novos de cliente e componente aprovados.
+- **Próximo Passo**: Compor com sessão operacional e homologar no navegador após aprovação da ativação do backend/rotas. Componentes ainda não montados; sem simular agenda real, consultas, Cloud ou integração pós-D85 na main.
