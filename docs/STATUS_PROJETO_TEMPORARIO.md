@@ -2265,3 +2265,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex integrou journey_shields à política central para leitura própria do paciente ou médico verificado com grant e metadados de vínculo ativo do paciente na mesma clínica. Admin e cargo global isolado não ganham acesso. Ações create/write/delete/manage são negadas na interface, mesmo com grant apresentado. Cinquenta testes de autorização/host em cinco arquivos aprovados; tipos/lint válidos.
 - **Próximo Passo**: Conectar metadados verificados nos fluxos operacionais e homologar com RLS real. Nenhum grant Cloud concedido; 014 e integração pós-D85 ainda pendentes. D86–D92 apenas no checkpoint.
+
+## D93 - Agenda: fundação local de disponibilidade médica 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou contratos estritos de intervalos com fuso explícito, término posterior ao início e detecção de sobreposição por instantes UTC, permitindo horários adjacentes. Preflight próprio exige médico verificado, vínculo ativo único e grant agenda/write; deriva clínica/médico da sessão, rejeita propriedade injetada e dados retornados fora do escopo. Oito testes aprovados. Não reserva nem publica horários.
+- **Próximo Passo**: Preparar persistência atômica e formulário, com revisão de políticas de agenda pendentes no PRD. Duração padrão, recorrência, cancelamento e quem agenda não foram inventados. Código somente local/checkpoint; sem SQL Cloud ou acesso clínico concedido.
