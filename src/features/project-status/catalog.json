@@ -2919,6 +2919,18 @@
       "id": "D93",
       "parent": "3.5",
       "done": "Codex criou contratos estritos de intervalos com fuso explícito, término posterior ao início e detecção de sobreposição por instantes UTC, permitindo horários adjacentes. Preflight próprio exige médico verificado, vínculo ativo único e grant agenda/write; deriva clínica/médico da sessão, rejeita propriedade injetada e dados retornados fora do escopo. Oito testes aprovados. Não reserva nem publica horários."
+    },
+    {
+      "requirements": [],
+      "done": "Codex preparou migração 015 somente local com intervalos explícitos, RLS própria, vínculo médico verificado, grants agenda read/write, bloqueios de vínculo/grant e advisory por médico/clínica. RPC append-only revalida permissão antes de replay, recusa conteúdo alterado/sobreposição e aceita adjacência. Quatro testes PostgreSQL locais aprovados; Super ADM e outra clínica negados.",
+      "next": "Conectar serviço/HTTP/formulário e testar concorrência real em conexões independentes antes de operação. 015 não aplicada no Cloud. Disponibilidade não é consulta/reserva; políticas pendentes do PRD e conflito entre clínicas não foram decididos.",
+      "title": "Agenda: persistência local de disponibilidade própria",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "id": "D94",
+      "parent": "3.5"
     }
   ]
 }

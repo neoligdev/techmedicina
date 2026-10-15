@@ -2272,3 +2272,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex criou contratos estritos de intervalos com fuso explícito, término posterior ao início e detecção de sobreposição por instantes UTC, permitindo horários adjacentes. Preflight próprio exige médico verificado, vínculo ativo único e grant agenda/write; deriva clínica/médico da sessão, rejeita propriedade injetada e dados retornados fora do escopo. Oito testes aprovados. Não reserva nem publica horários.
 - **Próximo Passo**: Preparar persistência atômica e formulário, com revisão de políticas de agenda pendentes no PRD. Duração padrão, recorrência, cancelamento e quem agenda não foram inventados. Código somente local/checkpoint; sem SQL Cloud ou acesso clínico concedido.
+
+## D94 - Agenda: persistência local de disponibilidade própria 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex preparou migração 015 somente local com intervalos explícitos, RLS própria, vínculo médico verificado, grants agenda read/write, bloqueios de vínculo/grant e advisory por médico/clínica. RPC append-only revalida permissão antes de replay, recusa conteúdo alterado/sobreposição e aceita adjacência. Quatro testes PostgreSQL locais aprovados; Super ADM e outra clínica negados.
+- **Próximo Passo**: Conectar serviço/HTTP/formulário e testar concorrência real em conexões independentes antes de operação. 015 não aplicada no Cloud. Disponibilidade não é consulta/reserva; políticas pendentes do PRD e conflito entre clínicas não foram decididos.
