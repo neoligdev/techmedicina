@@ -99,3 +99,17 @@ it("restoration cannot clear an active transition lock", () => {
   repository.simulateLock(clinicId, patientId);
   expect(() => repository.importSnapshot(before)).toThrow("locked");
 });
+it("same event identity with changed score fails without modifying state or ledger", async () => {
+  const repository = new InMemoryShieldRepository();
+  await repository.saveTransition({ clinicId, patientId, state, event });
+  const before = repository.exportSnapshot();
+  await expect(
+    repository.saveTransition({
+      clinicId,
+      patientId,
+      state: { ...state, scoreAverage: 25 },
+      event: { ...event, scoreAverage: 25 },
+    }),
+  ).rejects.toThrow("idempotency conflict");
+  expect(repository.exportSnapshot()).toBe(before);
+});

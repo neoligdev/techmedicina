@@ -85,6 +85,26 @@ export class InMemoryShieldRepository implements ShieldRepository {
         }
       }
 
+      if (validatedEvent) {
+        const eventKey =
+          validatedEvent.idempotencyKey ??
+          `${clinicId}:${patientId}:${validatedEvent.evaluatedDate}:${validatedEvent.action}:${validatedEvent.shield}`;
+        const prior = (this.histories.get(key) ?? []).find(
+          (item) =>
+            item.id === validatedEvent.id ||
+            (item.idempotencyKey ??
+              `${clinicId}:${patientId}:${item.evaluatedDate}:${item.action}:${item.shield}`) ===
+              eventKey,
+        );
+        if (
+          prior &&
+          JSON.stringify({
+            ...shieldHistoryEventSchema.parse(prior),
+            occurredAt: validatedEvent.occurredAt,
+          }) !== JSON.stringify(validatedEvent)
+        )
+          throw new Error("Shield event idempotency conflict");
+      }
       this.states.set(key, validatedState);
 
       let savedEvent: ShieldHistoryEvent | null = null;
