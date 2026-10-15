@@ -11,11 +11,7 @@ import {
 /** Local preflight only. It does not reserve or publish a slot. An eventual write
  * must repeat overlap checks atomically under the request bearer in PostgreSQL.
  */
-export async function prepareOwnAvailability(
-  context: AuthContext,
-  value: unknown,
-  listOccupied: (scope: { clinicId: string; doctorUserId: string }) => Promise<unknown>,
-) {
+export function ownAvailabilityScope(context: AuthContext) {
   const links = context.identity.links.filter(
     (link) => link.clinicId === context.currentClinicId && link.isActive,
   );
@@ -28,9 +24,17 @@ export async function prepareOwnAvailability(
     !link.grants.some((grant) => grant.resource === "agenda" && grant.action === "write")
   )
     throw new AuthError("Availability denied", 403);
+  return { clinicId: context.currentClinicId, doctorUserId: context.identity.userId };
+}
+
+export async function prepareOwnAvailability(
+  context: AuthContext,
+  value: unknown,
+  listOccupied: (scope: { clinicId: string; doctorUserId: string }) => Promise<unknown>,
+) {
+  const scope = ownAvailabilityScope(context);
   const input = availabilityProposalSchema.safeParse(value);
   if (!input.success) throw new AuthError("Invalid availability", 400);
-  const scope = { clinicId: context.currentClinicId, doctorUserId: context.identity.userId };
   const intervals = z
     .array(
       z

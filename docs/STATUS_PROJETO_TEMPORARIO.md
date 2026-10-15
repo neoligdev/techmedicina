@@ -2279,3 +2279,10 @@ Atualizado em 14/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex preparou migração 015 somente local com intervalos explícitos, RLS própria, vínculo médico verificado, grants agenda read/write, bloqueios de vínculo/grant e advisory por médico/clínica. RPC append-only revalida permissão antes de replay, recusa conteúdo alterado/sobreposição e aceita adjacência. Quatro testes PostgreSQL locais aprovados; Super ADM e outra clínica negados.
 - **Próximo Passo**: Conectar serviço/HTTP/formulário e testar concorrência real em conexões independentes antes de operação. 015 não aplicada no Cloud. Disponibilidade não é consulta/reserva; políticas pendentes do PRD e conflito entre clínicas não foram decididos.
+
+## D95 - Agenda: serviço e fronteira HTTP de disponibilidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex conectou disponibilidade própria a serviço com grant médico e RPC atômica, composição de domínio clinic_portal/sessão da mesma requisição, POST JSON limitado e respostas privadas/no-store. Identidade não vem do corpo. Recibo valida clínica/médico/solicitação e instantes antes da confirmação; conflitos/negações SQL têm mensagens seguras. Dezessete testes de contratos/serviço/HTTP aprovados.
+- **Próximo Passo**: Integrar PostgreSQL local ponta a ponta, transporte/formulário e leitura da agenda. Endpoint não montado; 015 apenas local, sem reservas ou políticas pendentes inventadas. Cloud e integração pós-D85 continuam sob gates separados.

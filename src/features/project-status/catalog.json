@@ -2931,6 +2931,18 @@
       "status": "done",
       "id": "D94",
       "parent": "3.5"
+    },
+    {
+      "title": "Agenda: serviço e fronteira HTTP de disponibilidade",
+      "done": "Codex conectou disponibilidade própria a serviço com grant médico e RPC atômica, composição de domínio clinic_portal/sessão da mesma requisição, POST JSON limitado e respostas privadas/no-store. Identidade não vem do corpo. Recibo valida clínica/médico/solicitação e instantes antes da confirmação; conflitos/negações SQL têm mensagens seguras. Dezessete testes de contratos/serviço/HTTP aprovados.",
+      "next": "Integrar PostgreSQL local ponta a ponta, transporte/formulário e leitura da agenda. Endpoint não montado; 015 apenas local, sem reservas ou políticas pendentes inventadas. Cloud e integração pós-D85 continuam sob gates separados.",
+      "requirements": [],
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "parent": "3.5",
+      "id": "D95"
     }
   ]
 }
