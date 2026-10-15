@@ -2293,3 +2293,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou cliente com bearer fresco, prazo 20s e resposta estrita de clínica/médico/solicitação/intervalo, sem cache/cookies/redirecionamento. Integração cliente-host-sessão-HTTP-RPC-SQL local comprovou reenvio após resposta perdida sem duplicar horário. Vinte e dois testes de contratos/HTTP/SQL e seis do cliente aprovados; tipos/lint válidos.
 - **Próximo Passo**: Implementar formulário e leitura paginada de disponibilidade, mantendo políticas pendentes explícitas. SQL 015 somente local; endpoint não montado e Auth/hosts simulados nos testes. D86–D96 apenas no checkpoint; main no lote D85 autorizado.
+
+## D97 - Agenda: formulário com fuso explícito e reenvio seguro 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou formulário reutilizável de disponibilidade com fuso da clínica explícito, validação de datas e rejeição de horários inexistentes ou ambíguos. Reenvio conserva a mesma solicitação após resultado incerto; troca de médico descarta resposta tardia. Quatro testes aprovados, TypeScript e lint válidos.
+- **Próximo Passo**: Conectar formulário à composição autorizada e preparar leitura de disponibilidade. Componente ainda não montado; SQL 015 somente local e sem consulta reservada. Main permanece no lote D85; D86–D97 no checkpoint.
