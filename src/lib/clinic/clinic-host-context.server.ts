@@ -57,6 +57,71 @@ export interface ClinicHostResolverProviders<S extends { identity: Authenticated
   resolveSession: (request: Request) => Promise<S | null>;
 }
 
+export async function defaultLookupClinicDomain(hostname: string) {
+  const supabaseContext = await resolveSupabaseContext();
+  if (!supabaseContext) return null;
+  try {
+    const { data, error } = await (
+      supabaseContext.client as unknown as {
+        from: (t: string) => {
+          select: (s: string) => {
+            eq: (
+              col: string,
+              val: string,
+            ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
+          };
+        };
+      }
+    )
+      .from("tm_clinic_domains")
+      .select("hostname,clinic_id,environment,status")
+      .eq("hostname", hostname)
+      .maybeSingle();
+    if (error || !data) return null;
+    const row = data as {
+      hostname: string;
+      clinic_id: string;
+      environment: "clinic_portal" | "patient_pwa";
+      status: string;
+    };
+    return {
+      hostname: row.hostname,
+      clinicId: row.clinic_id,
+      environment: row.environment,
+      status: row.status,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function defaultLookupClinicRecord(clinicId: string) {
+  const supabaseContext = await resolveSupabaseContext();
+  if (!supabaseContext) return null;
+  try {
+    const { data, error } = await (
+      supabaseContext.client as unknown as {
+        from: (t: string) => {
+          select: (s: string) => {
+            eq: (
+              col: string,
+              val: string,
+            ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
+          };
+        };
+      }
+    )
+      .from("tm_clinics")
+      .select("id,name,is_active,time_zone")
+      .eq("id", clinicId)
+      .maybeSingle();
+    if (error || !data) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Cria um resolvedor confiável e estrito da clínica associada ao domínio ativo da requisição.
  * Server-only. Valida correspondência unívoca entre domínio, clínica cadastrada, situação ativa,
@@ -70,69 +135,8 @@ export function createReliableClinicResolver<S extends { identity: Authenticated
   proxyOptions: ExtractHostOptions = {},
 ) {
   const defaultProviders: ClinicHostResolverProviders<{ identity: AuthenticatedIdentity }> = {
-    lookupDomain: async (hostname: string) => {
-      const supabaseContext = await resolveSupabaseContext();
-      if (!supabaseContext) return null;
-      try {
-        const { data, error } = await (
-          supabaseContext.client as unknown as {
-            from: (t: string) => {
-              select: (s: string) => {
-                eq: (
-                  col: string,
-                  val: string,
-                ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
-              };
-            };
-          }
-        )
-          .from("tm_clinic_domains")
-          .select("hostname,clinic_id,environment,status")
-          .eq("hostname", hostname)
-          .maybeSingle();
-        if (error || !data) return null;
-        const row = data as {
-          hostname: string;
-          clinic_id: string;
-          environment: "clinic_portal" | "patient_pwa";
-          status: string;
-        };
-        return {
-          hostname: row.hostname,
-          clinicId: row.clinic_id,
-          environment: row.environment,
-          status: row.status,
-        };
-      } catch {
-        return null;
-      }
-    },
-    lookupClinic: async (clinicId: string) => {
-      const supabaseContext = await resolveSupabaseContext();
-      if (!supabaseContext) return null;
-      try {
-        const { data, error } = await (
-          supabaseContext.client as unknown as {
-            from: (t: string) => {
-              select: (s: string) => {
-                eq: (
-                  col: string,
-                  val: string,
-                ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
-              };
-            };
-          }
-        )
-          .from("tm_clinics")
-          .select("id,name,is_active,time_zone")
-          .eq("id", clinicId)
-          .maybeSingle();
-        if (error || !data) return null;
-        return data;
-      } catch {
-        return null;
-      }
-    },
+    lookupDomain: defaultLookupClinicDomain,
+    lookupClinic: defaultLookupClinicRecord,
     resolveSession: async () => {
       const supabaseContext = await resolveSupabaseContext();
       if (!supabaseContext) return null;

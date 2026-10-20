@@ -7,7 +7,11 @@ import { createAvailabilityReadEndpoint } from "./availability-read-endpoint.ser
 import type { AvailabilityRpc } from "./availability-write.server";
 import type { AvailabilityReader } from "./availability-read.server";
 import { createAvailabilitySqlReader } from "./availability-sql-reader.server";
-import { createReliableClinicResolver } from "../clinic/clinic-host-context.server";
+import {
+  createReliableClinicResolver,
+  defaultLookupClinicDomain,
+  defaultLookupClinicRecord,
+} from "../clinic/clinic-host-context.server";
 
 export interface AvailabilityRuntimeProviders<S extends { identity: AuthenticatedIdentity }> {
   lookup: (hostname: string) => Promise<unknown>;
@@ -37,69 +41,8 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
   customProviders?: AvailabilityRuntimeProviders<S>,
 ) {
   const defaultProviders: AvailabilityRuntimeProviders<{ identity: AuthenticatedIdentity }> = {
-    lookup: async (hostname: string) => {
-      const supabaseContext = await resolveSupabaseContext();
-      if (!supabaseContext) return null;
-      try {
-        const { data, error } = await (
-          supabaseContext.client as unknown as {
-            from: (t: string) => {
-              select: (s: string) => {
-                eq: (
-                  col: string,
-                  val: string,
-                ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
-              };
-            };
-          }
-        )
-          .from("tm_domain_reservations")
-          .select("hostname,clinic_id,environment,status")
-          .eq("hostname", hostname)
-          .maybeSingle();
-        if (error || !data) return null;
-        const row = data as unknown as {
-          hostname: string;
-          clinic_id: string;
-          environment: string;
-          status: string;
-        };
-        return {
-          hostname: row.hostname,
-          clinicId: row.clinic_id,
-          environment: row.environment,
-          status: row.status,
-        };
-      } catch {
-        return null;
-      }
-    },
-    lookupClinic: async (clinicId: string) => {
-      const supabaseContext = await resolveSupabaseContext();
-      if (!supabaseContext) return null;
-      try {
-        const { data, error } = await (
-          supabaseContext.client as unknown as {
-            from: (t: string) => {
-              select: (s: string) => {
-                eq: (
-                  col: string,
-                  val: string,
-                ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
-              };
-            };
-          }
-        )
-          .from("tm_clinics")
-          .select("id,name,is_active,time_zone")
-          .eq("id", clinicId)
-          .maybeSingle();
-        if (error || !data) return null;
-        return data;
-      } catch {
-        return null;
-      }
-    },
+    lookup: defaultLookupClinicDomain,
+    lookupClinic: defaultLookupClinicRecord,
     resolveSession: async () => {
       const supabaseContext = await resolveSupabaseContext();
       if (!supabaseContext) return null;
@@ -145,28 +88,7 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
 
   const reliableClinicResolver = createReliableClinicResolver("clinic_portal", {
     lookupDomain: providers.lookup,
-    lookupClinic:
-      providers.lookupClinic ??
-      (async (clinicId: string) => {
-        const supabaseContext = await resolveSupabaseContext();
-        if (!supabaseContext) return null;
-        const { data } = await (
-          supabaseContext.client.from("tm_clinics") as unknown as {
-            select: (s: string) => {
-              eq: (
-                col: string,
-                val: string,
-              ) => {
-                maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
-              };
-            };
-          }
-        )
-          .select("id,name,is_active,time_zone")
-          .eq("id", clinicId)
-          .maybeSingle();
-        return data;
-      }),
+    lookupClinic: providers.lookupClinic ?? defaultLookupClinicRecord,
     resolveSession: providers.resolveSession,
   });
 
