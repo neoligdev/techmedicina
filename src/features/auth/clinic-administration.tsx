@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { savedClinicSchema } from "./clinic-write";
+import { isValidIanaTimeZone } from "@/features/agenda/local-time";
+import { COMMON_TIME_ZONES, formatTimeZoneLabel } from "@/features/agenda/time-zones";
 import type { z } from "zod";
 import type { ClinicDirectory } from "./clinic-directory";
 
@@ -20,6 +22,7 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [active, setActive] = useState(false);
+  const [timeZone, setTimeZone] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -71,6 +74,7 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
       setEditing(parsed.data);
       setName(parsed.data.name);
       setActive(parsed.data.is_active);
+      setTimeZone(parsed.data.time_zone ?? "");
       setOpen(true);
     } catch (cause) {
       if (mounted.current && !controller.signal.aborted)
@@ -88,6 +92,11 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
       setError("Informe um nome entre 2 e 160 caracteres.");
       return;
     }
+    const cleanTimeZone = timeZone.trim();
+    if (cleanTimeZone.length > 0 && !isValidIanaTimeZone(cleanTimeZone)) {
+      setError("Selecione ou informe um fuso horário IANA válido.");
+      return;
+    }
     running.current = true;
     setBusy(true);
     setError(null);
@@ -102,8 +111,18 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
             expectedRevision: editing.revision,
             name: name.trim(),
             isActive: active,
+            ...(cleanTimeZone.length > 0
+              ? { timeZone: cleanTimeZone }
+              : editing.time_zone
+                ? { timeZone: null }
+                : {}),
           }
-        : { operation: "create", name: name.trim(), isActive: active };
+        : {
+            operation: "create",
+            name: name.trim(),
+            isActive: active,
+            ...(cleanTimeZone.length > 0 ? { timeZone: cleanTimeZone } : {}),
+          };
       const response = await fetch("/api/platform/clinics", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -130,6 +149,7 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
       setEditing(null);
       setName("");
       setActive(false);
+      setTimeZone("");
     } catch (cause) {
       if (mounted.current && !controller.signal.aborted)
         setError(cause instanceof AdministrativeUiError ? cause.message : failure(503));
@@ -149,6 +169,7 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
           setEditing(null);
           setName("");
           setActive(false);
+          setTimeZone("");
           setError(null);
           setNotice(null);
         }}
@@ -162,6 +183,12 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
           {clinics.map((clinic) => (
             <li key={clinic.id} className="rounded-xl border border-border bg-background/40 p-4">
               <span className="block font-medium break-words">{clinic.name}</span>
+              <div className="mt-1 text-xs text-muted-foreground">
+                Fuso horário oficial:{" "}
+                <span className="font-medium text-foreground">
+                  {formatTimeZoneLabel(clinic.time_zone)}
+                </span>
+              </div>
               <div className="mt-2 flex items-center justify-between gap-3">
                 <span className="text-sm text-muted-foreground">
                   {clinic.is_active ? "Ativa" : "Inativa"}
@@ -200,6 +227,32 @@ export function ClinicAdministration({ token, clinics, onSaved }: Props) {
             disabled={busy}
             className="login-input"
           />
+
+          <div className="space-y-1">
+            <Label htmlFor="clinic-time-zone">Fuso horário oficial da clínica</Label>
+            <Input
+              id="clinic-time-zone"
+              list="iana-timezones-list"
+              value={timeZone}
+              placeholder="Ex: America/Bahia ou America/Sao_Paulo (ou selecione da lista)"
+              onChange={(event) => setTimeZone(event.target.value)}
+              disabled={busy}
+              className="login-input"
+            />
+            <datalist id="iana-timezones-list">
+              {COMMON_TIME_ZONES.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label} — {option.region}
+                </option>
+              ))}
+            </datalist>
+            <p className="text-xs text-muted-foreground">
+              {timeZone
+                ? `Fuso selecionado: ${formatTimeZoneLabel(timeZone)}`
+                : "Se não definido, a agenda médica permanecerá desabilitada preventivamente para esta clínica."}
+            </p>
+          </div>
+
           <label className="flex items-center gap-3 text-sm">
             <input
               type="checkbox"

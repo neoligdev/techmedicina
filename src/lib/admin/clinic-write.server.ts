@@ -75,9 +75,14 @@ export function createClinicWriter<Context extends { identity: AuthenticatedIden
 export const writePlatformClinic = createClinicWriter(
   resolveSupabaseContext,
   async ({ client }, input) => {
-    const result = await client.rpc("tm_save_clinic", {
+    const rpcFn = client.rpc as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ data: unknown; error: { code?: string } | null }>;
+    const result = await rpcFn("tm_save_clinic", {
       p_name: input.name,
       p_is_active: input.isActive,
+      p_time_zone: input.timeZone ?? null,
       ...(input.operation === "update"
         ? { p_clinic_id: input.id, p_expected_revision: input.expectedRevision }
         : {}),

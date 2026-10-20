@@ -14,9 +14,18 @@ export async function clinicDetailResponse(request: Request) {
       throw new AuthError("Acesso administrativo não autorizado", 403);
     const id = z.string().uuid().safeParse(new URL(request.url).searchParams.get("id"));
     if (!id.success) throw new AuthError("Identificador inválido", 400);
-    const result = await context.client
-      .from("tm_clinics")
-      .select("id,name,is_active,created_at,revision")
+    const fromClinics = context.client.from("tm_clinics") as unknown as {
+      select: (cols: string) => {
+        eq: (
+          col: string,
+          val: string,
+        ) => {
+          maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+        };
+      };
+    };
+    const result = await fromClinics
+      .select("id,name,is_active,created_at,revision,time_zone")
       .eq("id", id.data)
       .maybeSingle();
     if (result.error) throw new Error("Unavailable");

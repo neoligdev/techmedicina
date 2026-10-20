@@ -22,6 +22,7 @@ import { Route as MedicoSectionRouteImport } from './routes/medico.$section'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
 import { Route as ApiAgendaAvailabilityRouteImport } from './routes/api/agenda/availability'
+import { Route as ApiAgendaClinicRouteImport } from './routes/api/agenda/clinic'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
@@ -94,6 +95,11 @@ const ApiAgendaAvailabilityRoute = ApiAgendaAvailabilityRouteImport.update({
   path: '/api/agenda/availability',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAgendaClinicRoute = ApiAgendaClinicRouteImport.update({
+  id: '/api/agenda/clinic',
+  path: '/api/agenda/clinic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformAuditRoute = ApiPlatformAuditRouteImport.update({
   id: '/api/platform/audit',
   path: '/api/platform/audit',
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
+  '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/medico': typeof MedicoIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
+  '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/medico/': typeof MedicoIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
+  '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/medico/'
     | '/super-admin/'
     | '/api/agenda/availability'
+    | '/api/agenda/clinic'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/medico'
     | '/super-admin'
     | '/api/agenda/availability'
+    | '/api/agenda/clinic'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/medico/'
     | '/super-admin/'
     | '/api/agenda/availability'
+    | '/api/agenda/clinic'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   MedicoIndexRoute: typeof MedicoIndexRoute
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
   ApiAgendaAvailabilityRoute: typeof ApiAgendaAvailabilityRoute
+  ApiAgendaClinicRoute: typeof ApiAgendaClinicRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
@@ -370,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAgendaAvailabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agenda/clinic': {
+      id: '/api/agenda/clinic'
+      path: '/api/agenda/clinic'
+      fullPath: '/api/agenda/clinic'
+      preLoaderRoute: typeof ApiAgendaClinicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/audit': {
       id: '/api/platform/audit'
       path: '/api/platform/audit'
@@ -429,6 +449,7 @@ const rootRouteChildren: RootRouteChildren = {
   MedicoIndexRoute: MedicoIndexRoute,
   SuperAdminIndexRoute: SuperAdminIndexRoute,
   ApiAgendaAvailabilityRoute: ApiAgendaAvailabilityRoute,
+  ApiAgendaClinicRoute: ApiAgendaClinicRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,

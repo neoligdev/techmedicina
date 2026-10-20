@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 20/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -2384,3 +2384,10 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Antigravity
 - **Entregue**: Antigravity homologou a segurança técnica da Agenda Médica, auditando autenticação no servidor, autorização por perfil médico verificado e isolamento estrito multi-tenant (bloqueio entre clínicas e sessão revogada). Refatorou o tratamento de fusos horários eliminando padrões fixos arbitrários e implementando validação estrita de identificadores IANA com bloqueio preventivo de cadastro/consulta para clínicas sem fuso configurado. Confirmou o arquivo canônico único da migração 015 em database/migrations/015_doctor_availability.sql (sem divergências). Estabeleceu barreira preventiva no runtime do servidor (503 Service Unavailable) enquanto a infraestrutura remota aguarda autorização humana no Cloud. Vinte testes de interface e integração aprovados e 838 testes na suíte global.
 - **Próximo Passo**: Aguardar autorização humana para aplicação da migração 015 via Lovable Cloud SQL Editor, seguida de testes ponta a ponta com banco real e liberação da flag operacional.
+
+## D110 - Clínicas: persistência oficial do fuso horário IANA e resolução confiável no servidor 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity implementou e revisou a migração aditiva 016_clinic_time_zone.sql estendendo tm_clinics com time_zone nullable, trigger de auditoria administrativa e atualização da RPC tm_save_clinic com controle de revisão e validação canônica de fusos IANA contra pg_catalog.pg_timezone_names. A RPC foi blindada para preservar o fuso existente em atualizações com valores nulos ou omitidos e rejeitar identificadores inexistentes (como America/CidadeInexistente), homologada com 13 testes PGlite. Integrou o campo de Fuso horário oficial com seleção assistida e validação em tempo real na interface administrativa do Super ADM. Desenvolveu o resolvedor server-only createReliableClinicResolver e o endpoint /api/agenda/clinic com leitura autenticada direta do banco vinculada ao domínio verificado, rejeitando parâmetros arbitrários do cliente e bloqueando agendamento para clínicas sem fuso cadastrado. Bateria completa de testes específicos e suíte global aprovados com 866 testes.
+- **Próximo Passo**: Aguardar autorização humana para aplicação das migrações 015 e 016 no Lovable Cloud SQL Editor, seguida de testes ponta a ponta e transição da flag operacional da agenda médica.

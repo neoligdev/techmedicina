@@ -47,10 +47,15 @@ export function createClinicDirectory<Context extends { identity: AuthenticatedI
 export const listPlatformClinics = createClinicDirectory(
   resolveSupabaseContext,
   async ({ client }, cursor) => {
-    // Request-bound publishable client retains RLS; never use service_role for this read.
-    let query = client
-      .from("tm_clinics")
-      .select("id,name,is_active,created_at")
+    type QueryBuilder = {
+      select: (cols: string) => QueryBuilder;
+      order: (col: string, opts: { ascending: boolean }) => QueryBuilder;
+      limit: (n: number) => QueryBuilder;
+      or: (condition: string) => QueryBuilder;
+      then: <T>(onfulfilled: (res: { data: unknown; error: unknown }) => T) => Promise<T>;
+    };
+    let query = (client.from("tm_clinics") as unknown as QueryBuilder)
+      .select("id,name,is_active,time_zone,created_at")
       .order("created_at", { ascending: false })
       .order("id", { ascending: false })
       .limit(101);

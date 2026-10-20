@@ -28,18 +28,20 @@ export interface AvailabilityWorkspaceProps {
   load?: (query: Query) => Promise<unknown>;
   isOperationalEnabled?: boolean;
   getAccessToken?: () => Promise<string | null>;
+  fetchClinicContext?: () => Promise<{ timeZone?: string | null } | null>;
 }
 
 /**
- * Componente contenedor da Agenda Médica (D108–D109).
+ * Componente contenedor da Agenda Médica (D108–D110).
  * Integra o formulário de cadastro de disponibilidade (D97) e
  * a lista paginada de horários (D107) em um ambiente seguro e auditado.
  *
- * Garante identificação explícita e validação IANA do fuso da clínica,
+ * Garante identificação explícita e validação IANA do fuso oficial da clínica,
+ * recuperação confiável via servidor (/api/agenda/clinic),
  * bloqueio preventivo de cadastro/consulta quando o fuso é ausente/inválido,
  * proteção contra dados demonstrativos disfarçados de reais e
  * controle rigoroso de ativação com banner informativo enquanto
- * a migração 015 não estiver aplicada no Cloud.
+ * a migração 015 não estiver homologada no Cloud.
  */
 export function AvailabilityWorkspace({
   clinic,
@@ -51,14 +53,26 @@ export function AvailabilityWorkspace({
   load,
   isOperationalEnabled = false,
   getAccessToken = async () => null,
+  fetchClinicContext,
 }: AvailabilityWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<"cadastrar" | "listar">("listar");
   const [, setLastConfirmedAt] = useState<string | null>(null);
+  const [serverTimeZone, setServerTimeZone] = useState<string | null | undefined>(undefined);
 
   // Derivação e validação estrita de fuso horário IANA (não assume America/Bahia como padrão universal)
-  const candidateTimeZone = explicitTimeZone ?? clinic.timeZone;
+  const candidateTimeZone = explicitTimeZone ?? clinic.timeZone ?? serverTimeZone;
   const isTimeZoneValid = isValidIanaTimeZone(candidateTimeZone);
   const effectiveTimeZone = isTimeZoneValid ? candidateTimeZone : "";
+
+  // Recuperação confiável do servidor se não fornecido estaticamente
+  useState(() => {
+    if (explicitTimeZone !== undefined || clinic.timeZone !== undefined) return;
+    if (fetchClinicContext) {
+      void fetchClinicContext().then((res) => {
+        if (res) setServerTimeZone(res.timeZone ?? null);
+      });
+    }
+  });
 
   // Se o fuso for inválido ou não configurado, a política de segurança desativa operações
   const operationalCanWrite = canWrite && isTimeZoneValid;

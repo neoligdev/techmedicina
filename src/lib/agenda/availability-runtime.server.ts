@@ -7,9 +7,11 @@ import { createAvailabilityReadEndpoint } from "./availability-read-endpoint.ser
 import type { AvailabilityRpc } from "./availability-write.server";
 import type { AvailabilityReader } from "./availability-read.server";
 import { createAvailabilitySqlReader } from "./availability-sql-reader.server";
+import { createReliableClinicResolver } from "../clinic/clinic-host-context.server";
 
 export interface AvailabilityRuntimeProviders<S extends { identity: AuthenticatedIdentity }> {
   lookup: (hostname: string) => Promise<unknown>;
+  lookupClinic?: (clinicId: string) => Promise<unknown>;
   resolveSession: (request: Request) => Promise<S | null>;
   rpc: (session: S) => AvailabilityRpc;
   reader: (session: S) => AvailabilityReader;
@@ -24,20 +26,18 @@ export function isAgendaOperationalReady(): boolean {
 }
 
 /**
- * Cria os manipuladores HTTP para a rota /api/agenda/availability.
+ * Cria os manipuladores HTTP para a rota /api/agenda/availability e /api/agenda/clinic.
  * Reutiliza os endpoints comprovados de escrita (D95) e leitura (D106),
  * garantindo autenticação obrigatória, autorização por perfil médico,
- * isolamento por domínio clínico, validação de payload, cabeçalhos privados
- * e barreira de segurança preventiva enquanto a migração 015 aguarda homologação.
+ * isolamento por domínio clínico, validação de payload, cabeçalhos privados,
+ * validação estrita do fuso horário IANA oficial da clínica e barreira de segurança
+ * preventiva enquanto a infraestrutura remota aguarda homologação no Cloud.
  */
 export function createAgendaAvailabilityHandlers<S extends { identity: AuthenticatedIdentity }>(
   customProviders?: AvailabilityRuntimeProviders<S>,
 ) {
-  // Provedores padrão com integração Supabase e tratamento seguro de dependência ausente
   const defaultProviders: AvailabilityRuntimeProviders<{ identity: AuthenticatedIdentity }> = {
     lookup: async (hostname: string) => {
-      // Lookup padrão seguro: em ambiente de produção sem tabela de domínios ativa,
-      // retorna null de forma estrita, negando acesso a hosts não configurados (PRD White Label).
       const supabaseContext = await resolveSupabaseContext();
       if (!supabaseContext) return null;
       try {
@@ -74,6 +74,32 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
         return null;
       }
     },
+    lookupClinic: async (clinicId: string) => {
+      const supabaseContext = await resolveSupabaseContext();
+      if (!supabaseContext) return null;
+      try {
+        const { data, error } = await (
+          supabaseContext.client as unknown as {
+            from: (t: string) => {
+              select: (s: string) => {
+                eq: (
+                  col: string,
+                  val: string,
+                ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
+              };
+            };
+          }
+        )
+          .from("tm_clinics")
+          .select("id,name,is_active,time_zone")
+          .eq("id", clinicId)
+          .maybeSingle();
+        if (error || !data) return null;
+        return data;
+      } catch {
+        return null;
+      }
+    },
     resolveSession: async () => {
       const supabaseContext = await resolveSupabaseContext();
       if (!supabaseContext) return null;
@@ -81,7 +107,6 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
     },
     rpc: () => {
       return async (args) => {
-        // Barreira preventiva do servidor: bloqueia chamadas sem infraestrutura homologada
         if (!isAgendaOperationalReady()) {
           return { data: null, error: { code: "503" } };
         }
@@ -90,8 +115,6 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
           return { data: null, error: { code: "503" } };
         }
         try {
-          // Invoca a RPC de persistência local da migração 015
-          // Se a migração 015 não estiver presente no banco remoto, falhará seguramente
           const { data, error } = await (
             supabaseContext.client.rpc as unknown as (
               fn: string,
@@ -106,7 +129,6 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
     },
     reader: (session) => {
       return createAvailabilitySqlReader(session.identity.userId, async () => {
-        // Barreira preventiva do servidor sob RLS
         if (!isAgendaOperationalReady()) {
           throw new AuthError("Disponibilidade temporariamente indisponível", 503);
         }
@@ -121,12 +143,100 @@ export function createAgendaAvailabilityHandlers<S extends { identity: Authentic
   const postEndpoint = createAvailabilityEndpoint(providers);
   const getEndpoint = createAvailabilityReadEndpoint(providers);
 
+  const reliableClinicResolver = createReliableClinicResolver("clinic_portal", {
+    lookupDomain: providers.lookup,
+    lookupClinic:
+      providers.lookupClinic ??
+      (async (clinicId: string) => {
+        const supabaseContext = await resolveSupabaseContext();
+        if (!supabaseContext) return null;
+        const { data } = await (
+          supabaseContext.client.from("tm_clinics") as unknown as {
+            select: (s: string) => {
+              eq: (
+                col: string,
+                val: string,
+              ) => {
+                maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+              };
+            };
+          }
+        )
+          .select("id,name,is_active,time_zone")
+          .eq("id", clinicId)
+          .maybeSingle();
+        return data;
+      }),
+    resolveSession: providers.resolveSession,
+  });
+
   return {
     POST: async (request: Request): Promise<Response> => {
+      // Validação estrita prévia do fuso horário oficial da clínica no backend
+      if (providers.lookupClinic) {
+        try {
+          const reliable = await reliableClinicResolver(request);
+          if (!reliable.clinic.isTimeZoneValid) {
+            return Response.json(
+              {
+                error:
+                  "A clínica não possui fuso horário oficial configurado. Solicite a configuração ao administrador.",
+              },
+              {
+                status: 400,
+                headers: { "Cache-Control": "private, no-store", Vary: "Authorization, Host" },
+              },
+            );
+          }
+        } catch (error) {
+          if (error instanceof AuthError && error.status !== 503) {
+            const messages: Record<number, string> = {
+              400: "Horário inválido",
+              401: "Entre novamente para continuar",
+              403: "Acesso não autorizado",
+              404: "Clínica não encontrada",
+            };
+            return Response.json(
+              { error: messages[error.status] ?? "Acesso não autorizado" },
+              {
+                status: error.status,
+                headers: { "Cache-Control": "private, no-store", Vary: "Authorization, Host" },
+              },
+            );
+          }
+        }
+      }
       return postEndpoint(request);
     },
     GET: async (request: Request): Promise<Response> => {
       return getEndpoint(request);
+    },
+    GET_CLINIC_CONTEXT: async (request: Request): Promise<Response> => {
+      const headers = { "Cache-Control": "private, no-store", Vary: "Authorization, Host" };
+      try {
+        const reliable = await reliableClinicResolver(request);
+        return Response.json(
+          {
+            clinic: {
+              name: reliable.clinic.name,
+              timeZone: reliable.clinic.timeZone,
+              isTimeZoneValid: reliable.clinic.isTimeZoneValid,
+            },
+          },
+          { headers },
+        );
+      } catch (error) {
+        const status = error instanceof AuthError ? error.status : 503;
+        const message =
+          status === 401
+            ? "Entre novamente para continuar"
+            : status === 403
+              ? "Acesso não autorizado"
+              : status === 404
+                ? "Clínica não encontrada"
+                : "Informações da clínica temporariamente indisponíveis";
+        return Response.json({ error: message }, { status, headers });
+      }
     },
   };
 }
