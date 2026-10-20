@@ -54,3 +54,5 @@
 - Regenerar `docs/STATUS_PROJETO_TEMPORARIO.md` a partir do catálogo a cada atualização; removê-lo ao concluir o projeto, junto às variáveis CSS `--project-done`, `--project-progress`, `--project-pending` e seletores temporários `[data-status]`.
 
 - Diretriz humana atual de 14/10/2026: Codex reassume execução direta após D74; preservar design e entregas anteriores. Envios restritos a checkpoint/d69-d74, sem alterar main. bun.lock oficial; package-lock.json local não incluído. Cloud 014 ainda pendente de autorização específica.
+
+- Diretriz humana de 20/10/2026: Codex reassume execução integral após Antigravity D112. Preservar autoria, design e histórico. Implementar/testar continuamente pelo PRD v0.11.3 e adendos; commits/push ordinários no checkpoint existente autorizados. Não enviar Ask Lovable, não alterar main automaticamente nem ativar agenda, DNS, grants clínicos ou produção sem revisão/autorização específica. D112 consolidada por Codex após revisão; implementação permanece atribuída ao Antigravity.

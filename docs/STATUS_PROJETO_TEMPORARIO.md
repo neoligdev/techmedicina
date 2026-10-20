@@ -2398,3 +2398,10 @@ Atualizado em 20/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Antigravity
 - **Entregue**: Antigravity corrigiu a incompatibilidade no runtime da Agenda Médica, substituindo a referência incorreta a tm_domain_reservations pelo objeto oficial tm_clinic_domains definido na migração 006. Centralizou os provedores padrão defaultLookupClinicDomain e defaultLookupClinicRecord em clinic-host-context.server.ts, eliminando duplicações de consultas de catálogo e garantindo consistência entre a agenda e a resolução de fuso da clínica. Criou a suíte de testes clinic-domain-resolution.test.ts cobrindo a verificação DDL via PGlite, recusa de domínios em pending_verification (status único do schema atual), rejeição de domínios desconhecidos, clínicas inativas, usuários de outros tenants e preservação da barreira 503 com 876 testes aprovados em 109 arquivos.
 - **Próximo Passo**: Elaborar e aprovar a migração de ativação de domínios (transição de pending_verification para active com validação DNS/TLS), seguida da homologação no Lovable Cloud das migrações 014, 015 e 016 e testes ponta a ponta para ativação da Agenda Médica.
+
+## D113 - Retomada Codex: consolidação D112, plano mestre e inspeção Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex revisou e consolidou D112 do Antigravity em 93c45de, confirmou 876 testes/109 arquivos, lint/tipos/build e enviou D108–D112 ao checkpoint. Criou plano mestre cobrindo 101 identificadores e adendos. Inspeção SQL somente leitura confirmou ausência de objetos 014/015 e time_zone/assinatura 016; domínios restritos a pending_verification. Lovable confirmado na main, não no checkpoint.
+- **Próximo Passo**: Implementar ciclo seguro de posse/DNS/TLS e ativação autorizada, com migração local revisada. Resolver leitura mínima de domínio para médico e leitor padrão da agenda ainda 503. Cloud 014–016, DNS, concessões clínicas e integração na main continuam gates separados; PRD não concluído.
