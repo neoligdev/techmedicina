@@ -16,6 +16,7 @@ import { moduleSpec, type ModuleSpec } from "@/features/demo/module-catalog";
 import { useDemoClinic } from "@/features/demo/context";
 import type { Area } from "@/features/demo/types";
 import { HealthDashboard } from "./health-dashboard";
+import { AvailabilityWorkspace } from "@/features/agenda/availability-workspace";
 
 interface PreviewItem {
   id: string;
@@ -41,6 +42,9 @@ export function ModulePage({ area, slug }: { area: Area; slug: string }) {
   }
   if (area === "medico" && (slug === "pacientes" || slug === "resumo")) {
     return <HealthDashboard key={`${clinic.id}:${slug}`} clinician />;
+  }
+  if (area === "medico" && slug === "agenda") {
+    return <AvailabilityWorkspace key={`${clinic.id}:${slug}`} clinic={clinic} />;
   }
   const spec = moduleSpec(area, slug);
   if (!spec) return null;

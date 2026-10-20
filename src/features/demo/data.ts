@@ -7,6 +7,7 @@ export const clinics: Clinic[] = [
     status: "Ativa",
     enabledLives: 1248,
     theme: "verde",
+    timeZone: "America/Bahia",
   },
   {
     id: "clinica-horizonte",
@@ -15,6 +16,7 @@ export const clinics: Clinic[] = [
     status: "Em implantação",
     enabledLives: 320,
     theme: "azul",
+    timeZone: "America/Sao_Paulo",
   },
 ];
 export function filterClinics(query: string, items: Clinic[] = clinics) {

@@ -7,6 +7,7 @@ export interface Clinic {
   status: "Ativa" | "Em implantação";
   enabledLives: number;
   theme: ClinicTheme;
+  timeZone?: string;
 }
 export interface NavigationItem {
   slug: string;

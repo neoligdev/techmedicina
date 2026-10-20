@@ -2835,7 +2835,7 @@
       "parent": "8.10",
       "id": "D86",
       "next": "014 e integração main permanecem aguardando decisões humanas; nenhuma alteração no Cloud nesta etapa."
-    },
+    },
     {
       "parent": "8.10",
       "requirements": [],
@@ -3087,6 +3087,30 @@
       "requirements": [],
       "title": "Agenda: transporte e lista paginada de disponibilidade",
       "id": "D107"
+    },
+    {
+      "id": "D108",
+      "title": "Agenda: integração segura da rota operacional e workspace de disponibilidade",
+      "parent": "3.5",
+      "authors": [
+        "Antigravity"
+      ],
+      "status": "done",
+      "done": "Antigravity integrou o workspace de disponibilidade médica (/medico/agenda) aos componentes de formulário (D97) e listagem paginada (D107), com identificação explícita do fuso da clínica (America/Bahia) e bloqueio preventivo de dados fictícios. Criou a rota de API /api/agenda/availability vinculada aos manipuladores de runtime seguros de escrita e leitura, com autenticação obrigatória, controle de perfil médico e cabeçalhos privados. Dezesseis novos testes automatizados de interface e runtime aprovados.",
+      "next": "Homologar a aplicação remota da migração 015 no Cloud sob autorização específica e conectar endpoints às rotas de produção para transição de estado operacional.",
+      "requirements": []
+    },
+    {
+      "id": "D109",
+      "title": "Agenda: homologação técnica, segurança multiclínica e fuso horário IANA",
+      "parent": "3.5",
+      "authors": [
+        "Antigravity"
+      ],
+      "status": "done",
+      "done": "Antigravity homologou a segurança técnica da Agenda Médica, auditando autenticação no servidor, autorização por perfil médico verificado e isolamento estrito multi-tenant (bloqueio entre clínicas e sessão revogada). Refatorou o tratamento de fusos horários eliminando padrões fixos arbitrários e implementando validação estrita de identificadores IANA com bloqueio preventivo de cadastro/consulta para clínicas sem fuso configurado. Confirmou o arquivo canônico único da migração 015 em database/migrations/015_doctor_availability.sql (sem divergências). Estabeleceu barreira preventiva no runtime do servidor (503 Service Unavailable) enquanto a infraestrutura remota aguarda autorização humana no Cloud. Vinte testes de interface e integração aprovados e 838 testes na suíte global.",
+      "next": "Aguardar autorização humana para aplicação da migração 015 via Lovable Cloud SQL Editor, seguida de testes ponta a ponta com banco real e liberação da flag operacional.",
+      "requirements": []
     }
   ]
 }

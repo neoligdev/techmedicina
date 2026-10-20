@@ -57,3 +57,14 @@ export function clinicTimeToInstant(value: string, timeZone: string) {
     throw new Error("Este horário é ambíguo no fuso da clínica. Escolha outro horário.");
   return new Date(candidates[0]!).toISOString();
 }
+
+/** Valida se o identificador de fuso horário é um fuso IANA válido e suportado pela API Intl. */
+export function isValidIanaTimeZone(timeZone: unknown): timeZone is string {
+  if (typeof timeZone !== "string" || timeZone.trim().length === 0) return false;
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: timeZone.trim() });
+    return true;
+  } catch {
+    return false;
+  }
+}

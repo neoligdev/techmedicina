@@ -42,5 +42,9 @@ const document = [
   "",
   ...catalog.deliveries.map(render),
 ].join("\n");
-fs.writeFileSync(path.join(root, "docs/STATUS_PROJETO_TEMPORARIO.md"), document + "\n", "utf8");
+fs.writeFileSync(
+  path.join(root, "docs/STATUS_PROJETO_TEMPORARIO.md"),
+  document.trimEnd() + "\n",
+  "utf8",
+);
 console.log(`Status: ${catalog.items.length} itens, ${catalog.deliveries.length} entregas.`);

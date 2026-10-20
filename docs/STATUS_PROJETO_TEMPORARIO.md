@@ -2370,3 +2370,17 @@ Atualizado em 15/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou cliente GET com bearer fresco, prazo de 20s, sem cookies/cache/redirecionamento e validação estrita de escopo, ordem, período e cursor. Lista reutilizável consulta período no fuso explícito da clínica, carrega páginas e descarta resposta após troca de contexto/permissão. Cinco testes novos de cliente e componente aprovados.
 - **Próximo Passo**: Compor com sessão operacional e homologar no navegador após aprovação da ativação do backend/rotas. Componentes ainda não montados; sem simular agenda real, consultas, Cloud ou integração pós-D85 na main.
+
+## D108 - Agenda: integração segura da rota operacional e workspace de disponibilidade 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity integrou o workspace de disponibilidade médica (/medico/agenda) aos componentes de formulário (D97) e listagem paginada (D107), com identificação explícita do fuso da clínica (America/Bahia) e bloqueio preventivo de dados fictícios. Criou a rota de API /api/agenda/availability vinculada aos manipuladores de runtime seguros de escrita e leitura, com autenticação obrigatória, controle de perfil médico e cabeçalhos privados. Dezesseis novos testes automatizados de interface e runtime aprovados.
+- **Próximo Passo**: Homologar a aplicação remota da migração 015 no Cloud sob autorização específica e conectar endpoints às rotas de produção para transição de estado operacional.
+
+## D109 - Agenda: homologação técnica, segurança multiclínica e fuso horário IANA 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Antigravity
+- **Entregue**: Antigravity homologou a segurança técnica da Agenda Médica, auditando autenticação no servidor, autorização por perfil médico verificado e isolamento estrito multi-tenant (bloqueio entre clínicas e sessão revogada). Refatorou o tratamento de fusos horários eliminando padrões fixos arbitrários e implementando validação estrita de identificadores IANA com bloqueio preventivo de cadastro/consulta para clínicas sem fuso configurado. Confirmou o arquivo canônico único da migração 015 em database/migrations/015_doctor_availability.sql (sem divergências). Estabeleceu barreira preventiva no runtime do servidor (503 Service Unavailable) enquanto a infraestrutura remota aguarda autorização humana no Cloud. Vinte testes de interface e integração aprovados e 838 testes na suíte global.
+- **Próximo Passo**: Aguardar autorização humana para aplicação da migração 015 via Lovable Cloud SQL Editor, seguida de testes ponta a ponta com banco real e liberação da flag operacional.
