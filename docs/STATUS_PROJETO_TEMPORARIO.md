@@ -2405,3 +2405,10 @@ Atualizado em 20/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex revisou e consolidou D112 do Antigravity em 93c45de, confirmou 876 testes/109 arquivos, lint/tipos/build e enviou D108–D112 ao checkpoint. Criou plano mestre cobrindo 101 identificadores e adendos. Inspeção SQL somente leitura confirmou ausência de objetos 014/015 e time_zone/assinatura 016; domínios restritos a pending_verification. Lovable confirmado na main, não no checkpoint.
 - **Próximo Passo**: Implementar ciclo seguro de posse/DNS/TLS e ativação autorizada, com migração local revisada. Resolver leitura mínima de domínio para médico e leitor padrão da agenda ainda 503. Cloud 014–016, DNS, concessões clínicas e integração na main continuam gates separados; PRD não concluído.
+
+## D114 - White Label: desafio e verificação server-only de posse DNS 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou desafio aleatório de 256 bits ligado a domínio/clínica/ambiente/revisão e validade explícita. Verificador DNS server-only exige TXT exato, não combina registros separados, revalida expiração e limita espera com erros seguros. Recibo não ativa domínio nem inclui token bruto. Regressão completa aprovada: 886 testes em 110 arquivos.
+- **Próximo Passo**: Persistir e rotacionar desafios sob revisão transacional; completar TLS/roteamento e ativação auditada. Antes de integrar na main, corrigir compatibilidade administrativa pré-016 identificada no Cloud. Sem endpoint, DNS alterado, domínio ativo ou migração remota nesta entrega; resolvedor nativo ainda exige homologação no runtime Cloud.

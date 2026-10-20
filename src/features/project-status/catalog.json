@@ -3147,6 +3147,18 @@
       "title": "Retomada Codex: consolidação D112, plano mestre e inspeção Cloud",
       "next": "Implementar ciclo seguro de posse/DNS/TLS e ativação autorizada, com migração local revisada. Resolver leitura mínima de domínio para médico e leitor padrão da agenda ainda 503. Cloud 014–016, DNS, concessões clínicas e integração na main continuam gates separados; PRD não concluído.",
       "status": "done"
+    },
+    {
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex implementou desafio aleatório de 256 bits ligado a domínio/clínica/ambiente/revisão e validade explícita. Verificador DNS server-only exige TXT exato, não combina registros separados, revalida expiração e limita espera com erros seguros. Recibo não ativa domínio nem inclui token bruto. Regressão completa aprovada: 886 testes em 110 arquivos.",
+      "parent": "2",
+      "id": "D114",
+      "status": "done",
+      "next": "Persistir e rotacionar desafios sob revisão transacional; completar TLS/roteamento e ativação auditada. Antes de integrar na main, corrigir compatibilidade administrativa pré-016 identificada no Cloud. Sem endpoint, DNS alterado, domínio ativo ou migração remota nesta entrega; resolvedor nativo ainda exige homologação no runtime Cloud.",
+      "requirements": [],
+      "title": "White Label: desafio e verificação server-only de posse DNS"
     }
   ]
 }

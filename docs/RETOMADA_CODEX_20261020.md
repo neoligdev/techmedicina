@@ -31,3 +31,15 @@ Git do Lovable mostrou neoligdev/techmedicina, branch main, Connected e In sync 
 Implementar verificação de posse White Label no servidor e desenhar persistência aditiva: desafio vinculado a domínio/clínica/revisão/ambiente, validade explícita, DNS TXT exato, prova TLS vinculada ao host e roteamento real da hospedagem. Ativação somente após evidência confiável e autorização; cliente não informa flags de verificação. Suspensão/revogação auditadas e sem transferência de tenant. Testar localmente antes de migração Cloud.
 
 Plano global em PLANO_MESTRE_EXECUCAO_PRD.md: 101 fichas mais grupos dos adendos. É inventário de implementação e pendências, não conformidade final. Manter cadastro, prontuário/documentos, protocolos, PWA, comercial/financeiro, conteúdo, dispositivos e IA no escopo integral. Regras comerciais e clínicas ainda pendentes não são inventadas para encerrar módulos.
+
+## Continuação iniciada — D114
+
+Implementada prova DNS server-only (domain-possession.server.ts), ainda sem persistência ou endpoint. PLANO_CICLO_DOMINIOS_WHITE_LABEL.md registra a sequência aditiva, identidade confiável do verificador, TLS/roteamento, anti-SSRF, ativação/suspensão e RLS mínimo. Próximo código: persistir desafio/revisão com emissão/rotação/consumo e testar transações locais antes de conectar provas. Não ativar domínio com recibo DNS isolado.
+
+## Bloqueio de integração identificado após o plano inicial
+
+D110 alterou clinic-directory.server.ts e clinic-detail.server.ts para selecionar time_zone e clinic-write.server.ts envia p_time_zone. Cloud atual não possui coluna/assinatura. Não integrar checkpoint na main antes de preparar compatibilidade explícita (sem apagar a função nova, sem fallback silencioso de escrita) ou aplicar 016 após revisão/autorização. Este gate administrativo precede liberação de preview; registrar testes contra schema antigo e novo. Não criar PR como apto a merge enquanto essa incompatibilidade persistir.
+
+## Validação D114 concluída
+
+886 testes em 110 arquivos aprovados (253,11s), TypeScript aprovado, lint completo com zero erros e sete avisos de Fast Refresh em arquivos existentes; compilação aprovada. Catálogo D114 validado separadamente (quatro testes). Não houve homologação DNS real: testes usam resolvedor injetado e fixtures. Próxima prioridade de integração: compatibilidade administrativa com schema pré-016, seguida da persistência dos desafios descrita no plano de domínios.
