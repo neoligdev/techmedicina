@@ -1,3 +1,4 @@
+import { readClinicWithOptionalTimeZone } from "./clinic-schema-compat.server";
 import "@tanstack/react-start/server-only";
 import { z } from "zod";
 import { savedClinicSchema } from "../../features/auth/clinic-write";
@@ -20,14 +21,14 @@ export async function clinicDetailResponse(request: Request) {
           col: string,
           val: string,
         ) => {
-          maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+          maybeSingle: () => Promise<{ data: unknown; error: { code?: string } | null }>;
         };
       };
     };
-    const result = await fromClinics
-      .select("id,name,is_active,created_at,revision,time_zone")
-      .eq("id", id.data)
-      .maybeSingle();
+    const result = await readClinicWithOptionalTimeZone(
+      "id,name,is_active,created_at,revision",
+      (columns) => fromClinics.select(columns).eq("id", id.data).maybeSingle(),
+    );
     if (result.error) throw new Error("Unavailable");
     if (!result.data) throw new AuthError("Clínica não encontrada", 404);
     const clinic = savedClinicSchema.parse(result.data);

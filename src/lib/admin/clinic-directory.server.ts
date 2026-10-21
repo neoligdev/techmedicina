@@ -1,3 +1,4 @@
+import { readClinicWithOptionalTimeZone } from "./clinic-schema-compat.server";
 import "@tanstack/react-start/server-only";
 import {
   clinicRowsSchema,
@@ -52,18 +53,25 @@ export const listPlatformClinics = createClinicDirectory(
       order: (col: string, opts: { ascending: boolean }) => QueryBuilder;
       limit: (n: number) => QueryBuilder;
       or: (condition: string) => QueryBuilder;
-      then: <T>(onfulfilled: (res: { data: unknown; error: unknown }) => T) => Promise<T>;
+      then: <T>(
+        onfulfilled: (res: { data: unknown; error: { code?: string } | null }) => T,
+      ) => Promise<T>;
     };
-    let query = (client.from("tm_clinics") as unknown as QueryBuilder)
-      .select("id,name,is_active,time_zone,created_at")
-      .order("created_at", { ascending: false })
-      .order("id", { ascending: false })
-      .limit(101);
-    if (cursor)
-      query = query.or(
-        `created_at.lt.${cursor.before},and(created_at.eq.${cursor.before},id.lt.${cursor.beforeId})`,
-      );
-    const result = await query;
+    const result = await readClinicWithOptionalTimeZone(
+      "id,name,is_active,created_at",
+      async (columns) => {
+        let query = (client.from("tm_clinics") as unknown as QueryBuilder)
+          .select(columns)
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .limit(101);
+        if (cursor)
+          query = query.or(
+            `created_at.lt.${cursor.before},and(created_at.eq.${cursor.before},id.lt.${cursor.beforeId})`,
+          );
+        return await query;
+      },
+    );
     if (result.error) throw new Error("Cadastro temporariamente indisponível");
     return result.data;
   },

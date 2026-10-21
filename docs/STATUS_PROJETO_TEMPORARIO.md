@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 20/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -2412,3 +2412,10 @@ Atualizado em 20/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou desafio aleatório de 256 bits ligado a domínio/clínica/ambiente/revisão e validade explícita. Verificador DNS server-only exige TXT exato, não combina registros separados, revalida expiração e limita espera com erros seguros. Recibo não ativa domínio nem inclui token bruto. Regressão completa aprovada: 886 testes em 110 arquivos.
 - **Próximo Passo**: Persistir e rotacionar desafios sob revisão transacional; completar TLS/roteamento e ativação auditada. Antes de integrar na main, corrigir compatibilidade administrativa pré-016 identificada no Cloud. Sem endpoint, DNS alterado, domínio ativo ou migração remota nesta entrega; resolvedor nativo ainda exige homologação no runtime Cloud.
+
+## D115 - Clínicas: compatibilidade administrativa antes da migração de fuso 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex protegeu consulta de lista/detalhe contra coluna time_zone ausente: somente erro PostgreSQL de coluna inexistente repete a leitura com campos básicos, mantendo autorização e filtros. Escrita omite p_time_zone apenas quando não solicitado; fuso explícito não é descartado nem repetido após falha. Recibo sem o fuso pedido não confirma sucesso. Testes cobrem contratos anterior e posterior à 016. Regressão aprovada: 896 testes em 111 arquivos.
+- **Próximo Passo**: Homologar compatibilidade via preview após integração revisada na main; 016 continua pendente e nenhum backend foi alterado. Persistir desafios DNS e avançar TLS/ativação auditada. Aplicação remota de 014–016 e liberação de agenda continuam gates separados.

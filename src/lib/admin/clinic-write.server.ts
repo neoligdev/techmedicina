@@ -55,6 +55,8 @@ export function createClinicWriter<Context extends { identity: AuthenticatedIden
       const parsed = clinicWriteSchema.safeParse(raw);
       if (!parsed.success) throw new AuthError("Dados inválidos", 400);
       const saved = savedClinicSchema.parse(await write(context, parsed.data));
+      if (parsed.data.timeZone && saved.time_zone !== parsed.data.timeZone)
+        throw new Error("Unexpected clinic timezone receipt");
       return Response.json(
         { clinic: saved },
         { status: parsed.data.operation === "create" ? 201 : 200, headers },
@@ -82,7 +84,7 @@ export const writePlatformClinic = createClinicWriter(
     const result = await rpcFn("tm_save_clinic", {
       p_name: input.name,
       p_is_active: input.isActive,
-      p_time_zone: input.timeZone ?? null,
+      ...(input.timeZone ? { p_time_zone: input.timeZone } : {}),
       ...(input.operation === "update"
         ? { p_clinic_id: input.id, p_expected_revision: input.expectedRevision }
         : {}),

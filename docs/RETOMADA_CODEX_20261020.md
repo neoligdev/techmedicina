@@ -43,3 +43,9 @@ D110 alterou clinic-directory.server.ts e clinic-detail.server.ts para seleciona
 ## Validação D114 concluída
 
 886 testes em 110 arquivos aprovados (253,11s), TypeScript aprovado, lint completo com zero erros e sete avisos de Fast Refresh em arquivos existentes; compilação aprovada. Catálogo D114 validado separadamente (quatro testes). Não houve homologação DNS real: testes usam resolvedor injetado e fixtures. Próxima prioridade de integração: compatibilidade administrativa com schema pré-016, seguida da persistência dos desafios descrita no plano de domínios.
+
+## Continuação 21/10 — D115
+
+Compatibilidade administrativa implementada: leitura completa recua a campos básicos somente para erro de coluna ausente; nunca repete gravação removendo fuso explícito. Validação da resposta exige o fuso solicitado. RELATORIO_D115_COMPATIBILIDADE_CLINICAS.md explica limites e testes. Após validação/commit, próximo ponto continua persistência transacional dos desafios White Label, seguida de verificação TLS/roteamento, identidade do executor e ativação autorizada. A correção de compatibilidade não aplica 016 nem habilita a agenda.
+
+D115 validada: 896 testes/111 arquivos (265,84s), TypeScript completo, lint dos arquivos alterados e build aprovados. Nenhum teste de Cloud alegado. GitHub CLI sem autenticação impediu consulta de PRs; rascunho local em RASCUNHO_PR_CHECKPOINT_MAIN.md. Não houve PR criado por essa ferramenta, merge ou Publish. Próximo código: persistência de desafio/revisão/rotação, conforme PLANO_CICLO_DOMINIOS_WHITE_LABEL.md.

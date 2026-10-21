@@ -3159,6 +3159,18 @@
       "next": "Persistir e rotacionar desafios sob revisão transacional; completar TLS/roteamento e ativação auditada. Antes de integrar na main, corrigir compatibilidade administrativa pré-016 identificada no Cloud. Sem endpoint, DNS alterado, domínio ativo ou migração remota nesta entrega; resolvedor nativo ainda exige homologação no runtime Cloud.",
       "requirements": [],
       "title": "White Label: desafio e verificação server-only de posse DNS"
+    },
+    {
+      "title": "Clínicas: compatibilidade administrativa antes da migração de fuso",
+      "requirements": [],
+      "next": "Homologar compatibilidade via preview após integração revisada na main; 016 continua pendente e nenhum backend foi alterado. Persistir desafios DNS e avançar TLS/ativação auditada. Aplicação remota de 014–016 e liberação de agenda continuam gates separados.",
+      "parent": "12.1",
+      "authors": [
+        "Codex"
+      ],
+      "done": "Codex protegeu consulta de lista/detalhe contra coluna time_zone ausente: somente erro PostgreSQL de coluna inexistente repete a leitura com campos básicos, mantendo autorização e filtros. Escrita omite p_time_zone apenas quando não solicitado; fuso explícito não é descartado nem repetido após falha. Recibo sem o fuso pedido não confirma sucesso. Testes cobrem contratos anterior e posterior à 016. Regressão aprovada: 896 testes em 111 arquivos.",
+      "status": "done",
+      "id": "D115"
     }
   ]
 }
