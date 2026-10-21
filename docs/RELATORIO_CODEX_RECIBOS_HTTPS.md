@@ -34,3 +34,7 @@ Regressão completa: 981 testes aprovados em 116 arquivos (309,48 segundos). Typ
 ## Integração
 
 f5517e7 integrado por merge revisado em develop. Catálogo D118 atualizado somente nesta integração, mantendo requisito White Label parcial e todas as autorias anteriores. Varredura de padrões específicos (tokens de provedores/chave privada) no diff textual src/database/docs desde main encontrou zero correspondências; isso não é garantia universal de ausência de segredos. Nada aplicado no Cloud ou DNS. Worktree original e Antigravity preservadas.
+
+## Preparação final para main
+
+A conferência de ancestralidade detectou 111b397 exclusivo da main (evidência documental da D85). Ele foi incorporado em develop por merge 087900c, sem modificar main. O único conflito era o Markdown gerado de status; foi resolvido regenerando-o do catálogo. A entrega D85 foi comparada ao catálogo da main e preservada integralmente; D118 mantida. Quatro testes de project-status aprovados após integração. Diff src desde f5517e7, excluindo apenas catálogo, confirmou zero mudanças funcionais; a regressão 981/116 permanece aplicável ao código. main agora é ancestral da integração. Backend sincronizado por fast-forward com essa integração. Nova consulta remota deve anteceder eventual envio aprovado à main.
