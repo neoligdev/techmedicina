@@ -8,7 +8,7 @@ import { AuthError } from "../auth/guards.server";
 import { reservedDomainSchema } from "@/features/auth/domain-reservations";
 import { isLocalOrPreviewHost } from "./host-resolver";
 
-const challengeSchema = z
+export const challengeSchema = z
   .object({
     id: z.string().uuid(),
     domainId: z.string().uuid(),
