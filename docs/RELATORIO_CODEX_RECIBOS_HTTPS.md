@@ -30,3 +30,7 @@ Cloud 017–019 pendente; 014–016 continuam com seus próprios gates. Necessá
 ## Resultado consolidado
 
 Regressão completa: 981 testes aprovados em 116 arquivos (309,48 segundos). TypeScript, lint dos arquivos afetados e build local aprovados. Validação direcionada: 72 testes de persistência/sonda/transporte, mais quatro testes de recibos. DNS, HTTPS e certificados reais não foram homologados por esses testes; o transporte nativo foi exercitado com request/stream simulados. Arquivo gerado de rotas preservado sem diferença rastreada.
+
+## Integração
+
+f5517e7 integrado por merge revisado em develop. Catálogo D118 atualizado somente nesta integração, mantendo requisito White Label parcial e todas as autorias anteriores. Varredura de padrões específicos (tokens de provedores/chave privada) no diff textual src/database/docs desde main encontrou zero correspondências; isso não é garantia universal de ausência de segredos. Nada aplicado no Cloud ou DNS. Worktree original e Antigravity preservadas.

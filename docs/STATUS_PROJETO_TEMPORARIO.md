@@ -2433,3 +2433,10 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou a migração local 018 e orquestrador server-only: leitura do desafio corrente, verificação TXT e gravação privada com consumo único. Rotação, expiração ou revogação durante DNS impedem a gravação; recibos divergentes e provas do navegador são recusados. Provas não incluem token bruto nem ativam domínios. Regressão aprovada: 916 testes em 113 arquivos, TypeScript, lint direcionado e build. Integrado localmente em develop; sem aplicação remota.
 - **Próximo Passo**: Definir identidade mínima do verificador e transporte seguro antes de qualquer grant/endpoint Cloud; implementar consulta administrativa do recibo já consumido, TLS/roteamento e ativação autorizada. Migrações 017/018 continuam propostas locais, DNS real e concorrência Cloud não homologados. Preview depende de integração aprovada na main.
+
+## D118 - White Label: consulta de recibos DNS e transporte HTTPS com IP público fixado 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou a proposta local 019 para consultar recibos DNS já consumidos, distinguindo histórico e validade sem repetir DNS. Adaptador usa bearer/RLS existente. Sonda server-only filtra endereços IPv4/IPv6, fixa IP público, preserva Host/SNI e valida certificado; limita espera/cabeçalhos/corpo e rejeita redirects e respostas incompletas. É observação de transporte, sem confirmação de projeto, endpoint público ou ativação. Validação: 981 testes em 116 arquivos, TypeScript, lint direcionado e build aprovados.
+- **Próximo Passo**: Implementar desafio de roteamento assinado e vinculado ao host confiável do ingresso antes de persistir prova TLS/roteamento ou ativar domínio. Homologar APIs de rede no executor Cloud aprovado; 017–019 continuam locais. main/preview exige integração aprovada; não aplicar SQL, grants ou DNS automaticamente.
