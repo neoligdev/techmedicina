@@ -70,6 +70,7 @@ beforeAll(async () => {
     "007_domain_collision_code.sql",
     "017_domain_challenges.sql",
     "018_domain_dns_observations.sql",
+    "019_domain_dns_proof_read.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -280,4 +281,45 @@ it("sanitizes storage errors and rejects malformed saved receipts", async () => 
     lookup,
   );
   await expect(malformed(identity, domain)).rejects.toMatchObject({ status: 503 });
+});
+
+it("recovers committed proof after lost response without repeating DNS and reports rotation", async () => {
+  const proof = await verifier()(identity, domain);
+  await user();
+  const receipt = async () =>
+    (
+      await db.query<{ saved: { proof: unknown; isCurrent: boolean; isValid: boolean } }>(
+        "SELECT public.tm_read_domain_dns_proof($1,$2) AS saved",
+        [domain, proof.challengeId],
+      )
+    ).rows[0]!.saved;
+  const saved = await receipt();
+  expect(saved).toMatchObject({
+    proof: { challengeId: proof.challengeId, proofDigest: proof.proofDigest },
+    isCurrent: true,
+    isValid: true,
+  });
+  expect(JSON.stringify(saved)).not.toContain(challenge.token);
+  await issue(2);
+  expect(await receipt()).toMatchObject({ isCurrent: false, isValid: false });
+});
+it("receipt read enforces operator and exact domain/challenge, with null for unknown receipt", async () => {
+  const proof = await verifier()(identity, domain);
+  await user();
+  expect(
+    (
+      await db.query<{ saved: unknown }>("SELECT public.tm_read_domain_dns_proof($1,$2) AS saved", [
+        clinic,
+        proof.challengeId,
+      ])
+    ).rows[0]!.saved,
+  ).toBeNull();
+  await user(clinic);
+  await expect(
+    db.query("SELECT public.tm_read_domain_dns_proof($1,$2)", [domain, proof.challengeId]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await user("", "anon");
+  await expect(
+    db.query("SELECT public.tm_read_domain_dns_proof($1,$2)", [domain, proof.challengeId]),
+  ).rejects.toMatchObject({ code: "42501" });
 });
