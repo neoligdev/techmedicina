@@ -25,3 +25,7 @@ Este relatório é proposta de entrega, não conclusão do requisito White Label
 ## Resultado consolidado
 
 Regressão completa: 905 testes aprovados em 112 arquivos (260,82 segundos). TypeScript sem erros; lint do novo teste sem erros; build local aprovado. Nenhum resultado equivale a aplicação no Cloud ou preview. Build alterou apenas finais de linha de routeTree.gen.ts; conteúdo e finais de linha originais foram preservados, sem alteração rastreada final.
+
+## Integração local
+
+Lote 35f99a6 revisado e integrado por fast-forward em develop. Catálogo oficial e Markdown atualizados nesta worktree de integração com D116, mantendo todos os requisitos globais parciais/pendentes. O documento de coordenação e os dois commits preparatórios também foram preservados. C:/dev/techmedicina-integracao é checkout exclusivo de develop; nenhuma implementação deve ocorrer ali fora da integração. Nenhum push ou troca de branch Lovable implícitos.

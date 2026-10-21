@@ -2419,3 +2419,10 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex protegeu consulta de lista/detalhe contra coluna time_zone ausente: somente erro PostgreSQL de coluna inexistente repete a leitura com campos básicos, mantendo autorização e filtros. Escrita omite p_time_zone apenas quando não solicitado; fuso explícito não é descartado nem repetido após falha. Recibo sem o fuso pedido não confirma sucesso. Testes cobrem contratos anterior e posterior à 016. Regressão aprovada: 896 testes em 111 arquivos.
 - **Próximo Passo**: Homologar compatibilidade via preview após integração revisada na main; 016 continua pendente e nenhum backend foi alterado. Persistir desafios DNS e avançar TLS/ativação auditada. Aplicação remota de 014–016 e liberação de agenda continuam gates separados.
+
+## D116 - White Label: persistência local de emissão e rotação auditadas de desafios 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex criou a migração local 017 com desafios vinculados à reserva e revisão, rotação transacional, token único, auditoria sem token e acesso restrito. Revisão antiga, entrada inválida e falha de inserção não alteram o estado; nenhum domínio é ativado. Nove testes novos e regressão completa: 905 testes em 112 arquivos, TypeScript, lint direcionado e build aprovados. Integrado localmente em develop; Cloud e preview não alterados.
+- **Próximo Passo**: Implementar leitura e adaptador runtime do desafio corrente, persistência confiável da observação DNS, TLS/roteamento e ativação autorizada. Revisar/aprovar aplicação remota da 017; a emissão ainda não possui endpoint ou interface. Preservar main até integração aprovada.

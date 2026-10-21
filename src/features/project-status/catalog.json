@@ -3171,6 +3171,18 @@
       "done": "Codex protegeu consulta de lista/detalhe contra coluna time_zone ausente: somente erro PostgreSQL de coluna inexistente repete a leitura com campos básicos, mantendo autorização e filtros. Escrita omite p_time_zone apenas quando não solicitado; fuso explícito não é descartado nem repetido após falha. Recibo sem o fuso pedido não confirma sucesso. Testes cobrem contratos anterior e posterior à 016. Regressão aprovada: 896 testes em 111 arquivos.",
       "status": "done",
       "id": "D115"
+    },
+    {
+      "id": "D116",
+      "title": "White Label: persistência local de emissão e rotação auditadas de desafios",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Codex criou a migração local 017 com desafios vinculados à reserva e revisão, rotação transacional, token único, auditoria sem token e acesso restrito. Revisão antiga, entrada inválida e falha de inserção não alteram o estado; nenhum domínio é ativado. Nove testes novos e regressão completa: 905 testes em 112 arquivos, TypeScript, lint direcionado e build aprovados. Integrado localmente em develop; Cloud e preview não alterados.",
+      "next": "Implementar leitura e adaptador runtime do desafio corrente, persistência confiável da observação DNS, TLS/roteamento e ativação autorizada. Revisar/aprovar aplicação remota da 017; a emissão ainda não possui endpoint ou interface. Preservar main até integração aprovada.",
+      "requirements": []
     }
   ]
 }
