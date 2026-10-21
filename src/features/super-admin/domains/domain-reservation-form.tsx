@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { z } from "zod";
-import { Sparkles, Globe, AlertCircle, CheckCircle2, Shield } from "lucide-react";
+import { Sparkles, Globe, AlertCircle, CheckCircle2, Shield, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,19 +9,19 @@ import {
   reservedDomainSchema,
 } from "@/features/auth/domain-reservations";
 import { suggestedWhiteLabelHosts } from "@/features/auth/white-label-hostnames";
-import type { DomainEnvironment, ReservedDomain } from "./types";
+import { isValidClinicUuid, type DomainEnvironment, type ReservedDomain } from "./types";
 
 interface DomainReservationFormProps {
-  clinics: Array<{ id: string; name: string }>;
+  clinics?: Array<{ id: string; name: string }>;
   selectedClinicId: string;
-  token: string;
+  token: string | null;
   onSuccess: (domain: ReservedDomain) => void;
   className?: string;
   disabled?: boolean;
 }
 
 export function DomainReservationForm({
-  clinics,
+  clinics = [],
   selectedClinicId,
   token,
   onSuccess,
@@ -36,6 +36,8 @@ export function DomainReservationForm({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const writing = useRef(false);
+
+  const isAuthenticated = Boolean(token && token.trim().length > 0);
 
   // Sincronizar clínica se prop mudar e formulário estiver ocioso
   React.useEffect(() => {
@@ -60,10 +62,10 @@ export function DomainReservationForm({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (writing.current || disabled) return;
+    if (writing.current || disabled || !isAuthenticated) return;
 
-    if (!clinicId) {
-      setError("Selecione uma clínica para associar o domínio.");
+    if (!clinicId || !isValidClinicUuid(clinicId)) {
+      setError("Selecione uma clínica válida com identificador autorizado.");
       return;
     }
 
@@ -101,8 +103,12 @@ export function DomainReservationForm({
       if (!response.ok) {
         if (response.status === 409) {
           setError("Este hostname já está reservado.");
-        } else if (response.status === 401 || response.status === 403) {
+        } else if (response.status === 401) {
+          setError("Sessão administrativa não confirmada. Faça login novamente.");
+        } else if (response.status === 403) {
           setError("Acesso administrativo não autorizado.");
+        } else if (response.status === 400) {
+          setError("Dados de domínio inválidos.");
         } else {
           setError("Reserva não confirmada. Recarregue antes de tentar novamente.");
         }
@@ -135,7 +141,7 @@ export function DomainReservationForm({
     }
   };
 
-  const isFormLocked = busy || disabled;
+  const isFormLocked = busy || disabled || !isAuthenticated;
 
   return (
     <Card className={`border-border/60 bg-card/60 shadow-sm ${className}`}>
@@ -156,6 +162,16 @@ export function DomainReservationForm({
       </CardHeader>
 
       <CardContent>
+        {!isAuthenticated && (
+          <div
+            className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2"
+            role="alert"
+          >
+            <Lock size={15} className="shrink-0 text-amber-500" />
+            <span>Autenticação administrativa necessária para reservar domínios.</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4" aria-label="Reservar domínio">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -306,7 +322,9 @@ export function DomainReservationForm({
             </span>
             <Button
               type="submit"
-              disabled={isFormLocked || !hostname.trim() || !clinicId}
+              disabled={
+                isFormLocked || !hostname.trim() || !clinicId || !isValidClinicUuid(clinicId)
+              }
               className="text-xs h-9 px-4 font-medium"
             >
               {busy ? "Reservando…" : "Reservar domínio"}

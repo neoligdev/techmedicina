@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Copy, Check, Info, ShieldAlert, Globe, Server } from "lucide-react";
+import { Copy, Check, Info, ShieldAlert, Globe, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDomainDnsInstruction, type ReservedDomain } from "./types";
@@ -17,8 +17,13 @@ export function DomainDnsInstructions({
 }: DomainDnsInstructionsProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const instruction = getDomainDnsInstruction(domain.hostname, challengeToken);
+  const isChallengeConfirmed = instruction.hasConfirmedChallenge;
 
   const copyToClipboard = async (text: string, fieldName: string) => {
+    // Bloqueia cópia se for valor TXT não confirmado
+    if ((fieldName === "value" || fieldName === "all") && !isChallengeConfirmed) {
+      return;
+    }
     try {
       if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(text);
@@ -30,12 +35,14 @@ export function DomainDnsInstructions({
     }
   };
 
-  const fullInstructions = `Instruções de Apontamento DNS PlugPix Techmedicina:
+  const fullInstructions = isChallengeConfirmed
+    ? `Instruções de Apontamento DNS PlugPix Techmedicina:
 Domínio: ${domain.hostname}
 Tipo: ${instruction.type}
 Nome / Entrada: ${instruction.name}
 Valor / Conteúdo: ${instruction.value}
-TTL sugerido: 300 segundos (ou 5 minutos)`;
+TTL sugerido: 300 segundos (ou 5 minutos)`
+    : "";
 
   return (
     <Card className={`border-border/60 bg-card/60 shadow-sm ${className}`}>
@@ -50,8 +57,9 @@ TTL sugerido: 300 segundos (ou 5 minutos)`;
                 Instruções de Configuração DNS TXT
               </CardTitle>
               <CardDescription className="text-xs">
-                Para comprovação de posse do domínio{" "}
-                <strong className="text-foreground">{domain.hostname}</strong>
+                {isChallengeConfirmed
+                  ? `Desafio emitido e pronto para apontamento em ${domain.hostname}`
+                  : `Orientações gerais para o domínio ${domain.hostname}`}
               </CardDescription>
             </div>
           </div>
@@ -59,8 +67,14 @@ TTL sugerido: 300 segundos (ou 5 minutos)`;
             type="button"
             variant="outline"
             size="sm"
+            disabled={!isChallengeConfirmed}
             onClick={() => copyToClipboard(fullInstructions, "all")}
             className="text-xs h-8 gap-1.5"
+            title={
+              isChallengeConfirmed
+                ? "Copiar todas as instruções de DNS"
+                : "Cópia desabilitada: aguardando desafio oficial do backend."
+            }
             aria-label="Copiar todas as instruções de DNS"
           >
             {copiedField === "all" ? (
@@ -79,10 +93,24 @@ TTL sugerido: 300 segundos (ou 5 minutos)`;
       </CardHeader>
 
       <CardContent className="space-y-4 text-sm">
-        <p className="text-muted-foreground text-xs leading-relaxed">
-          Para que o portal seja ativado sob a marca da clínica, adicione um registro TXT na zona de
-          DNS do domínio junto ao seu provedor (Cloudflare, Registro.br, AWS, etc.):
-        </p>
+        {/* Banner de Aviso quando não há token confirmado */}
+        {!isChallengeConfirmed && (
+          <div
+            className="p-3.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs space-y-1.5"
+            role="status"
+          >
+            <div className="flex items-center gap-2 font-semibold">
+              <AlertTriangle size={15} className="text-amber-500 shrink-0" />
+              <span>Orientações Gerais — Desafio Não Emitido:</span>
+            </div>
+            <p className="leading-relaxed">
+              O token criptográfico definitivo de 256 bits ainda não foi emitido ou carregado por
+              endpoint seguro do servidor. O formato abaixo é um{" "}
+              <strong>exemplo ilustrativo</strong>. A ação de cópia do valor TXT está desabilitada
+              para evitar o cadastro de valores inexistentes no DNS.
+            </p>
+          </div>
+        )}
 
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="p-3 rounded-lg border border-border/60 bg-background/50">
@@ -118,12 +146,28 @@ TTL sugerido: 300 segundos (ou 5 minutos)`;
 
         <div className="p-3 rounded-lg border border-border/60 bg-background/50">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground font-medium">Valor / Conteúdo TXT</span>
+            <span className="text-xs text-muted-foreground font-medium">
+              Valor / Conteúdo TXT{" "}
+              {!isChallengeConfirmed && (
+                <span className="text-amber-500 text-[11px] font-normal">
+                  (Ilustrativo — cópia bloqueada)
+                </span>
+              )}
+            </span>
             <button
               type="button"
+              disabled={!isChallengeConfirmed}
               onClick={() => copyToClipboard(instruction.value, "value")}
-              className="text-xs text-primary hover:underline inline-flex items-center gap-1"
-              title="Copiar valor do registro"
+              className={`text-xs inline-flex items-center gap-1 ${
+                isChallengeConfirmed
+                  ? "text-primary hover:underline cursor-pointer"
+                  : "text-muted-foreground/50 cursor-not-allowed opacity-60"
+              }`}
+              title={
+                isChallengeConfirmed
+                  ? "Copiar valor do registro"
+                  : "Cópia desabilitada: aguardando desafio oficial do backend."
+              }
               aria-label="Copiar valor do registro DNS"
             >
               {copiedField === "value" ? (
@@ -134,34 +178,27 @@ TTL sugerido: 300 segundos (ou 5 minutos)`;
               <span>{copiedField === "value" ? "Copiado" : "Copiar"}</span>
             </button>
           </div>
-          <div className="font-mono text-xs break-all text-foreground select-all bg-muted/40 p-2 rounded">
-            {instruction.value}
+          <div
+            className={`font-mono text-xs break-all p-2 rounded ${
+              isChallengeConfirmed
+                ? "text-foreground select-all bg-muted/40"
+                : "text-muted-foreground/80 italic bg-muted/20"
+            }`}
+          >
+            {isChallengeConfirmed
+              ? instruction.value
+              : "plugpix-domain-verification=[aguardando_emissao_servidor]"}
           </div>
         </div>
-
-        {instruction.isTokenPending && (
-          <div
-            className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300"
-            role="status"
-          >
-            <Info size={16} className="shrink-0 mt-0.5 text-amber-500" />
-            <div>
-              <strong>Aguardando emissão do desafio criptográfico:</strong> O token seguro de 256
-              bits é gerado pelo orquestrador de segurança do servidor ao iniciar o ciclo de
-              auditoria. Ao receber o token definitivo, o valor do registro TXT deve ser preenchido
-              com a chave exata fornecida.
-            </div>
-          </div>
-        )}
 
         <div className="flex items-start gap-2.5 p-3 rounded-lg bg-muted/30 border border-border/40 text-xs text-muted-foreground">
           <ShieldAlert size={16} className="shrink-0 mt-0.5 text-primary" />
           <div className="space-y-1">
-            <strong>Segurança e propagação DNS:</strong>
+            <strong>Garantia de Segurança:</strong>
             <p>
-              A verificação é realizada exclusivamente por sondas criptográficas no servidor contra
-              os servidores raiz/DNS do domínio. O navegador ou usuário não pode simular
-              confirmação. A propagação do DNS pode levar de 5 minutos a algumas horas.
+              A comprovação de posse só ocorre quando o resolvedor DNS autoritativo do servidor ler
+              o token exato na zona do domínio. Nenhuma confirmação pode ser enviada manualmente
+              pelo navegador.
             </p>
           </div>
         </div>

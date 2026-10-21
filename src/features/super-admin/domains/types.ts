@@ -1,5 +1,4 @@
-﻿import { z } from "zod";
-import { reservedDomainSchema } from "@/features/auth/domain-reservations";
+import { z } from "zod";
 
 export type DomainEnvironment = "clinic_portal" | "patient_pwa";
 
@@ -29,6 +28,11 @@ export interface DomainDnsInstruction {
   value: string;
   rawToken?: string | undefined;
   isTokenPending: boolean;
+  hasConfirmedChallenge: boolean;
+}
+
+export function isValidClinicUuid(id: unknown): id is string {
+  return typeof id === "string" && z.string().uuid().safeParse(id).success;
 }
 
 export function formatDomainEnvironment(env: DomainEnvironment): string {
@@ -97,14 +101,6 @@ export function getDomainDnsInstruction(hostname: string, token?: string): Domai
       : "plugpix-domain-verification=<desafio_criptográfico_256bits>",
     rawToken: token,
     isTokenPending: !hasToken,
+    hasConfirmedChallenge: hasToken,
   };
-}
-
-export function toCanonicalClinicUuid(id: string): string {
-  if (z.string().uuid().safeParse(id).success) {
-    return id;
-  }
-  if (id === "clinica-viva") return "00000000-0000-4000-8000-000000000001";
-  if (id === "clinica-horizonte") return "00000000-0000-4000-8000-000000000002";
-  return "00000000-0000-4000-8000-000000000001";
 }

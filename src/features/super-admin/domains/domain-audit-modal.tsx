@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { History, X, Clock, User, AlertCircle, RefreshCw, ShieldCheck } from "lucide-react";
+import { History, X, Clock, User, AlertCircle, RefreshCw, ShieldAlert, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { domainAuditSchema } from "@/features/auth/domain-audit";
 import type { AuditCursor } from "@/features/auth/administrative-audit";
-import type { ReservedDomain } from "./types";
+import { isValidClinicUuid, type ReservedDomain } from "./types";
 import { DomainStatusBadge } from "./domain-status-badge";
 
 interface DomainAuditModalProps {
   domain: ReservedDomain;
   clinicId: string;
-  token: string;
+  token: string | null;
   onClose: () => void;
 }
 
@@ -29,8 +29,20 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
   const [error, setError] = useState("");
   const active = useRef(true);
 
+  const isAuthenticated = Boolean(token && token.trim().length > 0);
+  const isClinicValid = isValidClinicUuid(clinicId);
+
   const load = useCallback(
     async (cursor?: AuditCursor) => {
+      if (!isAuthenticated) {
+        setError("Autenticação administrativa necessária para consultar eventos.");
+        return;
+      }
+      if (!isClinicValid) {
+        setError("Identificador de clínica inválido ou não autorizado.");
+        return;
+      }
+
       setBusy(true);
       setError("");
       const controller = new AbortController();
@@ -53,6 +65,12 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
         });
 
         if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error("Sessão administrativa expirada ou inválida.");
+          }
+          if (response.status === 403) {
+            throw new Error("Acesso administrativo não autorizado a esta clínica.");
+          }
           throw new Error("Erro na consulta de auditoria");
         }
 
@@ -60,7 +78,7 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
         const parsed = domainAuditSchema.parse(raw);
 
         if (parsed.domain.id !== domain.id || parsed.domain.clinic_id !== clinicId) {
-          throw new Error("Dados de auditoria divergentes do domínio solicitado");
+          throw new Error("Tentativa de associação a outro tenant rejeitada");
         }
 
         if (active.current) {
@@ -72,9 +90,13 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
           setHasMore(parsed.hasMore);
           setNextCursor(parsed.nextCursor);
         }
-      } catch {
+      } catch (err: unknown) {
         if (active.current) {
-          setError("Não foi possível confirmar o histórico de auditoria desta reserva.");
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Não foi possível confirmar o histórico de auditoria desta reserva.";
+          setError(message);
         }
       } finally {
         clearTimeout(timeout);
@@ -83,7 +105,7 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
         }
       }
     },
-    [domain.id, clinicId, token],
+    [domain.id, clinicId, token, isAuthenticated, isClinicValid],
   );
 
   useEffect(() => {
@@ -144,8 +166,15 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
               className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2"
               role="alert"
             >
-              <AlertCircle size={16} />
+              <AlertCircle size={16} className="shrink-0" />
               <span>{error}</span>
+            </div>
+          )}
+
+          {!isAuthenticated && (
+            <div className="py-8 text-center text-xs text-muted-foreground space-y-2">
+              <Lock size={20} className="mx-auto text-amber-500" />
+              <p>Autenticação administrativa necessária para visualizar auditoria.</p>
             </div>
           )}
 
@@ -156,7 +185,7 @@ export function DomainAuditModal({ domain, clinicId, token, onClose }: DomainAud
             </div>
           )}
 
-          {!busy && events.length === 0 && !error && (
+          {!busy && events.length === 0 && !error && isAuthenticated && (
             <div className="py-12 text-center text-muted-foreground text-xs">
               Nenhum evento registrado para esta reserva.
             </div>

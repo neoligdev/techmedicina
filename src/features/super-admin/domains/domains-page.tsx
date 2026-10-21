@@ -14,6 +14,8 @@ import {
   ChevronRight,
   ExternalLink,
   SlidersHorizontal,
+  AlertTriangle,
+  LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useDemoClinic } from "@/features/demo/context";
 import { supabase } from "@/integrations/supabase/client";
 import { reservedDomainSchema } from "@/features/auth/domain-reservations";
+import { clinicDirectorySchema } from "@/features/auth/clinic-directory";
 import { DomainStatusBadge } from "./domain-status-badge";
 import { DomainDnsInstructions } from "./domain-dns-instructions";
 import { DomainTlsCard } from "./domain-tls-card";
@@ -28,16 +31,21 @@ import { DomainAuditModal } from "./domain-audit-modal";
 import { DomainReservationForm } from "./domain-reservation-form";
 import {
   formatDomainEnvironment,
-  toCanonicalClinicUuid,
+  isValidClinicUuid,
   type ReservedDomain,
   type DomainEnvironment,
   type DomainStatus,
 } from "./types";
 
+interface ClinicItem {
+  id: string;
+  name: string;
+}
+
 interface DomainsPageProps {
-  clinics?: Array<{ id: string; name: string }>;
+  clinics?: ClinicItem[];
   initialClinicId?: string;
-  token?: string;
+  token?: string | null;
 }
 
 export function DomainsPage({
@@ -45,16 +53,27 @@ export function DomainsPage({
   initialClinicId,
   token: propToken,
 }: DomainsPageProps = {}) {
-  const { clinics: contextClinics, clinic: activeClinicContext } = useDemoClinic();
-  const availableClinics = propClinics && propClinics.length > 0 ? propClinics : contextClinics;
+  // Contexto de apoio
+  const { clinics: demoContextClinics } = useDemoClinic();
 
-  const defaultId =
-    initialClinicId ||
-    availableClinics[0]?.id ||
-    activeClinicContext?.id ||
-    "00000000-0000-4000-8000-000000000001";
-  const [selectedClinicId, setSelectedClinicId] = useState<string>(defaultId);
-  const [token, setToken] = useState<string>(propToken || "fixture");
+  // Estados de autenticação estrita
+  const [sessionState, setSessionState] = useState<
+    "resolving" | "authenticated" | "unauthenticated"
+  >(propToken ? "authenticated" : "resolving");
+  const [token, setToken] = useState<string | null>(propToken || null);
+
+  // Lista real de clínicas
+  const [clinicsList, setClinicsList] = useState<ClinicItem[]>(propClinics || []);
+  const [clinicsLoading, setClinicsLoading] = useState(false);
+
+  // Clínica selecionada (deve ser UUID válido)
+  const [selectedClinicId, setSelectedClinicId] = useState<string>(
+    initialClinicId !== undefined
+      ? initialClinicId
+      : propClinics?.find((c) => isValidClinicUuid(c.id))?.id || "",
+  );
+
+  // Domínios da clínica
   const [domains, setDomains] = useState<ReservedDomain[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -72,37 +91,101 @@ export function DomainsPage({
 
   const mounted = useRef(true);
 
-  // Obter sessão e token real do Supabase caso exista e não tenha sido fornecido via prop
+  // 1. Resolução estrita de sessão do Supabase (sem token fixture arbitrário)
   useEffect(() => {
     mounted.current = true;
-    async function resolveToken() {
-      if (propToken) {
+
+    async function resolveSession() {
+      if (propToken !== undefined) {
         setToken(propToken);
+        setSessionState(propToken ? "authenticated" : "unauthenticated");
         return;
       }
+
       try {
         const { data } = await supabase.auth
           .getSession()
           .catch(() => ({ data: { session: null } }));
-        if (mounted.current && data?.session?.access_token) {
-          setToken(data.session.access_token);
-        }
+
+        if (!mounted.current) return;
+
+        const resolvedToken = data?.session?.access_token || null;
+        setToken(resolvedToken);
+        setSessionState(resolvedToken ? "authenticated" : "unauthenticated");
       } catch {
-        // Fallback para token fixture em modo demonstrativo
+        if (mounted.current) {
+          setToken(null);
+          setSessionState("unauthenticated");
+        }
       }
     }
-    void resolveToken();
+
+    void resolveSession();
     return () => {
       mounted.current = false;
     };
   }, [propToken]);
 
-  const targetClinicUuid = toCanonicalClinicUuid(selectedClinicId);
+  // 2. Carregar diretório real de clínicas via endpoint oficial /api/platform/clinics
+  useEffect(() => {
+    if (propClinics && propClinics.length > 0) {
+      setClinicsList(propClinics);
+      return;
+    }
 
-  // Carregar domínios da clínica selecionada
+    if (sessionState !== "authenticated" || !token) {
+      return;
+    }
+
+    async function fetchPlatformClinics() {
+      setClinicsLoading(true);
+      try {
+        const response = await fetch("/api/platform/clinics", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao carregar cadastro de clínicas");
+        }
+
+        const raw = await response.json();
+        const parsed = clinicDirectorySchema.safeParse(raw);
+
+        if (parsed.success && mounted.current) {
+          const validRows = parsed.data.clinics
+            .filter((c) => isValidClinicUuid(c.id))
+            .map((c) => ({ id: c.id, name: c.name }));
+
+          setClinicsList(validRows);
+          if (!selectedClinicId && validRows[0]) {
+            setSelectedClinicId(validRows[0].id);
+          }
+        }
+      } catch {
+        // Se a rota remota ainda não responder, mantemos apenas o que for fornecido explicitamente
+      } finally {
+        if (mounted.current) {
+          setClinicsLoading(false);
+        }
+      }
+    }
+
+    void fetchPlatformClinics();
+  }, [sessionState, token, propClinics, selectedClinicId]);
+
+  // 3. Carregar reservas de domínio para a clínica selecionada
   const fetchDomains = useCallback(
     async (cursorAfter?: string) => {
-      if (!targetClinicUuid) return;
+      if (!isValidClinicUuid(selectedClinicId)) {
+        setDomains([]);
+        return;
+      }
+      if (!token) {
+        setDomains([]);
+        return;
+      }
+
       setBusy(true);
       setError("");
 
@@ -110,7 +193,7 @@ export function DomainsPage({
       const timeout = setTimeout(() => controller.abort(), 20_000);
 
       try {
-        const params = new URLSearchParams({ clinicId: targetClinicUuid });
+        const params = new URLSearchParams({ clinicId: selectedClinicId });
         if (cursorAfter) {
           params.set("after", cursorAfter);
         }
@@ -122,8 +205,13 @@ export function DomainsPage({
         });
 
         if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            throw new Error("Acesso administrativo não autorizado");
+          if (response.status === 401) {
+            setSessionState("unauthenticated");
+            setToken(null);
+            throw new Error("Sessão administrativa expirada. Faça login novamente.");
+          }
+          if (response.status === 403) {
+            throw new Error("Acesso administrativo negado. Requer papel super_admin.");
           }
           throw new Error("Não foi possível carregar as reservas de domínio");
         }
@@ -133,9 +221,9 @@ export function DomainsPage({
           ? raw.domains.map((item: unknown) => reservedDomainSchema.parse(item))
           : [];
 
-        // Validar isolamento de tenant
-        if (rows.some((d: { clinic_id: string }) => d.clinic_id !== targetClinicUuid)) {
-          throw new Error("Tenant mismatch detectado na resposta do servidor");
+        // Validar integridade e segregação estrita de tenant
+        if (rows.some((d: { clinic_id: string }) => d.clinic_id !== selectedClinicId)) {
+          throw new Error("Tentativa de associação a outro tenant rejeitada");
         }
 
         if (mounted.current) {
@@ -161,14 +249,14 @@ export function DomainsPage({
         }
       }
     },
-    [targetClinicUuid, token],
+    [selectedClinicId, token],
   );
 
   useEffect(() => {
-    if (targetClinicUuid) {
+    if (isValidClinicUuid(selectedClinicId) && token) {
       void fetchDomains();
     }
-  }, [fetchDomains, targetClinicUuid]);
+  }, [fetchDomains, selectedClinicId, token]);
 
   // Filtrar domínios da exibição por busca e ambiente
   const filteredDomains = domains.filter((d) => {
@@ -179,11 +267,10 @@ export function DomainsPage({
     return matchesSearch && matchesEnv;
   });
 
-  const selectedClinicMeta =
-    availableClinics.find((c) => c.id === selectedClinicId) || availableClinics[0];
+  const selectedClinicMeta = clinicsList.find((c) => c.id === selectedClinicId);
 
-  // Métricas
-  const totalDomains = domains.length;
+  // Métricas precisas dos registros carregados
+  const totalLoadedDomains = domains.length;
   const pendingDomains = domains.filter((d) => d.status === "pending_verification").length;
   const portalDomains = domains.filter((d) => d.environment === "clinic_portal").length;
   const pwaDomains = domains.filter((d) => d.environment === "patient_pwa").length;
@@ -208,19 +295,47 @@ export function DomainsPage({
         </div>
       </div>
 
-      {/* Cards de Métricas Operacionais */}
+      {/* Bloqueio por ausência de sessão autenticada */}
+      {sessionState === "unauthenticated" && (
+        <Card className="border-amber-500/30 bg-amber-500/10">
+          <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                <Lock size={22} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-semibold text-sm text-foreground">
+                  Sessão Administrativa Não Confirmada
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Para visualizar, cadastrar ou gerenciar domínios das clínicas, é obrigatório
+                  autenticar-se com perfil autorizado de Super ADM.
+                </p>
+              </div>
+            </div>
+            <Button asChild size="sm" className="gap-1.5 text-xs shrink-0">
+              <a href="/login">
+                <LogIn size={14} />
+                <span>Entrar no Super ADM</span>
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Cards de Métricas Operacionais da Seleção */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border/50 shadow-sm bg-card/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-xs font-medium text-muted-foreground">
-              Total de Reservas
+              Reservas Carregadas
             </CardTitle>
             <Globe className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalDomains}</div>
+            <div className="text-2xl font-bold">{totalLoadedDomains}</div>
             <p className="text-[11px] text-muted-foreground mt-1">
-              Domínios cadastrados na clínica
+              {hasMore ? "Exibindo página atual" : "Total nesta clínica"}
             </p>
           </CardContent>
         </Card>
@@ -228,7 +343,7 @@ export function DomainsPage({
         <Card className="border-border/50 shadow-sm bg-card/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-xs font-medium text-muted-foreground">
-              Verificação DNS
+              Verificação DNS Pendente
             </CardTitle>
             <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
@@ -240,7 +355,9 @@ export function DomainsPage({
 
         <Card className="border-border/50 shadow-sm bg-card/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-medium text-muted-foreground">Ambientes</CardTitle>
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Ambientes da Seleção
+            </CardTitle>
             <Layers className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
@@ -278,15 +395,17 @@ export function DomainsPage({
               </label>
               <select
                 id="select-clinic-toolbar"
+                aria-label="Clínica da reserva"
                 value={selectedClinicId}
-                disabled={busy}
+                disabled={busy || sessionState !== "authenticated"}
                 onChange={(e) => {
                   setSelectedClinicId(e.target.value);
                   setAfter("");
                 }}
                 className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
               >
-                {availableClinics.map((c) => (
+                <option value="">Selecione uma clínica autorizada</option>
+                {clinicsList.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
@@ -299,7 +418,9 @@ export function DomainsPage({
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={busy}
+                disabled={
+                  busy || sessionState !== "authenticated" || !isValidClinicUuid(selectedClinicId)
+                }
                 onClick={() => void fetchDomains(after || undefined)}
                 className="h-9 gap-1.5 text-xs"
               >
@@ -310,6 +431,7 @@ export function DomainsPage({
               <Button
                 type="button"
                 size="sm"
+                disabled={sessionState !== "authenticated" || !isValidClinicUuid(selectedClinicId)}
                 onClick={() => setShowNewReservation((prev) => !prev)}
                 className="h-9 gap-1.5 text-xs font-medium"
               >
@@ -328,6 +450,7 @@ export function DomainsPage({
               <Input
                 placeholder="Buscar por hostname..."
                 value={searchQuery}
+                disabled={sessionState !== "authenticated"}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-8 text-xs font-mono"
               />
@@ -337,6 +460,7 @@ export function DomainsPage({
               <SlidersHorizontal size={14} className="text-muted-foreground" />
               <select
                 value={filterEnv}
+                disabled={sessionState !== "authenticated"}
                 onChange={(e) => setFilterEnv(e.target.value as "all" | DomainEnvironment)}
                 className="h-8 px-2.5 rounded-md border border-input bg-background text-xs ring-offset-background"
               >
@@ -353,10 +477,10 @@ export function DomainsPage({
       {showNewReservation && (
         <div className="animate-in fade-in slide-in-from-top-2 duration-200">
           <DomainReservationForm
-            clinics={availableClinics}
-            selectedClinicId={targetClinicUuid}
+            clinics={clinicsList}
+            selectedClinicId={selectedClinicId}
             token={token}
-            disabled={busy}
+            disabled={busy || sessionState !== "authenticated"}
             onSuccess={(_created) => {
               void fetchDomains();
             }}
@@ -392,10 +516,10 @@ export function DomainsPage({
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
               <CardTitle className="text-base font-semibold">
-                Domínios da Clínica: {selectedClinicMeta?.name || "Clínica"}
+                Domínios da Clínica: {selectedClinicMeta?.name || "Clínica não selecionada"}
               </CardTitle>
               <CardDescription className="text-xs">
-                {filteredDomains.length} de {domains.length} reserva(s) registrada(s)
+                {filteredDomains.length} de {domains.length} reserva(s) nesta seleção
               </CardDescription>
             </div>
             {busy && (
@@ -408,7 +532,20 @@ export function DomainsPage({
         </CardHeader>
 
         <CardContent className="p-0">
-          {domains.length === 0 && !busy && !error && (
+          {!isValidClinicUuid(selectedClinicId) && (
+            <div className="p-12 text-center space-y-2 text-muted-foreground text-xs">
+              <Building2 size={24} className="mx-auto text-primary/60 mb-2" />
+              <p className="font-semibold text-foreground text-sm">
+                Nenhuma clínica autorizada selecionada
+              </p>
+              <p>
+                Selecione uma clínica com identificador válido no menu acima para gerenciar seus
+                domínios.
+              </p>
+            </div>
+          )}
+
+          {isValidClinicUuid(selectedClinicId) && domains.length === 0 && !busy && !error && (
             <div className="p-12 text-center space-y-3">
               <div className="w-12 h-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
                 <Globe size={24} />
@@ -421,6 +558,7 @@ export function DomainsPage({
               <Button
                 type="button"
                 size="sm"
+                disabled={sessionState !== "authenticated"}
                 onClick={() => setShowNewReservation(true)}
                 className="text-xs mt-2"
               >
@@ -429,13 +567,15 @@ export function DomainsPage({
             </div>
           )}
 
-          {domains.length > 0 && filteredDomains.length === 0 && (
-            <div className="p-8 text-center text-xs text-muted-foreground">
-              Nenhum domínio corresponde aos filtros de busca aplicados.
-            </div>
-          )}
+          {isValidClinicUuid(selectedClinicId) &&
+            domains.length > 0 &&
+            filteredDomains.length === 0 && (
+              <div className="p-8 text-center text-xs text-muted-foreground">
+                Nenhum domínio corresponde aos filtros de busca aplicados.
+              </div>
+            )}
 
-          {filteredDomains.length > 0 && (
+          {isValidClinicUuid(selectedClinicId) && filteredDomains.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
@@ -606,7 +746,7 @@ export function DomainsPage({
       {activeAuditDomain && (
         <DomainAuditModal
           domain={activeAuditDomain}
-          clinicId={targetClinicUuid}
+          clinicId={selectedClinicId}
           token={token}
           onClose={() => setActiveAuditDomain(null)}
         />
