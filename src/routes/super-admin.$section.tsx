@@ -26,7 +26,7 @@ function SectionPage() {
     return <DomainsPage />;
   }
   if (slug === "planos") {
-    return <PlansCatalog />;
+    return <PlansCatalog defaultTab="policies" />;
   }
   if (slug === "simulador") {
     return <SimulatorPage />;
