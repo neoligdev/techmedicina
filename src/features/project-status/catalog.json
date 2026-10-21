@@ -2820,7 +2820,7 @@
       ],
       "title": "Escudos: regressão consolidada e PWA móvel",
       "parent": "8.10",
-      "next": "Homologar visualmente cenários preenchidos, aplicar 014 somente após aprovação e definir sincronização do preview preservando a orientação de main intacta. Testes locais não concluem requisitos produtivos do PRD.",
+      "next": "Homologar visualmente cenários preenchidos, aplicar 014 somente após aprovação e definir sincronização do preview preservando a orientação de main intacta. Testes locais não concluem requisitos produtivos do PRD. Atualização: lote até 538d794 integrado à main por autorização humana específica e preview /staus confirmado com 85 entregas. D86 permanece no checkpoint.",
       "done": "Codex concluiu regressão após corrigir catálogo app/escudos: 712 testes em 85 arquivos aprovados, duração 188,46s. TypeScript/lint direcionados/build aprovados antes da correção de catálogo; 20 testes direcionados já validaram essa correção. Verificação visual do estado vazio em 320×568 confirmou ausência de rolagem horizontal (scrollWidth 305) e rodapé fixo com base 568; viewport restaurado.",
       "id": "D85"
     },
