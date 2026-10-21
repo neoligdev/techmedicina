@@ -2426,3 +2426,10 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex criou a migração local 017 com desafios vinculados à reserva e revisão, rotação transacional, token único, auditoria sem token e acesso restrito. Revisão antiga, entrada inválida e falha de inserção não alteram o estado; nenhum domínio é ativado. Nove testes novos e regressão completa: 905 testes em 112 arquivos, TypeScript, lint direcionado e build aprovados. Integrado localmente em develop; Cloud e preview não alterados.
 - **Próximo Passo**: Implementar leitura e adaptador runtime do desafio corrente, persistência confiável da observação DNS, TLS/roteamento e ativação autorizada. Revisar/aprovar aplicação remota da 017; a emissão ainda não possui endpoint ou interface. Preservar main até integração aprovada.
+
+## D117 - White Label: leitura corrente e prova DNS persistida com consumo transacional 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou a migração local 018 e orquestrador server-only: leitura do desafio corrente, verificação TXT e gravação privada com consumo único. Rotação, expiração ou revogação durante DNS impedem a gravação; recibos divergentes e provas do navegador são recusados. Provas não incluem token bruto nem ativam domínios. Regressão aprovada: 916 testes em 113 arquivos, TypeScript, lint direcionado e build. Integrado localmente em develop; sem aplicação remota.
+- **Próximo Passo**: Definir identidade mínima do verificador e transporte seguro antes de qualquer grant/endpoint Cloud; implementar consulta administrativa do recibo já consumido, TLS/roteamento e ativação autorizada. Migrações 017/018 continuam propostas locais, DNS real e concorrência Cloud não homologados. Preview depende de integração aprovada na main.

@@ -21,3 +21,7 @@ Status oficial será atualizado somente em develop após revisão do lote, prese
 ## Resultado consolidado
 
 11 testes novos de persistência/orquestração; 30 testes direcionados aprovados. Regressão completa: 916 testes aprovados em 113 arquivos (316,98 segundos). TypeScript, lint dos arquivos alterados e build local aprovados. Nenhuma evidência de aplicação Cloud ou DNS real é inferida desses testes.
+
+## Integração
+
+656c769 revisado e integrado em develop com merge explícito, preservando D116 e catálogo anterior. D117 registrada somente na integração. Não houve edição da worktree Antigravity nem main. A conexão GitHub do connector foi consultada e informa push=false; o transporte Git local autorizado permanece disponível. Nenhum PR remoto foi criado ou mesclado automaticamente.
