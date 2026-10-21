@@ -44,3 +44,13 @@ Testes: npx --yes bun run test -- --maxWorkers=1; tipos: npx --yes bun x tsc --n
 ## Encerramento desta etapa
 
 Nenhuma implementação funcional nova, migração, deploy, alteração da main ou push. D113 já existia e não foi reiniciada. Próximo trabalho simultâneo depende de abrir cada IDE na worktree atribuída e combinar o primeiro contrato compartilhado. Para consultar o estado: git worktree list; git branch -vv; git -C <diretório> status --short; git -C <diretório> rev-parse HEAD.
+
+## Evidência final da preparação
+
+As instalações com Bun 1.4.3 e --frozen-lockfile concluíram nas duas worktrees. A tentativa inicial com cache comum encontrou ENOTEMPTY; foi interrompida e repetida com caches exclusivos, sem apagar arquivos:
+- Codex: definir BUN_INSTALL_CACHE_DIR=C:/dev/cache-techmedicina-codex antes da instalação.
+- Antigravity: definir BUN_INSTALL_CACHE_DIR=C:/dev/cache-techmedicina-antigravity antes da instalação.
+O ambiente Bun informou leitura de .env ignorado pelo Git. Não foi copiado nenhum arquivo secreto do original nem foram lidos/registrados valores. Não presumir que o checkout dispense configuração local para testes conectados.
+Teste de fumaça escolhido: src/test/domain-possession.test.ts, isolado e sem rede real. A suíte completa não foi repetida nesta tarefa de preparação.
+As worktrees ficam fora dos writable roots desta sessão Codex; o acesso foi autorizado por escalonamento para a preparação. Uma sessão futura deve abrir C:/dev/techmedicina-codex como workspace, evitando depender de permissões excepcionais a cada edição.
+Resultado: 10 testes aprovados em cada worktree (um arquivo por ambiente). git status sem mudanças rastreadas nas duas worktrees após instalação; bun.lock preservado. git merge-base confirma D115 como base comum. A diferença na branch Codex contém exclusivamente este documento de coordenação. Não houve atualização do catálogo de entregas: trata-se de preparação Git, e o status oficial só deve mudar durante integração.
