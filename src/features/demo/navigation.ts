@@ -10,6 +10,7 @@ export const areaLabels: Record<Area, string> = {
 export const navigation: Record<Area, NavigationItem[]> = {
   "super-admin": [
     { slug: "", label: "Clínicas", icon: "building" },
+    { slug: "dominios", label: "Domínios White Label", icon: "globe", group: "Configurações" },
     { slug: "medicos", label: "Médicos", icon: "doctors" },
     { slug: "clientes", label: "Clientes", icon: "users" },
     { slug: "planos", label: "Planos", icon: "plans" },

@@ -23,6 +23,7 @@ import {
   BookOpen,
   GraduationCap,
   Share2,
+  Globe,
 } from "lucide-react";
 import { navigation } from "@/features/demo/navigation";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ const icons = {
   book: BookOpen,
   graduation: GraduationCap,
   share: Share2,
+  globe: Globe,
 } as const;
 export function AreaNavigation({
   area,

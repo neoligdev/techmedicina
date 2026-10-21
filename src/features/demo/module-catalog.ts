@@ -49,6 +49,19 @@ function add(
 
 add(
   "super-admin",
+  "dominios",
+  "Domínios White Label",
+  "Configurações",
+  "globe",
+  "Governança de domínios personalizados, apontamento DNS TXT e portais PWA das clínicas parceiras.",
+  "2, adendo URLs §9",
+  "directory",
+  ["Hostname", "Clínica vinculada"],
+  [],
+  ["Reserva administrativa", "Apontamento DNS TXT", "Sonda HTTPS/TLS", "Ativação"],
+);
+add(
+  "super-admin",
   "medicos",
   "Médicos",
   "Rede",
