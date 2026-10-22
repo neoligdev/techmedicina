@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ModulePage } from "@/components/platform/module-page";
 import { navigation, areaLabels } from "@/features/demo/navigation";
 import { pageHead } from "@/features/demo/metadata";
-import { MyShields } from "@/features/journey/my-shields";
+import { AppShieldsSection } from "@/features/journey/app-shields-section";
 
 export const Route = createFileRoute("/app/$section")({
   loader: ({ params }) => {
@@ -17,6 +17,6 @@ export const Route = createFileRoute("/app/$section")({
 
 function SectionPage() {
   const { slug } = Route.useLoaderData();
-  if (slug === "escudos") return <MyShields />;
+  if (slug === "escudos") return <AppShieldsSection />;
   return <ModulePage area="app" slug={slug} />;
 }
