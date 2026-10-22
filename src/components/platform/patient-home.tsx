@@ -72,11 +72,11 @@ interface NoticeItem {
 }
 
 export interface PatientHomeProps {
-  isBlockedFinancial?: boolean;
-  journeyOverview?: unknown;
-  isDemo?: boolean;
-  hasPrescription?: boolean;
-  patientName?: string;
+  isBlockedFinancial?: boolean | undefined;
+  journeyOverview?: unknown | undefined;
+  isDemo?: boolean | undefined;
+  hasPrescription?: boolean | undefined;
+  patientName?: string | undefined;
 }
 
 function getDemoStorage(key: string, isDemo: boolean): string | null {

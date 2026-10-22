@@ -14,10 +14,10 @@ export function PacienteDashboard() {
         if (!mounted) return;
         if (data?.user) {
           setHasSession(true);
-          const name =
-            typeof data.user.user_metadata?.full_name === "string"
-              ? data.user.user_metadata.full_name
-              : (data.user.email ?? undefined);
+          const meta = data.user.user_metadata;
+          const fullName =
+            meta && typeof meta["full_name"] === "string" ? meta["full_name"] : undefined;
+          const name = fullName ?? data.user.email ?? undefined;
           setPatientName(name);
         } else {
           setHasSession(false);

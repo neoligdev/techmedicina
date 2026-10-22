@@ -223,7 +223,8 @@ describe("Catálogo Oficial de Componentes Base (PRD v0.11.3)", () => {
     render(<CatalogComponentsView />);
 
     const detailButtons = screen.getAllByRole("button", { name: /Detalhar Componente/i });
-    fireEvent.click(detailButtons[0]);
+    expect(detailButtons[0]).toBeDefined();
+    fireEvent.click(detailButtons[0]!);
 
     await waitFor(() => {
       expect(
@@ -247,7 +248,8 @@ describe("Catálogo Oficial de Componentes Base (PRD v0.11.3)", () => {
     expect(screen.getByText("Plano Prime Concierge & Longevidade (4.0)")).toBeInTheDocument();
 
     const detailModelBtns = screen.getAllByRole("button", { name: /Detalhes do Modelo/i });
-    fireEvent.click(detailModelBtns[0]);
+    expect(detailModelBtns[0]).toBeDefined();
+    fireEvent.click(detailModelBtns[0]!);
 
     await waitFor(() => {
       expect(screen.getByText(/Componentes Centrais Habilitados/i)).toBeInTheDocument();
@@ -366,10 +368,10 @@ describe("Auditoria Comercial e Contratual Pré-Integração (PRD v0.11.3)", () 
 
     // Política padrão da clínica deve inicializar tarifas nulas para negociação individual
     const defaultPol = DEFAULT_CLINIC_POLICY(validClinicId);
-    expect(defaultPol.contractTerms.setupFee).toBeNull();
-    expect(defaultPol.contractTerms.monthlyFee).toBeNull();
-    expect(defaultPol.contractTerms.pricePerHolderLife).toBeNull();
-    expect(defaultPol.contractTerms.pricePerDependentLife).toBeNull();
+    expect(defaultPol.contractTerms!.setupFee).toBeNull();
+    expect(defaultPol.contractTerms!.monthlyFee).toBeNull();
+    expect(defaultPol.contractTerms!.pricePerHolderLife).toBeNull();
+    expect(defaultPol.contractTerms!.pricePerDependentLife).toBeNull();
   });
 
   it("garante nota oficial de governança das especialidades com pendência de validação", () => {
