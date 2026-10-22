@@ -31,8 +31,18 @@ import {
   ChevronUp,
   Smile,
   Heart,
+  Activity,
+  HeartPulse,
+  Info,
+  Check,
 } from "lucide-react";
 import { useDemoClinic } from "@/features/demo/context";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  SHIELD_TIERS,
+  type ShieldId,
+  patientShieldOverviewSchema,
+} from "@/features/journey/contracts";
 import { Brand } from "./brand";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,29 +73,126 @@ interface NoticeItem {
 
 export interface PatientHomeProps {
   isBlockedFinancial?: boolean;
+  journeyOverview?: unknown;
+  isDemo?: boolean;
+  hasPrescription?: boolean;
+  patientName?: string;
 }
 
-function getDemoStorage(key: string): string | null {
-  if (typeof window === "undefined") return null;
+function getDemoStorage(key: string, isDemo: boolean): string | null {
+  if (typeof window === "undefined" || !isDemo) return null;
   try {
-    return localStorage.getItem(key);
+    return localStorage.getItem(`techmedicina_demo_${key}`);
   } catch {
     return null;
   }
 }
 
-function setDemoStorage(key: string, value: string): void {
-  if (typeof window === "undefined") return;
+function setDemoStorage(key: string, value: string, isDemo: boolean): void {
+  if (typeof window === "undefined" || !isDemo) return;
   try {
-    localStorage.setItem(key, value);
+    localStorage.setItem(`techmedicina_demo_${key}`, value);
   } catch {
     // Ambiente sem suporte a localStorage ou com cookies bloqueados
   }
 }
 
-export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
+export function PatientHome({
+  isBlockedFinancial = false,
+  journeyOverview,
+  isDemo = false,
+  hasPrescription,
+  patientName,
+}: PatientHomeProps) {
   const navigate = useNavigate();
   const { clinic, preferences } = useDemoClinic();
+
+  // Monitoramento estrito de autenticação real no cliente:
+  const [authenticatedUserId, setAuthenticatedUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (mounted && data?.user) {
+          setAuthenticatedUserId(data.user.id);
+        }
+      })
+      .catch(() => {
+        // sem sessão ativa
+      });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      const nextUserId = session?.user?.id ?? null;
+      setAuthenticatedUserId(nextUserId);
+
+      // Limpeza imediata da sessão em memória ao deslogar ou trocar de usuário
+      if (!nextUserId || nextUserId !== authenticatedUserId) {
+        setMood(null);
+        setSleep(null);
+        setWaterMl(0);
+        setNutritionData({
+          meals: [],
+          quality: "Não informada",
+          summary: "Nenhuma refeição registrada hoje",
+        });
+        setActivityData({
+          type: "",
+          minutes: 0,
+          intensity: "",
+          summary: "Nenhuma atividade física registrada hoje",
+        });
+        setMedicationData({
+          takenCount: 0,
+          totalPrescribed: 0,
+          confirmed: false,
+          summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+        });
+      }
+    });
+
+    return () => {
+      mounted = false;
+      authListener?.subscription.unsubscribe();
+    };
+  }, [authenticatedUserId]);
+
+  // Se houver usuário autenticado detectado, esvazia qualquer resquício demonstrativo em memória
+  useEffect(() => {
+    if (authenticatedUserId) {
+      setMood(null);
+      setSleep(null);
+      setWaterMl(0);
+      setNutritionData({
+        meals: [],
+        quality: "Não informada",
+        summary: "Nenhuma refeição registrada hoje",
+      });
+      setActivityData({
+        type: "",
+        minutes: 0,
+        intensity: "",
+        summary: "Nenhuma atividade física registrada hoje",
+      });
+      setMedicationData({
+        takenCount: 0,
+        totalPrescribed: 0,
+        confirmed: false,
+        summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+      });
+    }
+  }, [authenticatedUserId]);
+
+  // Regra de segurança auditada:
+  // 1. Usuários autenticados reais NUNCA entram em modo demonstrativo (forçado a false).
+  // 2. Se isDemo não for explicitamente true, adota comportamento restritivo (false).
+  // 3. effectiveIsDemo só é true se NÃO houver usuário autenticado E isDemo === true.
+  const effectiveIsDemo = Boolean(!authenticatedUserId && isDemo === true);
+
+  // Flag de prescrição ativa (em modo demo é ilustrativa; em modo real requer prescrição médica confirmada)
+  const isPrescriptionActive = hasPrescription ?? effectiveIsDemo;
 
   // Detecção estrita de apresentação para celular:
   // Combina largura de smartphone (<= 640px) com interação de toque (hover: none + pointer: coarse)
@@ -118,9 +225,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     return () => window.removeEventListener("resize", checkPresentation);
   }, []);
 
-  // Estados dos registros interativos com persistência demonstrativa local
+  // Estados dos registros interativos com persistência demonstrativa local isolada
   const [mood, setMood] = useState<{ emoji: string; label: string } | null>(() => {
-    const saved = getDemoStorage(`techmedicina_mood_${clinic.id}`);
+    if (!isDemo) return null;
+    const saved = getDemoStorage(`mood_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -132,7 +240,8 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   });
 
   const [sleep, setSleep] = useState<{ emoji: string; label: string } | null>(() => {
-    const saved = getDemoStorage(`techmedicina_sleep_${clinic.id}`);
+    if (!isDemo) return null;
+    const saved = getDemoStorage(`sleep_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -144,7 +253,8 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   });
 
   const [waterMl, setWaterMl] = useState<number>(() => {
-    const saved = getDemoStorage(`techmedicina_water_${clinic.id}`);
+    if (!isDemo) return 0;
+    const saved = getDemoStorage(`water_${clinic.id}`, isDemo);
     return saved ? Number(saved) || 1450 : 1450;
   });
 
@@ -158,6 +268,175 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [moreResourcesOpen, setMoreResourcesOpen] = useState(false);
+
+  // Novos modais de saúde e acompanhamento diário
+  const [vitalityModalOpen, setVitalityModalOpen] = useState(false);
+  const [nutritionModalOpen, setNutritionModalOpen] = useState(false);
+  const [activityModalOpen, setActivityModalOpen] = useState(false);
+  const [medicationModalOpen, setMedicationModalOpen] = useState(false);
+  const [devicesModalOpen, setDevicesModalOpen] = useState(false);
+
+  // Estados dos registros diários de hábitos (autorrelato do cliente)
+  const [nutritionData, setNutritionData] = useState<{
+    meals: string[];
+    quality: string;
+    summary: string;
+  }>(() => {
+    if (!isDemo) {
+      return {
+        meals: [],
+        quality: "Não informada",
+        summary: "Nenhuma refeição registrada hoje",
+      };
+    }
+    const saved = getDemoStorage(`nutrition_${clinic.id}`, isDemo);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // Fallback
+      }
+    }
+    return {
+      meals: ["Café da manhã", "Almoço"],
+      quality: "Equilibrada",
+      summary: "2 refeições conscientes registradas hoje",
+    };
+  });
+
+  const [activityData, setActivityData] = useState<{
+    type: string;
+    minutes: number;
+    intensity: string;
+    summary: string;
+  }>(() => {
+    if (!isDemo) {
+      return {
+        type: "",
+        minutes: 0,
+        intensity: "",
+        summary: "Nenhuma atividade física registrada hoje",
+      };
+    }
+    const saved = getDemoStorage(`activity_${clinic.id}`, isDemo);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // Fallback
+      }
+    }
+    return {
+      type: "Caminhada moderada",
+      minutes: 40,
+      intensity: "Moderada",
+      summary: "40 min de caminhada / treino ativo",
+    };
+  });
+
+  const [medicationData, setMedicationData] = useState<{
+    takenCount: number;
+    totalPrescribed: number;
+    confirmed: boolean;
+    summary: string;
+  }>(() => {
+    if (!isPrescriptionActive) {
+      return {
+        takenCount: 0,
+        totalPrescribed: 0,
+        confirmed: false,
+        summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+      };
+    }
+    if (!isDemo) {
+      return {
+        takenCount: 0,
+        totalPrescribed: 1,
+        confirmed: false,
+        summary: "Prescrição médica ativa pendente de confirmação hoje",
+      };
+    }
+    const saved = getDemoStorage(`medication_${clinic.id}`, isDemo);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // Fallback
+      }
+    }
+    return {
+      takenCount: 2,
+      totalPrescribed: 2,
+      confirmed: true,
+      summary: "Prescrições de hoje confirmadas (2 de 2)",
+    };
+  });
+
+  // Toasts de feedback para autorrelatos
+  const [nutritionToast, setNutritionToast] = useState(false);
+  const [activityToast, setActivityToast] = useState(false);
+  const [medicationToast, setMedicationToast] = useState(false);
+
+  // Formulários temporários dos novos modais
+  const [tempMealSelected, setTempMealSelected] = useState<string>("Almoço consciente");
+  const [tempMealQuality, setTempMealQuality] = useState<string>("Equilibrada");
+  const [tempActivityType, setTempActivityType] = useState<string>("Caminhada");
+  const [tempActivityMinutes, setTempActivityMinutes] = useState<number>(30);
+  const [tempActivityIntensity, setTempActivityIntensity] = useState<string>("Moderada");
+
+  // Verificação e parsing de dados autorizados de JORNADA
+  const parsedJourney = journeyOverview
+    ? patientShieldOverviewSchema.safeParse(journeyOverview)
+    : null;
+  const authorizedJourney = parsedJourney?.success ? parsedJourney.data : null;
+
+  // Classificação rigorosa dos dados de JORNADA conforme PRD §11.5:
+  // 1. Dados operacionais autorizados: provenientes do motor determinístico oficial no servidor.
+  // 2. Fixture de demonstração: exclusiva do ambiente de simulação no perfil Alex (effectiveIsDemo === true).
+  // 3. Estado indisponível/aguardando: em ambiente real (effectiveIsDemo === false) sem dados autorizados.
+  const hasAuthorizedJourney = Boolean(authorizedJourney);
+  const isProvisional = authorizedJourney?.state.isProvisional ?? false;
+  const activeShieldTier: ShieldId | null = authorizedJourney
+    ? authorizedJourney.state.activeShield
+    : effectiveIsDemo
+      ? "ritmo"
+      : null;
+  const journeyAverageScore: number | null = authorizedJourney
+    ? authorizedJourney.state.scoreAverageRounded
+    : effectiveIsDemo
+      ? 42
+      : null;
+  const evaluableDaysCount: number = authorizedJourney
+    ? authorizedJourney.state.evaluableDaysCount
+    : effectiveIsDemo
+      ? 7
+      : 0;
+  const nextShieldTier = authorizedJourney
+    ? authorizedJourney.nextTier
+    : effectiveIsDemo
+      ? SHIELD_TIERS.avanco
+      : null;
+  const pointsNeededToNext: number | null = authorizedJourney
+    ? authorizedJourney.progress.pointsNeededToNextTier
+    : effectiveIsDemo && nextShieldTier && journeyAverageScore !== null
+      ? Math.max(0, nextShieldTier.minScore - journeyAverageScore)
+      : null;
+  const currentTierInfo = activeShieldTier ? SHIELD_TIERS[activeShieldTier] : null;
+  const journeyProgressPercent: number = authorizedJourney
+    ? authorizedJourney.progress.progressPercentage
+    : effectiveIsDemo && currentTierInfo && nextShieldTier && journeyAverageScore !== null
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            Math.round(
+              ((journeyAverageScore - currentTierInfo.minScore) /
+                (nextShieldTier.minScore - currentTierInfo.minScore)) *
+                100,
+            ),
+          ),
+        )
+      : 0;
 
   // Status financeiro do paciente (definido pelo servidor/contrato, sem alteração pelo cliente)
   const isInadimplente = isBlockedFinancial;
@@ -214,7 +493,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   function handleSaveMood() {
     const selected = moodOptions.find((m) => m.label === tempMood) ?? { emoji: "🙂", label: "Bem" };
     setMood(selected);
-    setDemoStorage(`techmedicina_mood_${clinic.id}`, JSON.stringify(selected));
+    setDemoStorage(`mood_${clinic.id}`, JSON.stringify(selected), effectiveIsDemo);
     setMoodSavedToast(true);
     setTimeout(() => {
       setMoodSavedToast(false);
@@ -229,7 +508,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       label: "Bom",
     };
     setSleep(selected);
-    setDemoStorage(`techmedicina_sleep_${clinic.id}`, JSON.stringify(selected));
+    setDemoStorage(`sleep_${clinic.id}`, JSON.stringify(selected), effectiveIsDemo);
     setSleepSavedToast(true);
     setTimeout(() => {
       setSleepSavedToast(false);
@@ -241,7 +520,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   function handleAddWater(amount: number) {
     setWaterMl((prev) => {
       const next = prev + amount;
-      setDemoStorage(`techmedicina_water_${clinic.id}`, String(next));
+      setDemoStorage(`water_${clinic.id}`, String(next), effectiveIsDemo);
       return next;
     });
     setWaterSavedToast(true);
@@ -258,6 +537,54 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     if (!isNaN(val) && val > 0) {
       handleAddWater(val);
     }
+  }
+
+  function handleSaveNutrition() {
+    const updated = {
+      meals: Array.from(new Set([...nutritionData.meals, tempMealSelected])),
+      quality: tempMealQuality,
+      summary: `${tempMealSelected} (${tempMealQuality.toLowerCase()}) registrado`,
+    };
+    setNutritionData(updated);
+    setDemoStorage(`nutrition_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
+    setNutritionToast(true);
+    setTimeout(() => {
+      setNutritionToast(false);
+      setNutritionModalOpen(false);
+    }, 800);
+  }
+
+  function handleSaveActivity() {
+    const updated = {
+      type: tempActivityType,
+      minutes: tempActivityMinutes,
+      intensity: tempActivityIntensity,
+      summary: `${tempActivityMinutes} min de ${tempActivityType.toLowerCase()} (${tempActivityIntensity.toLowerCase()})`,
+    };
+    setActivityData(updated);
+    setDemoStorage(`activity_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
+    setActivityToast(true);
+    setTimeout(() => {
+      setActivityToast(false);
+      setActivityModalOpen(false);
+    }, 800);
+  }
+
+  function handleSaveMedication() {
+    if (!isPrescriptionActive) return;
+    const updated = {
+      takenCount: medicationData.totalPrescribed,
+      totalPrescribed: medicationData.totalPrescribed,
+      confirmed: true,
+      summary: `Prescrições de hoje confirmadas (${medicationData.totalPrescribed} de ${medicationData.totalPrescribed})`,
+    };
+    setMedicationData(updated);
+    setDemoStorage(`medication_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
+    setMedicationToast(true);
+    setTimeout(() => {
+      setMedicationToast(false);
+      setMedicationModalOpen(false);
+    }, 800);
   }
 
   function markAllNoticesRead() {
@@ -318,8 +645,14 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
       {/* BLOCO HERO: Saudação clara e grande */}
       <section className="patient-hero-section">
-        <h1 className="patient-greeting-title">Olá, Alex</h1>
-        <p className="patient-demo-badge">Perfil demonstrativo · Ambiente de simulação</p>
+        <h1 className="patient-greeting-title">
+          Olá, {patientName ?? (effectiveIsDemo ? "Alex" : "Paciente")}
+        </h1>
+        <p className="patient-demo-badge">
+          {effectiveIsDemo
+            ? "Perfil demonstrativo · Ambiente de simulação"
+            : "Área do Paciente · Acompanhamento Diário"}
+        </p>
       </section>
 
       {/* AVISO DE INADIMPLÊNCIA SE ATIVO */}
@@ -535,6 +868,363 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
               className="patient-progress-fill water-fill"
               style={{ width: `${waterPercent}%` }}
             />
+          </div>
+        </article>
+      </section>
+
+      {/* SEÇÃO: VITALIDADE (Índice Multidimensional em Homologação Clínica) */}
+      <section className="patient-section-block">
+        <article
+          className="patient-vitality-card"
+          aria-label="Indicador VITALIDADE: Conceito em homologação clínica"
+        >
+          <div className="patient-card-section-header">
+            <div className="patient-card-header-left">
+              <HeartPulse className="patient-card-header-icon" size={26} />
+              <div>
+                <h2 className="patient-card-title">VITALIDADE</h2>
+                <p className="patient-card-subtitle">Índice multidimensional de saúde integral</p>
+              </div>
+            </div>
+            <span className="patient-status-badge badge-pending">Em homologação clínica</span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Conceito em pesquisa científica. Sem pontuação numérica fictícia até homologação
+            metodológica e clínica formal. Acompanhamento qualitativo em 5 pilares do PRD v0.11.3:
+          </p>
+
+          <div className="patient-pillars-grid">
+            <div className="patient-pillar-item">
+              <div className="patient-pillar-header">
+                <Activity size={14} className="text-primary" />
+                <span>Cardiometabólico</span>
+              </div>
+              <p className="patient-pillar-desc">Glicemia, pressão, lipídios e bioimpedância</p>
+              <span className="text-[10px] text-primary/80 font-semibold">Em acompanhamento</span>
+            </div>
+
+            <div className="patient-pillar-item">
+              <div className="patient-pillar-header">
+                <Dumbbell size={14} className="text-primary" />
+                <span>Atividade física</span>
+              </div>
+              <p className="patient-pillar-desc">Passos diários e minutos de movimento</p>
+              <span className="text-[10px] text-primary/80 font-semibold">Monitorado</span>
+            </div>
+
+            <div className="patient-pillar-item">
+              <div className="patient-pillar-header">
+                <Moon size={14} className="text-primary" />
+                <span>Sono & descanso</span>
+              </div>
+              <p className="patient-pillar-desc">Qualidade e rotina de repouso</p>
+              <span className="text-[10px] text-primary/80 font-semibold">Monitorado</span>
+            </div>
+
+            <div className="patient-pillar-item">
+              <div className="patient-pillar-header">
+                <Droplets size={14} className="text-primary" />
+                <span>Hábitos de vida</span>
+              </div>
+              <p className="patient-pillar-desc">Hidratação e nutrição consciente</p>
+              <span className="text-[10px] text-primary/80 font-semibold">Ativo hoje</span>
+            </div>
+
+            <div className="patient-pillar-item">
+              <div className="patient-pillar-header">
+                <Smile size={14} className="text-primary" />
+                <span>Bem-estar emocional</span>
+              </div>
+              <p className="patient-pillar-desc">Resiliência e percepção de estresse</p>
+              <span className="text-[10px] text-primary/80 font-semibold">Monitorado</span>
+            </div>
+          </div>
+
+          <div className="patient-disclaimer-note">
+            <strong>Transparência metodológica:</strong> A VITALIDADE sintetiza tendências clínicas
+            multidisciplinares. Por diretriz ética e regulatória, nenhuma nota consolidada
+            arbitrária é atribuída sem homologação oficial.
+          </div>
+
+          <div className="mt-3 flex justify-end">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setVitalityModalOpen(true)}
+              className="text-xs text-primary hover:text-primary"
+            >
+              <Info size={14} className="mr-1" />
+              Entender metodologia de Vitalidade
+            </Button>
+          </div>
+        </article>
+      </section>
+
+      {/* SEÇÃO: JORNADA & ESCUDOS ATIVOS */}
+      <section className="patient-section-block">
+        <article
+          className="patient-journey-card"
+          aria-label="JORNADA pessoal e Escudos conquistados"
+        >
+          <div className="patient-card-section-header">
+            <div className="patient-card-header-left">
+              <Shield className="patient-card-header-icon" size={26} />
+              <div>
+                <h2 className="patient-card-title">JORNADA & Meus Escudos</h2>
+                <p className="patient-card-subtitle">
+                  Pontuação oficial de hábitos (0 a 100 pontos)
+                </p>
+              </div>
+            </div>
+            {activeShieldTier && currentTierInfo ? (
+              <span className="patient-status-badge badge-active">
+                Escudo Ativo: {currentTierInfo.name}
+                {isProvisional ? " (Provisório)" : ""}
+              </span>
+            ) : (
+              <span className="patient-status-badge badge-pending">
+                Aguardando dados da Jornada
+              </span>
+            )}
+          </div>
+
+          {activeShieldTier && currentTierInfo && nextShieldTier && journeyAverageScore !== null ? (
+            <>
+              <div className="journey-metrics-row">
+                <div className="journey-metric-box">
+                  <div className="journey-metric-label">Média da janela (7 dias)</div>
+                  <div className="journey-metric-value">
+                    <span>{journeyAverageScore}</span>
+                    <span className="journey-metric-unit">pts</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {evaluableDaysCount} dias avaliáveis na janela
+                  </span>
+                </div>
+
+                <div className="journey-metric-box">
+                  <div className="journey-metric-label">Próximo escudo: {nextShieldTier.name}</div>
+                  <div className="journey-metric-value">
+                    <span>{pointsNeededToNext}</span>
+                    <span className="journey-metric-unit">pts faltantes</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    Meta mínima: {nextShieldTier.minScore} pts
+                  </span>
+                </div>
+              </div>
+
+              <div className="journey-progress-wrap">
+                <div className="journey-progress-labels">
+                  <span>Progresso para {nextShieldTier.name}</span>
+                  <span className="font-semibold">{journeyProgressPercent}%</span>
+                </div>
+                <div className="patient-progress-track">
+                  <div
+                    className="patient-progress-fill"
+                    role="progressbar"
+                    aria-label={`Progresso para o escudo ${nextShieldTier.name}`}
+                    aria-valuenow={journeyProgressPercent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    style={{ width: `${journeyProgressPercent}%` }}
+                  />
+                </div>
+              </div>
+
+              <div className="journey-regression-box">
+                <strong>Proteção contra regressão:</strong> Uma transição descendente só ocorre após
+                3 avaliações diárias consecutivas válidas abaixo do limiar do escudo ativo (
+                {currentTierInfo.minScore} pts). Suas conquistas anteriores permanecem salvas na sua
+                história.
+              </div>
+            </>
+          ) : (
+            <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-center my-3">
+              <p className="text-sm font-medium text-foreground">
+                Aguardando histórico homologado da JORNADA
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground max-w-md mx-auto">
+                A pontuação e a conquista de escudos são calculadas exclusivamente pelo motor
+                determinístico no servidor com base em avaliações diárias válidas. Nenhum resultado
+                fictício é exibido para este perfil.
+              </p>
+            </div>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground">
+              Equidade: Dispositivo opcional · 100% elegível com autorrelatos
+            </span>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => void navigate({ to: "/app/$section", params: { section: "escudos" } })}
+            >
+              Ver todos os escudos e histórico
+              <ChevronRight size={16} className="ml-1" />
+            </Button>
+          </div>
+        </article>
+      </section>
+
+      {/* SEÇÃO: REGISTROS DO DIA (Hábitos Integrados) */}
+      <section className="patient-section-block">
+        <div className="patient-habits-panel">
+          <div className="patient-card-section-header">
+            <div className="patient-card-header-left">
+              <ClipboardList className="patient-card-header-icon" size={24} />
+              <div>
+                <h2 className="patient-card-title">Registros de Hábitos de Hoje</h2>
+                <p className="patient-card-subtitle">
+                  Acompanhe sua rotina para a pontuação da JORNADA
+                </p>
+              </div>
+            </div>
+            <span className="patient-status-badge badge-neutral">Autorrelato do cliente</span>
+          </div>
+
+          <div className="patient-habits-subgrid">
+            {/* 1. Alimentação */}
+            <div
+              className="patient-habit-item"
+              role="button"
+              tabIndex={0}
+              onClick={() => setNutritionModalOpen(true)}
+              onKeyDown={(e) => activatePatientCard(e, () => setNutritionModalOpen(true))}
+              aria-label="Registrar alimentação consciente do dia"
+            >
+              <div>
+                <div className="patient-habit-title">
+                  <UtensilsCrossed size={16} className="text-primary" />
+                  <span>Alimentação</span>
+                </div>
+                <p className="patient-habit-state">{nutritionData.summary}</p>
+              </div>
+              <span className="patient-habit-provenance">Autorrelato · Toque para editar</span>
+            </div>
+
+            {/* 2. Atividade física */}
+            <div
+              className="patient-habit-item"
+              role="button"
+              tabIndex={0}
+              onClick={() => setActivityModalOpen(true)}
+              onKeyDown={(e) => activatePatientCard(e, () => setActivityModalOpen(true))}
+              aria-label="Registrar atividade física do dia"
+            >
+              <div>
+                <div className="patient-habit-title">
+                  <Dumbbell size={16} className="text-primary" />
+                  <span>Atividade física</span>
+                </div>
+                <p className="patient-habit-state">{activityData.summary}</p>
+              </div>
+              <span className="patient-habit-provenance">Autorrelato · Toque para editar</span>
+            </div>
+
+            {/* 3. Medicamentos e adesão */}
+            <div
+              className="patient-habit-item"
+              role="button"
+              tabIndex={0}
+              onClick={() => setMedicationModalOpen(true)}
+              onKeyDown={(e) => activatePatientCard(e, () => setMedicationModalOpen(true))}
+              aria-label={
+                isPrescriptionActive
+                  ? "Confirmar tomada de medicamentos prescritos"
+                  : "Visualizar status de medicamentos prescritos"
+              }
+            >
+              <div>
+                <div className="patient-habit-title">
+                  <Pill size={16} className="text-primary" />
+                  <span>Medicamentos</span>
+                </div>
+                <p className="patient-habit-state">{medicationData.summary}</p>
+              </div>
+              <span className="patient-habit-provenance">
+                {isPrescriptionActive
+                  ? "Prescrição ativa · Toque para confirmar"
+                  : "Sem prescrição pendente · Não pontuável"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEÇÃO: DISPOSITIVOS & SINAIS VITAIS */}
+      <section className="patient-section-block">
+        <article
+          className="patient-devices-card"
+          aria-label="Status de dispositivos de saúde conectados"
+        >
+          <div className="patient-card-section-header">
+            <div className="patient-card-header-left">
+              <Watch className="patient-card-header-icon" size={24} />
+              <div>
+                <h2 className="patient-card-title">Dispositivos & Evidências</h2>
+                <p className="patient-card-subtitle">Sincronização de equipamentos previstos</p>
+              </div>
+            </div>
+            <span className="patient-status-badge badge-neutral">Equipamentos</span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Integração com equipamentos de saúde. Sem medições falsas ou sinais vitais simulados.
+          </p>
+
+          <div className="patient-devices-list">
+            {/* Pulseira H59/H59MAX */}
+            <div className="patient-device-row">
+              <div className="patient-device-info">
+                <Watch size={20} className="text-primary" />
+                <div>
+                  <div className="patient-device-name">Pulseira inteligente (H59 / H59MAX)</div>
+                  <div className="patient-device-status-text">
+                    Frequência cardíaca, passos e descanso
+                  </div>
+                </div>
+              </div>
+              <span className="patient-status-badge badge-pending">Homologação BLE</span>
+            </div>
+
+            {/* Balança de Bioimpedância */}
+            <div className="patient-device-row">
+              <div className="patient-device-info">
+                <Scale size={20} className="text-primary" />
+                <div>
+                  <div className="patient-device-name">Balança de bioimpedância</div>
+                  <div className="patient-device-status-text">
+                    Composição corporal e massa magra
+                  </div>
+                </div>
+              </div>
+              <span className="patient-status-badge badge-neutral">Não configurada</span>
+            </div>
+
+            {/* Anel inteligente */}
+            <div className="patient-device-row">
+              <div className="patient-device-info">
+                <Sparkles size={20} className="text-primary" />
+                <div>
+                  <div className="patient-device-name">Anel inteligente</div>
+                  <div className="patient-device-status-text">
+                    Temperatura periférica e sono (opcional)
+                  </div>
+                </div>
+              </div>
+              <span className="patient-status-badge badge-neutral">Suporte futuro</span>
+            </div>
+          </div>
+
+          <div className="patient-disclaimer-note">
+            <strong>Garantia de equidade:</strong> O uso de pulseiras, balanças ou anéis é
+            totalmente opcional. Clientes sem dispositivos possuem elegibilidade idêntica na JORNADA
+            e podem alcançar pontuação máxima (100 pontos) e o escudo Plenitude apenas com seus
+            registros diários de hábitos.
           </div>
         </article>
       </section>
@@ -884,7 +1574,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {waterSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Água registrada com sucesso!
+              {effectiveIsDemo
+                ? "✓ Água registrada com sucesso!"
+                : "✓ Consumo de água mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -974,7 +1666,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {moodSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Humor registrado com sucesso!
+              {effectiveIsDemo
+                ? "✓ Humor registrado com sucesso!"
+                : "✓ Humor mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1031,7 +1725,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {sleepSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Sono registrado com sucesso!
+              {effectiveIsDemo
+                ? "✓ Sono registrado com sucesso!"
+                : "✓ Registro de sono mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1182,6 +1878,350 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
           <DialogFooter className="mt-4">
             <Button type="button" onClick={() => setSupportModalOpen(false)}>
               Fechar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL: Metodologia de VITALIDADE */}
+      <Dialog open={vitalityModalOpen} onOpenChange={setVitalityModalOpen}>
+        <DialogContent className="patient-modal vitality-modal max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <HeartPulse className="text-primary" size={24} />
+              Metodologia VITALIDADE
+            </DialogTitle>
+            <DialogDescription>
+              Conceito multidimensional em pesquisa clínica (PRD v0.11.3 §11.1 e §11.3).
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 text-sm">
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-amber-300">
+              <strong>Compromisso Ético e Regulatório:</strong>
+              <p className="mt-1 text-xs text-amber-200/90">
+                A VITALIDADE não possui pontuação numérica fictícia. Qualquer nota inventada
+                violaria as boas práticas médicas e regulatórias. O acompanhamento é estritamente
+                qualitativo.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground">Os 5 Pilares de Acompanhamento:</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li className="rounded border border-border/50 p-2">
+                  <strong className="text-foreground">1. Cardiometabólico:</strong> Avaliação de
+                  glicemia, pressão arterial, perfil lipídico e bioimpedância via exames clínicos.
+                </li>
+                <li className="rounded border border-border/50 p-2">
+                  <strong className="text-foreground">2. Atividade Física & Movimento:</strong>{" "}
+                  Passos diários, minutos ativos e regularidade de treinos aeróbicos/força.
+                </li>
+                <li className="rounded border border-border/50 p-2">
+                  <strong className="text-foreground">3. Sono & Recuperação:</strong> Duração,
+                  regularidade e qualidade percebida de repouso.
+                </li>
+                <li className="rounded border border-border/50 p-2">
+                  <strong className="text-foreground">4. Hábitos & Estilo de Vida:</strong>{" "}
+                  Hidratação diária, alimentação equilibrada e adesão ao plano de cuidado.
+                </li>
+                <li className="rounded border border-border/50 p-2">
+                  <strong className="text-foreground">5. Bem-estar Emocional & Resiliência:</strong>{" "}
+                  Gestão de estresse, humor e percepção emocional diária.
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              A JORNADA e os Escudos avaliam a constância diária com metas pactuadas (0-100 pts),
+              enquanto a VITALIDADE observa tendências clínicas. São entidades distintas e
+              complementares.
+            </p>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button type="button" onClick={() => setVitalityModalOpen(false)} className="w-full">
+              Entendido
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL: Registrar Alimentação */}
+      <Dialog open={nutritionModalOpen} onOpenChange={setNutritionModalOpen}>
+        <DialogContent className="patient-modal nutrition-modal">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <UtensilsCrossed className="text-primary" size={24} />
+              Registro de Alimentação Consciente
+            </DialogTitle>
+            <DialogDescription>
+              Autorrelato diário informado por você para acompanhamento de hábitos.
+            </DialogDescription>
+          </DialogHeader>
+
+          {nutritionToast && (
+            <div className="patient-toast-success" role="status">
+              {effectiveIsDemo
+                ? "✓ Refeição registrada com sucesso!"
+                : "✓ Refeição mantida na sessão (aguardando API de prontuário)"}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Qual refeição você deseja registrar?
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {["Café da manhã", "Almoço", "Jantar", "Lanche saudável"].map((meal) => (
+                  <Button
+                    key={meal}
+                    type="button"
+                    variant={tempMealSelected === meal ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTempMealSelected(meal)}
+                  >
+                    {meal}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Qualidade percebida da refeição:
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {["Equilibrada", "Leve", "Moderada", "Livre"].map((q) => (
+                  <Button
+                    key={q}
+                    type="button"
+                    variant={tempMealQuality === q ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setTempMealQuality(q)}
+                  >
+                    {q}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
+              Tag: <strong>Autorrelato direto do cliente</strong> · Sem interferência de hardware.
+              {!effectiveIsDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
+                  local do navegador.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button type="button" onClick={handleSaveNutrition} className="w-full">
+              Confirmar registro de refeição
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL: Registrar Atividade Física */}
+      <Dialog open={activityModalOpen} onOpenChange={setActivityModalOpen}>
+        <DialogContent className="patient-modal activity-modal">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <Dumbbell className="text-primary" size={24} />
+              Registro de Atividade Física
+            </DialogTitle>
+            <DialogDescription>
+              Informe o exercício realizado hoje para pontuar na JORNADA.
+            </DialogDescription>
+          </DialogHeader>
+
+          {activityToast && (
+            <div className="patient-toast-success" role="status">
+              {effectiveIsDemo
+                ? "✓ Atividade registrada com sucesso!"
+                : "✓ Atividade mantida na sessão (aguardando API de prontuário)"}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Modalidade de exercício:
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {["Caminhada", "Corrida", "Musculação", "Funcional", "Ciclismo", "Alongamento"].map(
+                  (act) => (
+                    <Button
+                      key={act}
+                      type="button"
+                      variant={tempActivityType === act ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setTempActivityType(act)}
+                    >
+                      {act}
+                    </Button>
+                  ),
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Duração: {tempActivityMinutes} minutos
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {[15, 30, 45, 60].map((mins) => (
+                  <Button
+                    key={mins}
+                    type="button"
+                    variant={tempActivityMinutes === mins ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setTempActivityMinutes(mins)}
+                  >
+                    {mins} min
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Intensidade percebida:
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {["Leve", "Moderada", "Vigorosa"].map((intens) => (
+                  <Button
+                    key={intens}
+                    type="button"
+                    variant={tempActivityIntensity === intens ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setTempActivityIntensity(intens)}
+                  >
+                    {intens}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
+              Tag: <strong>Autorrelato manual</strong> · Elegibilidade plena mesmo sem pulseira
+              inteligente.
+              {!effectiveIsDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
+                  local do navegador.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button type="button" onClick={handleSaveActivity} className="w-full">
+              Confirmar registro de treino
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL: Medicamentos e Adesão */}
+      <Dialog open={medicationModalOpen} onOpenChange={setMedicationModalOpen}>
+        <DialogContent className="patient-modal medication-modal">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+              <Pill className="text-primary" size={24} />
+              Adesão aos Medicamentos do Dia
+            </DialogTitle>
+            <DialogDescription>
+              Confirmação das prescrições ativas orientadas pela sua equipe médica.
+            </DialogDescription>
+          </DialogHeader>
+
+          {medicationToast && (
+            <div className="patient-toast-success" role="status">
+              {effectiveIsDemo
+                ? "✓ Tomada confirmada com sucesso!"
+                : "✓ Confirmação mantida na sessão (aguardando API de prontuário)"}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {!isPrescriptionActive ? (
+              <div className="rounded-lg border border-border/80 bg-muted/30 p-4 text-center">
+                <AlertCircle className="mx-auto mb-2 text-muted-foreground" size={24} />
+                <strong className="text-sm font-semibold text-foreground block">
+                  Nenhuma prescrição médica ativa vinculada
+                </strong>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Você não possui receitas ou medicamentos prescritos cadastrados pela equipe
+                  médica. Conforme a regra do PRD §11.4, a ausência de prescrição não gera
+                  penalidade na sua JORNADA.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {effectiveIsDemo ? (
+                  <>
+                    <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                      <div>
+                        <strong className="text-sm font-medium">
+                          Complexo Vitamínico & Minerais
+                        </strong>
+                        <span className="block text-xs text-muted-foreground">
+                          1 cápsula após o café da manhã (Demonstração Alex)
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-primary">Confirmado</span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                      <div>
+                        <strong className="text-sm font-medium">Magnésio Inositol</strong>
+                        <span className="block text-xs text-muted-foreground">
+                          1 sachê 30 min antes de dormir (Demonstração Alex)
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-primary">Confirmado</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                    <div>
+                      <strong className="text-sm font-medium">Prescrição Médica Ativa</strong>
+                      <span className="block text-xs text-muted-foreground">
+                        Orientação farmacológica registrada no prontuário
+                      </span>
+                    </div>
+                    <span className="text-xs font-semibold text-primary">
+                      {medicationData.confirmed ? "Confirmado hoje" : "Pendente"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
+              A adesão medicamentosa compõe 20% do peso na JORNADA diária quando prescrita.
+              {!effectiveIsDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: O frontend não infere prescrições fictícias para pacientes
+                  reais.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              type="button"
+              onClick={handleSaveMedication}
+              className="w-full"
+              disabled={!isPrescriptionActive}
+            >
+              {isPrescriptionActive ? "Confirmar todas as doses de hoje" : "Nenhuma dose pendente"}
             </Button>
           </DialogFooter>
         </DialogContent>
