@@ -37,6 +37,7 @@ import {
   Check,
 } from "lucide-react";
 import { useDemoClinic } from "@/features/demo/context";
+import { supabase } from "@/integrations/supabase/client";
 import {
   SHIELD_TIERS,
   type ShieldId,
@@ -99,15 +100,99 @@ function setDemoStorage(key: string, value: string, isDemo: boolean): void {
 export function PatientHome({
   isBlockedFinancial = false,
   journeyOverview,
-  isDemo = true,
+  isDemo = false,
   hasPrescription,
   patientName,
 }: PatientHomeProps) {
   const navigate = useNavigate();
   const { clinic, preferences } = useDemoClinic();
 
+  // Monitoramento estrito de autenticação real no cliente:
+  const [authenticatedUserId, setAuthenticatedUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (mounted && data?.user) {
+          setAuthenticatedUserId(data.user.id);
+        }
+      })
+      .catch(() => {
+        // sem sessão ativa
+      });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      const nextUserId = session?.user?.id ?? null;
+      setAuthenticatedUserId(nextUserId);
+
+      // Limpeza imediata da sessão em memória ao deslogar ou trocar de usuário
+      if (!nextUserId || nextUserId !== authenticatedUserId) {
+        setMood(null);
+        setSleep(null);
+        setWaterMl(0);
+        setNutritionData({
+          meals: [],
+          quality: "Não informada",
+          summary: "Nenhuma refeição registrada hoje",
+        });
+        setActivityData({
+          type: "",
+          minutes: 0,
+          intensity: "",
+          summary: "Nenhuma atividade física registrada hoje",
+        });
+        setMedicationData({
+          takenCount: 0,
+          totalPrescribed: 0,
+          confirmed: false,
+          summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+        });
+      }
+    });
+
+    return () => {
+      mounted = false;
+      authListener?.subscription.unsubscribe();
+    };
+  }, [authenticatedUserId]);
+
+  // Se houver usuário autenticado detectado, esvazia qualquer resquício demonstrativo em memória
+  useEffect(() => {
+    if (authenticatedUserId) {
+      setMood(null);
+      setSleep(null);
+      setWaterMl(0);
+      setNutritionData({
+        meals: [],
+        quality: "Não informada",
+        summary: "Nenhuma refeição registrada hoje",
+      });
+      setActivityData({
+        type: "",
+        minutes: 0,
+        intensity: "",
+        summary: "Nenhuma atividade física registrada hoje",
+      });
+      setMedicationData({
+        takenCount: 0,
+        totalPrescribed: 0,
+        confirmed: false,
+        summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+      });
+    }
+  }, [authenticatedUserId]);
+
+  // Regra de segurança auditada:
+  // 1. Usuários autenticados reais NUNCA entram em modo demonstrativo (forçado a false).
+  // 2. Se isDemo não for explicitamente true, adota comportamento restritivo (false).
+  // 3. effectiveIsDemo só é true se NÃO houver usuário autenticado E isDemo === true.
+  const effectiveIsDemo = Boolean(!authenticatedUserId && isDemo === true);
+
   // Flag de prescrição ativa (em modo demo é ilustrativa; em modo real requer prescrição médica confirmada)
-  const isPrescriptionActive = hasPrescription ?? isDemo;
+  const isPrescriptionActive = hasPrescription ?? effectiveIsDemo;
 
   // Detecção estrita de apresentação para celular:
   // Combina largura de smartphone (<= 640px) com interação de toque (hover: none + pointer: coarse)
@@ -307,39 +392,39 @@ export function PatientHome({
 
   // Classificação rigorosa dos dados de JORNADA conforme PRD §11.5:
   // 1. Dados operacionais autorizados: provenientes do motor determinístico oficial no servidor.
-  // 2. Fixture de demonstração: exclusiva do ambiente de simulação no perfil Alex (isDemo === true).
-  // 3. Estado indisponível/aguardando: em ambiente real (isDemo === false) sem dados autorizados.
+  // 2. Fixture de demonstração: exclusiva do ambiente de simulação no perfil Alex (effectiveIsDemo === true).
+  // 3. Estado indisponível/aguardando: em ambiente real (effectiveIsDemo === false) sem dados autorizados.
   const hasAuthorizedJourney = Boolean(authorizedJourney);
   const isProvisional = authorizedJourney?.state.isProvisional ?? false;
   const activeShieldTier: ShieldId | null = authorizedJourney
     ? authorizedJourney.state.activeShield
-    : isDemo
+    : effectiveIsDemo
       ? "ritmo"
       : null;
   const journeyAverageScore: number | null = authorizedJourney
     ? authorizedJourney.state.scoreAverageRounded
-    : isDemo
+    : effectiveIsDemo
       ? 42
       : null;
   const evaluableDaysCount: number = authorizedJourney
     ? authorizedJourney.state.evaluableDaysCount
-    : isDemo
+    : effectiveIsDemo
       ? 7
       : 0;
   const nextShieldTier = authorizedJourney
     ? authorizedJourney.nextTier
-    : isDemo
+    : effectiveIsDemo
       ? SHIELD_TIERS.avanco
       : null;
   const pointsNeededToNext: number | null = authorizedJourney
     ? authorizedJourney.progress.pointsNeededToNextTier
-    : isDemo && nextShieldTier && journeyAverageScore !== null
+    : effectiveIsDemo && nextShieldTier && journeyAverageScore !== null
       ? Math.max(0, nextShieldTier.minScore - journeyAverageScore)
       : null;
   const currentTierInfo = activeShieldTier ? SHIELD_TIERS[activeShieldTier] : null;
   const journeyProgressPercent: number = authorizedJourney
     ? authorizedJourney.progress.progressPercentage
-    : isDemo && currentTierInfo && nextShieldTier && journeyAverageScore !== null
+    : effectiveIsDemo && currentTierInfo && nextShieldTier && journeyAverageScore !== null
       ? Math.min(
           100,
           Math.max(
@@ -408,7 +493,7 @@ export function PatientHome({
   function handleSaveMood() {
     const selected = moodOptions.find((m) => m.label === tempMood) ?? { emoji: "🙂", label: "Bem" };
     setMood(selected);
-    setDemoStorage(`mood_${clinic.id}`, JSON.stringify(selected), isDemo);
+    setDemoStorage(`mood_${clinic.id}`, JSON.stringify(selected), effectiveIsDemo);
     setMoodSavedToast(true);
     setTimeout(() => {
       setMoodSavedToast(false);
@@ -423,7 +508,7 @@ export function PatientHome({
       label: "Bom",
     };
     setSleep(selected);
-    setDemoStorage(`sleep_${clinic.id}`, JSON.stringify(selected), isDemo);
+    setDemoStorage(`sleep_${clinic.id}`, JSON.stringify(selected), effectiveIsDemo);
     setSleepSavedToast(true);
     setTimeout(() => {
       setSleepSavedToast(false);
@@ -435,7 +520,7 @@ export function PatientHome({
   function handleAddWater(amount: number) {
     setWaterMl((prev) => {
       const next = prev + amount;
-      setDemoStorage(`water_${clinic.id}`, String(next), isDemo);
+      setDemoStorage(`water_${clinic.id}`, String(next), effectiveIsDemo);
       return next;
     });
     setWaterSavedToast(true);
@@ -461,7 +546,7 @@ export function PatientHome({
       summary: `${tempMealSelected} (${tempMealQuality.toLowerCase()}) registrado`,
     };
     setNutritionData(updated);
-    setDemoStorage(`nutrition_${clinic.id}`, JSON.stringify(updated), isDemo);
+    setDemoStorage(`nutrition_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
     setNutritionToast(true);
     setTimeout(() => {
       setNutritionToast(false);
@@ -477,7 +562,7 @@ export function PatientHome({
       summary: `${tempActivityMinutes} min de ${tempActivityType.toLowerCase()} (${tempActivityIntensity.toLowerCase()})`,
     };
     setActivityData(updated);
-    setDemoStorage(`activity_${clinic.id}`, JSON.stringify(updated), isDemo);
+    setDemoStorage(`activity_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
     setActivityToast(true);
     setTimeout(() => {
       setActivityToast(false);
@@ -494,7 +579,7 @@ export function PatientHome({
       summary: `Prescrições de hoje confirmadas (${medicationData.totalPrescribed} de ${medicationData.totalPrescribed})`,
     };
     setMedicationData(updated);
-    setDemoStorage(`medication_${clinic.id}`, JSON.stringify(updated), isDemo);
+    setDemoStorage(`medication_${clinic.id}`, JSON.stringify(updated), effectiveIsDemo);
     setMedicationToast(true);
     setTimeout(() => {
       setMedicationToast(false);
@@ -561,10 +646,10 @@ export function PatientHome({
       {/* BLOCO HERO: Saudação clara e grande */}
       <section className="patient-hero-section">
         <h1 className="patient-greeting-title">
-          Olá, {patientName ?? (isDemo ? "Alex" : "Paciente")}
+          Olá, {patientName ?? (effectiveIsDemo ? "Alex" : "Paciente")}
         </h1>
         <p className="patient-demo-badge">
-          {isDemo
+          {effectiveIsDemo
             ? "Perfil demonstrativo · Ambiente de simulação"
             : "Área do Paciente · Acompanhamento Diário"}
         </p>
@@ -1489,7 +1574,9 @@ export function PatientHome({
 
           {waterSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Água registrada com sucesso!
+              {effectiveIsDemo
+                ? "✓ Água registrada com sucesso!"
+                : "✓ Consumo de água mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1579,7 +1666,9 @@ export function PatientHome({
 
           {moodSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Humor registrado com sucesso!
+              {effectiveIsDemo
+                ? "✓ Humor registrado com sucesso!"
+                : "✓ Humor mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1636,7 +1725,9 @@ export function PatientHome({
 
           {sleepSavedToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Sono registrado com sucesso!
+              {effectiveIsDemo
+                ? "✓ Sono registrado com sucesso!"
+                : "✓ Registro de sono mantido na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1871,7 +1962,7 @@ export function PatientHome({
 
           {nutritionToast && (
             <div className="patient-toast-success" role="status">
-              {isDemo
+              {effectiveIsDemo
                 ? "✓ Refeição registrada com sucesso!"
                 : "✓ Refeição mantida na sessão (aguardando API de prontuário)"}
             </div>
@@ -1918,7 +2009,7 @@ export function PatientHome({
 
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               Tag: <strong>Autorrelato direto do cliente</strong> · Sem interferência de hardware.
-              {!isDemo && (
+              {!effectiveIsDemo && (
                 <span className="block mt-1 text-[11px] text-amber-500/90">
                   Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
                   local do navegador.
@@ -1950,7 +2041,7 @@ export function PatientHome({
 
           {activityToast && (
             <div className="patient-toast-success" role="status">
-              {isDemo
+              {effectiveIsDemo
                 ? "✓ Atividade registrada com sucesso!"
                 : "✓ Atividade mantida na sessão (aguardando API de prontuário)"}
             </div>
@@ -2019,7 +2110,7 @@ export function PatientHome({
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               Tag: <strong>Autorrelato manual</strong> · Elegibilidade plena mesmo sem pulseira
               inteligente.
-              {!isDemo && (
+              {!effectiveIsDemo && (
                 <span className="block mt-1 text-[11px] text-amber-500/90">
                   Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
                   local do navegador.
@@ -2051,7 +2142,7 @@ export function PatientHome({
 
           {medicationToast && (
             <div className="patient-toast-success" role="status">
-              {isDemo
+              {effectiveIsDemo
                 ? "✓ Tomada confirmada com sucesso!"
                 : "✓ Confirmação mantida na sessão (aguardando API de prontuário)"}
             </div>
@@ -2072,7 +2163,7 @@ export function PatientHome({
               </div>
             ) : (
               <div className="space-y-2">
-                {isDemo ? (
+                {effectiveIsDemo ? (
                   <>
                     <div className="flex items-center justify-between rounded-lg border border-border p-3">
                       <div>
@@ -2114,7 +2205,7 @@ export function PatientHome({
 
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               A adesão medicamentosa compõe 20% do peso na JORNADA diária quando prescrita.
-              {!isDemo && (
+              {!effectiveIsDemo && (
                 <span className="block mt-1 text-[11px] text-amber-500/90">
                   Isolamento ético: O frontend não infere prescrições fictícias para pacientes
                   reais.

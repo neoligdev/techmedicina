@@ -32,8 +32,17 @@ function renderWithDemo(ui: React.ReactNode) {
 }
 
 describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, () => {
-  it("abre acesso aos Escudos no menu sem confundir com score demo", () => {
+  it("quando isDemo é omitido, adota padrão seguro restritivo (não assume Alex nem score demo)", () => {
     renderWithDemo(<PatientHome />);
+    expect(screen.getByText("Olá, Paciente")).toBeInTheDocument();
+    expect(screen.getByText("Área do Paciente · Acompanhamento Diário")).toBeInTheDocument();
+    expect(screen.getByText("Aguardando dados da Jornada")).toBeInTheDocument();
+    expect(screen.queryByText(/Score demonstrativo · 785 pontos/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Escudo Ativo: Ritmo")).not.toBeInTheDocument();
+  });
+
+  it("abre acesso aos Escudos no menu sem confundir com score demo", () => {
+    renderWithDemo(<PatientHome isDemo={true} />);
     expect(screen.queryByRole("link", { name: "Meus Escudos" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Mais recursos de cuidado" }));
     expect(screen.getByRole("link", { name: "Meus Escudos" })).toHaveAttribute(
@@ -45,20 +54,20 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
     expect(screen.queryByText("Gestão da clínica")).not.toBeInTheDocument();
   });
   it.each(["Enter", " "])("abre score pelo teclado com %s", (key) => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
     fireEvent.keyDown(screen.getByLabelText(/Meu score demonstrativo/), { key });
     expect(screen.getByText(/Score demonstrativo · 785 pontos/)).toBeInTheDocument();
   });
   it("tecla no botão de água não aciona navegação do cartão pai", () => {
     navigateMock.mockClear();
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
     fireEvent.keyDown(screen.getByRole("button", { name: "Registrar consumo de água" }), {
       key: "Enter",
     });
     expect(navigateMock).not.toHaveBeenCalled();
   });
   it("renderiza cabeçalho, saudação 'Olá, Alex' e esconde seletores administrativos", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     expect(screen.getByText("Olá, Alex")).toBeInTheDocument();
     expect(screen.queryByText("Super administrador")).not.toBeInTheDocument();
@@ -67,7 +76,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("exibe faixa compacta de avisos e permite abrir central com detalhes", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     const avisosBanner = screen.getByLabelText("Abrir central de avisos");
     expect(avisosBanner).toBeInTheDocument();
@@ -79,7 +88,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("exibe o card Meu protocolo com etapa e progresso sem poluição visual", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     expect(screen.getByText("Meu protocolo")).toBeInTheDocument();
     expect(screen.getByText("Longevidade Ativa & Performance Metabólica")).toBeInTheDocument();
@@ -87,7 +96,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("renderiza cards Meu plano e Meu score lado a lado com pontuação destacada", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     expect(screen.getByText("Meu plano")).toBeInTheDocument();
     expect(screen.getByText("Vitalícia Individual")).toBeInTheDocument();
@@ -105,7 +114,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("permite registrar humor e sono de forma independente com 5 alternativas", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     // Humor
     const humorCard = screen.getByLabelText(/Como está/i);
@@ -121,7 +130,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("card Água de hoje exibe consumo e botão '+ Água' abre adição de volume", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     expect(screen.getByText("Água de hoje")).toBeInTheDocument();
     expect(screen.getByText(/1\.450 ml/i)).toBeInTheDocument();
@@ -134,7 +143,7 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
   });
 
   it("apresenta os 12 atalhos grandes na ordem exata requerida", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     const expectedShortcuts = [
       "Financeiro",
@@ -179,19 +188,19 @@ describe("Aplicativo do Paciente — Novo Visual Resumido", { timeout: 20000 }, 
 
   it("bloqueio financeiro restringe acessos clínicos quando inadimplente sem expor botão de alteração", () => {
     // 1. No estado regular, o alerta não é exibido e nenhum botão de simulação existe
-    const { unmount } = renderWithDemo(<PatientHome />);
+    const { unmount } = renderWithDemo(<PatientHome isDemo={true} />);
     expect(screen.queryByText(/Pendência financeira identificada/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Simular status financeiro")).not.toBeInTheDocument();
     unmount();
 
     // 2. Quando o bloqueio financeiro está ativo, restringe os acessos clínicos
-    renderWithDemo(<PatientHome isBlockedFinancial={true} />);
+    renderWithDemo(<PatientHome isDemo={true} isBlockedFinancial={true} />);
     expect(screen.getByText(/Pendência financeira identificada/i)).toBeInTheDocument();
     expect(screen.queryByLabelText("Simular status financeiro")).not.toBeInTheDocument();
   });
 
   it("atalho da Pulseira inteligente oferece legenda completa e compacta para telas estreitas", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
     const pulseiraBtn = screen.getByLabelText(/Abrir Pulseira inteligente/i);
     expect(pulseiraBtn).toBeInTheDocument();
     expect(pulseiraBtn.querySelector(".label-full")).toHaveTextContent("Pulseira inteligente");

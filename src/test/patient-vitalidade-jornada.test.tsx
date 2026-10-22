@@ -33,7 +33,7 @@ function renderWithDemo(ui: React.ReactNode) {
 
 describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", () => {
   it("renderiza o card de VITALIDADE com os 5 pilares do PRD e sem pontuação numérica inventada", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     // Título e status ético
     expect(screen.getByRole("heading", { name: "VITALIDADE" })).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
 
   it("renderiza a JORNADA com o escudo ativo, média da janela, progresso e regra de regressão", () => {
     navigateMock.mockClear();
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     expect(screen.getByRole("heading", { name: "JORNADA & Meus Escudos" })).toBeInTheDocument();
     expect(screen.getByText("Escudo Ativo: Ritmo")).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
   });
 
   it("permite registrar hábitos de alimentação com autorrelato explícito", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     // Localizar item de alimentação
     const alimentacaoBtn = screen.getByLabelText(/Registrar alimentação consciente do dia/i);
@@ -128,7 +128,7 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
   });
 
   it("permite registrar atividade física indicando modalidade, duração e intensidade", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     const atividadeBtn = screen.getByLabelText(/Registrar atividade física do dia/i);
     fireEvent.click(atividadeBtn);
@@ -149,7 +149,7 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
   });
 
   it("permite confirmar adesão aos medicamentos prescritos da rotina", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     const medBtn = screen.getByLabelText(/Confirmar tomada de medicamentos prescritos/i);
     fireEvent.click(medBtn);
@@ -170,7 +170,7 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
   });
 
   it("exibe status honesto de dispositivos e garante equidade sem exigência de hardware", () => {
-    renderWithDemo(<PatientHome />);
+    renderWithDemo(<PatientHome isDemo={true} />);
 
     // Equipamentos previstos
     expect(screen.getByText("Pulseira inteligente (H59 / H59MAX)")).toBeInTheDocument();
@@ -324,5 +324,42 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
     expect(screen.getByText(/Próximo escudo: Equilíbrio/i)).toBeInTheDocument();
     expect(screen.getByText("13")).toBeInTheDocument(); // 13 pts faltantes (75 - 62)
     expect(screen.getByText("35%")).toBeInTheDocument();
+  });
+
+  it("adota comportamento restritivo por padrão quando isDemo não é fornecido", () => {
+    renderWithDemo(<PatientHome />);
+
+    // Nome padrão genérico seguro (não assume Alex)
+    expect(screen.getByText("Olá, Paciente")).toBeInTheDocument();
+    // Estado restritivo sem inventar dados
+    expect(screen.getByText("Aguardando dados da Jornada")).toBeInTheDocument();
+    expect(screen.queryByText("Escudo Ativo: Ritmo")).not.toBeInTheDocument();
+  });
+
+  it("garante isolamento das chaves de armazenamento demonstrativo por clínica", () => {
+    localStorage.clear();
+    // Renderiza em modo demo com clínica A
+    const { unmount } = render(
+      <DemoProvider>
+        <PatientHome isDemo={true} />
+      </DemoProvider>,
+    );
+
+    // Registra água abrindo o modal e clicando no preset de 250 ml
+    const openWaterBtn = screen.getByLabelText("Registrar consumo de água");
+    fireEvent.click(openWaterBtn);
+
+    const add250Btn = screen.getByRole("button", { name: /\+250 ml/i });
+    fireEvent.click(add250Btn);
+
+    // Deve ter gravado com a chave da clínica demo padrão
+    const keys = Object.keys(localStorage);
+    expect(keys.length).toBeGreaterThan(0);
+    const key = keys.find((k) => k.startsWith("techmedicina_demo_"));
+    expect(key).toBeDefined();
+    expect(key).toContain("water_");
+
+    unmount();
+    localStorage.clear();
   });
 });
