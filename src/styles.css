@@ -5203,3 +5203,305 @@ button {
   border-color: var(--primary) !important;
 }
 
+/* ========================================================
+   VITALIDADE, JORNADA, HÁBITOS E DISPOSITIVOS NO PWA DO CLIENTE
+   ======================================================== */
+
+.patient-vitality-card,
+.patient-journey-card,
+.patient-devices-card,
+.patient-habits-panel {
+  width: 100%;
+  background: var(--card, #0d2138);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 20px;
+  padding: 20px;
+  color: var(--foreground);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease;
+}
+
+.patient-vitality-card:hover,
+.patient-journey-card:hover,
+.patient-devices-card:hover,
+.patient-habits-panel:hover {
+  border-color: color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+.patient-card-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.patient-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-card-header-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.patient-card-title {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.patient-card-subtitle {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+}
+
+.patient-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.patient-status-badge.badge-pending {
+  background: color-mix(in srgb, #f59e0b 16%, transparent);
+  color: #fbbf24;
+  border: 1px solid color-mix(in srgb, #f59e0b 35%, transparent);
+}
+
+.patient-status-badge.badge-active {
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.patient-status-badge.badge-neutral {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted-foreground);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Pilares da Vitalidade */
+.patient-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.patient-pillar-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-pillar-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--foreground);
+}
+
+.patient-pillar-desc {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  line-height: 1.3;
+}
+
+.patient-disclaimer-note {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--primary);
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+/* Card da Jornada & Escudos */
+.journey-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.journey-metric-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.journey-metric-label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.journey-metric-value {
+  font-size: clamp(22px, 3.5vw, 28px);
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.journey-metric-unit {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.journey-progress-wrap {
+  margin: 14px 0;
+}
+
+.journey-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 6px;
+}
+
+.journey-regression-box {
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* Hábitos e autorrelato */
+.patient-habits-subgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.patient-habit-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.patient-habit-item:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.patient-habit-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.patient-habit-state {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.patient-habit-provenance {
+  font-size: 10px;
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Dispositivos */
+.patient-devices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.patient-device-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.patient-device-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-device-name {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--foreground);
+}
+
+.patient-device-status-text {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* Adaptação ao Tema Claro */
+.platform-shell[data-mode="light"] .patient-vitality-card,
+.platform-shell[data-mode="light"] .patient-journey-card,
+.platform-shell[data-mode="light"] .patient-devices-card,
+.platform-shell[data-mode="light"] .patient-habits-panel {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.platform-shell[data-mode="light"] .patient-pillar-item,
+.platform-shell[data-mode="light"] .journey-metric-box,
+.platform-shell[data-mode="light"] .patient-habit-item,
+.platform-shell[data-mode="light"] .patient-device-row {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.platform-shell[data-mode="light"] .patient-disclaimer-note {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+
