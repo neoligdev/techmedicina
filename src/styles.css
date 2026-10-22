@@ -2295,7 +2295,9 @@ fieldset.preference-field {
   border-radius: 38px;
   background: #080d14;
   border: 9px solid #1e293b;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.55), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -3473,7 +3475,10 @@ button {
   accent-color: var(--brand-primary, #b9d85d);
   margin: 12px 0;
 }
-.project-status-progress p { color: var(--muted-foreground); margin-bottom: 16px; }
+.project-status-progress p {
+  color: var(--muted-foreground);
+  margin-bottom: 16px;
+}
 .project-status-note {
   display: flex;
   align-items: flex-start;
@@ -3856,7 +3861,9 @@ button {
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
@@ -3876,23 +3883,39 @@ button {
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-square-shortcut,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
   background: rgba(255, 255, 255, 0.76);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
   color: #0f172a;
 }
 
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell:hover {
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-notices-banner:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-protocol-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-summary-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-water-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-square-shortcut:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-notif-bell:hover {
   background: rgba(255, 255, 255, 0.9);
   border-color: var(--primary);
 }
@@ -3909,11 +3932,17 @@ button {
     background: var(--card, #0d2138);
   }
 
-  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner,
-  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
+  .platform-shell[data-mode="light"]
+    .patient-app-wrapper.patient-home-mobile
+    .patient-notices-banner,
+  .platform-shell[data-mode="light"]
+    .patient-app-wrapper.patient-home-mobile
+    .patient-protocol-card,
   .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
   .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
-  .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+  .platform-shell[data-mode="light"]
+    .patient-app-wrapper.patient-home-mobile
+    .patient-square-shortcut,
   .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
   .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
     background: #ffffff;
@@ -5182,23 +5211,39 @@ button {
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-square-shortcut,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-more-card,
 .platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell {
   background: rgba(255, 255, 255, 0.78) !important;
   -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
   backdrop-filter: blur(16px) saturate(180%) !important;
   border: 1px solid rgba(255, 255, 255, 0.65) !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   color: #0f172a !important;
 }
 
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notices-banner:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-protocol-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-summary-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-water-card:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-square-shortcut:hover,
-.platform-shell[data-mode="light"] .patient-app-wrapper.patient-home-mobile .patient-notif-bell:hover {
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-notices-banner:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-protocol-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-summary-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-water-card:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-square-shortcut:hover,
+.platform-shell[data-mode="light"]
+  .patient-app-wrapper.patient-home-mobile
+  .patient-notif-bell:hover {
   background: rgba(255, 255, 255, 0.92) !important;
   border-color: var(--primary) !important;
 }
@@ -5503,5 +5548,3 @@ button {
   background: #f1f5f9;
   color: #475569;
 }
-
-
