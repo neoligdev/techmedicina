@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Dialog,
@@ -33,6 +34,14 @@ import {
   Lock,
   LogIn,
   CheckCircle2,
+  FileSpreadsheet,
+  Stethoscope,
+  Plus,
+  Trash2,
+  Clock,
+  Layers,
+  Search,
+  X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -41,6 +50,7 @@ import {
   DEFAULT_CLINIC_POLICY,
   CATALOG_COMPONENTS,
   CatalogComponentCode,
+  ALL_SPECIALTIES,
   isValidClinicUuid,
 } from "../types";
 
@@ -63,6 +73,7 @@ export function ClinicPoliciesPanel({
 }: ClinicPoliciesPanelProps = {}) {
   const [clinics, setClinics] = useState<ClinicSummary[]>(initialClinicsList || []);
   const [selectedClinicId, setSelectedClinicId] = useState<string>(initialClinicId || "");
+  const [clinicSearchTerm, setClinicSearchTerm] = useState("");
   const [loadingClinics, setLoadingClinics] = useState(!initialClinicsList);
   const [hasSession, setHasSession] = useState<boolean>(!!token);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +84,9 @@ export function ClinicPoliciesPanel({
   const [formPolicy, setFormPolicy] = useState<ClinicPolicyConfig | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Estado para adicionar especialidade
+  const [newSpecialtyInput, setNewSpecialtyInput] = useState("");
 
   // Verifica sessão Supabase se token não foi fornecido diretamente
   useEffect(() => {
@@ -170,10 +184,35 @@ export function ClinicPoliciesPanel({
     return formPolicy.currentActiveLives > formPolicy.maxActiveLives;
   }, [formPolicy]);
 
+  const livesUsagePercent = useMemo(() => {
+    if (!formPolicy || formPolicy.maxActiveLives === 0) return 0;
+    return Math.min(
+      Math.round((formPolicy.currentActiveLives / formPolicy.maxActiveLives) * 100),
+      100,
+    );
+  }, [formPolicy]);
+
   const isDoctorsLimitReached = useMemo(() => {
     if (!formPolicy) return false;
     return formPolicy.currentDoctors >= formPolicy.maxDoctors;
   }, [formPolicy]);
+
+  const doctorsUsagePercent = useMemo(() => {
+    if (!formPolicy || formPolicy.maxDoctors === 0) return 0;
+    return Math.min(Math.round((formPolicy.currentDoctors / formPolicy.maxDoctors) * 100), 100);
+  }, [formPolicy]);
+
+  // Clínicas filtradas por busca
+  const filteredClinics = useMemo(() => {
+    const term = clinicSearchTerm.trim().toLowerCase();
+    if (!term) return clinics;
+    return clinics.filter(
+      (c) =>
+        c.name.toLowerCase().includes(term) ||
+        c.id.toLowerCase().includes(term) ||
+        (c.subdomain && c.subdomain.toLowerCase().includes(term)),
+    );
+  }, [clinics, clinicSearchTerm]);
 
   // Manipuladores de alteração
   const handleToggleComponent = (code: CatalogComponentCode) => {
@@ -225,6 +264,28 @@ export function ClinicPoliciesPanel({
     });
   };
 
+  // Manipulador de especialidades
+  const handleRemoveSpecialty = (specialty: string) => {
+    if (!formPolicy) return;
+    setFormPolicy({
+      ...formPolicy,
+      specialtiesAvailable: formPolicy.specialtiesAvailable.filter((s) => s !== specialty),
+    });
+  };
+
+  const handleAddSpecialty = (specialtyToAdd: string) => {
+    if (!formPolicy) return;
+    const trimmed = specialtyToAdd.trim();
+    if (!trimmed) return;
+    if (formPolicy.specialtiesAvailable.includes(trimmed)) return;
+
+    setFormPolicy({
+      ...formPolicy,
+      specialtiesAvailable: [...formPolicy.specialtiesAvailable, trimmed],
+    });
+    setNewSpecialtyInput("");
+  };
+
   const handleReset = () => {
     if (serverPolicy) {
       setFormPolicy({ ...serverPolicy });
@@ -249,6 +310,11 @@ export function ClinicPoliciesPanel({
   };
 
   const selectedClinic = clinics.find((c) => c.id === selectedClinicId);
+
+  const formatCurrency = (val?: number | null) => {
+    if (val === null || val === undefined) return "Não configurado";
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
+  };
 
   return (
     <div className="space-y-6">
@@ -280,39 +346,66 @@ export function ClinicPoliciesPanel({
         </Card>
       )}
 
-      {/* Seletor de Clínica */}
+      {/* Seletor de Clínica com Busca Rápida */}
       <Card className="border-border/60 bg-card/60 shadow-sm">
         <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-primary shrink-0" />
-              <Label
-                htmlFor="policy-clinic-select"
-                className="text-xs font-semibold whitespace-nowrap"
-              >
-                Clínica Parceira:
-              </Label>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2 shrink-0">
+                <Building2 className="h-4 w-4 text-primary shrink-0" />
+                <Label
+                  htmlFor="policy-clinic-select"
+                  className="text-xs font-semibold whitespace-nowrap"
+                >
+                  Clínica Parceira:
+                </Label>
+              </div>
+
               <select
                 id="policy-clinic-select"
                 aria-label="Selecionar clínica parceira para gestão de políticas"
                 value={selectedClinicId}
                 onChange={(e) => setSelectedClinicId(e.target.value)}
                 disabled={loadingClinics || clinics.length === 0}
-                className="h-8 px-2.5 rounded-md border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
+                className="h-8 px-2.5 rounded-md border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none min-w-[240px] max-w-full"
               >
                 <option value="">Selecione uma clínica...</option>
-                {clinics.map((clinic) => (
+                {filteredClinics.map((clinic) => (
                   <option key={clinic.id} value={clinic.id}>
                     {clinic.name} ({clinic.id.slice(0, 8)}...)
                   </option>
                 ))}
               </select>
+
+              {/* Busca rápida se houver mais de 3 clínicas */}
+              {clinics.length > 3 && (
+                <div className="relative w-full sm:w-48">
+                  <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Filtrar clínicas..."
+                    value={clinicSearchTerm}
+                    onChange={(e) => setClinicSearchTerm(e.target.value)}
+                    className="h-7 text-[11px] pl-7 pr-6"
+                    aria-label="Filtrar clínicas por nome"
+                  />
+                  {clinicSearchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setClinicSearchTerm("")}
+                      className="absolute right-1.5 top-1.5 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {hasPendingChanges && (
               <Badge
                 variant="outline"
-                className="border-amber-500 text-amber-600 dark:text-amber-400 gap-1 text-xs"
+                className="border-amber-500 text-amber-600 dark:text-amber-400 gap-1 text-xs shrink-0"
               >
                 <AlertTriangle className="h-3 w-3" />
                 Alterações Pendentes
@@ -355,17 +448,29 @@ export function ClinicPoliciesPanel({
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
-                {isLivesQuotaExceeded ? (
-                  <Badge variant="destructive" className="text-xs font-semibold">
-                    Quota Excedida
-                  </Badge>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round((formPolicy.currentActiveLives / formPolicy.maxActiveLives) * 100)}%
-                    da quota contratada
-                  </p>
-                )}
+              <CardContent className="pt-0 space-y-2">
+                <Progress
+                  value={livesUsagePercent}
+                  className={`h-2 ${isLivesQuotaExceeded ? "bg-rose-200" : ""}`}
+                />
+                <div className="flex justify-between items-center text-xs">
+                  {isLivesQuotaExceeded ? (
+                    <Badge variant="destructive" className="text-xs font-semibold">
+                      Quota Excedida
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      {Math.round(
+                        (formPolicy.currentActiveLives / formPolicy.maxActiveLives) * 100,
+                      )}
+                      % da quota contratada
+                    </span>
+                  )}
+                  <span className="text-muted-foreground text-[11px]">
+                    Disponíveis:{" "}
+                    {Math.max(formPolicy.maxActiveLives - formPolicy.currentActiveLives, 0)}
+                  </span>
+                </div>
               </CardContent>
             </Card>
 
@@ -381,17 +486,22 @@ export function ClinicPoliciesPanel({
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
-                {isDoctorsLimitReached ? (
-                  <Badge variant="outline" className="border-amber-500 text-amber-600 text-xs">
-                    Limite Atingido
-                  </Badge>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    {formPolicy.maxDoctors - formPolicy.currentDoctors} vagas disponíveis para
-                    credenciamento
-                  </p>
-                )}
+              <CardContent className="pt-0 space-y-2">
+                <Progress value={doctorsUsagePercent} className="h-2" />
+                <div className="flex justify-between items-center text-xs">
+                  {isDoctorsLimitReached ? (
+                    <Badge variant="outline" className="border-amber-500 text-amber-600 text-xs">
+                      Limite Atingido
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      {formPolicy.maxDoctors - formPolicy.currentDoctors} vagas livres
+                    </span>
+                  )}
+                  <span className="text-muted-foreground text-[11px]">
+                    {doctorsUsagePercent}% utilizado
+                  </span>
+                </div>
               </CardContent>
             </Card>
 
@@ -438,7 +548,7 @@ export function ClinicPoliciesPanel({
             </Card>
           </div>
 
-          {/* Configuração de Quotas e Regras de Dependentes */}
+          {/* Limites e Quotas da Clínica */}
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="text-base font-semibold">Limites e Quotas da Clínica</CardTitle>
@@ -616,6 +726,192 @@ export function ClinicPoliciesPanel({
                     Persistência em Nuvem Pendente de Migração do Codex: O Super ADM preserva
                     conformidade com os 9 componentes oficiais e contratos estritos sem executar
                     gravações ilegais via cliente.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Contrato PlugPix (Camada 1 do PRD) */}
+          <Card className="shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <FileSpreadsheet className="h-4 w-4 text-primary" />
+                    Contrato de Uso da Plataforma (PlugPix ↔ Clínica)
+                  </CardTitle>
+                  <CardDescription className="text-xs pt-1">
+                    Condições contratuais da contratação da plataforma White Label pela clínica (PRD
+                    Seção 13.1 — Camada 1).
+                  </CardDescription>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  Camada 1 Comercial
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {formPolicy.contractTerms && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-[11px] text-muted-foreground block">
+                      Setup de Implementação:
+                    </span>
+                    <strong className="text-base font-semibold text-foreground">
+                      {formatCurrency(formPolicy.contractTerms.setupFee)}
+                    </strong>
+                    <p className="text-[10px] text-muted-foreground">
+                      Valor único de onboarding White Label
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-[11px] text-muted-foreground block">
+                      Mensalidade da Plataforma:
+                    </span>
+                    <strong className="text-base font-semibold text-foreground">
+                      {formatCurrency(formPolicy.contractTerms.monthlyFee)}/mês
+                    </strong>
+                    <p className="text-[10px] text-muted-foreground">
+                      Assinatura de infraestrutura e suporte
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-[11px] text-muted-foreground block">
+                      Custo por Vida Titular:
+                    </span>
+                    <strong className="text-base font-semibold text-foreground">
+                      {formatCurrency(formPolicy.contractTerms.pricePerHolderLife)}/vida
+                    </strong>
+                    <p className="text-[10px] text-muted-foreground">
+                      Cobrança por vidas habilitadas no período
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-[11px] text-muted-foreground block">
+                      Custo por Dependente:
+                    </span>
+                    <strong className="text-base font-semibold text-foreground">
+                      {formatCurrency(formPolicy.contractTerms.pricePerDependentLife)}/dep
+                    </strong>
+                    <p className="text-[10px] text-muted-foreground">
+                      Tarifa diferenciada por dependente ativo
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Especialidades Médicas e Regras de Utilização */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Especialidades Médicas Habilitadas */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-primary" /> Especialidades Autorizadas
+                  </CardTitle>
+                  <Badge variant="outline" className="text-xs">
+                    {formPolicy.specialtiesAvailable.length} ativas
+                  </Badge>
+                </div>
+                <CardDescription className="text-xs">
+                  Conjunto de especialidades disponíveis no catálogo de consultas agendadas da
+                  clínica (PRD Seção 13.2).
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Lista de Badges de Especialidades */}
+                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-1">
+                  {formPolicy.specialtiesAvailable.map((spec) => (
+                    <Badge
+                      key={spec}
+                      variant="secondary"
+                      className="text-xs py-1 px-2.5 gap-1.5 bg-background border border-border"
+                    >
+                      <span>{spec}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSpecialty(spec)}
+                        className="text-muted-foreground hover:text-destructive"
+                        aria-label={`Remover especialidade ${spec}`}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Adicionar Especialidade a partir da Lista Homologada */}
+                <div className="pt-2 border-t border-border flex gap-2">
+                  <select
+                    aria-label="Selecionar especialidade para adicionar"
+                    value={newSpecialtyInput}
+                    onChange={(e) => setNewSpecialtyInput(e.target.value)}
+                    className="h-8 px-2 rounded border border-input bg-background text-xs flex-1"
+                  >
+                    <option value="">Adicionar especialidade homologada...</option>
+                    {ALL_SPECIALTIES.filter(
+                      (s) => !formPolicy.specialtiesAvailable.includes(s),
+                    ).map((spec) => (
+                      <option key={spec} value={spec}>
+                        {spec}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAddSpecialty(newSpecialtyInput)}
+                    disabled={!newSpecialtyInput}
+                    className="h-8 text-xs gap-1"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Adicionar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Regras de Utilização e Franquias */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-primary" /> Regras de Utilização e Franquias
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Diretrizes operacionais e limites aplicáveis aos pacientes da clínica (PRD 13.2,
+                  13.3).
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-xs">
+                <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <span className="font-semibold text-foreground block">
+                    Pronto Atendimento 24h:
+                  </span>
+                  <p className="text-muted-foreground">
+                    Atendimento online 24h com clínico geral e pediatria sem carência contratual.
+                  </p>
+                </div>
+
+                <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <span className="font-semibold text-foreground block">
+                    Franquia de Consultas Especializadas:
+                  </span>
+                  <p className="text-muted-foreground">
+                    Padrão contratual de até 2 consultas por vida/mês, com coparticipação aplicável
+                    para atendimentos adicionais.
+                  </p>
+                </div>
+
+                <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <span className="font-semibold text-foreground block">Governança do Dr. IA:</span>
+                  <p className="text-muted-foreground">
+                    Assistente preventivo que nunca emite diagnóstico sem médico e respeita o
+                    consentimento e canal aprovado.
                   </p>
                 </div>
               </CardContent>

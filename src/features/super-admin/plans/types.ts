@@ -223,6 +223,156 @@ export const CATALOG_COMPONENTS: readonly CatalogComponent[] = [
 
 export type ClinicPolicyStatus = "regular" | "financial_block" | "suspended";
 
+// ============================================================================
+// PACOTES DE REFERÊNCIA / MODELOS CENTRAIS (PRD Adendo §1 e Seção 13.4)
+// ============================================================================
+
+export interface ReferencePackage {
+  id: string;
+  name: string;
+  tier: "essential" | "advanced" | "prime";
+  tierLabel: string;
+  description: string;
+  components: CatalogComponentCode[];
+  pricingModel: {
+    setupFeeEstimated?: number | null;
+    monthlyBaseFee?: number | null;
+    perLifeFee?: number | null;
+    currency: "BRL";
+  };
+  rulesSummary: string[];
+  status: "active" | "draft";
+}
+
+export const REFERENCE_PACKAGES: readonly ReferencePackage[] = [
+  {
+    id: "pkg-essential-2-0",
+    name: "Plano Essencial Vida (2.0)",
+    tier: "essential",
+    tierLabel: "Nível 1 — Essencial",
+    description:
+      "Modelo de referência para pronto atendimento online 24h, Dr. IA para hábitos e monitoramento via Pulseira Inteligente.",
+    components: ["TM-2", "AI-CARE", "HW-PULSE"],
+    pricingModel: {
+      setupFeeEstimated: 3500,
+      monthlyBaseFee: 850,
+      perLifeFee: 6.5,
+      currency: "BRL",
+    },
+    rulesSummary: [
+      "Pronto atendimento clínico geral e pediatria 24h sem carência",
+      "Monitoramento contínuo de passos e frequência cardíaca",
+      "Dr. IA em modo assistente preventivo (triagem e hábitos)",
+    ],
+    status: "active",
+  },
+  {
+    id: "pkg-integral-3-0",
+    name: "Plano Integral Especialidades (3.0)",
+    tier: "advanced",
+    tierLabel: "Nível 2 — Avançado",
+    description:
+      "Modelo abrangente com PA 24h, até 32 especialidades agendadas, balança de bioimpedância e acompanhamento clínico com protocolos.",
+    components: ["TM-2", "TM-3", "AI-CARE", "PROTOCOL", "HW-PULSE", "HW-SCALE"],
+    pricingModel: {
+      setupFeeEstimated: 5000,
+      monthlyBaseFee: 1450,
+      perLifeFee: 12.0,
+      currency: "BRL",
+    },
+    rulesSummary: [
+      "PA 24h + consultas agendadas com especialistas médicos",
+      "Balança de bioimpedância para composição corporal e peso",
+      "Protocolos médicos estruturados vinculados ao prontuário",
+      "Gamificação na JORNADA e Escudos de Proteção",
+    ],
+    status: "active",
+  },
+  {
+    id: "pkg-prime-4-0",
+    name: "Plano Prime Concierge & Longevidade (4.0)",
+    tier: "prime",
+    tierLabel: "Nível 3 — Prime",
+    description:
+      "Modelo premium para clínicas de alta performance com concierge presencial, anel inteligente, Dr. IA e suplementação personalizada.",
+    components: [
+      "TM-2",
+      "TM-3",
+      "TM-4",
+      "AI-CARE",
+      "PROTOCOL",
+      "SUPPLEMENT",
+      "HW-PULSE",
+      "HW-RING",
+    ],
+    pricingModel: {
+      setupFeeEstimated: 8500,
+      monthlyBaseFee: 2400,
+      perLifeFee: 24.5,
+      currency: "BRL",
+    },
+    rulesSummary: [
+      "Concierge dedicado para atendimento presencial (carência 90d e fidelidade 12m)",
+      "Anel inteligente com leitura de sono profundo e variabilidade cardíaca",
+      "Módulo de suplementação nutricional com loja própria da clínica",
+      "Acesso completo ao ecossistema preventivo e Dr. IA proativo",
+    ],
+    status: "draft",
+  },
+] as const;
+
+// ============================================================================
+// CONTRATO DA CLÍNICA COM A PLUGPIX (PRD Seção 13.1 — Camada 1)
+// ============================================================================
+
+export interface ClinicContractTerms {
+  contractPlanName: string;
+  setupFee: number | null;
+  hasMonthlyFee: boolean;
+  monthlyFee: number | null;
+  hasLivesBilling: boolean;
+  contractedLives: number;
+  pricePerHolderLife: number | null;
+  pricePerDependentLife: number | null;
+  billingCycle: "monthly" | "annual";
+  contractStartedAt: string;
+  contractExpiresAt?: string | null;
+}
+
+// ============================================================================
+// REGRAS DE UTILIZAÇÃO E FRANQUIAS (PRD Seção 13.2, 13.3 e 14)
+// ============================================================================
+
+export interface ClinicUsageRules {
+  telemed24hAllowance: "unlimited" | "monthly_quota";
+  telemed24hQuotaPerMonth?: number;
+  specialtyAppointmentsQuotaPerMonth: number;
+  drIaAccessLevel: "full" | "vital_signs_only" | "disabled";
+  allowDependents: boolean;
+  trackingFeatures: Array<"journey" | "shields" | "protocols">;
+}
+
+export const ALL_SPECIALTIES = [
+  "Clínica Geral",
+  "Pediatria",
+  "Cardiologia",
+  "Dermatologia",
+  "Ginecologia e Obstetrícia",
+  "Ortopedia e Traumatologia",
+  "Neurologia",
+  "Endocrinologia e Metabologia",
+  "Psiquiatria",
+  "Oftalmologia",
+  "Otorrinolaringologia",
+  "Urologia",
+  "Gastroenterologia",
+  "Pneumologia",
+  "Nutrologia",
+  "Reumatologia",
+  "Infectologia",
+  "Geriatria",
+] as const;
+
 export interface ClinicPolicyConfig {
   clinicId: string;
   enabledComponents: CatalogComponentCode[];
@@ -235,6 +385,8 @@ export interface ClinicPolicyConfig {
   specialtiesAvailable: string[];
   status: ClinicPolicyStatus;
   financialBlockReason?: string | null;
+  contractTerms?: ClinicContractTerms;
+  usageRules?: ClinicUsageRules;
   updatedAt: string;
 }
 
@@ -255,11 +407,31 @@ export const DEFAULT_CLINIC_POLICY = (clinicId: string): ClinicPolicyConfig => (
     "Clínica Geral",
     "Cardiologia",
     "Dermatologia",
-    "Ginecologia",
+    "Ginecologia e Obstetrícia",
     "Pediatria",
-    "Ortopedia",
+    "Ortopedia e Traumatologia",
   ],
   status: "regular",
   financialBlockReason: null,
+  contractTerms: {
+    contractPlanName: "Plano White Label Standard — PlugPix",
+    setupFee: 4500,
+    hasMonthlyFee: true,
+    monthlyFee: 1200,
+    hasLivesBilling: true,
+    contractedLives: 500,
+    pricePerHolderLife: 8.5,
+    pricePerDependentLife: 4.5,
+    billingCycle: "monthly",
+    contractStartedAt: "2026-01-01T00:00:00.000Z",
+    contractExpiresAt: "2027-01-01T00:00:00.000Z",
+  },
+  usageRules: {
+    telemed24hAllowance: "unlimited",
+    specialtyAppointmentsQuotaPerMonth: 2,
+    drIaAccessLevel: "full",
+    allowDependents: true,
+    trackingFeatures: ["journey", "shields", "protocols"],
+  },
   updatedAt: new Date().toISOString(),
 });
