@@ -20,13 +20,21 @@ import { Badge } from "@/components/ui/badge";
 import { TelemedicineForm } from "./components/telemedicine-form";
 import { BraceletForm } from "./components/bracelet-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CatalogComponentsView } from "./components/catalog-components-view";
+import { ClinicPoliciesPanel } from "./components/clinic-policies-panel";
 
 const formatPrice = (val: number | null) => {
   if (val === null || val === undefined) return "Não definido";
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
 };
 
-export function PlansCatalog() {
+export interface PlansCatalogProps {
+  defaultTab?: "policies" | "catalog" | "drafts";
+}
+
+export function PlansCatalog({ defaultTab = "drafts" }: PlansCatalogProps = {}) {
+  const [activeTab, setActiveTab] = useState<"policies" | "catalog" | "drafts">(defaultTab);
   const [plans, setPlans] = useState<PlanBase[]>([]);
   const [editingPlan, setEditingPlan] = useState<PlanBase | null>(null);
   const [globalError, setGlobalError] = useState<string | null>(null);
@@ -34,7 +42,6 @@ export function PlansCatalog() {
   const [recoveryNeeded, setRecoveryNeeded] = useState<boolean>(false);
   const [readFailed, setReadFailed] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
   const [rawContent, setRawContent] = useState<string | null>(null);
 
   const loadPlans = () => {
@@ -85,7 +92,6 @@ export function PlansCatalog() {
     if (result.success) {
       setPlans(newPlans);
       setEditingPlan(null);
-      // Clean up warnings if we succeeded a save (since data is now consistent)
       setGlobalWarning(null);
     } else {
       setGlobalError(`Falha ao salvar o plano: ${result.error}`);
@@ -146,40 +152,18 @@ export function PlansCatalog() {
     setEditingPlan(newPlan);
   };
 
+  const isLocked = recoveryNeeded || readFailed;
+
   if (editingPlan) {
     return (
-      <div className="container mx-auto px-4 md:px-6 pb-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0">
-        <div className="flex items-center mb-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setEditingPlan(null)}
-            className="text-muted-foreground -ml-3"
-          >
-            ← Voltar para catálogo
-          </Button>
-        </div>
-        <div className="page-heading">
-          <div className="min-w-0">
-            <span className="eyebrow">EDITOR DE PLANO</span>
-            <h1 className="flex flex-wrap items-center gap-3 break-words min-w-0">
-              <span className="break-words min-w-0">{editingPlan.name || "Novo Plano"}</span>
-              <Badge variant="secondary" className="align-middle shrink-0">
-                Rascunho
-              </Badge>
-            </h1>
-            <p className="text-muted-foreground mt-2">Configure os parâmetros deste plano.</p>
-          </div>
-        </div>
-
+      <div className="space-y-6">
         {globalError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Erro ao Salvar</AlertTitle>
+            <AlertTitle>Erro</AlertTitle>
             <AlertDescription>{globalError}</AlertDescription>
           </Alert>
         )}
-
         {editingPlan.type === "telemedicine" ? (
           <TelemedicineForm
             initialPlan={editingPlan}
@@ -197,198 +181,234 @@ export function PlansCatalog() {
     );
   }
 
-  const isLocked = recoveryNeeded || readFailed;
-
   return (
-    <div className="container mx-auto px-4 md:px-6 pb-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0">
-      <div className="page-heading">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="eyebrow">GESTÃO DE CATÁLOGO</span>
-          <h1>
-            Catálogo Base de Planos<span className="heading-dot">.</span>
-          </h1>
-          <p>Crie rascunhos de planos disponibilizados para as clínicas.</p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Planos, Políticas Comerciais e Limites
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Gestão de políticas por clínica, quotas operacionais e catálogo oficial de módulos e
+            dispositivos (PRD v0.11.3).
+          </p>
         </div>
       </div>
-      <div className="flex justify-end gap-2">
-        <Button onClick={handleCreateTelemedicine} disabled={isLocked}>
-          <Activity className="mr-2 h-4 w-4" />
-          Criar Telemedicina
-        </Button>
-        <Button onClick={handleCreateBracelet} variant="secondary" disabled={isLocked}>
-          <Watch className="mr-2 h-4 w-4" />
-          Criar Pulseira
-        </Button>
-      </div>
 
-      {globalError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Erro de Persistência</AlertTitle>
-          <AlertDescription>
-            <p className="mb-2">{globalError}</p>
-            {recoveryNeeded && rawContent && (
-              <div className="mt-4 p-4 border border-destructive/20 rounded-md bg-destructive/10">
-                <p className="mb-4 font-semibold">Tem certeza que deseja forçar a recuperação?</p>
-                <p className="mb-4 text-sm">
-                  Um backup do conteúdo atual será criado, e apenas os planos válidos serão
-                  preservados. Planos com formato corrompido ou IDs duplicados serão descartados.
-                </p>
-                <Button variant="destructive" size="sm" onClick={handleForceRecovery}>
-                  Confirmar Recuperação e Criar Backup
-                </Button>
-              </div>
-            )}
-            {readFailed && (
-              <Button variant="outline" size="sm" onClick={loadPlans} className="mt-2">
-                Tentar novamente
-              </Button>
-            )}
-          </AlertDescription>
-        </Alert>
-      )}
+      <Tabs
+        value={activeTab}
+        onValueChange={(val) => setActiveTab(val as "policies" | "catalog" | "drafts")}
+        className="w-full"
+      >
+        <TabsList className="grid w-full grid-cols-3 max-w-xl">
+          <TabsTrigger value="policies">Políticas por Clínica</TabsTrigger>
+          <TabsTrigger value="catalog">Catálogo Oficial</TabsTrigger>
+          <TabsTrigger value="drafts">Rascunhos de Planos</TabsTrigger>
+        </TabsList>
 
-      {globalWarning && !isLocked && (
-        <Alert
-          variant="default"
-          className="border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400"
-        >
-          <AlertTriangle className="h-4 w-4 !text-amber-700 dark:!text-amber-400" />
-          <AlertTitle>Atenção</AlertTitle>
-          <AlertDescription>{globalWarning}</AlertDescription>
-        </Alert>
-      )}
+        <TabsContent value="policies" className="mt-6 space-y-6">
+          <ClinicPoliciesPanel />
+        </TabsContent>
 
-      {!isLocked && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {plans.length === 0 && (
-            <div className="col-span-full py-12 text-center border rounded-lg border-dashed">
-              <p className="text-muted-foreground">Nenhum plano base cadastrado.</p>
-            </div>
+        <TabsContent value="catalog" className="mt-6 space-y-6">
+          <CatalogComponentsView />
+        </TabsContent>
+
+        <TabsContent value="drafts" className="mt-6 space-y-6">
+          <div className="flex justify-end gap-2">
+            <Button
+              onClick={handleCreateTelemedicine}
+              disabled={isLocked}
+              variant="outline"
+              size="sm"
+            >
+              <Activity className="mr-2 h-4 w-4" />
+              Criar Telemedicina
+            </Button>
+            <Button onClick={handleCreateBracelet} disabled={isLocked} variant="outline" size="sm">
+              <Watch className="mr-2 h-4 w-4" />
+              Criar Pulseira
+            </Button>
+          </div>
+
+          {globalError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Erro de Persistência</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">{globalError}</p>
+                {recoveryNeeded && rawContent && (
+                  <div className="mt-4 p-4 border border-destructive/20 rounded-md bg-destructive/10">
+                    <p className="mb-4 font-semibold">
+                      Tem certeza que deseja forçar a recuperação?
+                    </p>
+                    <p className="mb-4 text-sm">
+                      Um backup do conteúdo atual será criado, e apenas os planos válidos serão
+                      preservados. Planos com formato corrompido ou IDs duplicados serão
+                      descartados.
+                    </p>
+                    <Button variant="destructive" size="sm" onClick={handleForceRecovery}>
+                      Confirmar Recuperação e Criar Backup
+                    </Button>
+                  </div>
+                )}
+                {readFailed && (
+                  <Button variant="outline" size="sm" onClick={loadPlans} className="mt-2">
+                    Tentar novamente
+                  </Button>
+                )}
+              </AlertDescription>
+            </Alert>
           )}
 
-          {plans.map((plan) => {
-            return (
-              <Card key={plan.id} className="flex flex-col">
-                <CardHeader>
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="space-y-1 min-w-0">
-                      <CardTitle className="text-lg leading-tight break-words min-w-0">
-                        {plan.name}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-1">
-                        {plan.type === "telemedicine" ? (
-                          <>
-                            <Activity className="h-3 w-3" /> Telemedicina
-                          </>
-                        ) : (
-                          <>
-                            <Watch className="h-3 w-3" /> Pulseira Inteligente
-                          </>
-                        )}
-                      </CardDescription>
-                    </div>
-                    <Badge variant="secondary">Rascunho</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Criado em: {new Date(plan.createdAt).toLocaleDateString("pt-BR")}
-                  </p>
-                  {plan.type === "telemedicine" && (
-                    <div className="text-sm space-y-2">
-                      {[
-                        { label: "Pronto Atendimento 24h", s: plan.prontoAtendimento24h },
-                        { label: "Atendimento Agendado", s: plan.prontoAtendimentoAgendado },
-                        { label: "Especialidades Médicas", s: plan.especialidadesMedicas },
-                        { label: "Nutrição", s: plan.nutricao },
-                        { label: "Psicologia", s: plan.psicologia },
-                        { label: "Educador Físico", s: plan.educadorFisico },
-                        { label: "Concierge Presencial", s: plan.conciergePresencial },
-                      ].map((item) => (
-                        <div key={item.label} className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
+          {globalWarning && !isLocked && (
+            <Alert
+              variant="default"
+              className="border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+            >
+              <AlertTriangle className="h-4 w-4 !text-amber-700 dark:!text-amber-400" />
+              <AlertTitle>Atenção</AlertTitle>
+              <AlertDescription>{globalWarning}</AlertDescription>
+            </Alert>
+          )}
+
+          {!isLocked && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {plans.length === 0 && (
+                <div className="col-span-full py-12 text-center border rounded-lg border-dashed">
+                  <p className="text-muted-foreground">Nenhum plano base cadastrado.</p>
+                </div>
+              )}
+
+              {plans.map((plan) => {
+                return (
+                  <Card key={plan.id} className="flex flex-col">
+                    <CardHeader>
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="space-y-1 min-w-0">
+                          <CardTitle className="text-lg leading-tight break-words min-w-0">
+                            {plan.name}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-1">
+                            {plan.type === "telemedicine" ? (
+                              <>
+                                <Activity className="h-3 w-3" /> Telemedicina
+                              </>
+                            ) : (
+                              <>
+                                <Watch className="h-3 w-3" /> Pulseira Inteligente
+                              </>
+                            )}
+                          </CardDescription>
+                        </div>
+                        <Badge variant="secondary">Rascunho</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Criado em: {new Date(plan.createdAt).toLocaleDateString("pt-BR")}
+                      </p>
+                      {plan.type === "telemedicine" && (
+                        <div className="text-sm space-y-2">
+                          {[
+                            { label: "Pronto Atendimento 24h", s: plan.prontoAtendimento24h },
+                            { label: "Atendimento Agendado", s: plan.prontoAtendimentoAgendado },
+                            { label: "Especialidades Médicas", s: plan.especialidadesMedicas },
+                            { label: "Nutrição", s: plan.nutricao },
+                            { label: "Psicologia", s: plan.psicologia },
+                            { label: "Educador Físico", s: plan.educadorFisico },
+                            { label: "Concierge Presencial", s: plan.conciergePresencial },
+                          ].map((item) => (
                             <div
-                              className={`w-2 h-2 rounded-full flex-shrink-0 ${item.s.enabled ? "bg-primary" : "bg-muted"}`}
-                            />
-                            <span className="truncate">{item.label}</span>
+                              key={item.label}
+                              className="flex items-center justify-between gap-2"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div
+                                  className={`w-2 h-2 rounded-full flex-shrink-0 ${item.s.enabled ? "bg-primary" : "bg-muted"}`}
+                                />
+                                <span className="truncate">{item.label}</span>
+                              </div>
+                              <span className="text-xs text-muted-foreground flex-shrink-0 font-medium">
+                                {item.s.enabled ? "Habilitado" : "Não incluído"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {plan.type === "bracelet" && (
+                        <div className="text-sm space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-2 h-2 rounded-full ${plan.precoAtivacao !== null ? "bg-primary" : "bg-muted"}`}
+                              />
+                              <span>Ativação</span>
+                            </div>
+                            <span className="font-medium">{formatPrice(plan.precoAtivacao)}</span>
                           </div>
-                          <span className="text-xs text-muted-foreground flex-shrink-0 font-medium">
-                            {item.s.enabled ? "Habilitado" : "Não incluído"}
-                          </span>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-2 h-2 rounded-full ${plan.precoMensalidade !== null ? "bg-primary" : "bg-muted"}`}
+                              />
+                              <span>Mensalidade</span>
+                            </div>
+                            <span className="font-medium">
+                              {formatPrice(plan.precoMensalidade)}
+                            </span>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                  {plan.type === "bracelet" && (
-                    <div className="text-sm space-y-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${plan.precoAtivacao !== null ? "bg-primary" : "bg-muted"}`}
-                          />
-                          <span>Ativação</span>
+                      )}
+                    </CardContent>
+                    <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t">
+                      {deletingId === plan.id ? (
+                        <div className="flex w-full gap-2 animate-in fade-in zoom-in duration-200">
+                          <Button
+                            variant="destructive"
+                            className="flex-1"
+                            onClick={() => handleDelete(plan.id)}
+                            aria-label={`Confirmar exclusão de ${plan.name}`}
+                          >
+                            Confirmar
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setDeletingId(null)}
+                            aria-label="Cancelar exclusão"
+                          >
+                            Cancelar
+                          </Button>
                         </div>
-                        <span className="font-medium">{formatPrice(plan.precoAtivacao)}</span>
-                      </div>
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${plan.precoMensalidade !== null ? "bg-primary" : "bg-muted"}`}
-                          />
-                          <span>Mensalidade</span>
+                      ) : (
+                        <div className="flex w-full justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingPlan(plan)}
+                            aria-label={`Editar ${plan.name}`}
+                          >
+                            <Edit className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => confirmDelete(plan.id)}
+                            aria-label={`Remover ${plan.name}`}
+                          >
+                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
+                          </Button>
                         </div>
-                        <span className="font-medium">{formatPrice(plan.precoMensalidade)}</span>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-                <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t">
-                  {deletingId === plan.id ? (
-                    <div className="flex w-full gap-2 animate-in fade-in zoom-in duration-200">
-                      <Button
-                        variant="destructive"
-                        className="flex-1"
-                        onClick={() => handleDelete(plan.id)}
-                        aria-label={`Confirmar exclusão de ${plan.name}`}
-                      >
-                        Confirmar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => setDeletingId(null)}
-                        aria-label="Cancelar exclusão"
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex w-full justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditingPlan(plan)}
-                        aria-label={`Editar ${plan.name}`}
-                      >
-                        <Edit className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => confirmDelete(plan.id)}
-                        aria-label={`Remover ${plan.name}`}
-                      >
-                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
-                      </Button>
-                    </div>
-                  )}
-                </CardFooter>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+                      )}
+                    </CardFooter>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
