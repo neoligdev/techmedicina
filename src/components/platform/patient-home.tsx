@@ -37,7 +37,11 @@ import {
   Check,
 } from "lucide-react";
 import { useDemoClinic } from "@/features/demo/context";
-import { SHIELD_TIERS, type ShieldId } from "@/features/journey/contracts";
+import {
+  SHIELD_TIERS,
+  type ShieldId,
+  patientShieldOverviewSchema,
+} from "@/features/journey/contracts";
 import { Brand } from "./brand";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,29 +72,42 @@ interface NoticeItem {
 
 export interface PatientHomeProps {
   isBlockedFinancial?: boolean;
+  journeyOverview?: unknown;
+  isDemo?: boolean;
+  hasPrescription?: boolean;
+  patientName?: string;
 }
 
-function getDemoStorage(key: string): string | null {
-  if (typeof window === "undefined") return null;
+function getDemoStorage(key: string, isDemo: boolean): string | null {
+  if (typeof window === "undefined" || !isDemo) return null;
   try {
-    return localStorage.getItem(key);
+    return localStorage.getItem(`techmedicina_demo_${key}`);
   } catch {
     return null;
   }
 }
 
-function setDemoStorage(key: string, value: string): void {
-  if (typeof window === "undefined") return;
+function setDemoStorage(key: string, value: string, isDemo: boolean): void {
+  if (typeof window === "undefined" || !isDemo) return;
   try {
-    localStorage.setItem(key, value);
+    localStorage.setItem(`techmedicina_demo_${key}`, value);
   } catch {
     // Ambiente sem suporte a localStorage ou com cookies bloqueados
   }
 }
 
-export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
+export function PatientHome({
+  isBlockedFinancial = false,
+  journeyOverview,
+  isDemo = true,
+  hasPrescription,
+  patientName,
+}: PatientHomeProps) {
   const navigate = useNavigate();
   const { clinic, preferences } = useDemoClinic();
+
+  // Flag de prescrição ativa (em modo demo é ilustrativa; em modo real requer prescrição médica confirmada)
+  const isPrescriptionActive = hasPrescription ?? isDemo;
 
   // Detecção estrita de apresentação para celular:
   // Combina largura de smartphone (<= 640px) com interação de toque (hover: none + pointer: coarse)
@@ -123,9 +140,10 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     return () => window.removeEventListener("resize", checkPresentation);
   }, []);
 
-  // Estados dos registros interativos com persistência demonstrativa local
+  // Estados dos registros interativos com persistência demonstrativa local isolada
   const [mood, setMood] = useState<{ emoji: string; label: string } | null>(() => {
-    const saved = getDemoStorage(`techmedicina_mood_${clinic.id}`);
+    if (!isDemo) return null;
+    const saved = getDemoStorage(`mood_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -137,7 +155,8 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   });
 
   const [sleep, setSleep] = useState<{ emoji: string; label: string } | null>(() => {
-    const saved = getDemoStorage(`techmedicina_sleep_${clinic.id}`);
+    if (!isDemo) return null;
+    const saved = getDemoStorage(`sleep_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -149,7 +168,8 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   });
 
   const [waterMl, setWaterMl] = useState<number>(() => {
-    const saved = getDemoStorage(`techmedicina_water_${clinic.id}`);
+    if (!isDemo) return 0;
+    const saved = getDemoStorage(`water_${clinic.id}`, isDemo);
     return saved ? Number(saved) || 1450 : 1450;
   });
 
@@ -177,7 +197,14 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     quality: string;
     summary: string;
   }>(() => {
-    const saved = getDemoStorage(`techmedicina_nutrition_${clinic.id}`);
+    if (!isDemo) {
+      return {
+        meals: [],
+        quality: "Não informada",
+        summary: "Nenhuma refeição registrada hoje",
+      };
+    }
+    const saved = getDemoStorage(`nutrition_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -198,7 +225,15 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     intensity: string;
     summary: string;
   }>(() => {
-    const saved = getDemoStorage(`techmedicina_activity_${clinic.id}`);
+    if (!isDemo) {
+      return {
+        type: "",
+        minutes: 0,
+        intensity: "",
+        summary: "Nenhuma atividade física registrada hoje",
+      };
+    }
+    const saved = getDemoStorage(`activity_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -220,7 +255,23 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
     confirmed: boolean;
     summary: string;
   }>(() => {
-    const saved = getDemoStorage(`techmedicina_medication_${clinic.id}`);
+    if (!isPrescriptionActive) {
+      return {
+        takenCount: 0,
+        totalPrescribed: 0,
+        confirmed: false,
+        summary: "Nenhuma prescrição médica ativa vinculada à sua JORNADA",
+      };
+    }
+    if (!isDemo) {
+      return {
+        takenCount: 0,
+        totalPrescribed: 1,
+        confirmed: false,
+        summary: "Prescrição médica ativa pendente de confirmação hoje",
+      };
+    }
+    const saved = getDemoStorage(`medication_${clinic.id}`, isDemo);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -248,24 +299,59 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   const [tempActivityMinutes, setTempActivityMinutes] = useState<number>(30);
   const [tempActivityIntensity, setTempActivityIntensity] = useState<string>("Moderada");
 
-  // Dados da JORNADA e Escudos (baseados no motor determinístico oficial)
-  const activeShieldTier: ShieldId = "ritmo";
-  const journeyAverageScore = 42;
-  const evaluableDaysCount = 7;
-  const currentTierInfo = SHIELD_TIERS[activeShieldTier];
-  const nextShieldTier = SHIELD_TIERS.avanco;
-  const pointsNeededToNext = Math.max(0, nextShieldTier.minScore - journeyAverageScore); // 55 - 42 = 13
-  const journeyProgressPercent = Math.min(
-    100,
-    Math.max(
-      0,
-      Math.round(
-        ((journeyAverageScore - currentTierInfo.minScore) /
-          (nextShieldTier.minScore - currentTierInfo.minScore)) *
+  // Verificação e parsing de dados autorizados de JORNADA
+  const parsedJourney = journeyOverview
+    ? patientShieldOverviewSchema.safeParse(journeyOverview)
+    : null;
+  const authorizedJourney = parsedJourney?.success ? parsedJourney.data : null;
+
+  // Classificação rigorosa dos dados de JORNADA conforme PRD §11.5:
+  // 1. Dados operacionais autorizados: provenientes do motor determinístico oficial no servidor.
+  // 2. Fixture de demonstração: exclusiva do ambiente de simulação no perfil Alex (isDemo === true).
+  // 3. Estado indisponível/aguardando: em ambiente real (isDemo === false) sem dados autorizados.
+  const hasAuthorizedJourney = Boolean(authorizedJourney);
+  const isProvisional = authorizedJourney?.state.isProvisional ?? false;
+  const activeShieldTier: ShieldId | null = authorizedJourney
+    ? authorizedJourney.state.activeShield
+    : isDemo
+      ? "ritmo"
+      : null;
+  const journeyAverageScore: number | null = authorizedJourney
+    ? authorizedJourney.state.scoreAverageRounded
+    : isDemo
+      ? 42
+      : null;
+  const evaluableDaysCount: number = authorizedJourney
+    ? authorizedJourney.state.evaluableDaysCount
+    : isDemo
+      ? 7
+      : 0;
+  const nextShieldTier = authorizedJourney
+    ? authorizedJourney.nextTier
+    : isDemo
+      ? SHIELD_TIERS.avanco
+      : null;
+  const pointsNeededToNext: number | null = authorizedJourney
+    ? authorizedJourney.progress.pointsNeededToNextTier
+    : isDemo && nextShieldTier && journeyAverageScore !== null
+      ? Math.max(0, nextShieldTier.minScore - journeyAverageScore)
+      : null;
+  const currentTierInfo = activeShieldTier ? SHIELD_TIERS[activeShieldTier] : null;
+  const journeyProgressPercent: number = authorizedJourney
+    ? authorizedJourney.progress.progressPercentage
+    : isDemo && currentTierInfo && nextShieldTier && journeyAverageScore !== null
+      ? Math.min(
           100,
-      ),
-    ),
-  ); // (42-30)/(55-30) = 12/25 = 48%
+          Math.max(
+            0,
+            Math.round(
+              ((journeyAverageScore - currentTierInfo.minScore) /
+                (nextShieldTier.minScore - currentTierInfo.minScore)) *
+                100,
+            ),
+          ),
+        )
+      : 0;
 
   // Status financeiro do paciente (definido pelo servidor/contrato, sem alteração pelo cliente)
   const isInadimplente = isBlockedFinancial;
@@ -322,7 +408,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   function handleSaveMood() {
     const selected = moodOptions.find((m) => m.label === tempMood) ?? { emoji: "🙂", label: "Bem" };
     setMood(selected);
-    setDemoStorage(`techmedicina_mood_${clinic.id}`, JSON.stringify(selected));
+    setDemoStorage(`mood_${clinic.id}`, JSON.stringify(selected), isDemo);
     setMoodSavedToast(true);
     setTimeout(() => {
       setMoodSavedToast(false);
@@ -337,7 +423,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       label: "Bom",
     };
     setSleep(selected);
-    setDemoStorage(`techmedicina_sleep_${clinic.id}`, JSON.stringify(selected));
+    setDemoStorage(`sleep_${clinic.id}`, JSON.stringify(selected), isDemo);
     setSleepSavedToast(true);
     setTimeout(() => {
       setSleepSavedToast(false);
@@ -349,7 +435,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   function handleAddWater(amount: number) {
     setWaterMl((prev) => {
       const next = prev + amount;
-      setDemoStorage(`techmedicina_water_${clinic.id}`, String(next));
+      setDemoStorage(`water_${clinic.id}`, String(next), isDemo);
       return next;
     });
     setWaterSavedToast(true);
@@ -375,7 +461,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       summary: `${tempMealSelected} (${tempMealQuality.toLowerCase()}) registrado`,
     };
     setNutritionData(updated);
-    setDemoStorage(`techmedicina_nutrition_${clinic.id}`, JSON.stringify(updated));
+    setDemoStorage(`nutrition_${clinic.id}`, JSON.stringify(updated), isDemo);
     setNutritionToast(true);
     setTimeout(() => {
       setNutritionToast(false);
@@ -391,7 +477,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       summary: `${tempActivityMinutes} min de ${tempActivityType.toLowerCase()} (${tempActivityIntensity.toLowerCase()})`,
     };
     setActivityData(updated);
-    setDemoStorage(`techmedicina_activity_${clinic.id}`, JSON.stringify(updated));
+    setDemoStorage(`activity_${clinic.id}`, JSON.stringify(updated), isDemo);
     setActivityToast(true);
     setTimeout(() => {
       setActivityToast(false);
@@ -400,6 +486,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
   }
 
   function handleSaveMedication() {
+    if (!isPrescriptionActive) return;
     const updated = {
       takenCount: medicationData.totalPrescribed,
       totalPrescribed: medicationData.totalPrescribed,
@@ -407,7 +494,7 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
       summary: `Prescrições de hoje confirmadas (${medicationData.totalPrescribed} de ${medicationData.totalPrescribed})`,
     };
     setMedicationData(updated);
-    setDemoStorage(`techmedicina_medication_${clinic.id}`, JSON.stringify(updated));
+    setDemoStorage(`medication_${clinic.id}`, JSON.stringify(updated), isDemo);
     setMedicationToast(true);
     setTimeout(() => {
       setMedicationToast(false);
@@ -473,8 +560,14 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
       {/* BLOCO HERO: Saudação clara e grande */}
       <section className="patient-hero-section">
-        <h1 className="patient-greeting-title">Olá, Alex</h1>
-        <p className="patient-demo-badge">Perfil demonstrativo · Ambiente de simulação</p>
+        <h1 className="patient-greeting-title">
+          Olá, {patientName ?? (isDemo ? "Alex" : "Paciente")}
+        </h1>
+        <p className="patient-demo-badge">
+          {isDemo
+            ? "Perfil demonstrativo · Ambiente de simulação"
+            : "Área do Paciente · Acompanhamento Diário"}
+        </p>
       </section>
 
       {/* AVISO DE INADIMPLÊNCIA SE ATIVO */}
@@ -800,59 +893,81 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
                 </p>
               </div>
             </div>
-            <span className="patient-status-badge badge-active">
-              Escudo Ativo: {SHIELD_TIERS[activeShieldTier].name}
-            </span>
-          </div>
-
-          <div className="journey-metrics-row">
-            <div className="journey-metric-box">
-              <div className="journey-metric-label">Média da janela (7 dias)</div>
-              <div className="journey-metric-value">
-                <span>{journeyAverageScore}</span>
-                <span className="journey-metric-unit">pts</span>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {evaluableDaysCount} dias avaliáveis na janela
+            {activeShieldTier && currentTierInfo ? (
+              <span className="patient-status-badge badge-active">
+                Escudo Ativo: {currentTierInfo.name}
+                {isProvisional ? " (Provisório)" : ""}
               </span>
-            </div>
-
-            <div className="journey-metric-box">
-              <div className="journey-metric-label">Próximo escudo: {nextShieldTier.name}</div>
-              <div className="journey-metric-value">
-                <span>{pointsNeededToNext}</span>
-                <span className="journey-metric-unit">pts faltantes</span>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                Meta mínima: {nextShieldTier.minScore} pts
+            ) : (
+              <span className="patient-status-badge badge-pending">
+                Aguardando dados da Jornada
               </span>
-            </div>
+            )}
           </div>
 
-          <div className="journey-progress-wrap">
-            <div className="journey-progress-labels">
-              <span>Progresso para {nextShieldTier.name}</span>
-              <span className="font-semibold">{journeyProgressPercent}%</span>
-            </div>
-            <div className="patient-progress-track">
-              <div
-                className="patient-progress-fill"
-                role="progressbar"
-                aria-label={`Progresso para o escudo ${nextShieldTier.name}`}
-                aria-valuenow={journeyProgressPercent}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                style={{ width: `${journeyProgressPercent}%` }}
-              />
-            </div>
-          </div>
+          {activeShieldTier && currentTierInfo && nextShieldTier && journeyAverageScore !== null ? (
+            <>
+              <div className="journey-metrics-row">
+                <div className="journey-metric-box">
+                  <div className="journey-metric-label">Média da janela (7 dias)</div>
+                  <div className="journey-metric-value">
+                    <span>{journeyAverageScore}</span>
+                    <span className="journey-metric-unit">pts</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {evaluableDaysCount} dias avaliáveis na janela
+                  </span>
+                </div>
 
-          <div className="journey-regression-box">
-            <strong>Proteção contra regressão:</strong> Uma transição descendente só ocorre após 3
-            avaliações diárias consecutivas válidas abaixo do limiar do escudo ativo (
-            {currentTierInfo.minScore} pts). Suas conquistas anteriores permanecem salvas na sua
-            história.
-          </div>
+                <div className="journey-metric-box">
+                  <div className="journey-metric-label">Próximo escudo: {nextShieldTier.name}</div>
+                  <div className="journey-metric-value">
+                    <span>{pointsNeededToNext}</span>
+                    <span className="journey-metric-unit">pts faltantes</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    Meta mínima: {nextShieldTier.minScore} pts
+                  </span>
+                </div>
+              </div>
+
+              <div className="journey-progress-wrap">
+                <div className="journey-progress-labels">
+                  <span>Progresso para {nextShieldTier.name}</span>
+                  <span className="font-semibold">{journeyProgressPercent}%</span>
+                </div>
+                <div className="patient-progress-track">
+                  <div
+                    className="patient-progress-fill"
+                    role="progressbar"
+                    aria-label={`Progresso para o escudo ${nextShieldTier.name}`}
+                    aria-valuenow={journeyProgressPercent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    style={{ width: `${journeyProgressPercent}%` }}
+                  />
+                </div>
+              </div>
+
+              <div className="journey-regression-box">
+                <strong>Proteção contra regressão:</strong> Uma transição descendente só ocorre após
+                3 avaliações diárias consecutivas válidas abaixo do limiar do escudo ativo (
+                {currentTierInfo.minScore} pts). Suas conquistas anteriores permanecem salvas na sua
+                história.
+              </div>
+            </>
+          ) : (
+            <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-center my-3">
+              <p className="text-sm font-medium text-foreground">
+                Aguardando histórico homologado da JORNADA
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground max-w-md mx-auto">
+                A pontuação e a conquista de escudos são calculadas exclusivamente pelo motor
+                determinístico no servidor com base em avaliações diárias válidas. Nenhum resultado
+                fictício é exibido para este perfil.
+              </p>
+            </div>
+          )}
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground">
@@ -932,7 +1047,11 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
               tabIndex={0}
               onClick={() => setMedicationModalOpen(true)}
               onKeyDown={(e) => activatePatientCard(e, () => setMedicationModalOpen(true))}
-              aria-label="Confirmar tomada de medicamentos prescritos"
+              aria-label={
+                isPrescriptionActive
+                  ? "Confirmar tomada de medicamentos prescritos"
+                  : "Visualizar status de medicamentos prescritos"
+              }
             >
               <div>
                 <div className="patient-habit-title">
@@ -942,7 +1061,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
                 <p className="patient-habit-state">{medicationData.summary}</p>
               </div>
               <span className="patient-habit-provenance">
-                Prescrição ativa · Toque para confirmar
+                {isPrescriptionActive
+                  ? "Prescrição ativa · Toque para confirmar"
+                  : "Sem prescrição pendente · Não pontuável"}
               </span>
             </div>
           </div>
@@ -1750,7 +1871,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {nutritionToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Refeição registrada com sucesso!
+              {isDemo
+                ? "✓ Refeição registrada com sucesso!"
+                : "✓ Refeição mantida na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1795,6 +1918,12 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               Tag: <strong>Autorrelato direto do cliente</strong> · Sem interferência de hardware.
+              {!isDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
+                  local do navegador.
+                </span>
+              )}
             </div>
           </div>
 
@@ -1821,7 +1950,9 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {activityToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Atividade registrada com sucesso!
+              {isDemo
+                ? "✓ Atividade registrada com sucesso!"
+                : "✓ Atividade mantida na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
@@ -1888,6 +2019,12 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               Tag: <strong>Autorrelato manual</strong> · Elegibilidade plena mesmo sem pulseira
               inteligente.
+              {!isDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: Nenhum dado sensível de saúde é persistido no armazenamento
+                  local do navegador.
+                </span>
+              )}
             </div>
           </div>
 
@@ -1914,41 +2051,86 @@ export function PatientHome({ isBlockedFinancial = false }: PatientHomeProps) {
 
           {medicationToast && (
             <div className="patient-toast-success" role="status">
-              ✓ Tomada confirmada com sucesso!
+              {isDemo
+                ? "✓ Tomada confirmada com sucesso!"
+                : "✓ Confirmação mantida na sessão (aguardando API de prontuário)"}
             </div>
           )}
 
           <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between rounded-lg border border-border p-3">
-                <div>
-                  <strong className="text-sm font-medium">Complexo Vitamínico & Minerais</strong>
-                  <span className="block text-xs text-muted-foreground">
-                    1 cápsula após o café da manhã
-                  </span>
-                </div>
-                <span className="text-xs font-semibold text-primary">Confirmado</span>
+            {!isPrescriptionActive ? (
+              <div className="rounded-lg border border-border/80 bg-muted/30 p-4 text-center">
+                <AlertCircle className="mx-auto mb-2 text-muted-foreground" size={24} />
+                <strong className="text-sm font-semibold text-foreground block">
+                  Nenhuma prescrição médica ativa vinculada
+                </strong>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Você não possui receitas ou medicamentos prescritos cadastrados pela equipe
+                  médica. Conforme a regra do PRD §11.4, a ausência de prescrição não gera
+                  penalidade na sua JORNADA.
+                </p>
               </div>
+            ) : (
+              <div className="space-y-2">
+                {isDemo ? (
+                  <>
+                    <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                      <div>
+                        <strong className="text-sm font-medium">
+                          Complexo Vitamínico & Minerais
+                        </strong>
+                        <span className="block text-xs text-muted-foreground">
+                          1 cápsula após o café da manhã (Demonstração Alex)
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-primary">Confirmado</span>
+                    </div>
 
-              <div className="flex items-center justify-between rounded-lg border border-border p-3">
-                <div>
-                  <strong className="text-sm font-medium">Magnésio Inositol</strong>
-                  <span className="block text-xs text-muted-foreground">
-                    1 sachê 30 min antes de dormir
-                  </span>
-                </div>
-                <span className="text-xs font-semibold text-primary">Confirmado</span>
+                    <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                      <div>
+                        <strong className="text-sm font-medium">Magnésio Inositol</strong>
+                        <span className="block text-xs text-muted-foreground">
+                          1 sachê 30 min antes de dormir (Demonstração Alex)
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-primary">Confirmado</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                    <div>
+                      <strong className="text-sm font-medium">Prescrição Médica Ativa</strong>
+                      <span className="block text-xs text-muted-foreground">
+                        Orientação farmacológica registrada no prontuário
+                      </span>
+                    </div>
+                    <span className="text-xs font-semibold text-primary">
+                      {medicationData.confirmed ? "Confirmado hoje" : "Pendente"}
+                    </span>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               A adesão medicamentosa compõe 20% do peso na JORNADA diária quando prescrita.
+              {!isDemo && (
+                <span className="block mt-1 text-[11px] text-amber-500/90">
+                  Isolamento ético: O frontend não infere prescrições fictícias para pacientes
+                  reais.
+                </span>
+              )}
             </div>
           </div>
 
           <DialogFooter className="mt-4">
-            <Button type="button" onClick={handleSaveMedication} className="w-full">
-              Confirmar todas as doses de hoje
+            <Button
+              type="button"
+              onClick={handleSaveMedication}
+              className="w-full"
+              disabled={!isPrescriptionActive}
+            >
+              {isPrescriptionActive ? "Confirmar todas as doses de hoje" : "Nenhuma dose pendente"}
             </Button>
           </DialogFooter>
         </DialogContent>
