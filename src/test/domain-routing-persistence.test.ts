@@ -42,19 +42,14 @@ async function issue(value: RoutingChallenge) {
   ).rows[0]!.saved;
 }
 async function read(actor: AuthenticatedIdentity, id: string) {
-  // Emulates the reviewed private worker; no browser SELECT/EXECUTE grant.
+  // Reviewed private RPC, not a browser client or ad-hoc table SELECT.
   await db.exec("RESET ROLE");
-  if (actor.userId !== operator) throw new Error("Unauthorized test worker");
   return (
-    (
-      await db.query<{ saved: unknown }>(
-        `SELECT jsonb_build_object('domain',to_jsonb(d),'challenge',r.challenge) AS saved
-    FROM public.tm_clinic_domains d JOIN public.tm_domain_routing_challenges r ON r.domain_id=d.id
-    WHERE d.id=$1 AND r.revoked_at IS NULL AND r.consumed_at IS NULL`,
-        [id],
-      )
-    ).rows[0]?.saved ?? null
-  );
+    await db.query<{ saved: unknown }>("SELECT public.tm_read_routing_challenge($1,$2) AS saved", [
+      actor.userId,
+      id,
+    ])
+  ).rows[0]!.saved;
 }
 async function record(actor: AuthenticatedIdentity, receipt: RoutingReceipt) {
   await db.exec("RESET ROLE");
@@ -106,6 +101,7 @@ beforeAll(async () => {
     "018_domain_dns_observations.sql",
     "019_domain_dns_proof_read.sql",
     "020_domain_routing_persistence.sql",
+    "021_domain_routing_reads.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -395,3 +391,87 @@ it.each(["clinicId", "challengeId", "routingVerifiedAt"] as const)(
     await expect(verify(identity, domain.id)).rejects.toMatchObject({ status: 503 });
   },
 );
+
+async function receiptState(actor = operator, id = domain.id, challengeId = challenge.id) {
+  await db.exec("RESET ROLE");
+  return (
+    await db.query<{
+      saved: { receipt: RoutingReceipt; isCurrent: boolean; isValid: boolean } | null;
+    }>("SELECT public.tm_read_routing_receipt($1,$2,$3) AS saved", [actor, id, challengeId])
+  ).rows[0]!.saved;
+}
+it("private reads return current challenges and scoped historical receipts without another consumption", async () => {
+  expect(await read(identity, domain.id)).toMatchObject({ challenge });
+  expect(await read(identity, randomUUID())).toBeNull();
+  expect(await receiptState()).toBeNull();
+  const receipt = await verifier()(identity, domain.id);
+  expect(await read(identity, domain.id)).toBeNull();
+  expect(await receiptState()).toMatchObject({ receipt, isCurrent: true, isValid: true });
+  expect(await receiptState()).toMatchObject({ receipt, isCurrent: true, isValid: true });
+  expect(await receiptState(operator, randomUUID())).toBeNull();
+  expect(await receiptState(operator, domain.id, randomUUID())).toBeNull();
+  await db.exec("RESET ROLE");
+  expect(
+    (
+      await db.query("SELECT action FROM public.tm_domain_routing_audit WHERE domain_id=$1", [
+        domain.id,
+      ])
+    ).rows,
+  ).toHaveLength(2);
+});
+it.each(["key", "digest", "dns", "revision", "rotation"])(
+  "historical receipt remains available but invalid after %s changes",
+  async (change) => {
+    const receipt = await verifier()(identity, domain.id);
+    await db.exec("RESET ROLE");
+    if (change === "key")
+      await db.query("UPDATE public.tm_domain_routing_keys SET is_active=false WHERE key_id=$1", [
+        publicKey.keyId,
+      ]);
+    if (change === "digest")
+      await db.query(
+        "UPDATE public.tm_domain_routing_keys SET public_key_digest=$1 WHERE key_id=$2",
+        ["d".repeat(64), publicKey.keyId],
+      );
+    if (change === "dns")
+      await db.query(
+        "UPDATE public.tm_domain_challenges SET revoked_at=clock_timestamp() WHERE id=$1",
+        [challenge.dnsChallengeId],
+      );
+    if (change === "revision")
+      await db.query("UPDATE public.tm_clinic_domains SET revision=revision+1 WHERE id=$1", [
+        domain.id,
+      ]);
+    if (change === "rotation")
+      await issue({ ...challenge, id: randomUUID(), nonce: randomBytes(32).toString("hex") });
+    expect(await receiptState()).toMatchObject({
+      receipt,
+      isCurrent: change === "key",
+      isValid: false,
+    });
+  },
+);
+it.each(["authenticated", "anon"])("keeps new read RPCs private from %s", async (role) => {
+  await user(operator, role);
+  await expect(
+    db.query("SELECT public.tm_read_routing_challenge($1,$2)", [operator, domain.id]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await expect(
+    db.query("SELECT public.tm_read_routing_receipt($1,$2,$3)", [
+      operator,
+      domain.id,
+      challenge.id,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+});
+it("private connection cannot impersonate an inactive or ordinary operator", async () => {
+  await expect(
+    read({ userId: randomUUID(), globalRole: "super_admin", links: [] }, domain.id),
+  ).rejects.toMatchObject({ code: "42501" });
+  await expect(receiptState(randomUUID())).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await expect(read(identity, domain.id)).rejects.toMatchObject({ code: "42501" });
+});
