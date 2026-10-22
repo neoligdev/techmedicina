@@ -3229,7 +3229,19 @@
       ],
       "status": "done",
       "done": "Codex implementou a proposta LOCAL 020, registry privado com digest da chave pública, desafios, recibos e auditoria. Escrita reconfere operador, domínio, revisão, DNS e chave sob locks; consumo único e rollback transacional. Adaptador server-only exige writer privado injetado e valida todo retorno. 45 testes direcionados, incluindo 18 de persistência PGlite. Integrado localmente em develop com D119: 1.040 testes/119 arquivos, tipos, lint e build aprovados. SQL não aplicado no Cloud.",
-      "next": "Provisionar identidade mínima e chaves somente após revisão; implementar leitura privada de desafios/recibos e auditar administração de chaves. Testes em conexão PGlite serializada não comprovam concorrência remota ou TLS real. Push, main, publicação e aplicação SQL continuam fora desta autorização local.",
+      "next": "Provisionar identidade mínima e chaves somente após revisão; leitura privada entregue localmente pela D121; auditar administração de chaves. Testes em conexão PGlite serializada não comprovam concorrência remota ou TLS real. Push, main, publicação e aplicação SQL continuam fora desta autorização local.",
+      "requirements": []
+    },
+    {
+      "id": "D121",
+      "title": "White Label: leitura privada de desafios atuais e recibos históricos",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Codex implementou a proposta LOCAL 021 e adaptadores server-only de leitura. Desafio retorna somente se domínio, DNS e chave continuam atuais/válidos; recibos preservam snapshot histórico com isCurrent/isValid. RPCs sem grants de browser e ator administrativo persistido obrigatório. Testes usam o RPC real em PGlite: 65 testes direcionados aprovados em três arquivos (20 novos), tipos e lint aprovados. Código integrado localmente em develop; SQL não aplicado no Cloud. Validação integrada: 69 testes direcionados em quatro arquivos, TypeScript, lint e build aprovados.",
+      "next": "Auditar administração de chaves e definir identidade mínima/provedor do worker. Homologar runtime, ingresso e egress antes de ativação/SSR. Estes testes não são nova execução da regressão geral histórica 1.040/119 da D120. Sem push, main, DNS, publicação ou SQL remoto.",
       "requirements": []
     }
   ]
