@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 22/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -21,8 +21,8 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Lovable, Antigravity, Codex, OpenCode
-- **Entregue**: Quatro áreas demonstrativas e design preservados. Cloud multi-tenant com Auth, RLS, cadastro/auditoria e marca por UUID; Super ADM e salvar/recarregar marca QA homologados. Reservas White Label pendentes persistem no Cloud, com mensagem de duplicidade verificada. Paginação e contratos locais de host/rota/identidade testados. Domínio techmedicina.com.br e Registro.br informados pelo proprietário; sugestões de hosts implementadas sem ativação.
-- **Próximo Passo**: Integrar registro e contexto confiável ao SSR/APIs, layouts e PWA por origem; verificar posse/TLS, callbacks e duas clínicas autorizadas antes de ativar hosts. A demo unificada continua disponível.
+- **Entregue**: Quatro áreas demonstrativas e design preservados. Cloud multi-tenant com Auth, RLS, cadastro/auditoria e marca por UUID; Super ADM e salvar/recarregar marca QA homologados. Reservas White Label pendentes persistem no Cloud, com mensagem de duplicidade verificada. Paginação e contratos locais de host/rota/identidade testados. Domínio techmedicina.com.br e Registro.br informados pelo proprietário; sugestões de hosts implementadas sem ativação. Em 22/10/2026, o backend local avançou com prova assinada e proposta transacional 020 (D119/D120), integrados localmente em develop após autorização específica; sem ativação ou alteração da main.
+- **Próximo Passo**: Backend de roteamento D119/D120 integrado e validado localmente em develop. Homologar worker/chaves, SQL, ingresso, DNS/TLS e contexto SSR antes de ativar hosts; autorização específica para mudanças remotas. A demo unificada continua disponível.
 
 **Requisitos**:
 
@@ -1610,7 +1610,7 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Antigravity, Codex, OpenCode, Lovable
-- **Entregue**: PRD v0.11.3 e adendos preservados, com execução direta Codex e design existente mantido. Administração e marca QA têm homologações Cloud históricas; White Label mantém reservas pendentes e contratos locais, sem DNS/ativação. Jornada avançou localmente até preferências, suspensão auditada e autorrelatos idempotentes ligados ao host. Regressão da base anterior: 516 testes/62 arquivos; autorrelato posterior: 32 testes/7 arquivos e sequência SQL 008–012 aprovados. Esses resultados não concluem fluxos produtivos do PRD. Em 14/10, Codex recebeu autorização expressa para commit/push ao preview. Lote revisado: 567 testes em 71 arquivos e tipos/lint aprovados. Cloud 008–012 conferido; 013 e criação de rascunhos somente locais.
+- **Entregue**: PRD v0.11.3 e adendos preservados, com execução direta Codex e design existente mantido. Administração e marca QA têm homologações Cloud históricas; White Label mantém reservas pendentes e contratos locais, sem DNS/ativação. Jornada avançou localmente até preferências, suspensão auditada e autorrelatos idempotentes ligados ao host. Regressão da base anterior: 516 testes/62 arquivos; autorrelato posterior: 32 testes/7 arquivos e sequência SQL 008–012 aprovados. Esses resultados não concluem fluxos produtivos do PRD. Em 14/10, Codex recebeu autorização expressa para commit/push ao preview. Lote revisado: 567 testes em 71 arquivos e tipos/lint aprovados. Cloud 008–012 conferido; 013 e criação de rascunhos somente locais. Status atualizado em 22/10/2026 com entregas locais D119/D120, distinguindo validação unitária, integração e operação real. O proprietário autorizou commit e integração locais; D119/D120 integradas em develop, com 1.040 testes em 119 arquivos aprovados. Nenhum requisito produtivo foi concluído por esse registro; main/Cloud preservados.
 - **Próximo Passo**: Continuar auditoria e contexto White Label e recursos independentes. Hospedagem/DNS/TLS, contas QA clínicas, keystore, protocolo H59MAX/balança, fornecedores e condições comerciais/clínicas abertas exigem definição antes dos respectivos fluxos produtivos.
 
 **Requisitos**:
@@ -2440,3 +2440,17 @@ Atualizado em 21/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Codex implementou a proposta local 019 para consultar recibos DNS já consumidos, distinguindo histórico e validade sem repetir DNS. Adaptador usa bearer/RLS existente. Sonda server-only filtra endereços IPv4/IPv6, fixa IP público, preserva Host/SNI e valida certificado; limita espera/cabeçalhos/corpo e rejeita redirects e respostas incompletas. É observação de transporte, sem confirmação de projeto, endpoint público ou ativação. Validação: 981 testes em 116 arquivos, TypeScript, lint direcionado e build aprovados.
 - **Próximo Passo**: Implementar desafio de roteamento assinado e vinculado ao host confiável do ingresso antes de persistir prova TLS/roteamento ou ativar domínio. Homologar APIs de rede no executor Cloud aprovado; 017–019 continuam locais. main/preview exige integração aprovada; não aplicar SQL, grants ou DNS automaticamente.
+
+## D119 - White Label: prova assinada de roteamento no backend local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex concluiu e revisou a prova server-only Ed25519 vinculada a projeto, domínio, clínica, ambiente, revisão, nonce, DNS e validade. Cobertura de adulteração, rotação e revogação. Backend consolidado no commit local d204197 e integrado localmente em develop, preservando o frontend existente. Validação do conjunto: 1.040 testes em 119 arquivos, TypeScript, lint direcionado e build aprovados. Main, GitHub e Cloud não alterados.
+- **Próximo Passo**: Homologar ingresso, registro de chaves e transporte Cloud após revisão/autorização própria. Prova de assinatura não ativa domínio. Qualquer push ou integração na main exige autorização separada; frontend mais recente do Antigravity permanece em sua branch.
+
+## D120 - White Label: persistência privada e consumo único em PostgreSQL local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Codex implementou a proposta LOCAL 020, registry privado com digest da chave pública, desafios, recibos e auditoria. Escrita reconfere operador, domínio, revisão, DNS e chave sob locks; consumo único e rollback transacional. Adaptador server-only exige writer privado injetado e valida todo retorno. 45 testes direcionados, incluindo 18 de persistência PGlite. Integrado localmente em develop com D119: 1.040 testes/119 arquivos, tipos, lint e build aprovados. SQL não aplicado no Cloud.
+- **Próximo Passo**: Provisionar identidade mínima e chaves somente após revisão; implementar leitura privada de desafios/recibos e auditar administração de chaves. Testes em conexão PGlite serializada não comprovam concorrência remota ou TLS real. Push, main, publicação e aplicação SQL continuam fora desta autorização local.
