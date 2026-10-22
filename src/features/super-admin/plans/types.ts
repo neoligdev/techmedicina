@@ -364,7 +364,7 @@ export interface ClinicUsageRules {
 }
 
 export const SPECIALTIES_GOVERNANCE_NOTE =
-  "O PRD (Seção 13.2 e TM-3) prevê até 32 especialidades médicas agendadas mais 3 áreas multidisciplinares independentes (Nutrição, Psicologia e Educador Físico, totalizando 35 áreas no escopo amplo). A relação nominal exata e fechada das 32 especialidades médicas permanece pendente de consolidação oficial pelo proprietário.";
+  "Pendência de Validação de Escopo: Há divergência documental entre a menção a 35 especialidades e o teto de 32 especialidades médicas agendadas (TM-3) acrescidas de áreas multidisciplinares (Nutrição, Psicologia e Educador Físico no TM-4). Essa correlação e a lista nominal definitiva constituem interpretação preliminar sob validação pendente pelo proprietário e adendos vigentes.";
 
 export const ALL_SPECIALTIES = [
   "Clínica Geral",

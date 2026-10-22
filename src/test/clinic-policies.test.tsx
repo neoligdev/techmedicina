@@ -372,11 +372,11 @@ describe("Auditoria Comercial e Contratual Pré-Integração (PRD v0.11.3)", () 
     expect(defaultPol.contractTerms.pricePerDependentLife).toBeNull();
   });
 
-  it("garante nota oficial de governança das 32 especialidades médicas vs 3 multidisciplinares", () => {
+  it("garante nota oficial de governança das especialidades com pendência de validação", () => {
     expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("32 especialidades médicas agendadas");
     expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("Nutrição, Psicologia e Educador Físico");
-    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("35 áreas no escopo amplo");
-    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("permanece pendente");
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("35 especialidades");
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("sob validação pendente");
   });
 
   it("audita componente HW-PULSE com referência ao H59/H59MAX e conformidade BLE", () => {
@@ -405,10 +405,8 @@ describe("Auditoria Comercial e Contratual Pré-Integração (PRD v0.11.3)", () 
     const demoBadges = screen.getAllByText("Métrica Demonstrativa");
     expect(demoBadges.length).toBeGreaterThanOrEqual(2);
 
-    // Nota de governança de especialidades médicas (32 + 3 = 35)
-    expect(
-      screen.getByText(/32 especialidades médicas agendadas mais 3 áreas multidisciplinares/i),
-    ).toBeInTheDocument();
+    // Nota de governança com ressalva comercial e pendência de validação de escopo
+    expect(screen.getByText(/Pendência de Validação de Escopo/i)).toBeInTheDocument();
 
     // Valores não configurados aparecem como "A definir em contrato"
     const unconfiguredTerms = screen.getAllByText("A definir em contrato");

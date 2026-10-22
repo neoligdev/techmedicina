@@ -174,11 +174,11 @@ export function CatalogComponentsView() {
             duplicação de código.
           </p>
           <p className="text-[11px] text-muted-foreground/90 pt-1">
-            <strong>Governança de Especialidades:</strong> O escopo prevê até 32 especialidades
-            médicas agendadas (TM-3) mais 3 áreas multidisciplinares independentes (Nutrição,
-            Psicologia e Educador Físico, totalizando 35 áreas no escopo amplo). A relação fechada
-            das 32 áreas médicas permanece pendente de consolidação oficial pelo proprietário (PRD
-            Seção 13.2).
+            <strong>Ressalva Comercial / Especialidades:</strong> A correlação entre a menção de 35
+            especialidades e o teto de 32 especialidades médicas agendadas (TM-3) com áreas
+            multidisciplinares (TM-4) é uma interpretação sob validação preliminar. A relação
+            nominal aprovada e as regras definitivas permanecem pendentes de homologação formal pelo
+            proprietário e adendos vigentes (PRD Seção 13.2).
           </p>
         </div>
 
