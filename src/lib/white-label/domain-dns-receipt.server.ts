@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { AuthenticatedIdentity } from "../auth/core";
 import { AuthError } from "../auth/guards.server";
 import { dnsProofSchema } from "./domain-dns-persistence.server";
-const receiptSchema = z
+export const domainDnsReceiptSchema = z
   .object({
     proof: dnsProofSchema,
     recordedAt: z.string().datetime({ offset: true }),
@@ -37,7 +37,7 @@ export function createDnsReceiptReader(
       throw new AuthError("Domain proof unavailable", 503);
     }
     if (raw === null) return null;
-    const saved = receiptSchema.safeParse(raw);
+    const saved = domainDnsReceiptSchema.safeParse(raw);
     if (
       !saved.success ||
       saved.data.proof.domainId !== domainId ||
