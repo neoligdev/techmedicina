@@ -2,7 +2,13 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ClinicPoliciesPanel } from "@/features/super-admin/plans/components/clinic-policies-panel";
 import { CatalogComponentsView } from "@/features/super-admin/plans/components/catalog-components-view";
-import { CATALOG_COMPONENTS, isValidClinicUuid } from "@/features/super-admin/plans/types";
+import {
+  CATALOG_COMPONENTS,
+  isValidClinicUuid,
+  REFERENCE_PACKAGES,
+  DEFAULT_CLINIC_POLICY,
+  SPECIALTIES_GOVERNANCE_NOTE,
+} from "@/features/super-admin/plans/types";
 import { supabase } from "@/integrations/supabase/client";
 
 const validClinicId = "c3924f7e-7517-48f8-8422-b2586da285f2";
@@ -345,5 +351,67 @@ describe("Contratos da Clínica e Gestão de Especialidades (Super ADM)", () => 
     fireEvent.change(maxLivesInput, { target: { value: "200" } });
 
     expect(screen.getByText("Quota Excedida")).toBeInTheDocument();
+  });
+});
+
+describe("Auditoria Comercial e Contratual Pré-Integração (PRD v0.11.3)", () => {
+  it("garante desvinculação de preços arbitrários nos modelos de referência e políticas padrão", () => {
+    // Modelos de referência não podem exibir valores fixos em Reais como se fossem preços oficiais
+    for (const pkg of REFERENCE_PACKAGES) {
+      expect(pkg.pricingModel.setupFeeEstimated).toBeNull();
+      expect(pkg.pricingModel.monthlyBaseFee).toBeNull();
+      expect(pkg.pricingModel.perLifeFee).toBeNull();
+      expect(pkg.pricingModel.pricingNote).toContain("Valores sob consulta");
+    }
+
+    // Política padrão da clínica deve inicializar tarifas nulas para negociação individual
+    const defaultPol = DEFAULT_CLINIC_POLICY(validClinicId);
+    expect(defaultPol.contractTerms.setupFee).toBeNull();
+    expect(defaultPol.contractTerms.monthlyFee).toBeNull();
+    expect(defaultPol.contractTerms.pricePerHolderLife).toBeNull();
+    expect(defaultPol.contractTerms.pricePerDependentLife).toBeNull();
+  });
+
+  it("garante nota oficial de governança das 32 especialidades médicas vs 3 multidisciplinares", () => {
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("32 especialidades médicas agendadas");
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("Nutrição, Psicologia e Educador Físico");
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("35 áreas no escopo amplo");
+    expect(SPECIALTIES_GOVERNANCE_NOTE).toContain("permanece pendente");
+  });
+
+  it("audita componente HW-PULSE com referência ao H59/H59MAX e conformidade BLE", () => {
+    const pulseComponent = CATALOG_COMPONENTS.find((c) => c.code === "HW-PULSE");
+    expect(pulseComponent).toBeDefined();
+    expect(pulseComponent?.name).toContain("H59 / H59MAX");
+    expect(pulseComponent?.notes).toContain("H59/H59MAX");
+    expect(pulseComponent?.notes).toContain("BLE/GATT");
+    expect(pulseComponent?.notes).toContain("Nenhum dispositivo é de inclusão obrigatória");
+  });
+
+  it("renderiza badges de métrica demonstrativa e governança no painel do Super ADM", async () => {
+    render(
+      <ClinicPoliciesPanel
+        token={testAdminToken}
+        clinics={[{ id: validClinicId, name: "Clínica Auditada", subdomain: "auditada" }]}
+        initialClinicId={validClinicId}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Clínica Auditada/i)).toBeInTheDocument();
+    });
+
+    // Badges de métricas demonstrativas
+    const demoBadges = screen.getAllByText("Métrica Demonstrativa");
+    expect(demoBadges.length).toBeGreaterThanOrEqual(2);
+
+    // Nota de governança de especialidades médicas (32 + 3 = 35)
+    expect(
+      screen.getByText(/32 especialidades médicas agendadas mais 3 áreas multidisciplinares/i),
+    ).toBeInTheDocument();
+
+    // Valores não configurados aparecem como "A definir em contrato"
+    const unconfiguredTerms = screen.getAllByText("A definir em contrato");
+    expect(unconfiguredTerms.length).toBeGreaterThanOrEqual(4);
   });
 });

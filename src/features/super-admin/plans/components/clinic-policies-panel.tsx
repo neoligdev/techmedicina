@@ -52,6 +52,7 @@ import {
   CatalogComponentCode,
   ALL_SPECIALTIES,
   isValidClinicUuid,
+  SPECIALTIES_GOVERNANCE_NOTE,
 } from "../types";
 
 export interface ClinicSummary {
@@ -311,9 +312,9 @@ export function ClinicPoliciesPanel({
 
   const selectedClinic = clinics.find((c) => c.id === selectedClinicId);
 
-  const formatCurrency = (val?: number | null) => {
-    if (val === null || val === undefined) return "Não configurado";
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
+  const formatCurrency = (val?: number | null, suffix: string = "") => {
+    if (val === null || val === undefined) return "A definir em contrato";
+    return `${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val)}${suffix}`;
   };
 
   return (
@@ -438,8 +439,16 @@ export function ClinicPoliciesPanel({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="shadow-sm">
               <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-1.5 text-xs font-medium">
-                  <Users className="h-4 w-4 text-primary" /> Vidas / Clientes Ativos
+                <CardDescription className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-primary" /> Vidas / Clientes Ativos
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-normal text-muted-foreground border-border/80"
+                  >
+                    Métrica Demonstrativa
+                  </Badge>
                 </CardDescription>
                 <CardTitle className="text-2xl font-bold flex items-baseline gap-2">
                   <span>{formPolicy.currentActiveLives.toLocaleString("pt-BR")}</span>
@@ -476,8 +485,16 @@ export function ClinicPoliciesPanel({
 
             <Card className="shadow-sm">
               <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-1.5 text-xs font-medium">
-                  <UserCheck className="h-4 w-4 text-primary" /> Médicos Vinculados
+                <CardDescription className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <UserCheck className="h-4 w-4 text-primary" /> Médicos Vinculados
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-normal text-muted-foreground border-border/80"
+                  >
+                    Métrica Demonstrativa
+                  </Badge>
                 </CardDescription>
                 <CardTitle className="text-2xl font-bold flex items-baseline gap-2">
                   <span>{formPolicy.currentDoctors}</span>
@@ -688,17 +705,17 @@ export function ClinicPoliciesPanel({
                   {
                     code: "HW-PULSE" as const,
                     label: "Pulseira Inteligente (HW-PULSE)",
-                    desc: "Batimentos, oxigenação e monitoramento 24h",
+                    desc: "Referência H59 / H59MAX. Hardware modular opcional; telemetria e pareamento BLE sob homologação técnica (PRD 6.3/13.3).",
                   },
                   {
                     code: "HW-SCALE" as const,
                     label: "Balança de Bioimpedância (HW-SCALE)",
-                    desc: "Peso, IMC, % gordura e massa muscular",
+                    desc: "Periférico modular opcional para peso, IMC e composição corporal.",
                   },
                   {
                     code: "HW-RING" as const,
                     label: "Anel Inteligente de Monitoramento (HW-RING)",
-                    desc: "Sono contínuo, temperatura e recuperação",
+                    desc: "Periférico modular opcional para sono e variabilidade cardíaca.",
                   },
                 ].map((dev) => (
                   <div
@@ -719,13 +736,13 @@ export function ClinicPoliciesPanel({
 
                 <div className="mt-4 p-3 rounded-lg border border-primary/20 bg-primary/5 text-xs text-muted-foreground space-y-1">
                   <p className="font-semibold text-foreground flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" /> Nota de Integridade (PRD
-                    v0.11.3)
+                    <Sparkles className="h-3.5 w-3.5 text-primary" /> Nota de Governança de Hardware
+                    (PRD Seção 6.3)
                   </p>
                   <p>
-                    Persistência em Nuvem Pendente de Migração do Codex: O Super ADM preserva
-                    conformidade com os 9 componentes oficiais e contratos estritos sem executar
-                    gravações ilegais via cliente.
+                    Nenhum dispositivo vestível é de contratação obrigatória nos pacotes comerciais.
+                    Tratam-se de periféricos modulares opcionais sob solicitação e governança da
+                    clínica. Persistência em Nuvem Pendente de Migração do Codex.
                   </p>
                 </div>
               </CardContent>
@@ -753,55 +770,66 @@ export function ClinicPoliciesPanel({
             </CardHeader>
             <CardContent className="space-y-4">
               {formPolicy.contractTerms && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
-                    <span className="text-[11px] text-muted-foreground block">
-                      Setup de Implementação:
-                    </span>
-                    <strong className="text-base font-semibold text-foreground">
-                      {formatCurrency(formPolicy.contractTerms.setupFee)}
-                    </strong>
-                    <p className="text-[10px] text-muted-foreground">
-                      Valor único de onboarding White Label
-                    </p>
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                      <span className="text-[11px] text-muted-foreground block">
+                        Setup de Implementação:
+                      </span>
+                      <strong className="text-base font-semibold text-foreground">
+                        {formatCurrency(formPolicy.contractTerms.setupFee)}
+                      </strong>
+                      <p className="text-[10px] text-muted-foreground">
+                        Valor único de onboarding White Label
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                      <span className="text-[11px] text-muted-foreground block">
+                        Mensalidade da Plataforma:
+                      </span>
+                      <strong className="text-base font-semibold text-foreground">
+                        {formatCurrency(formPolicy.contractTerms.monthlyFee, "/mês")}
+                      </strong>
+                      <p className="text-[10px] text-muted-foreground">
+                        Assinatura de infraestrutura e suporte
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                      <span className="text-[11px] text-muted-foreground block">
+                        Custo por Vida Titular:
+                      </span>
+                      <strong className="text-base font-semibold text-foreground">
+                        {formatCurrency(formPolicy.contractTerms.pricePerHolderLife, "/vida")}
+                      </strong>
+                      <p className="text-[10px] text-muted-foreground">
+                        Cobrança por vidas habilitadas no período
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-lg border border-border bg-card space-y-1">
+                      <span className="text-[11px] text-muted-foreground block">
+                        Custo por Dependente:
+                      </span>
+                      <strong className="text-base font-semibold text-foreground">
+                        {formatCurrency(formPolicy.contractTerms.pricePerDependentLife, "/dep")}
+                      </strong>
+                      <p className="text-[10px] text-muted-foreground">
+                        Tarifa diferenciada por dependente ativo
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
-                    <span className="text-[11px] text-muted-foreground block">
-                      Mensalidade da Plataforma:
-                    </span>
-                    <strong className="text-base font-semibold text-foreground">
-                      {formatCurrency(formPolicy.contractTerms.monthlyFee)}/mês
-                    </strong>
-                    <p className="text-[10px] text-muted-foreground">
-                      Assinatura de infraestrutura e suporte
+                  <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 text-xs text-muted-foreground">
+                    <p>
+                      <strong className="text-foreground">Governança Comercial Camada 1:</strong> Os
+                      valores de setup, mensalidade e vida ativa são estipulados no contrato formal
+                      individual entre a PlugPix e a clínica parceira. Valores ilustrativos prévios
+                      não vinculantes foram desvinculados em conformidade com o PRD v0.11.3.
                     </p>
                   </div>
-
-                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
-                    <span className="text-[11px] text-muted-foreground block">
-                      Custo por Vida Titular:
-                    </span>
-                    <strong className="text-base font-semibold text-foreground">
-                      {formatCurrency(formPolicy.contractTerms.pricePerHolderLife)}/vida
-                    </strong>
-                    <p className="text-[10px] text-muted-foreground">
-                      Cobrança por vidas habilitadas no período
-                    </p>
-                  </div>
-
-                  <div className="p-3 rounded-lg border border-border bg-card space-y-1">
-                    <span className="text-[11px] text-muted-foreground block">
-                      Custo por Dependente:
-                    </span>
-                    <strong className="text-base font-semibold text-foreground">
-                      {formatCurrency(formPolicy.contractTerms.pricePerDependentLife)}/dep
-                    </strong>
-                    <p className="text-[10px] text-muted-foreground">
-                      Tarifa diferenciada por dependente ativo
-                    </p>
-                  </div>
-                </div>
+                </>
               )}
             </CardContent>
           </Card>
@@ -825,6 +853,10 @@ export function ClinicPoliciesPanel({
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="p-2.5 rounded-lg border border-border/70 bg-muted/30 text-[11px] text-muted-foreground leading-relaxed">
+                  {SPECIALTIES_GOVERNANCE_NOTE}
+                </div>
+
                 {/* Lista de Badges de Especialidades */}
                 <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-1">
                   {formPolicy.specialtiesAvailable.map((spec) => (
@@ -893,7 +925,8 @@ export function ClinicPoliciesPanel({
                     Pronto Atendimento 24h:
                   </span>
                   <p className="text-muted-foreground">
-                    Atendimento online 24h com clínico geral e pediatria sem carência contratual.
+                    Atendimento online 24h com clínico geral e pediatria sem carência contratual
+                    (Regra oficial TM-2).
                   </p>
                 </div>
 
@@ -902,16 +935,27 @@ export function ClinicPoliciesPanel({
                     Franquia de Consultas Especializadas:
                   </span>
                   <p className="text-muted-foreground">
-                    Padrão contratual de até 2 consultas por vida/mês, com coparticipação aplicável
-                    para atendimentos adicionais.
+                    Regra comercial da Camada 2 (Clínica ↔ Cliente) parametrizável pela clínica
+                    parceira. O PRD não impõe franquia compulsória única.
+                  </p>
+                </div>
+
+                <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <span className="font-semibold text-foreground block">
+                    Atendimento Presencial (Camada 2):
+                  </span>
+                  <p className="text-muted-foreground">
+                    Quando contratado no pacote (ex: 4.0), aplicam-se carência de 90 dias e
+                    fidelidade de 12 meses. O teto anual (&apos;3, 4 ou 4 consultas&apos;) aguarda
+                    decisão do proprietário.
                   </p>
                 </div>
 
                 <div className="p-2.5 rounded-lg border border-border/60 bg-muted/20 space-y-1">
                   <span className="font-semibold text-foreground block">Governança do Dr. IA:</span>
                   <p className="text-muted-foreground">
-                    Assistente preventivo que nunca emite diagnóstico sem médico e respeita o
-                    consentimento e canal aprovado.
+                    Assistente preventivo que nunca emite diagnóstico autônomo sem médico e respeita
+                    o consentimento prévio do paciente (PRD Seção 4.1).
                   </p>
                 </div>
               </CardContent>

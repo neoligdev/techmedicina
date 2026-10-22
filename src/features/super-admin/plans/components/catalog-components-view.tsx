@@ -154,7 +154,7 @@ export function CatalogComponentsView() {
   };
 
   const formatCurrency = (val?: number | null) => {
-    if (val === null || val === undefined) return "Sob consulta";
+    if (val === null || val === undefined) return "A definir em contrato";
     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
   };
 
@@ -172,6 +172,13 @@ export function CatalogComponentsView() {
             comerciais N:N). O Super ADM disponibiliza estes componentes e modelos de referência, e
             cada clínica parceira White Label pode montar suas próprias ofertas aos pacientes sem
             duplicação de código.
+          </p>
+          <p className="text-[11px] text-muted-foreground/90 pt-1">
+            <strong>Governança de Especialidades:</strong> O escopo prevê até 32 especialidades
+            médicas agendadas (TM-3) mais 3 áreas multidisciplinares independentes (Nutrição,
+            Psicologia e Educador Físico, totalizando 35 áreas no escopo amplo). A relação fechada
+            das 32 áreas médicas permanece pendente de consolidação oficial pelo proprietário (PRD
+            Seção 13.2).
           </p>
         </div>
 
@@ -455,27 +462,40 @@ export function CatalogComponentsView() {
                     </div>
 
                     {/* Preços Estimados de Referência */}
-                    <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1 text-xs">
-                      <span className="font-semibold text-foreground block text-[11px] uppercase tracking-wider">
-                        Estrutura Comercial Estimada:
-                      </span>
-                      <div className="flex justify-between items-center text-muted-foreground pt-1">
-                        <span>Setup base:</span>
-                        <strong className="text-foreground">
-                          {formatCurrency(pkg.pricingModel.setupFeeEstimated)}
-                        </strong>
+                    <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-foreground text-[11px] uppercase tracking-wider">
+                          Parâmetros Comerciais:
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] py-0 px-1.5 text-muted-foreground font-normal"
+                        >
+                          Template Opcional
+                        </Badge>
                       </div>
-                      <div className="flex justify-between items-center text-muted-foreground">
-                        <span>Mensalidade:</span>
-                        <strong className="text-foreground">
-                          {formatCurrency(pkg.pricingModel.monthlyBaseFee)}/mês
-                        </strong>
-                      </div>
-                      <div className="flex justify-between items-center text-muted-foreground">
-                        <span>Custo por vida:</span>
-                        <strong className="text-foreground">
-                          {formatCurrency(pkg.pricingModel.perLifeFee)}/vida
-                        </strong>
+                      <p className="text-[11px] text-muted-foreground leading-snug">
+                        {pkg.pricingModel.pricingNote}
+                      </p>
+                      <div className="pt-1 text-[11px] space-y-0.5 text-muted-foreground border-t border-border/40">
+                        <div>
+                          Setup:{" "}
+                          <span className="font-medium text-foreground">
+                            {formatCurrency(pkg.pricingModel.setupFeeEstimated)}
+                          </span>
+                        </div>
+                        <div>
+                          Mensalidade base:{" "}
+                          <span className="font-medium text-foreground">
+                            {formatCurrency(pkg.pricingModel.monthlyBaseFee)}
+                          </span>
+                        </div>
+                        <div>
+                          Custo por vida:{" "}
+                          <span className="font-medium text-foreground">
+                            {formatCurrency(pkg.pricingModel.perLifeFee)}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -653,16 +673,24 @@ export function CatalogComponentsView() {
 
                 {/* Estrutura Comercial */}
                 <div className="p-3.5 rounded-lg border border-border/80 bg-muted/10 space-y-2">
-                  <h4 className="font-semibold text-foreground flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    Parâmetros Comerciais de Referência
-                  </h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      Parâmetros Comerciais de Referência
+                    </h4>
+                    <Badge variant="outline" className="text-xs">
+                      Não Vinculante
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {selectedPackage.pricingModel.pricingNote} (PRD Adendo §1 e Seção 13.4).
+                  </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                     <div className="p-2.5 rounded bg-background border border-border">
                       <span className="text-muted-foreground block text-[11px]">
                         Setup Estimado:
                       </span>
-                      <strong className="text-sm font-bold text-foreground">
+                      <strong className="text-xs font-semibold text-foreground">
                         {formatCurrency(selectedPackage.pricingModel.setupFeeEstimated)}
                       </strong>
                     </div>
@@ -670,16 +698,16 @@ export function CatalogComponentsView() {
                       <span className="text-muted-foreground block text-[11px]">
                         Mensalidade Base:
                       </span>
-                      <strong className="text-sm font-bold text-foreground">
-                        {formatCurrency(selectedPackage.pricingModel.monthlyBaseFee)}/mês
+                      <strong className="text-xs font-semibold text-foreground">
+                        {formatCurrency(selectedPackage.pricingModel.monthlyBaseFee)}
                       </strong>
                     </div>
                     <div className="p-2.5 rounded bg-background border border-border">
                       <span className="text-muted-foreground block text-[11px]">
                         Preço por Vida:
                       </span>
-                      <strong className="text-sm font-bold text-foreground">
-                        {formatCurrency(selectedPackage.pricingModel.perLifeFee)}/mês
+                      <strong className="text-xs font-semibold text-foreground">
+                        {formatCurrency(selectedPackage.pricingModel.perLifeFee)}
                       </strong>
                     </div>
                   </div>

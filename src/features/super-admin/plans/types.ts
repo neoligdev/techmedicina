@@ -139,16 +139,18 @@ export const CATALOG_COMPONENTS: readonly CatalogComponent[] = [
   },
   {
     code: "HW-PULSE",
-    name: "Pulseira Inteligente",
+    name: "Pulseira Inteligente (H59 / H59MAX)",
     category: "device",
-    description: "Dispositivo vestível para monitoramento de sinais vitais, frequência e passos.",
+    description:
+      "Dispositivo vestível (referência técnica H59 / H59MAX) para telemetria de atividade física e frequência cardíaca.",
     includedFeatures: [
       "Leitura de passos e atividade física",
       "Monitoramento de frequência cardíaca",
-      "Integração com o aplicativo do paciente",
+      "Integração planejada com aplicativo do paciente via BLE",
     ],
     status: "active",
-    notes: "Apenas dispositivos cadastrados e liberados pelo Super ADM acessam a plataforma.",
+    notes:
+      "Modelo H59/H59MAX sob investigação de protocolo BLE/GATT (PRD Seção 6.3/13.3). Nenhum dispositivo é de inclusão obrigatória por presunção comercial; integração física e pareamento dependem de homologação.",
   },
   {
     code: "HW-SCALE",
@@ -161,7 +163,8 @@ export const CATALOG_COMPONENTS: readonly CatalogComponent[] = [
       "Histórico de evolução física",
     ],
     status: "draft",
-    notes: "Integração técnica e métricas dependem do modelo e validação BLE/API.",
+    notes:
+      "Integração técnica e métricas dependem do modelo e validação BLE/API. Equipamento modular e opcional para planos com foco metabólico.",
   },
   {
     code: "HW-RING",
@@ -173,7 +176,8 @@ export const CATALOG_COMPONENTS: readonly CatalogComponent[] = [
       "Tendência térmica e variabilidade cardíaca",
     ],
     status: "draft",
-    notes: "Integração dependente de homologação técnica de hardware e modelo.",
+    notes:
+      "Integração dependente de homologação técnica de hardware e modelo. Equipamento opcional para planos de longevidade.",
   },
   {
     code: "AI-CARE",
@@ -235,10 +239,11 @@ export interface ReferencePackage {
   description: string;
   components: CatalogComponentCode[];
   pricingModel: {
-    setupFeeEstimated?: number | null;
-    monthlyBaseFee?: number | null;
-    perLifeFee?: number | null;
+    setupFeeEstimated: number | null;
+    monthlyBaseFee: number | null;
+    perLifeFee: number | null;
     currency: "BRL";
+    pricingNote: string;
   };
   rulesSummary: string[];
   status: "active" | "draft";
@@ -251,18 +256,20 @@ export const REFERENCE_PACKAGES: readonly ReferencePackage[] = [
     tier: "essential",
     tierLabel: "Nível 1 — Essencial",
     description:
-      "Modelo de referência para pronto atendimento online 24h, Dr. IA para hábitos e monitoramento via Pulseira Inteligente.",
+      "Modelo de referência para pronto atendimento online 24h, Dr. IA para hábitos e monitoramento via Pulseira Inteligente (H59/H59MAX).",
     components: ["TM-2", "AI-CARE", "HW-PULSE"],
     pricingModel: {
-      setupFeeEstimated: 3500,
-      monthlyBaseFee: 850,
-      perLifeFee: 6.5,
+      setupFeeEstimated: null,
+      monthlyBaseFee: null,
+      perLifeFee: null,
       currency: "BRL",
+      pricingNote:
+        "Valores sob consulta — parametrizados pela clínica parceira no contrato individual.",
     },
     rulesSummary: [
       "Pronto atendimento clínico geral e pediatria 24h sem carência",
-      "Monitoramento contínuo de passos e frequência cardíaca",
-      "Dr. IA em modo assistente preventivo (triagem e hábitos)",
+      "Monitoramento de passos e frequência cardíaca via pulseira (dispositivo modular opcional)",
+      "Dr. IA em modo assistente preventivo (triagem e hábitos saudáveis)",
     ],
     status: "active",
   },
@@ -272,17 +279,19 @@ export const REFERENCE_PACKAGES: readonly ReferencePackage[] = [
     tier: "advanced",
     tierLabel: "Nível 2 — Avançado",
     description:
-      "Modelo abrangente com PA 24h, até 32 especialidades agendadas, balança de bioimpedância e acompanhamento clínico com protocolos.",
+      "Modelo abrangente com PA 24h, agendamento em até 32 especialidades médicas, bioimpedância e acompanhamento clínico com protocolos.",
     components: ["TM-2", "TM-3", "AI-CARE", "PROTOCOL", "HW-PULSE", "HW-SCALE"],
     pricingModel: {
-      setupFeeEstimated: 5000,
-      monthlyBaseFee: 1450,
-      perLifeFee: 12.0,
+      setupFeeEstimated: null,
+      monthlyBaseFee: null,
+      perLifeFee: null,
       currency: "BRL",
+      pricingNote:
+        "Valores sob consulta — parametrizados pela clínica parceira no contrato individual.",
     },
     rulesSummary: [
-      "PA 24h + consultas agendadas com especialistas médicos",
-      "Balança de bioimpedância para composição corporal e peso",
+      "PA 24h + consultas agendadas com especialistas médicos do catálogo contratado",
+      "Balança de bioimpedância para composição corporal (hardware opcional)",
       "Protocolos médicos estruturados vinculados ao prontuário",
       "Gamificação na JORNADA e Escudos de Proteção",
     ],
@@ -306,15 +315,17 @@ export const REFERENCE_PACKAGES: readonly ReferencePackage[] = [
       "HW-RING",
     ],
     pricingModel: {
-      setupFeeEstimated: 8500,
-      monthlyBaseFee: 2400,
-      perLifeFee: 24.5,
+      setupFeeEstimated: null,
+      monthlyBaseFee: null,
+      perLifeFee: null,
       currency: "BRL",
+      pricingNote:
+        "Valores sob consulta — parametrizados pela clínica parceira no contrato individual.",
     },
     rulesSummary: [
-      "Concierge dedicado para atendimento presencial (carência 90d e fidelidade 12m)",
-      "Anel inteligente com leitura de sono profundo e variabilidade cardíaca",
-      "Módulo de suplementação nutricional com loja própria da clínica",
+      "Concierge dedicado para atendimento presencial (parâmetros iniciais: carência 90d e fidelidade 12m)",
+      "Quantidade anual de consultas presenciais '3, 4 ou 4' pendente de homologação pelo proprietário",
+      "Anel inteligente e suplementação como recursos modulares opcionais",
       "Acesso completo ao ecossistema preventivo e Dr. IA proativo",
     ],
     status: "draft",
@@ -351,6 +362,9 @@ export interface ClinicUsageRules {
   allowDependents: boolean;
   trackingFeatures: Array<"journey" | "shields" | "protocols">;
 }
+
+export const SPECIALTIES_GOVERNANCE_NOTE =
+  "O PRD (Seção 13.2 e TM-3) prevê até 32 especialidades médicas agendadas mais 3 áreas multidisciplinares independentes (Nutrição, Psicologia e Educador Físico, totalizando 35 áreas no escopo amplo). A relação nominal exata e fechada das 32 especialidades médicas permanece pendente de consolidação oficial pelo proprietário.";
 
 export const ALL_SPECIALTIES = [
   "Clínica Geral",
@@ -415,13 +429,13 @@ export const DEFAULT_CLINIC_POLICY = (clinicId: string): ClinicPolicyConfig => (
   financialBlockReason: null,
   contractTerms: {
     contractPlanName: "Plano White Label Standard — PlugPix",
-    setupFee: 4500,
+    setupFee: null,
     hasMonthlyFee: true,
-    monthlyFee: 1200,
+    monthlyFee: null,
     hasLivesBilling: true,
     contractedLives: 500,
-    pricePerHolderLife: 8.5,
-    pricePerDependentLife: 4.5,
+    pricePerHolderLife: null,
+    pricePerDependentLife: null,
     billingCycle: "monthly",
     contractStartedAt: "2026-01-01T00:00:00.000Z",
     contractExpiresAt: "2027-01-01T00:00:00.000Z",
