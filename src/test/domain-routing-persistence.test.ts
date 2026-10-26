@@ -102,6 +102,7 @@ beforeAll(async () => {
     "019_domain_dns_proof_read.sql",
     "020_domain_routing_persistence.sql",
     "021_domain_routing_reads.sql",
+    "022_domain_routing_key_revocation.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -474,4 +475,143 @@ it("private connection cannot impersonate an inactive or ordinary operator", asy
     operator,
   ]);
   await expect(read(identity, domain.id)).rejects.toMatchObject({ code: "42501" });
+});
+
+it("audits key revocation once, preserves receipt history and invalidates current proof", async () => {
+  const receipt = await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  const revoke = async (revision: number) =>
+    (
+      await db.query<{ saved: { revision: number; isActive: boolean; changed: boolean } }>(
+        "SELECT public.tm_revoke_routing_key($1,$2,$3,$4) AS saved",
+        [operator, project, publicKey.keyId, revision],
+      )
+    ).rows[0]!.saved;
+  expect(await revoke(1)).toMatchObject({ revision: 2, isActive: false, changed: true });
+  await expect(revoke(1)).rejects.toMatchObject({ code: "40001" });
+  expect(await revoke(2)).toMatchObject({ revision: 2, isActive: false, changed: false });
+  const history = (
+    await db.query<{ saved: { isValid: boolean; isCurrent: boolean; receipt: unknown } }>(
+      "SELECT public.tm_read_routing_receipt($1,$2,$3) AS saved",
+      [operator, domain.id, challenge.id],
+    )
+  ).rows[0]!.saved;
+  expect(history.isValid).toBe(false);
+  expect(history.receipt).toEqual(receipt);
+  expect(
+    (
+      await db.query(
+        "SELECT * FROM public.tm_domain_routing_key_audit WHERE project_id=$1 AND key_id=$2",
+        [project, publicKey.keyId],
+      )
+    ).rows,
+  ).toHaveLength(1);
+  expect(
+    (await db.query("SELECT status FROM public.tm_clinic_domains WHERE id=$1", [domain.id]))
+      .rows[0],
+  ).toEqual({ status: "pending_verification" });
+  await expect(
+    db.query(
+      "UPDATE public.tm_domain_routing_keys SET is_active=true WHERE project_id=$1 AND key_id=$2",
+      [project, publicKey.keyId],
+    ),
+  ).rejects.toMatchObject({ code: "23514" });
+});
+it("revocation blocks proof writes already in flight without deleting their challenge", async () => {
+  const original = challenge;
+  const verify = verifier(async () => {
+    await db.exec("RESET ROLE");
+    await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+      operator,
+      project,
+      publicKey.keyId,
+    ]);
+    return {
+      status: 200,
+      certificateFingerprint: "a".repeat(64),
+      body: Buffer.from(
+        JSON.stringify(
+          signRoutingChallenge(
+            original,
+            { hostname: domain.hostname, projectId: project },
+            privateKey,
+          ),
+        ),
+      ),
+    };
+  });
+  await expect(verify(identity, domain.id)).rejects.toMatchObject({ status: 409 });
+  expect(
+    (
+      await db.query("SELECT * FROM public.tm_domain_routing_receipts WHERE challenge_id=$1", [
+        original.id,
+      ])
+    ).rows,
+  ).toEqual([]);
+});
+it("key revocation denies browser clients and revoked operators and cannot cross a project", async () => {
+  await user();
+  await expect(
+    db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+      operator,
+      project,
+      publicKey.keyId,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await expect(db.exec("SELECT * FROM public.tm_domain_routing_key_audit")).rejects.toMatchObject({
+    code: "42501",
+  });
+  await db.exec("RESET ROLE");
+  await expect(
+    db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+      operator,
+      clinic,
+      publicKey.keyId,
+    ]),
+  ).rejects.toMatchObject({ code: "40001" });
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await expect(
+    db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+      operator,
+      project,
+      publicKey.keyId,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+});
+
+it("rolls back key state and revision if revocation audit cannot be written", async () => {
+  await db.exec("RESET ROLE");
+  await db.exec(`CREATE FUNCTION pg_temp.reject_key_audit() RETURNS trigger LANGUAGE plpgsql AS $$
+    BEGIN RAISE EXCEPTION 'synthetic audit failure'; END $$;
+    CREATE TRIGGER reject_key_audit BEFORE INSERT ON public.tm_domain_routing_key_audit
+      FOR EACH ROW EXECUTE FUNCTION pg_temp.reject_key_audit();`);
+  try {
+    await expect(
+      db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+        operator,
+        project,
+        publicKey.keyId,
+      ]),
+    ).rejects.toMatchObject({ code: "P0001" });
+    expect(
+      (
+        await db.query(
+          "SELECT is_active,revision,revoked_at,revoked_by FROM public.tm_domain_routing_keys WHERE project_id=$1 AND key_id=$2",
+          [project, publicKey.keyId],
+        )
+      ).rows[0],
+    ).toEqual({ is_active: true, revision: 1, revoked_at: null, revoked_by: null });
+    expect(
+      (
+        await db.query(
+          "SELECT * FROM public.tm_domain_routing_key_audit WHERE project_id=$1 AND key_id=$2",
+          [project, publicKey.keyId],
+        )
+      ).rows,
+    ).toEqual([]);
+  } finally {
+    await db.exec("DROP TRIGGER reject_key_audit ON public.tm_domain_routing_key_audit");
+  }
 });
