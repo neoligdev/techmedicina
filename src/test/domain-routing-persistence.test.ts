@@ -103,6 +103,7 @@ beforeAll(async () => {
     "020_domain_routing_persistence.sql",
     "021_domain_routing_reads.sql",
     "022_domain_routing_key_revocation.sql",
+    "023_domain_routing_key_audit_read.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -614,4 +615,80 @@ it("rolls back key state and revision if revocation audit cannot be written", as
   } finally {
     await db.exec("DROP TRIGGER reject_key_audit ON public.tm_domain_routing_key_audit");
   }
+});
+
+it("reads bounded private audit pages with stable cursor and exact key/project scope", async () => {
+  await db.exec("RESET ROLE");
+  await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+    operator,
+    project,
+    publicKey.keyId,
+  ]);
+  const readPage = async (before: string | null = null, limit = 1, targetProject = project) =>
+    (
+      await db.query<{
+        page: {
+          projectId: string;
+          keyId: string;
+          entries: Array<{ id: string; revision: number }>;
+        };
+      }>("SELECT public.tm_read_routing_key_audit($1,$2,$3,$4,$5) AS page", [
+        operator,
+        targetProject,
+        publicKey.keyId,
+        before,
+        limit,
+      ])
+    ).rows[0]!.page;
+  const first = await readPage();
+  expect(first).toMatchObject({
+    projectId: project,
+    keyId: publicKey.keyId,
+    entries: [{ revision: 2 }],
+  });
+  expect((await readPage(first.entries[0]!.id)).entries).toEqual([]);
+  expect((await readPage(null, 1, clinic)).entries).toEqual([]);
+  await expect(readPage(first.entries[0]!.id, 1, clinic)).rejects.toMatchObject({ code: "22023" });
+  await expect(readPage(null, 101)).rejects.toMatchObject({ code: "22023" });
+  // Synthetic additional audit rows exercise ordering ties and page boundaries, not production writes.
+  await db.query(
+    `INSERT INTO public.tm_domain_routing_key_audit(project_id,key_id,actor_user_id,action,previous_revision,revision,was_active,public_key_digest,occurred_at)
+    SELECT project_id,key_id,actor_user_id,action,previous_revision,revision,was_active,public_key_digest,occurred_at FROM public.tm_domain_routing_key_audit WHERE id=$1`,
+    [first.entries[0]!.id],
+  );
+  const all = await readPage(null, 100);
+  const page1 = await readPage();
+  const page2 = await readPage(page1.entries[0]!.id);
+  expect([...page1.entries, ...page2.entries]).toEqual(all.entries);
+  expect(all.entries).toHaveLength(2);
+});
+it("denies audit reads to browser roles and inactive/non-administrative actors", async () => {
+  for (const role of ["anon", "authenticated"]) {
+    await user(operator, role);
+    await expect(
+      db.query("SELECT public.tm_read_routing_key_audit($1,$2,$3)", [
+        operator,
+        project,
+        publicKey.keyId,
+      ]),
+    ).rejects.toMatchObject({ code: "42501" });
+  }
+  await db.exec("RESET ROLE");
+  await expect(
+    db.query("SELECT public.tm_read_routing_key_audit($1,$2,$3)", [
+      clinic,
+      project,
+      publicKey.keyId,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await expect(
+    db.query("SELECT public.tm_read_routing_key_audit($1,$2,$3)", [
+      operator,
+      project,
+      publicKey.keyId,
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
 });
