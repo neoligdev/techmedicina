@@ -362,4 +362,61 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
     unmount();
     localStorage.clear();
   });
+
+  it("dados indisponíveis ou corrompidos de Jornada: adota fallback seguro sem exibir fixtures", () => {
+    // Fornece um payload inválido/corrompido que falha na validação do schema
+    const invalidJourneyPayload = { corrupted: true, score: 999 };
+
+    renderWithDemo(
+      <PatientHome
+        isDemo={false}
+        journeyOverview={invalidJourneyPayload}
+        patientName="Silvia Rocha"
+      />,
+    );
+
+    expect(screen.getByText("Olá, Silvia Rocha")).toBeInTheDocument();
+    expect(screen.getByText("Aguardando dados da Jornada")).toBeInTheDocument();
+    expect(screen.getByText("Aguardando histórico homologado da JORNADA")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Nenhum resultado fictício é exibido para este perfil/i),
+    ).toBeInTheDocument();
+
+    // Não deve conter fixtures nem inventar pontuações
+    expect(screen.queryByText("Escudo Ativo: Ritmo")).not.toBeInTheDocument();
+    expect(screen.queryByText("42")).not.toBeInTheDocument();
+  });
+
+  it("garante que nenhum hábito de humor ou sono é persistido em disco para usuários reais", () => {
+    localStorage.clear();
+    renderWithDemo(<PatientHome isDemo={false} />);
+
+    // Abrir modal de humor e registrar
+    const moodBtn = screen.getByLabelText(/Como está: Registrar/i);
+    fireEvent.click(moodBtn);
+    const excelenteBtn = screen.getByRole("radio", { name: /Excelente/i });
+    fireEvent.click(excelenteBtn);
+    const confirmMoodBtn = screen.getByRole("button", { name: "Confirmar registro" });
+    fireEvent.click(confirmMoodBtn);
+
+    // Toast de contingência honesta de sessão
+    expect(
+      screen.getByText(/Humor mantido na sessão \(aguardando API de prontuário\)/i),
+    ).toBeInTheDocument();
+
+    // Abrir modal de sono e registrar
+    const sleepBtn = screen.getByLabelText(/Seu sono: Registrar/i);
+    fireEvent.click(sleepBtn);
+    const revigoranteBtn = screen.getByRole("radio", { name: /Revigorante/i });
+    fireEvent.click(revigoranteBtn);
+    const confirmSleepBtn = screen.getByRole("button", { name: "Confirmar registro" });
+    fireEvent.click(confirmSleepBtn);
+
+    expect(
+      screen.getByText(/Registro de sono mantido na sessão \(aguardando API de prontuário\)/i),
+    ).toBeInTheDocument();
+
+    // O armazenamento do navegador permanece 100% limpo
+    expect(localStorage.length).toBe(0);
+  });
 });
