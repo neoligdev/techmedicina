@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { shouldEnablePatientDemo } from "@/features/demo/demo-authorization";
 import { PatientHome } from "../patient-home";
 
 export function PacienteDashboard() {
@@ -32,8 +33,9 @@ export function PacienteDashboard() {
   }, []);
 
   // Se houver sessão autenticada real, isDemo é categoricamente false.
-  // Somente ativa demonstração no preview se comprovadamente não houver sessão ativa.
-  const isDemo = hasSession === false;
+  // Em produção sem sessão, isDemo é categoricamente false (não exibe simulações sem autorização).
+  // Somente em desenvolvimento/preview autorizado ativa demonstração.
+  const isDemo = shouldEnablePatientDemo(hasSession);
 
   return <PatientHome isDemo={isDemo} patientName={patientName} />;
 }
