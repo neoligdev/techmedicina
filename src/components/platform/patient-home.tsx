@@ -74,6 +74,9 @@ interface NoticeItem {
 export interface PatientHomeProps {
   isBlockedFinancial?: boolean | undefined;
   journeyOverview?: unknown | undefined;
+  journeyStatus?: "loading" | "error" | "ready" | "insufficient_evaluations" | undefined;
+  journeyError?: string | undefined;
+  onRetryJourney?: (() => void) | undefined;
   isDemo?: boolean | undefined;
   hasPrescription?: boolean | undefined;
   patientName?: string | undefined;
@@ -100,6 +103,9 @@ function setDemoStorage(key: string, value: string, isDemo: boolean): void {
 export function PatientHome({
   isBlockedFinancial = false,
   journeyOverview,
+  journeyStatus,
+  journeyError,
+  onRetryJourney,
   isDemo = false,
   hasPrescription,
   patientName,
@@ -390,53 +396,98 @@ export function PatientHome({
     : null;
   const authorizedJourney = parsedJourney?.success ? parsedJourney.data : null;
 
-  // Classificação rigorosa dos dados de JORNADA conforme PRD §11.5:
-  // 1. Dados operacionais autorizados: provenientes do motor determinístico oficial no servidor.
-  // 2. Fixture de demonstração: exclusiva do ambiente de simulação no perfil Alex (effectiveIsDemo === true).
-  // 3. Estado indisponível/aguardando: em ambiente real (effectiveIsDemo === false) sem dados autorizados.
-  const hasAuthorizedJourney = Boolean(authorizedJourney);
-  const isProvisional = authorizedJourney?.state.isProvisional ?? false;
-  const activeShieldTier: ShieldId | null = authorizedJourney
-    ? authorizedJourney.state.activeShield
-    : effectiveIsDemo
-      ? "ritmo"
-      : null;
-  const journeyAverageScore: number | null = authorizedJourney
-    ? authorizedJourney.state.scoreAverageRounded
-    : effectiveIsDemo
-      ? 42
-      : null;
-  const evaluableDaysCount: number = authorizedJourney
-    ? authorizedJourney.state.evaluableDaysCount
-    : effectiveIsDemo
-      ? 7
-      : 0;
-  const nextShieldTier = authorizedJourney
-    ? authorizedJourney.nextTier
-    : effectiveIsDemo
-      ? SHIELD_TIERS.avanco
-      : null;
-  const pointsNeededToNext: number | null = authorizedJourney
-    ? authorizedJourney.progress.pointsNeededToNextTier
-    : effectiveIsDemo && nextShieldTier && journeyAverageScore !== null
-      ? Math.max(0, nextShieldTier.minScore - journeyAverageScore)
-      : null;
+  // Determinação determinística do estado da JORNADA (PRD v0.11.3 §11.5, D124):
+  // 1. loading: consulta ao servidor pendente
+  // 2. error: erro de rede/API ou falha de autorização
+  // 3. insufficient_evaluations: sem dias avaliáveis (evaluableDaysCount === 0 ou scoreAverageRounded === null)
+  // 4. provisional: janela móvel em formação (isProvisional === true com evaluableDaysCount > 0)
+  // 5. official: janela móvel completa consolidada (isProvisional === false)
+  // 6. demo: simulação do perfil Alex
+  // 7. unloaded: sem dados carregados ainda
+  const effectiveJourneyState:
+    | "loading"
+    | "error"
+    | "insufficient_evaluations"
+    | "provisional"
+    | "official"
+    | "demo"
+    | "unloaded" = (() => {
+    if (effectiveIsDemo && !authorizedJourney) return "demo";
+    if (journeyStatus === "loading") return "loading";
+    if (journeyStatus === "error" || Boolean(journeyError)) return "error";
+    if (journeyStatus === "insufficient_evaluations") return "insufficient_evaluations";
+    if (!authorizedJourney) return "unloaded";
+    if (
+      authorizedJourney.state.evaluableDaysCount === 0 ||
+      authorizedJourney.state.scoreAverageRounded === null
+    ) {
+      return "insufficient_evaluations";
+    }
+    if (authorizedJourney.state.isProvisional) {
+      return "provisional";
+    }
+    return "official";
+  })();
+
+  const isProvisional = effectiveJourneyState === "provisional";
+  const isOfficial = effectiveJourneyState === "official";
+  const isDemoJourney = effectiveJourneyState === "demo";
+
+  // O escudo ativo só existe se houver cálculo válido ou simulação demo autorizada
+  // IMPORTANTE: Origem NUNCA é atribuído automaticamente na ausência de avaliações!
+  const activeShieldTier: ShieldId | null =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.state.activeShield ?? null)
+      : isDemoJourney
+        ? "ritmo"
+        : null;
+
+  const journeyAverageScore: number | null =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.state.scoreAverageRounded ?? null)
+      : isDemoJourney
+        ? 42
+        : null;
+
+  const evaluableDaysCount: number =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.state.evaluableDaysCount ?? 0)
+      : isDemoJourney
+        ? 7
+        : 0;
+
+  const nextShieldTier =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.nextTier ?? null)
+      : isDemoJourney
+        ? SHIELD_TIERS.avanco
+        : null;
+
+  const pointsNeededToNext: number | null =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.progress.pointsNeededToNextTier ?? null)
+      : isDemoJourney && nextShieldTier && journeyAverageScore !== null
+        ? Math.max(0, nextShieldTier.minScore - journeyAverageScore)
+        : null;
+
   const currentTierInfo = activeShieldTier ? SHIELD_TIERS[activeShieldTier] : null;
-  const journeyProgressPercent: number = authorizedJourney
-    ? authorizedJourney.progress.progressPercentage
-    : effectiveIsDemo && currentTierInfo && nextShieldTier && journeyAverageScore !== null
-      ? Math.min(
-          100,
-          Math.max(
-            0,
-            Math.round(
-              ((journeyAverageScore - currentTierInfo.minScore) /
-                (nextShieldTier.minScore - currentTierInfo.minScore)) *
-                100,
+
+  const journeyProgressPercent: number =
+    isOfficial || isProvisional
+      ? (authorizedJourney?.progress.progressPercentage ?? 0)
+      : isDemoJourney && currentTierInfo && nextShieldTier && journeyAverageScore !== null
+        ? Math.min(
+            100,
+            Math.max(
+              0,
+              Math.round(
+                ((journeyAverageScore - currentTierInfo.minScore) /
+                  (nextShieldTier.minScore - currentTierInfo.minScore)) *
+                  100,
+              ),
             ),
-          ),
-        )
-      : 0;
+          )
+        : 0;
 
   // Status financeiro do paciente (definido pelo servidor/contrato, sem alteração pelo cliente)
   const isInadimplente = isBlockedFinancial;
@@ -766,17 +817,34 @@ export function PatientHome({
             role="button"
             tabIndex={0}
             onKeyDown={(e) => activatePatientCard(e, () => setScoreModalOpen(true))}
-            aria-label="Meu score demonstrativo: 785 pontos fictícios. Toque para ver os limites deste exemplo"
+            aria-label={
+              effectiveIsDemo
+                ? "Meu score demonstrativo: 785 pontos fictícios. Toque para ver os limites deste exemplo"
+                : "Meu score: em calibração clínica. Toque para entender a metodologia"
+            }
           >
             <div className="card-top-row">
               <span className="card-label">Meu score</span>
               <ChevronRight size={20} className="card-chevron" />
             </div>
-            <div className="score-number-display">
-              <span className="score-big-num">785</span>
-              <span className="score-unit">pontos</span>
-            </div>
-            <p className="text-xs text-muted-foreground">Exemplo demonstrativo</p>
+            {effectiveIsDemo ? (
+              <>
+                <div className="score-number-display">
+                  <span className="score-big-num">785</span>
+                  <span className="score-unit">pontos</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Exemplo demonstrativo</p>
+              </>
+            ) : (
+              <>
+                <div className="score-number-display">
+                  <span className="score-uncalibrated-title font-semibold text-foreground text-sm">
+                    Em calibração
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">Aguardando homologação clínica</p>
+              </>
+            )}
           </article>
         </div>
       </section>
@@ -978,7 +1046,15 @@ export function PatientHome({
                 </p>
               </div>
             </div>
-            {activeShieldTier && currentTierInfo ? (
+            {effectiveJourneyState === "loading" ? (
+              <span className="patient-status-badge badge-pending">
+                Aguardando dados do servidor
+              </span>
+            ) : effectiveJourneyState === "error" ? (
+              <span className="patient-status-badge badge-pending">Erro de carregamento</span>
+            ) : effectiveJourneyState === "insufficient_evaluations" ? (
+              <span className="patient-status-badge badge-pending">Sem avaliações suficientes</span>
+            ) : activeShieldTier && currentTierInfo ? (
               <span className="patient-status-badge badge-active">
                 Escudo Ativo: {currentTierInfo.name}
                 {isProvisional ? " (Provisório)" : ""}
@@ -1034,13 +1110,59 @@ export function PatientHome({
                 </div>
               </div>
 
-              <div className="journey-regression-box">
-                <strong>Proteção contra regressão:</strong> Uma transição descendente só ocorre após
-                3 avaliações diárias consecutivas válidas abaixo do limiar do escudo ativo (
-                {currentTierInfo.minScore} pts). Suas conquistas anteriores permanecem salvas na sua
-                história.
-              </div>
+              {isProvisional ? (
+                <div className="journey-regression-box">
+                  <strong>Avaliação provisória:</strong> Janela móvel em formação (
+                  {evaluableDaysCount} de 7 dias avaliáveis). A pontuação e o escudo definitivo
+                  serão consolidados ao completar a janela de avaliações.
+                </div>
+              ) : (
+                <div className="journey-regression-box">
+                  <strong>Proteção contra regressão:</strong> Uma transição descendente só ocorre
+                  após 3 avaliações diárias consecutivas válidas abaixo do limiar do escudo ativo (
+                  {currentTierInfo.minScore} pts). Suas conquistas anteriores permanecem salvas na
+                  sua história.
+                </div>
+              )}
             </>
+          ) : effectiveJourneyState === "loading" ? (
+            <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-center my-3">
+              <p className="text-sm font-medium text-foreground">Sincronizando com a clínica…</p>
+              <p className="mt-1 text-xs text-muted-foreground max-w-md mx-auto">
+                Consultando seus registros de hábitos e histórico da JORNADA no servidor.
+              </p>
+            </div>
+          ) : effectiveJourneyState === "error" ? (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center my-3">
+              <p className="text-sm font-medium text-foreground">
+                Erro ao carregar dados da JORNADA
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground max-w-md mx-auto">
+                Não foi possível consultar seus dados no momento. Por segurança clínica, nenhuma
+                pontuação fictícia é exibida.
+              </p>
+              {onRetryJourney && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="mt-3"
+                  onClick={onRetryJourney}
+                >
+                  Tentar novamente
+                </Button>
+              )}
+            </div>
+          ) : effectiveJourneyState === "insufficient_evaluations" ? (
+            <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-center my-3">
+              <p className="text-sm font-medium text-foreground">
+                Sem avaliações suficientes na janela
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground max-w-md mx-auto">
+                A pontuação e a conquista de escudos são calculadas a partir de avaliações diárias
+                válidas de hábitos. Registre suas rotinas hoje para ativar sua primeira avaliação.
+              </p>
+            </div>
           ) : (
             <div className="rounded-lg border border-border/60 bg-muted/30 p-4 text-center my-3">
               <p className="text-sm font-medium text-foreground">
@@ -1775,75 +1897,108 @@ export function PatientHome({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold">
               <Award className="text-amber-400" size={24} />
-              Score demonstrativo · 785 pontos
+              {effectiveIsDemo
+                ? "Score demonstrativo · 785 pontos"
+                : "Meu score · Em calibração clínica"}
             </DialogTitle>
             <DialogDescription>
-              Exemplo visual com valores fictícios, sem cálculo a partir dos seus dados.
+              {effectiveIsDemo
+                ? "Exemplo visual com valores fictícios, sem cálculo a partir dos seus dados."
+                : "O algoritmo de pontuação operacional está em processo de homologação clínica pela sua equipe de saúde. Nenhum valor fictício é atribuído à sua saúde."}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="score-breakdown-list">
-            <div className="score-item-row">
-              <div>
-                <strong>Hidratação diária</strong>
-                <span className="text-xs text-muted-foreground block">
-                  Metas de água alcançadas
-                </span>
+          {effectiveIsDemo ? (
+            <>
+              <div className="score-breakdown-list">
+                <div className="score-item-row">
+                  <div>
+                    <strong>Hidratação diária</strong>
+                    <span className="text-xs text-muted-foreground block">
+                      Metas de água alcançadas
+                    </span>
+                  </div>
+                  <span className="score-pts text-primary">+150 pts</span>
+                </div>
+
+                <div className="score-item-row">
+                  <div>
+                    <strong>Registro de descanso</strong>
+                    <span className="text-xs text-muted-foreground block">
+                      Qualidade percebida informada
+                    </span>
+                  </div>
+                  <span className="score-pts text-primary">+180 pts</span>
+                </div>
+
+                <div className="score-item-row">
+                  <div>
+                    <strong>Registro de bem-estar</strong>
+                    <span className="text-xs text-muted-foreground block">
+                      Exemplo de autorrelato
+                    </span>
+                  </div>
+                  <span className="score-pts text-primary">+200 pts</span>
+                </div>
+
+                <div className="score-item-row">
+                  <div>
+                    <strong>Acompanhamento da rotina</strong>
+                    <span className="text-xs text-muted-foreground block">
+                      Exemplo visual de participação
+                    </span>
+                  </div>
+                  <span className="score-pts text-primary">+255 pts</span>
+                </div>
               </div>
-              <span className="score-pts text-primary">+150 pts</span>
-            </div>
 
-            <div className="score-item-row">
-              <div>
-                <strong>Registro de descanso</strong>
-                <span className="text-xs text-muted-foreground block">
-                  Qualidade percebida informada
-                </span>
+              <div className="score-disclaimer-box">
+                <p>
+                  <strong>Dados demonstrativos:</strong> estes pontos não representam sua saúde ou
+                  adesão real e não são a JORNADA. A JORNADA depende de metas aplicáveis e regras
+                  aprovadas; possuir ou sincronizar um dispositivo não concede bônus. A VITALIDADE
+                  numérica está indisponível até validação metodológica e clínica. Este exemplo não
+                  constitui diagnóstico médico.
+                </p>
               </div>
-              <span className="score-pts text-primary">+180 pts</span>
-            </div>
 
-            <div className="score-item-row">
-              <div>
-                <strong>Registro de bem-estar</strong>
-                <span className="text-xs text-muted-foreground block">Exemplo de autorrelato</span>
+              <DialogFooter className="mt-2">
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={() => {
+                    setScoreModalOpen(false);
+                    void navigate({ to: "/app/$section", params: { section: "score" } });
+                  }}
+                >
+                  Ver evolução completa
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-3 py-2 text-sm text-muted-foreground">
+                <p>
+                  O score da plataforma reflete a consistência das suas rotinas de autocuidado,
+                  incluindo hidratação, sono, nutrição consciente e atividade física.
+                </p>
+                <div className="rounded-lg border border-border/60 bg-muted/30 p-3">
+                  <strong className="text-foreground block mb-1">
+                    Diretriz ética e de transparência
+                  </strong>
+                  Por segurança e conformidade ética médica, pontuações numéricas pessoais não são
+                  estimadas ou inventadas. A pontuação real será ativada após a calibração com sua
+                  equipe de saúde.
+                </div>
               </div>
-              <span className="score-pts text-primary">+200 pts</span>
-            </div>
 
-            <div className="score-item-row">
-              <div>
-                <strong>Acompanhamento da rotina</strong>
-                <span className="text-xs text-muted-foreground block">
-                  Exemplo visual de participação
-                </span>
-              </div>
-              <span className="score-pts text-primary">+255 pts</span>
-            </div>
-          </div>
-
-          <div className="score-disclaimer-box">
-            <p>
-              <strong>Dados demonstrativos:</strong> estes pontos não representam sua saúde ou
-              adesão real e não são a JORNADA. A JORNADA depende de metas aplicáveis e regras
-              aprovadas; possuir ou sincronizar um dispositivo não concede bônus. A VITALIDADE
-              numérica está indisponível até validação metodológica e clínica. Este exemplo não
-              constitui diagnóstico médico.
-            </p>
-          </div>
-
-          <DialogFooter className="mt-2">
-            <Button
-              type="button"
-              className="w-full"
-              onClick={() => {
-                setScoreModalOpen(false);
-                void navigate({ to: "/app/$section", params: { section: "score" } });
-              }}
-            >
-              Ver evolução completa
-            </Button>
-          </DialogFooter>
+              <DialogFooter className="mt-2">
+                <Button type="button" className="w-full" onClick={() => setScoreModalOpen(false)}>
+                  Entendido
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 

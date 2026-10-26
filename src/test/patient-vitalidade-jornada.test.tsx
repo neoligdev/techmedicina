@@ -419,4 +419,196 @@ describe("Aplicativo do Cliente — VITALIDADE, JORNADA, ESCUDOS e Hábitos", ()
     // O armazenamento do navegador permanece 100% limpo
     expect(localStorage.length).toBe(0);
   });
+
+  it("D124: sem avaliações suficientes (0 dias avaliáveis) — nunca atribui Origem nem pontuação fictícia", () => {
+    const unpopulatedOverview = {
+      clinicId: "e2b3c4d5-6789-4abc-def0-123456789abc",
+      patientId: "a1b2c3d4-5678-4abc-def0-123456789abc",
+      state: {
+        clinicId: "e2b3c4d5-6789-4abc-def0-123456789abc",
+        patientId: "a1b2c3d4-5678-4abc-def0-123456789abc",
+        activeShield: "origem" as const,
+        highestShieldEarned: "origem" as const,
+        isProvisional: true,
+        scoreAverage: null,
+        scoreAverageRounded: null,
+        evaluableDaysCount: 0,
+        consecutiveLowDays: 0,
+        lastEvaluatedDate: null,
+        evaluatedAt: "2026-10-26T12:00:00.000Z",
+        rulesVersion: "v0.11.3" as const,
+        recentAction: "initial" as const,
+        reason: "Estado inicial sem registros de hábitos na janela",
+      },
+      history: [],
+      tierInfo: {
+        id: "origem" as const,
+        name: "Origem",
+        rank: 1,
+        minScore: 0,
+        maxScore: 29,
+        description: "Início da jornada e reconhecimento da linha de base de hábitos e saúde.",
+      },
+      nextTier: {
+        id: "ritmo" as const,
+        name: "Ritmo",
+        rank: 2,
+        minScore: 30,
+        maxScore: 54,
+        description: "Construção de constância e cadência nas rotinas de cuidado diário.",
+      },
+      progress: {
+        currentRank: 1,
+        nextTierId: "ritmo" as const,
+        nextTierName: "Ritmo",
+        nextTierMinScore: 30,
+        pointsNeededToNextTier: 30,
+        progressPercentage: 0,
+        daysRemainingInWindow: 7,
+        consecutiveLowDays: 0,
+        isAtRiskOfRegression: false,
+      },
+    };
+
+    renderWithDemo(
+      <PatientHome isDemo={false} journeyOverview={unpopulatedOverview} patientName="Ana Paula" />,
+    );
+
+    expect(screen.getByText("Sem avaliações suficientes")).toBeInTheDocument();
+    expect(screen.getByText("Sem avaliações suficientes na janela")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /A pontuação e a conquista de escudos são calculadas a partir de avaliações diárias válidas de hábitos/i,
+      ),
+    ).toBeInTheDocument();
+
+    // Rigor: O nível Origem NUNCA deve ser exibido como se fosse classificação real por falta de dados
+    expect(screen.queryByText("Escudo Ativo: Origem")).not.toBeInTheDocument();
+    expect(screen.queryByText(/0 pts/i)).not.toBeInTheDocument();
+  });
+
+  it("D124: estado aguardando dados do servidor (loading) — apresenta estado neutro de sincronização", () => {
+    renderWithDemo(
+      <PatientHome isDemo={false} journeyStatus="loading" patientName="Beatriz Lima" />,
+    );
+
+    expect(screen.getByText("Aguardando dados do servidor")).toBeInTheDocument();
+    expect(screen.getByText("Sincronizando com a clínica…")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Consultando seus registros de hábitos e histórico da JORNADA no servidor/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Escudo Ativo: Ritmo")).not.toBeInTheDocument();
+    expect(screen.queryByText("Escudo Ativo: Origem")).not.toBeInTheDocument();
+  });
+
+  it("D124: erro de carregamento (error) — exibe indisponibilidade honesta e ação de retry", () => {
+    const retryMock = vi.fn();
+    renderWithDemo(
+      <PatientHome
+        isDemo={false}
+        journeyStatus="error"
+        onRetryJourney={retryMock}
+        patientName="Lucas Andrade"
+      />,
+    );
+
+    expect(screen.getByText("Erro de carregamento")).toBeInTheDocument();
+    expect(screen.getByText("Erro ao carregar dados da JORNADA")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Por segurança clínica, nenhuma pontuação fictícia é exibida/i),
+    ).toBeInTheDocument();
+
+    const retryBtn = screen.getByRole("button", { name: "Tentar novamente" });
+    fireEvent.click(retryBtn);
+    expect(retryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("D124: avaliação provisória válida (provisional) — exibe escudo preliminar e contagem de dias", () => {
+    const provisionalOverview = {
+      clinicId: "e2b3c4d5-6789-4abc-def0-123456789abc",
+      patientId: "a1b2c3d4-5678-4abc-def0-123456789abc",
+      state: {
+        clinicId: "e2b3c4d5-6789-4abc-def0-123456789abc",
+        patientId: "a1b2c3d4-5678-4abc-def0-123456789abc",
+        activeShield: "ritmo" as const,
+        highestShieldEarned: "ritmo" as const,
+        isProvisional: true,
+        scoreAverage: 45.2,
+        scoreAverageRounded: 45,
+        evaluableDaysCount: 3,
+        consecutiveLowDays: 0,
+        lastEvaluatedDate: "2026-10-25",
+        evaluatedAt: "2026-10-25T20:00:00.000Z",
+        rulesVersion: "v0.11.3" as const,
+        recentAction: "initial" as const,
+        reason: "Janela móvel com 3 dias avaliáveis",
+      },
+      history: [],
+      tierInfo: {
+        id: "ritmo" as const,
+        name: "Ritmo",
+        rank: 2,
+        minScore: 30,
+        maxScore: 54,
+        description: "Construção de constância e cadência nas rotinas de cuidado diário.",
+      },
+      nextTier: {
+        id: "avanco" as const,
+        name: "Avanço",
+        rank: 3,
+        minScore: 55,
+        maxScore: 74,
+        description: "Evolução sustentada com superação consistente das metas acordadas.",
+      },
+      progress: {
+        currentRank: 2,
+        nextTierId: "avanco" as const,
+        nextTierName: "Avanço",
+        nextTierMinScore: 55,
+        pointsNeededToNextTier: 10,
+        progressPercentage: 60,
+        daysRemainingInWindow: 4,
+        consecutiveLowDays: 0,
+        isAtRiskOfRegression: false,
+      },
+    };
+
+    renderWithDemo(
+      <PatientHome
+        isDemo={false}
+        journeyOverview={provisionalOverview}
+        patientName="Juliana Mendes"
+      />,
+    );
+
+    expect(screen.getByText("Escudo Ativo: Ritmo (Provisório)")).toBeInTheDocument();
+    expect(screen.getByText("45")).toBeInTheDocument();
+    expect(screen.getByText(/3 dias avaliáveis na janela/i)).toBeInTheDocument();
+    expect(screen.getByText(/Avaliação provisória:/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Janela móvel em formação \(3 de 7 dias avaliáveis\)/i),
+    ).toBeInTheDocument();
+  });
+
+  it("D124: Card Meu Score — oculta 785 em contas reais e exibe estado de calibração clínica", () => {
+    renderWithDemo(<PatientHome isDemo={false} />);
+
+    // Na conta real, o valor 785 NUNCA deve ser renderizado no card
+    expect(screen.queryByText("785")).not.toBeInTheDocument();
+    expect(screen.getByText("Em calibração")).toBeInTheDocument();
+    expect(screen.getByText("Aguardando homologação clínica")).toBeInTheDocument();
+
+    // Ao clicar no card, abre modal com explicação de calibração sem pontos fictícios
+    const scoreCard = screen.getByLabelText(/Meu score: em calibração clínica/i);
+    fireEvent.click(scoreCard);
+
+    expect(screen.getByText("Meu score · Em calibração clínica")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /O algoritmo de pontuação operacional está em processo de homologação clínica/i,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/\+150 pts/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\+255 pts/i)).not.toBeInTheDocument();
+  });
 });

@@ -206,3 +206,43 @@ it("garante isolamento estrito entre clínicas distintas", () => {
   expect(screen.getByText(/Nenhum histórico autorizado foi carregado/i)).toBeInTheDocument();
   expect(screen.queryByText("Escudo ativo: Origem")).not.toBeInTheDocument();
 });
+
+it("D124: MyShields exibe estado de loading aguardando dados do servidor", () => {
+  render(<MyShields status="loading" />);
+  expect(screen.getByText("Aguardando dados do servidor…")).toBeInTheDocument();
+  expect(screen.getByText("Conheça os 5 Escudos da JORNADA")).toBeInTheDocument();
+});
+
+it("D124: MyShields exibe estado de erro e permite acionar retry", () => {
+  const retryMock = vi.fn();
+  render(<MyShields status="error" onRetry={retryMock} />);
+  expect(screen.getByText("Erro ao carregar seus Escudos")).toBeInTheDocument();
+  expect(
+    screen.getByText(/Por segurança clínica, nenhuma pontuação fictícia é exibida/i),
+  ).toBeInTheDocument();
+
+  const retryBtn = screen.getByRole("button", { name: "Tentar novamente" });
+  fireEvent.click(retryBtn);
+  expect(retryMock).toHaveBeenCalledTimes(1);
+});
+
+it("D124: MyShields sem avaliações suficientes exibe estado de formação sem atribuir conquista", () => {
+  const unpopulated = {
+    ...overview,
+    state: {
+      ...state,
+      isProvisional: true,
+      scoreAverage: null,
+      scoreAverageRounded: null,
+      evaluableDaysCount: 0,
+    },
+    history: [],
+  };
+  render(<MyShields overview={unpopulated} clinicId={clinicId} patientId={patientId} />);
+  expect(screen.getByText("Sem avaliações suficientes na janela")).toBeInTheDocument();
+  expect(screen.getByText("Aguardando avaliações")).toBeInTheDocument();
+  expect(
+    screen.getByText(/Você ainda não possui dias avaliáveis suficientes/i),
+  ).toBeInTheDocument();
+  expect(screen.queryByText("Escudo ativo: Origem")).not.toBeInTheDocument();
+});
