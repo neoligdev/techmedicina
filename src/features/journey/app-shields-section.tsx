@@ -109,7 +109,6 @@ export function AppShieldsSection() {
     return () => {
       mounted = false;
       subscription.unsubscribe();
-      requestIdRef.current++;
     };
   }, [clinic.id, fetchRealShields]);
 
