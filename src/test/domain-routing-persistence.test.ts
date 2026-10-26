@@ -104,6 +104,7 @@ beforeAll(async () => {
     "021_domain_routing_reads.sql",
     "022_domain_routing_key_revocation.sql",
     "023_domain_routing_key_audit_read.sql",
+    "024_domain_routing_key_inventory.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -690,5 +691,62 @@ it("denies audit reads to browser roles and inactive/non-administrative actors",
       project,
       publicKey.keyId,
     ]),
+  ).rejects.toMatchObject({ code: "42501" });
+});
+
+it("lists private key metadata within project with stable bounded lexical pages", async () => {
+  await db.exec("RESET ROLE");
+  const list = async (after: string | null = null, limit = 100, target = project) =>
+    (
+      await db.query<{
+        page: {
+          projectId: string;
+          keys: Array<{
+            keyId: string;
+            revision: number;
+            revokedAt: string | null;
+            isActive: boolean;
+          }>;
+        };
+      }>("SELECT public.tm_list_routing_keys($1,$2,$3,$4) AS page", [
+        operator,
+        target,
+        after,
+        limit,
+      ])
+    ).rows[0]!.page;
+  const all = await list();
+  expect(all.keys.some((k) => k.keyId === publicKey.keyId)).toBe(true);
+  expect((await list(null, 100, clinic)).keys).toEqual([]);
+  const first = await list(null, 1);
+  expect(first.keys).toHaveLength(1);
+  const rest = await list(first.keys[0]!.keyId);
+  expect([...first.keys, ...rest.keys]).toEqual(all.keys);
+  await expect(list(null, 101)).rejects.toMatchObject({ code: "22023" });
+  await expect(list("../")).rejects.toMatchObject({ code: "22023" });
+  await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+    operator,
+    project,
+    publicKey.keyId,
+  ]);
+  expect((await list()).keys.find((k) => k.keyId === publicKey.keyId)).toMatchObject({
+    revision: 2,
+    isActive: false,
+    revokedAt: expect.any(String),
+  });
+});
+it("keeps key inventory unavailable to browser and revoked operators", async () => {
+  for (const role of ["anon", "authenticated"]) {
+    await user(operator, role);
+    await expect(
+      db.query("SELECT public.tm_list_routing_keys($1,$2)", [operator, project]),
+    ).rejects.toMatchObject({ code: "42501" });
+  }
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await expect(
+    db.query("SELECT public.tm_list_routing_keys($1,$2)", [operator, project]),
   ).rejects.toMatchObject({ code: "42501" });
 });
