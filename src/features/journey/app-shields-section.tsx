@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoClinic } from "@/features/demo/context";
-import { shouldEnablePatientDemo } from "@/features/demo/demo-authorization";
+import {
+  shouldEnablePatientDemo,
+  patientSessionPresence,
+} from "@/features/demo/demo-authorization";
 import { MyShields } from "./my-shields";
 
 /**
@@ -17,19 +20,19 @@ export function AppShieldsSection() {
     let mounted = true;
     void supabase.auth
       .getUser()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         if (!mounted) return;
-        if (data?.user) {
-          setHasSession(true);
+        const presence = patientSessionPresence(data?.user, error);
+        setHasSession(presence);
+        if (presence === true && data?.user) {
           setPatientId(data.user.id);
         } else {
-          setHasSession(false);
           setPatientId(undefined);
         }
       })
       .catch(() => {
         if (mounted) {
-          setHasSession(false);
+          setHasSession(null);
           setPatientId(undefined);
         }
       });

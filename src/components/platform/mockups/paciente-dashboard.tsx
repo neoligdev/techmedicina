@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { shouldEnablePatientDemo } from "@/features/demo/demo-authorization";
+import {
+  shouldEnablePatientDemo,
+  patientSessionPresence,
+} from "@/features/demo/demo-authorization";
 import { PatientHome } from "../patient-home";
 
 export function PacienteDashboard() {
@@ -11,21 +14,25 @@ export function PacienteDashboard() {
     let mounted = true;
     void supabase.auth
       .getUser()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         if (!mounted) return;
-        if (data?.user) {
-          setHasSession(true);
+        const presence = patientSessionPresence(data?.user, error);
+        setHasSession(presence);
+        if (presence === true && data?.user) {
           const meta = data.user.user_metadata;
           const fullName =
             meta && typeof meta["full_name"] === "string" ? meta["full_name"] : undefined;
           const name = fullName ?? data.user.email ?? undefined;
           setPatientName(name);
         } else {
-          setHasSession(false);
+          setPatientName(undefined);
         }
       })
       .catch(() => {
-        if (mounted) setHasSession(false);
+        if (mounted) {
+          setHasSession(null);
+          setPatientName(undefined);
+        }
       });
     return () => {
       mounted = false;

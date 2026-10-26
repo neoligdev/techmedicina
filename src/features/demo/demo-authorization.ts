@@ -1,3 +1,5 @@
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
+
 /**
  * Controle de autorização do modo demonstrativo do PWA do cliente.
  * Garante que em ambientes de produção a ausência de sessão não ative automaticamente
@@ -49,4 +51,10 @@ export function shouldEnablePatientDemo(hasSession: boolean | null): boolean {
   if (hasSession === true) return false;
   if (hasSession === null) return false;
   return isDemoModeAllowed();
+}
+
+/** Failed Auth requests do not prove absence of a session. Keep unknown state restrictive. */
+export function patientSessionPresence(user: unknown, error: unknown): boolean | null {
+  if (error) return !user && isAuthSessionMissingError(error) ? false : null;
+  return user ? true : false;
 }
