@@ -26,6 +26,11 @@ vi.mock("@/features/journey/shield-client", () => ({
 vi.mock("@/features/journey/my-shields", () => ({
   MyShields: (props: unknown) => <output data-testid="state">{JSON.stringify(props)}</output>,
 }));
+vi.mock("@/features/journey/own-records-panel", () => ({
+  OwnJourneyRecordsPanel: (props: unknown) => (
+    <output data-testid="records">{JSON.stringify(props)}</output>
+  ),
+}));
 import { AppShieldsSection } from "@/features/journey/app-shields-section";
 const scope = {
   clinicId: "11111111-1111-4111-8111-111111111111",
@@ -48,6 +53,7 @@ it("fetches and renders real scope from context endpoint, not demo clinic or Aut
     );
   });
   expect(ownShields).toHaveBeenCalledWith(expect.objectContaining(scope));
+  expect(JSON.parse(screen.getByTestId("records").textContent!)).toMatchObject(scope);
   expect(JSON.parse(screen.getByTestId("state").textContent!)).toMatchObject({
     ...scope,
     isDemo: false,
@@ -66,6 +72,7 @@ it("context failure never calls shield read or enables demo", async () => {
     );
   });
   expect(ownShields).not.toHaveBeenCalled();
+  expect(screen.queryByTestId("records")).toBeNull();
   expect(JSON.parse(screen.getByTestId("state").textContent!)).toMatchObject({
     isDemo: false,
     status: "error",

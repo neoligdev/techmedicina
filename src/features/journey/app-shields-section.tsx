@@ -5,6 +5,7 @@ import {
   shouldEnablePatientDemo,
   patientSessionPresence,
 } from "@/features/demo/demo-authorization";
+import { OwnJourneyRecordsPanel } from "./own-records-panel";
 import { MyShields } from "./my-shields";
 import { createOwnShieldClient } from "./shield-client";
 import { createOwnJourneyContextClient } from "./own-context-client";
@@ -33,6 +34,10 @@ export function AppShieldsSection() {
   const scopeAbort = useRef<AbortController | null>(null);
 
   const isDemo = shouldEnablePatientDemo(hasSession);
+  const getRecordsToken = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.access_token ?? null;
+  }, []);
 
   const fetchRealShields = useCallback(async () => {
     const currentRequestId = ++requestIdRef.current;
@@ -133,17 +138,26 @@ export function AppShieldsSection() {
   }, [clinic.id, fetchRealShields]);
 
   return (
-    <MyShields
-      isDemo={isDemo}
-      clinicId={isDemo ? clinic.id : ownClinicId}
-      patientId={patientId}
-      overview={shieldOverview}
-      status={isDemo ? undefined : shieldStatus}
-      onRetry={() => {
-        if (hasSession === true) {
-          void fetchRealShields();
-        }
-      }}
-    />
+    <>
+      <MyShields
+        isDemo={isDemo}
+        clinicId={isDemo ? clinic.id : ownClinicId}
+        patientId={patientId}
+        overview={shieldOverview}
+        status={isDemo ? undefined : shieldStatus}
+        onRetry={() => {
+          if (hasSession === true) {
+            void fetchRealShields();
+          }
+        }}
+      />
+      {!isDemo && hasSession === true && ownClinicId && patientId && (
+        <OwnJourneyRecordsPanel
+          clinicId={ownClinicId}
+          patientId={patientId}
+          getAccessToken={getRecordsToken}
+        />
+      )}
+    </>
   );
 }
