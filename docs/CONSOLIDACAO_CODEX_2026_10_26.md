@@ -17,3 +17,11 @@ Pontuação JORNADA é adesão a metas; não é diagnóstica. Os parâmetros can
 Reutilizar createOwnShieldEndpoint, createJourneyEndpoints, createJourneyRpcRepository, createOwnShieldRpcReader e os clientes HTTP existentes. Falta montagem runtime de rotas, resolução segura do host real e da sessão/vínculo do paciente, integração de metas autorizadas com formulários e homologação controlada da persistência. Há fluxo local cliente→handler→RPC→SQL para autorrelato com reenvio idempotente; não reiniciar do zero. A migração 014 continua somente local. Nenhuma aplicação Cloud, vínculo QA ou fórmula VITALIDADE autorizados por esta consolidação.
 
 Para nomes sem colisão: D124 (frontend Antigravity), D124-BACKEND (revogação Codex), D125-AUTH (correção anterior Codex), B023/B024/B025 (incrementos privados locais), D125 operacional (nova prioridade, ainda parcial).
+
+## Validação efetiva da consolidação
+
+Suíte global: 1.159 testes aprovados em 128 arquivos, 461,85 segundos. Inclui testes unitários, integração SQL PGlite, autorização/isolamento e Jornada/Escudos presentes no repositório. TypeScript completo aprovado; ESLint global com zero erros e sete avisos históricos Fast Refresh; build de produção aprovado. Dez testes de falha/ordenação Auth passaram em execução direcionada. git diff --check aprovado. Varredura do diff não encontrou padrões pesquisados de credenciais; nenhum .env/package-lock.json incluído. Não equivale a auditoria universal de segredos nem homologação Cloud.
+
+Último merge local Codex e6e6eff preserva develop 3723e93 e frontend 0d6e12b, incluindo ajustes documentais finais ocorridos durante a auditoria. Funcionalidades de frontend não foram descartadas; conflitos foram documentais e resolvidos preservando os registros. A suíte cobre o código funcional consolidado; merges finais posteriores ao início da suíte alteraram somente documentação.
+
+Próxima etapa executável: D125 operacional conforme docs/D125_OPERACIONAL_JORNADA_PLANO.md. Aplicações remotas, permissões clínicas e main continuam excluídas deste lote.
