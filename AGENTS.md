@@ -56,3 +56,6 @@
 - Diretriz humana atual de 14/10/2026: Codex reassume execução direta após D74; preservar design e entregas anteriores. Envios restritos a checkpoint/d69-d74, sem alterar main. bun.lock oficial; package-lock.json local não incluído. Cloud 014 ainda pendente de autorização específica.
 
 - Diretriz humana de 20/10/2026: Codex reassume execução integral após Antigravity D112. Preservar autoria, design e histórico. Implementar/testar continuamente pelo PRD v0.11.3 e adendos; commits/push ordinários no checkpoint existente autorizados. Não enviar Ask Lovable, não alterar main automaticamente nem ativar agenda, DNS, grants clínicos ou produção sem revisão/autorização específica. D112 consolidada por Codex após revisão; implementação permanece atribuída ao Antigravity.
+
+- Diretriz humana de 26/10/2026: Encerramento do desenvolvimento paralelo entre Antigravity e Codex. Codex reassume a governança técnica e desenvolvimento integral do projeto (frontend, backend, banco de dados, APIs e testes) a partir de develop consolidada na D124. Antigravity concluiu suas entregas e realizou handoff formal em docs/HANDOFF_ANTIGRAVITY_PARA_CODEX.md. Worktrees e históricos preservados.
+
