@@ -9,6 +9,7 @@ const clinicId = "00000000-0000-4000-8000-000000000001",
   patientId = "00000000-0000-4000-8000-000000000002";
 it("gravação com resposta perdida exige recarga e recupera revisão confirmada", async () => {
   vi.useFakeTimers();
+  const onMutationState = vi.fn();
   let persisted = { clinicId, patientId, isEnabled: false, revision: 0 };
   const fetcher = vi.fn().mockImplementation(async (_input, init: RequestInit) => {
     if (init.method === "PUT") {
@@ -21,6 +22,7 @@ it("gravação com resposta perdida exige recarga e recupera revisão confirmada
     render(
       <JourneyParticipationConnectedCard
         clinicId={clinicId}
+        onMutationState={onMutationState}
         patientId={patientId}
         getAccessToken={async () => "local-test-session"}
         fetcher={fetcher}
@@ -32,6 +34,7 @@ it("gravação com resposta perdida exige recarga e recupera revisão confirmada
   await act(async () => {
     await vi.advanceTimersByTimeAsync(20000);
   });
+  expect(onMutationState.mock.calls.map((c) => c[0])).toEqual(["pending", "settled"]);
   expect(screen.getByText(/Não foi possível confirmar/)).toBeInTheDocument();
   expect(screen.getByRole("switch")).toBeDisabled();
   expect(screen.getByRole("button", { name: "Salvar participação" })).toBeDisabled();

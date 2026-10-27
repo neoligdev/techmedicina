@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 type Props = {
+  onMutationState?: (state: "pending" | "settled") => void;
   clinicId: string;
   patientId: string;
   read: () => Promise<unknown>;
@@ -24,7 +25,7 @@ export function JourneyParticipationCard(props: Props) {
   return <ParticipationCard key={`${props.clinicId}:${props.patientId}`} {...props} />;
 }
 
-function ParticipationCard({ clinicId, patientId, read, save }: Props) {
+function ParticipationCard({ clinicId, patientId, read, save, onMutationState }: Props) {
   const [confirmed, setConfirmed] = useState<JourneyParticipation | null>(null);
   const [draft, setDraft] = useState(false);
   const [busy, setBusy] = useState(true);
@@ -72,6 +73,7 @@ function ParticipationCard({ clinicId, patientId, read, save }: Props) {
     const current = generation.current;
     const expected = confirmed;
     const requested = draft;
+    onMutationState?.("pending");
     setBusy(true);
     setMessage("");
     try {
@@ -103,7 +105,10 @@ function ParticipationCard({ clinicId, patientId, read, save }: Props) {
         );
       }
     } finally {
-      if (generation.current === current) setBusy(false);
+      if (generation.current === current) {
+        setBusy(false);
+        onMutationState?.("settled");
+      }
     }
   }
 

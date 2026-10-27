@@ -13,7 +13,7 @@ Executor: Codex. Continuidade das partes 1–5, sem reconstrução do design ou 
 
 ## Evidência e limites
 
-Testes direcionados: participação (49 testes/8 arquivos), formulários/runtime (23/5), SQL e cliente de disponibilidade (48/2), corrida do histórico (5/1). Esses conjuntos se sobrepõem; não somar como contagem única. TypeScript e lint direcionado aprovados; build local aprovado. O cenário SQL composto usa banco local real PGlite: ler participação inicial, ativar com revisão, consultar metas/disponibilidade, gravar/repetir sem duplicar, reler, pausar com auditoria e preservar o histórico.
+Testes direcionados: participação (49 testes/8 arquivos), formulários/runtime (23/5), SQL e cliente de disponibilidade (48/2), corrida do histórico (5/1). Esses conjuntos se sobrepõem; não somar como contagem única. Lint direcionado e build local aprovados. A confirmação prematura de TypeScript foi corrigida no fechamento da parte 7. O cenário SQL composto usa banco local real PGlite: ler participação inicial, ativar com revisão, consultar metas/disponibilidade, gravar/repetir sem duplicar, reler, pausar com auditoria e preservar o histórico.
 
 Não foram aplicados SQL, grants ou dados de QA no Cloud, nem configuração de domínio/DNS ou Publish. O preview continua limitado à versão autorizada na main até nova integração específica. A execução da suíte global é registrada no fechamento abaixo.
 
@@ -23,4 +23,4 @@ Verificação HTTP do servidor local em 127.0.0.1:8082: GET participation e self
 
 ## Fechamento da validação
 
-Regressão global final: **1.204 testes aprovados em 136 arquivos**, duração 412,74 s. TypeScript e build final aprovados. Lint global: zero erros e sete avisos históricos de Fast Refresh. Verificação do diff sem ocorrência dos padrões de credenciais procurados; não constitui auditoria exaustiva de segredos. Nenhum package-lock.json ou arquivo de credenciais incluído.
+Regressão global final: **1.204 testes aprovados em 136 arquivos**, duração 412,74 s. Build final aprovado. A revisão completa do log TypeScript identificou propriedades opcionais encaminhadas explicitamente como undefined; corrigidas e verificadas na parte 7 antes de integração na main. Lint global: zero erros e sete avisos históricos de Fast Refresh. Verificação do diff sem ocorrência dos padrões de credenciais procurados; não constitui auditoria exaustiva de segredos. Nenhum package-lock.json ou arquivo de credenciais incluído.

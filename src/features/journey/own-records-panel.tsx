@@ -32,6 +32,12 @@ export function OwnJourneyRecordsPanel(props: Props) {
   return <RecordsPanel key={`${props.clinicId}:${props.patientId}`} {...props} />;
 }
 function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
+  const [participationBusy, setParticipationBusy] = useState(false),
+    [accessRevision, setAccessRevision] = useState(0);
+  const onParticipationMutation = useCallback((state: "pending" | "settled") => {
+    setParticipationBusy(state === "pending");
+    if (state === "settled") setAccessRevision((v) => v + 1);
+  }, []);
   const [goals, setGoals] = useState<Goals>();
   const [history, setHistory] = useState<History>();
   const [error, setError] = useState(false),
@@ -120,10 +126,11 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
   return (
     <section aria-label="Seus registros da Jornada" className="space-y-4 mt-6" aria-busy={busy}>
       <JourneyParticipationConnectedCard
+        onMutationState={onParticipationMutation}
         clinicId={clinicId}
         patientId={patientId}
         getAccessToken={getAccessToken}
-        fetcher={fetcher}
+        {...(fetcher ? { fetcher } : {})}
       />
       <Card>
         <CardHeader>
@@ -174,10 +181,12 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
           )}
           {goals && (
             <OwnHabitForms
+              accessRevision={accessRevision}
+              blocked={participationBusy}
               clinicId={clinicId}
               patientId={patientId}
               getAccessToken={getAccessToken}
-              fetcher={fetcher}
+              {...(fetcher ? { fetcher } : {})}
               goals={goals.goals}
               onConfirmed={refreshHistory}
             />

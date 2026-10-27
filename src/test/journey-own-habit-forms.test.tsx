@@ -110,3 +110,35 @@ it("discards a successful late write after unmount instead of refreshing another
   });
   expect(props.onConfirmed).not.toHaveBeenCalled();
 });
+it("blocks during participation mutation and revalidates automatically without losing uncertain report ID", async () => {
+  const view = render(<OwnHabitForms {...props} />);
+  await act(async () => {});
+  fireEvent.click(screen.getByRole("checkbox"));
+  send.mockRejectedValueOnce(new Error("lost response"));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Registrar atividade realizada" }));
+  });
+  const first = send.mock.calls[0]![0];
+  await act(async () => {
+    view.rerender(<OwnHabitForms {...props} blocked />);
+  });
+  expect(
+    (screen.getByRole("button", { name: "Reenviar mesmo registro" }) as HTMLButtonElement).disabled,
+  ).toBe(true);
+  access.mockResolvedValueOnce({ canSubmit: false });
+  await act(async () => {
+    view.rerender(<OwnHabitForms {...props} accessRevision={1} />);
+  });
+  expect(
+    (screen.getByRole("button", { name: "Reenviar mesmo registro" }) as HTMLButtonElement).disabled,
+  ).toBe(true);
+  access.mockResolvedValue({ canSubmit: true });
+  await act(async () => {
+    view.rerender(<OwnHabitForms {...props} accessRevision={2} />);
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Reenviar mesmo registro" }));
+  });
+  expect(send.mock.calls[1]![0]).toEqual(first);
+  expect(props.onConfirmed).toHaveBeenCalledTimes(1);
+});

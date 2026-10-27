@@ -6,6 +6,8 @@ import { createJourneySelfReportClient, JourneySelfReportConflict } from "./self
 import { Button } from "@/components/ui/button";
 type Goal = z.infer<typeof ownGoalSchema>;
 type Props = {
+  accessRevision?: number;
+  blocked?: boolean;
   clinicId: string;
   patientId: string;
   getAccessToken: () => Promise<string | null>;
@@ -24,7 +26,13 @@ const names = {
   protocol: "protocolo",
 };
 /** Only supported, persisted goals; no clinical quantities, prescriptions or inferred score. */
-export function OwnHabitForms({ goals, onConfirmed, ...scope }: Props) {
+export function OwnHabitForms({
+  goals,
+  onConfirmed,
+  accessRevision = 0,
+  blocked = false,
+  ...scope
+}: Props) {
   const { clinicId, patientId, getAccessToken, fetcher } = scope;
   const [allowed, setAllowed] = useState(false),
     [loading, setLoading] = useState(true),
@@ -54,7 +62,7 @@ export function OwnHabitForms({ goals, onConfirmed, ...scope }: Props) {
     return () => {
       active = false;
     };
-  }, [readAccess, revision]);
+  }, [readAccess, revision, accessRevision]);
   const refresh = useCallback(() => setRevision((v) => v + 1), []);
   return (
     <div className="space-y-3">
@@ -68,7 +76,7 @@ export function OwnHabitForms({ goals, onConfirmed, ...scope }: Props) {
       ) : !allowed ? (
         <p>Registro indisponível: confira sua participação e o acesso ao acompanhamento.</p>
       ) : null}
-      <Button variant="outline" disabled={loading} onClick={refresh}>
+      <Button variant="outline" disabled={loading || blocked} onClick={refresh}>
         Atualizar disponibilidade
       </Button>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -80,7 +88,7 @@ export function OwnHabitForms({ goals, onConfirmed, ...scope }: Props) {
             <HabitForm
               key={`${goal.id}:${goal.version}`}
               goal={goal}
-              allowed={allowed && !loading}
+              allowed={allowed && !loading && !blocked}
               readAccess={readAccess}
               send={send}
               onConfirmed={onConfirmed}
