@@ -3,6 +3,7 @@ import type { z } from "zod";
 import type { ownGoalSchema } from "./own-goals";
 import { createSelfReportAccessClient } from "./self-report-access-client";
 import { createJourneySelfReportClient, JourneySelfReportConflict } from "./self-report-client";
+import { createSelfReportRecoveryClient } from "./self-report-recovery-client";
 import { Button } from "@/components/ui/button";
 type Goal = z.infer<typeof ownGoalSchema>;
 type Props = {
@@ -43,6 +44,10 @@ export function OwnHabitForms({
   );
   const send = useMemo(
     () => createJourneySelfReportClient({ clinicId, patientId, getAccessToken }, fetcher),
+    [clinicId, patientId, getAccessToken, fetcher],
+  );
+  const recover = useMemo(
+    () => createSelfReportRecoveryClient({ clinicId, patientId, getAccessToken }, fetcher),
     [clinicId, patientId, getAccessToken, fetcher],
   );
   useEffect(() => {
@@ -91,6 +96,7 @@ export function OwnHabitForms({
               allowed={allowed && !loading && !blocked}
               readAccess={readAccess}
               send={send}
+              recover={recover}
               onConfirmed={onConfirmed}
             />
           ))}
@@ -103,12 +109,14 @@ function HabitForm({
   allowed,
   readAccess,
   send,
+  recover,
   onConfirmed,
 }: {
   goal: Goal;
   allowed: boolean;
   readAccess: ReturnType<typeof createSelfReportAccessClient>;
   send: ReturnType<typeof createJourneySelfReportClient>;
+  recover: ReturnType<typeof createSelfReportRecoveryClient>;
   onConfirmed: () => void;
 }) {
   const [checked, setChecked] = useState(false),
@@ -165,6 +173,24 @@ function HabitForm({
       pending.current = false;
     }
   }
+  async function reconcile() {
+    if (pending.current || !input.current || state !== "uncertain") return;
+    pending.current = true;
+    setState("sending");
+    try {
+      const receipt = await recover(input.current);
+      if (!active.current) return;
+      if (receipt) {
+        setState("confirmed");
+        onConfirmed();
+      } else setState("uncertain");
+    } catch (error) {
+      if (active.current)
+        setState(error instanceof JourneySelfReportConflict ? "conflict" : "uncertain");
+    } finally {
+      pending.current = false;
+    }
+  }
   return (
     <form
       onSubmit={(e) => {
@@ -195,6 +221,11 @@ function HabitForm({
         <p role="alert">
           Há conflito neste registro. Consulte seu acompanhamento antes de criar outro.
         </p>
+      )}
+      {state === "uncertain" && input.current && (
+        <Button type="button" variant="outline" onClick={() => void reconcile()}>
+          Conferir no histórico
+        </Button>
       )}
       <Button
         type="submit"

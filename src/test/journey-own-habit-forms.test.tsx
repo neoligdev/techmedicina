@@ -1,13 +1,20 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-const { access, send } = vi.hoisted(() => ({ access: vi.fn(), send: vi.fn() }));
+const { access, send, recover } = vi.hoisted(() => ({
+  access: vi.fn(),
+  send: vi.fn(),
+  recover: vi.fn(),
+}));
 vi.mock("@/features/journey/self-report-access-client", () => ({
   createSelfReportAccessClient: () => access,
 }));
 vi.mock("@/features/journey/self-report-client", async (original) => ({
   ...(await original<typeof import("@/features/journey/self-report-client")>()),
   createJourneySelfReportClient: () => send,
+}));
+vi.mock("@/features/journey/self-report-recovery-client", () => ({
+  createSelfReportRecoveryClient: () => recover,
 }));
 import { OwnHabitForms } from "@/features/journey/own-habit-forms";
 const goal = {
@@ -141,4 +148,49 @@ it("blocks during participation mutation and revalidates automatically without l
   });
   expect(send.mock.calls[1]![0]).toEqual(first);
   expect(props.onConfirmed).toHaveBeenCalledTimes(1);
+});
+
+it("confirms a previously committed event from history even after participation was paused", async () => {
+  const view = render(<OwnHabitForms {...props} />);
+  await act(async () => {});
+  fireEvent.click(screen.getByRole("checkbox"));
+  send.mockRejectedValueOnce(new Error("response lost"));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Registrar atividade realizada" }));
+  });
+  const input = send.mock.calls[0]![0];
+  access.mockResolvedValue({ canSubmit: false });
+  await act(async () => {
+    view.rerender(<OwnHabitForms {...props} accessRevision={1} />);
+  });
+  recover.mockResolvedValueOnce({
+    ...input,
+    id: goal.id,
+    clinicId: props.clinicId,
+    patientId: props.patientId,
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Conferir no histórico" }));
+  });
+  expect(recover).toHaveBeenCalledWith(input);
+  expect(send).toHaveBeenCalledTimes(1);
+  expect(screen.getByText("Registro confirmado.")).toBeTruthy();
+  expect(props.onConfirmed).toHaveBeenCalledTimes(1);
+});
+it("absence from bounded history never reports a failed write as confirmed", async () => {
+  await act(async () => {
+    render(<OwnHabitForms {...props} />);
+  });
+  fireEvent.click(screen.getByRole("checkbox"));
+  send.mockRejectedValueOnce(new Error("lost"));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Registrar atividade realizada" }));
+  });
+  recover.mockResolvedValueOnce(null);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Conferir no histórico" }));
+  });
+  expect(screen.queryByText("Registro confirmado.")).toBeNull();
+  expect(props.onConfirmed).not.toHaveBeenCalled();
+  expect(screen.getByRole("button", { name: "Reenviar mesmo registro" })).toBeTruthy();
 });
