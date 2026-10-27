@@ -61,4 +61,3 @@ Em 26/10/2026, por diretriz humana formal, o modelo de desenvolvimento paralelo 
 Todas as entregas do Antigravity até a D124 (VITALIDADE, JORNADA, Meus Escudos, blindagem de score e preparação para dados reais) foram auditadas, validadas com 1.112 testes aprovados e integradas na branch `develop`.
 A partir deste marco, o **Codex** reassume a governança técnica e o desenvolvimento integral do Techmedicina (frontend, backend, banco de dados, APIs, infraestrutura e testes).
 O documento detalhado de transferência encontra-se registrado em `docs/HANDOFF_ANTIGRAVITY_PARA_CODEX.md`.
-
