@@ -1,11 +1,11 @@
 # PLUGPIX TECHMEDICINA — HANDOFF DEFINITIVO DO ANTIGRAVITY PARA O CODEX
 
-**Data:** 26/10/2026
-**De:** Antigravity (Executor Frontend & PWA)
-**Para:** Codex (Desenvolvedor Principal e Integral)
-**Branch de Integração:** `develop`
-**Referência Consolidada:** `75a7818` (e commit de documentação de handoff)
-**Status da Suíte Vitest:** 1.112 testes aprovados em 123 arquivos (100% verde)
+- **Data:** 26/10/2026
+- **De:** Antigravity (Executor Frontend & PWA)
+- **Para:** Codex (Desenvolvedor Principal e Integral)
+- **Branch de Integração:** `develop`
+- **Referência Consolidada:** `75a7818` (e commit de documentação de handoff)
+- **Status da Suíte Vitest:** 1.112 testes aprovados em 123 arquivos (100% verde)
 
 ---
 
