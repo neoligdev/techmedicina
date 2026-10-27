@@ -452,7 +452,7 @@
       "parent": "8",
       "status": "progress",
       "done": "Base local com contratos e permissões por clínica/paciente, metas versionadas, eventos idempotentes, preferências auditadas, suspensão médica e cartões conectados aos contratos HTTP. D60 aplicou fundação SQL 008–012 e D68 aplicou SQL 013 no Cloud. D69 implementou o motor determinístico da pontuação diária JORNADA (0 a 100 pontos, PRD §11.4). D70 implementou o motor determinístico de Escudos e regressão controlada (PRD §11.5, VJE-5). D71 implementou persistência local, histórico imutável e migração 014. D72 consolidou segurança contra fraude de pontuação por clientes, advisory lock contra concorrência, não-regressão de maior escudo e contratos PWA (648 testes aprovados). D73 implementou a Biblioteca Central de Artes dos 5 Escudos com 15 variações gráficas canônicas, sanitizador SVG anti-XSS rigoroso, versionamento SemVer com histórico/rollback, interface administrativa no Super ADM e serviço de catálogo para o PWA (671 testes aprovados). D74 consolidou o inventário do Git, realizou a auditoria de integridade das entregas D69 a D73, classificou as 15 variações de artes como propostas aguardando aprovação humana da PlugPix, auditou a segurança da biblioteca administrativa (armazenamento local/demo no cliente vs. persistência Cloud pendente), desenhou a arquitetura relacional/storage para nuvem e preparou a proposta de checkpoint seguro em commits separados (673 testes aprovados). D122 implementou pelo Antigravity a experiência diária integrada no PWA do cliente: card VITALIDADE com os 5 pilares do PRD §11.3 em homologação clínica sem nota fictícia, JORNADA com escudo ativo e progresso para próximo nível, registros de hábitos de autorrelato (alimentação, atividade física e medicamentos) e painel transparente de dispositivos sem dados simulados (1.084 testes aprovados em 122 arquivos).",
-      "next": "Conectar o fluxo de sincronização de dispositivos via Web Bluetooth quando o firmware homologado estiver disponível e integrar os autorrelatos diários com os endpoints do Codex para persistência transacional.",
+      "next": "D125 operacional em implementação: integrar sessão/host/RPC e metas reais aos componentes existentes, distinguindo Auth userId de patientId. Migração 014 e homologação Cloud exigem autorização própria; sem pontuação VITALIDADE inventada.",
       "authors": [
         "Codex",
         "Antigravity"
@@ -3254,6 +3254,102 @@
       "status": "done",
       "done": "Antigravity implementou a experiência diária integrada no PWA do cliente: card VITALIDADE com os 5 pilares do PRD §11.3 (sem nota numérica fictícia, em homologação clínica e modal explicativo de metodologia); card JORNADA & Escudos com escudo ativo (Ritmo), média da janela móvel de 7 dias avaliáveis, progresso para o próximo nível e regra oficial de regressão preservando conquistas anteriores; registros diários de hábitos (alimentação consciente, atividade física com duração/intensidade e confirmação de medicamentos prescritos) com autorrelato explícito; painel transparente de dispositivos de saúde (pulseira inteligente, balança de bioimpedância e anel inteligente) com status honesto (não configurada / homologação BLE) e sem simulação de dados vitais falsos, garantindo 100% de elegibilidade na JORNADA para clientes sem hardware. Suíte de testes validada: 1.084 testes aprovados em 122 arquivos (6 novos testes dedicados), TypeScript, ESLint e build aprovados.",
       "next": "Conectar o fluxo de sincronização de dispositivos via Web Bluetooth quando o firmware homologado estiver disponível e integrar os autorrelatos diários com os endpoints do Codex para persistência transacional.",
+      "requirements": []
+    },
+    {
+      "id": "D123",
+      "title": "PWA: galeria de Escudos e histórico demonstrativo",
+      "parent": "8.10",
+      "authors": [
+        "Antigravity"
+      ],
+      "status": "done",
+      "done": "Galeria canônica com cinco níveis, destaque e detalhes, preservando histórico demonstrativo. Implementação anterior consolidada sem refazer o design.",
+      "next": "Homologar histórico real e dados autorizados; galeria demo não prova persistência produtiva.",
+      "requirements": []
+    },
+    {
+      "id": "D124",
+      "title": "PWA: preparação para dados reais e estados de Jornada",
+      "parent": "8.10",
+      "authors": [
+        "Antigravity"
+      ],
+      "status": "done",
+      "done": "Preparação de consumo HTTP, estados de carregamento, insuficiência, provisório e erro; score fictício bloqueado em contas reais. Histórico Git preservado na consolidação.",
+      "next": "Conectar contexto paciente/tenant derivado do servidor e persistência real; callbacks foram complementados pelo Codex durante consolidação.",
+      "requirements": []
+    },
+    {
+      "id": "D124-BACKEND",
+      "title": "White Label: revogação privada auditada de chaves",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Proposta local 022, revisão otimista, revogação/auditoria atômicas e recibos históricos preservados. Não reativa chave.",
+      "next": "Aplicação Cloud e identidade mínima do worker exigem revisão/autorização próprias.",
+      "requirements": []
+    },
+    {
+      "id": "D125-AUTH",
+      "title": "PWA: falha Auth não habilita demonstração",
+      "parent": "3.1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Estado Auth desconhecido mantém modo restrito. Consolidação também impede lookup antigo de sobrescrever login/logout posterior e retorno após desmontagem.",
+      "next": "Homologar contas/hosts reais; distinto da D125 operacional de hábitos solicitada na retomada.",
+      "requirements": []
+    },
+    {
+      "id": "B023",
+      "title": "Backend: consulta privada da auditoria de chaves",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Proposta local 023: metadados de revogação com paginação estável, escopo projeto/chave e autorização persistida.",
+      "next": "Sem endpoint/Cloud/grants; integrar ao futuro fluxo administrativo autorizado.",
+      "requirements": []
+    },
+    {
+      "id": "B024",
+      "title": "Backend: inventário privado de metadados de chaves",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Proposta local 024: inventário paginado por projeto, revisão/validade/revogação, sem material privado. Índice local para auditoria.",
+      "next": "Snapshot não autoriza uso/reativação; provisionamento e worker continuam pendentes.",
+      "requirements": []
+    },
+    {
+      "id": "B025",
+      "title": "Backend: ativação transacional local vinculada a provas",
+      "parent": "2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Proposta local 025: exige prova persistida atual, clínica ativa, chave válida, revisão esperada e auditoria atômica. Nenhum domínio real ativado.",
+      "next": "Resolver runtime deve revalidar validade/estado; suspensão, retirada e Cloud não concluídos.",
+      "requirements": []
+    },
+    {
+      "id": "D126",
+      "title": "Consolidação integral Codex e preservação do frontend",
+      "parent": "1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Históricos de ambos os agentes preservados por merges não destrutivos; handoff final incorporado e governança atualizada. Validação consolidada: 1.159 testes/128 arquivos, TypeScript, build e lint global sem erros (sete avisos).",
+      "next": "D125 operacional em implementação: rotas/runtime, contexto paciente próprio, metas e persistência; main/preview e SQL remoto fora deste lote.",
       "requirements": []
     }
   ]
