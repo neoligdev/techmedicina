@@ -17,14 +17,13 @@ const event = {
   ...input,
   receivedAt: "2026-10-01T10:00:01Z",
 };
-const page = {
+const report = {
   clinicId: scope.clinicId,
   patientId: scope.patientId,
-  events: [event],
-  nextCursor: null,
+  event,
 };
-it("confirms only matching persisted source/goal/time with a bounded authorized GET", async () => {
-  const fetcher = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ page }));
+it("confirms only matching persisted source/goal/time with an exact authorized GET", async () => {
+  const fetcher = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ report }));
   expect(await createSelfReportRecoveryClient(scope, fetcher)(input)).toMatchObject({
     ...input,
     id: event.id,
@@ -32,19 +31,19 @@ it("confirms only matching persisted source/goal/time with a bounded authorized 
     patientId: scope.patientId,
   });
   expect(fetcher).toHaveBeenCalledWith(
-    "/api/journey/self-reports?limit=100",
+    "/api/journey/self-report-status?sourceEventId=" + input.sourceEventId,
     expect.objectContaining({ method: "GET", credentials: "omit", cache: "no-store" }),
   );
 });
 it("absence remains unknown, foreign scope is rejected, and conflicting goal or microsecond raises conflict", async () => {
   expect(
     await createSelfReportRecoveryClient(scope, async () =>
-      Response.json({ page: { ...page, events: [] } }),
+      Response.json({ report: { ...report, event: null } }),
     )(input),
   ).toBeNull();
   await expect(
     createSelfReportRecoveryClient(scope, async () =>
-      Response.json({ page: { ...page, patientId: input.goalId } }),
+      Response.json({ report: { ...report, patientId: input.goalId } }),
     )(input),
   ).rejects.toThrow();
   for (const altered of [
@@ -53,7 +52,7 @@ it("absence remains unknown, foreign scope is rejected, and conflicting goal or 
   ]) {
     await expect(
       createSelfReportRecoveryClient(scope, async () =>
-        Response.json({ page: { ...page, events: [altered] } }),
+        Response.json({ report: { ...report, event: altered } }),
       )(input),
     ).rejects.toBeInstanceOf(JourneySelfReportConflict);
   }
@@ -62,7 +61,7 @@ it("normalizes offsets and trailing zeroes without truncating conflict precision
   const altered = { ...event, occurredAt: "2026-10-01T07:00:00.123000-03:00" };
   expect(
     await createSelfReportRecoveryClient(scope, async () =>
-      Response.json({ page: { ...page, events: [altered] } }),
+      Response.json({ report: { ...report, event: altered } }),
     )(input),
   ).toMatchObject({ id: event.id });
 });

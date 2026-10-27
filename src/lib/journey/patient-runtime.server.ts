@@ -10,7 +10,10 @@ import { createSelfReportHistoryEndpoint } from "./self-report-history-endpoint.
 
 import { createOwnGoalsEndpoint } from "./own-goals-endpoint.server";
 
+import { createSelfReportStatusEndpoint } from "./self-report-status-endpoint.server";
+
 type JourneyRpcName =
+  | "tm_get_own_journey_self_report"
   | "tm_get_own_journey_goals"
   | "tm_get_own_journey_self_reports"
   | "tm_resolve_patient_journey_host"
@@ -24,6 +27,7 @@ type JourneyRpcName =
 import { selfReportAccessSchema } from "@/features/journey/self-report-access-client";
 
 export type PatientJourneyOperation =
+  | "selfReportStatus"
   | "selfReportAccess"
   | "participationRead"
   | "participationSave"
@@ -69,6 +73,12 @@ export function createPatientJourneyRuntime<
         lookup,
         resolveSession,
         read: (session, args) => providers.rpc(session, "tm_get_own_journey_goals", args),
+      })(request);
+    if (operation === "selfReportStatus")
+      return createSelfReportStatusEndpoint({
+        lookup,
+        resolveSession,
+        read: (session, args) => providers.rpc(session, "tm_get_own_journey_self_report", args),
       })(request);
     if (operation === "selfReportHistory")
       return createSelfReportHistoryEndpoint({

@@ -114,6 +114,7 @@ beforeAll(async () => {
     "026_patient_journey_host_lookup.sql",
     "027_journey_own_self_report_history.sql",
     "028_journey_own_goals.sql",
+    "029_journey_own_self_report_status.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -1014,6 +1015,13 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
             [args["p_clinic_id"], args["p_after"] ?? null, args["p_limit"]],
           )
         ).rows[0]!.value;
+      if (name === "tm_get_own_journey_self_report")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_get_own_journey_self_report($1,$2) AS value",
+            [args["p_clinic_id"], args["p_source_event_id"]],
+          )
+        ).rows[0]!.value;
       if (name === "tm_get_own_journey_self_reports")
         return (
           await db.query<{ value: unknown }>(
@@ -1092,6 +1100,19 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
     clinicId: clinic,
     patientId: pid,
     events: [{ goalId: goal, sourceEventId: event }],
+  });
+  const exact = await run(
+    "selfReportStatus",
+    new Request(
+      "https://" + domain.hostname + "/api/journey/self-report-status?sourceEventId=" + event,
+      { headers: { host: domain.hostname } },
+    ),
+  );
+  expect(exact.status).toBe(200);
+  expect((await exact.json()).report).toMatchObject({
+    clinicId: clinic,
+    patientId: pid,
+    event: { goalId: goal, sourceEventId: event },
   });
   const shields = await run("shields", req());
   expect(shields.status).toBe(200);
@@ -1268,6 +1289,73 @@ it("own goals SQL pages are minimal, ordered and scoped; reads do not authorize 
   await db.exec("RESET ROLE");
   await db.query(
     "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='journey_goals'",
+    [mid],
+  );
+  await user(uid);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+});
+it("exact own source lookup reaches old events outside recent pages and refuses revoked access", async () => {
+  const { uid, pid, mid } = await activatePatientHost();
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'journey_events','read')", [
+    mid,
+  ]);
+  const goal = randomUUID(),
+    source = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '2 days')",
+    [goal, clinic, pid, uid],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_events(clinic_id,patient_id,goal_id,source_event_id,source,actor_user_id,goal_version,policy_version_id,occurred_at,received_at) VALUES($1,$2,$3,$4,'self_report',$5,1,$3,now()-interval '1 day',now()-interval '1 day')",
+    [clinic, pid, goal, source, uid],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_events(clinic_id,patient_id,goal_id,source_event_id,source,actor_user_id,goal_version,policy_version_id,occurred_at,received_at) SELECT $1,$2,$3,gen_random_uuid(),'self_report',$4,1,$3,now()-interval '1 hour',now() FROM generate_series(1,120)",
+    [clinic, pid, goal, uid],
+  );
+  const otherUser = randomUUID(),
+    otherPatient = randomUUID(),
+    otherGoal = randomUUID(),
+    otherSource = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+    [otherPatient, clinic, otherUser],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
+    [otherGoal, clinic, otherPatient, otherUser],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_events(clinic_id,patient_id,goal_id,source_event_id,source,actor_user_id,goal_version,policy_version_id,occurred_at) VALUES($1,$2,$3,$4,'self_report',$5,1,$3,now())",
+    [clinic, otherPatient, otherGoal, otherSource, otherUser],
+  );
+  await user(uid);
+  const read = async (id: string | null = source) =>
+    (
+      await db.query<{ report: { event: { sourceEventId: string } | null } }>(
+        "SELECT public.tm_get_own_journey_self_report($1,$2) AS report",
+        [clinic, id],
+      )
+    ).rows[0]!.report;
+  expect((await read()).event?.sourceEventId).toBe(source);
+  const recent = (
+    await db.query<{ page: { events: Array<{ sourceEventId: string }> } }>(
+      "SELECT public.tm_get_own_journey_self_reports($1,NULL,100) AS page",
+      [clinic],
+    )
+  ).rows[0]!.page;
+  expect(recent.events.some((e) => e.sourceEventId === source)).toBe(false);
+  expect((await read(otherSource)).event).toBeNull();
+  expect((await read(randomUUID())).event).toBeNull();
+  await expect(read(null)).rejects.toMatchObject({ code: "22023" });
+  await user(operator);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(uid, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='journey_events'",
     [mid],
   );
   await user(uid);

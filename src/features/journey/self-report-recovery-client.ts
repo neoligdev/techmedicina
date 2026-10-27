@@ -1,16 +1,15 @@
 import { journeySelfReportInputSchema } from "./contracts";
-import { createOwnSelfReportHistoryClient } from "./self-report-history-client";
+import { createOwnSelfReportStatusClient } from "./self-report-status-client";
 import { JourneySelfReportConflict, journeySelfReportReceiptSchema } from "./self-report-client";
-/** A bounded read can confirm a committed write. Absence never proves that it failed. */
+/** Exact source lookup can confirm a committed write. Absence remains inconclusive. */
 export function createSelfReportRecoveryClient(
   scope: { clinicId: string; patientId: string; getAccessToken: () => Promise<string | null> },
   fetcher: typeof fetch = fetch,
 ) {
-  const read = createOwnSelfReportHistoryClient(scope, fetcher);
+  const read = createOwnSelfReportStatusClient(scope, fetcher);
   return async (value: unknown) => {
     const input = journeySelfReportInputSchema.parse(value);
-    const page = await read({ limit: 100 });
-    const saved = page.events.find((e) => e.sourceEventId === input.sourceEventId);
+    const saved = await read(input.sourceEventId);
     if (!saved) return null;
     if (
       saved.goalId !== input.goalId ||
