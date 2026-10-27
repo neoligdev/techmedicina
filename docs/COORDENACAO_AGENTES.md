@@ -54,3 +54,11 @@ O ambiente Bun informou leitura de .env ignorado pelo Git. Não foi copiado nenh
 Teste de fumaça escolhido: src/test/domain-possession.test.ts, isolado e sem rede real. A suíte completa não foi repetida nesta tarefa de preparação.
 As worktrees ficam fora dos writable roots desta sessão Codex; o acesso foi autorizado por escalonamento para a preparação. Uma sessão futura deve abrir C:/dev/techmedicina-codex como workspace, evitando depender de permissões excepcionais a cada edição.
 Resultado: 10 testes aprovados em cada worktree (um arquivo por ambiente). git status sem mudanças rastreadas nas duas worktrees após instalação; bun.lock preservado. git merge-base confirma D115 como base comum. A diferença na branch Codex contém exclusivamente este documento de coordenação. Não houve atualização do catálogo de entregas: trata-se de preparação Git, e o status oficial só deve mudar durante integração.
+
+## Encerramento da Coordenação Paralela e Retomada Integral pelo Codex (26/10/2026)
+
+Em 26/10/2026, por diretriz humana formal, o modelo de desenvolvimento paralelo entre Antigravity (frontend) e Codex (backend) foi encerrado com sucesso.
+Todas as entregas do Antigravity até a D124 (VITALIDADE, JORNADA, Meus Escudos, blindagem de score e preparação para dados reais) foram auditadas, validadas com 1.112 testes aprovados e integradas na branch `develop`.
+A partir deste marco, o **Codex** reassume a governança técnica e o desenvolvimento integral do Techmedicina (frontend, backend, banco de dados, APIs, infraestrutura e testes).
+O documento detalhado de transferência encontra-se registrado em `docs/HANDOFF_ANTIGRAVITY_PARA_CODEX.md`.
+
