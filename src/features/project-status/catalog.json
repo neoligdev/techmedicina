@@ -3351,6 +3351,18 @@
       "done": "Históricos de ambos os agentes preservados por merges não destrutivos; handoff final incorporado e governança atualizada. Validação consolidada: 1.159 testes/128 arquivos, TypeScript, build e lint global sem erros (sete avisos).",
       "next": "D125 operacional em implementação: rotas/runtime, contexto paciente próprio, metas e persistência; main/preview e SQL remoto fora deste lote.",
       "requirements": []
+    },
+    {
+      "id": "D125-CONTEXT",
+      "title": "Jornada: contexto próprio de paciente — parte 1 local",
+      "parent": "8.10",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Schema, cliente e handler composto derivam clinicId/patientId do host e vínculo verificados; não usam Auth userId como paciente nem aceitam tenant na query. Cinco testes novos; dez direcionados com fluxo SQL de autorrelato/handler de Escudos, TypeScript e lint aprovados.",
+      "next": "D125 operacional permanece parcial: falta provedor runtime/lookup mínimo, rotas registradas, metas e integração real do frontend. Sem Cloud, grants ou domínio ativado.",
+      "requirements": []
     }
   ]
 }
