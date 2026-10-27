@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -389,8 +389,8 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex, Antigravity
-- **Entregue**: Contratos, metas/eventos idempotentes, preferências, suspensão e rascunhos possuem implementação local e fundação Cloud histórica 008–013. Motores JORNADA/Escudos e ledger 014 locais; biblioteca de artes ainda demonstrativa. Antigravity criou galeria e estados PWA D122–D124, preservados por Codex. D125 agora registra rotas same-bearer, contexto próprio derivado do host/vínculo e conexão da galeria. Integração SQL local confirma reenvio sem duplicar evento e ausência de score inventado. Isso não é homologação de contas/dados clínicos reais.
-- **Próximo Passo**: Concluir leitura de metas próprias elegíveis e ligar formulários e histórico à UI. Parte 3 entrega recuperação paginada por RPC/HTTP local, ainda sem 027 no Cloud. Homologação clínica e dependências White Label exigem aprovações próprias; não inventar VITALIDADE ou prescrições.
+- **Entregue**: Contratos/metas/eventos, preferências auditadas, suspensão e rascunhos possuem implementação local e fundação Cloud histórica 008–013. Motores JORNADA/Escudos e ledger 014 locais; biblioteca de artes ainda demonstrativa. Frontend Antigravity D122–D124 preservado. Codex conectou contexto próprio por host/sessão, galeria, metas, histórico paginado, participação e formulários de autorrelato suportados com reenvio idempotente. Regressão global D125 parte 6: 1.204 testes/136 arquivos. Isso não é homologação clínica real nem apuração automática de pontos.
+- **Próximo Passo**: Homologar migrações/White Label, contas e vínculos/grants com aprovações próprias. Concluir dados manuais estruturados, calendário/descanso, prescrições, apuração diária e integração clínica. VITALIDADE depende de validação formal; parte técnica não conclui requisito de produção. Status posterior à main em desenvolvimento até integração específica.
 
 **Requisitos**:
 
@@ -2559,3 +2559,10 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Painel somente de leitura montado em /app/escudos após contexto próprio verificado, com metas, histórico confirmado, paginação, vazio, retry e descarte de respostas de sessões anteriores. Preserva demo e componentes visuais. 27 testes de UI/Auth aprovados, tipos/lint/build válidos; demo conferida no navegador local.
 - **Próximo Passo**: Conectar formulários reais com participação/autorização e revalidar histórico após registro. Homologação Cloud pendente; evidência local demonstra preservação visual, não dados clínicos reais. Main/preview permanecem em 1ec288b; implementação em develop.
+
+## D125-HABITS - Jornada: participação auditada e formulários de autorrelato — parte 6 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Rotas GET/PUT de participação e GET de disponibilidade conectadas ao mesmo bearer. Controle existente montado no paciente real; formulários exigem confirmação, meta elegível suportada, vigência e participação/grant revalidados. Reenvio mantém ID/horário e confirmações atualizam histórico sem corrida com paginação antiga. Regressão global: 1.204 testes/136 arquivos aprovados, TypeScript/build válidos, lint global sem erros e sete avisos históricos.
+- **Próximo Passo**: Homologar cadeia Cloud/host/vínculos com autorização própria; continuar dados estruturados, prescrições, calendário e apuração diária. Não há outbox após recarga nem cálculo VITALIDADE. Main/preview continuam em 1ec288b até nova integração aprovada; SQL remoto não aplicado.
