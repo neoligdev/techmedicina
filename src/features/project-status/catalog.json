@@ -803,10 +803,12 @@
       "id": "15",
       "title": "Blog central e blog no aplicativo",
       "parent": null,
-      "status": "pending",
-      "done": "Ainda não há implementação funcional deste requisito validada.",
-      "next": "Falta implementar e validar blog central e blog no aplicativo, respeitando as decisões pendentes do PRD.",
-      "authors": [],
+      "status": "progress",
+      "done": "Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados.",
+      "next": "Homologar migração 030 após autorização e criar biblioteca/listagem dos rascunhos. Definir revisão editorial/clínica, mídias/acessibilidade, disponibilização central e seleção/publicação por clínica; depois consumo no PWA. Nenhuma política editorial ou neutralidade é presumida a partir dos campos do editor.",
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Super ADM possui módulo Blog e disponibiliza conteúdos neutros, reutilizáveis por clínicas com marca própria.",
         "Conteúdo pode conter imagem e texto, vídeo ou áudio de podcast.",
@@ -3458,6 +3460,18 @@
       "status": "done",
       "done": "GET /api/journey/self-report-status e proposta local 029 recuperam o próprio evento pela chave única existente, sem limite da página recente. Host/sessão/grant de leitura revalidados, DTO mínimo e nenhum POST extra. SQL local confirma evento fora dos 100 recentes e recusa acesso revogado/anon; 61 testes direcionados, TypeScript/lint/build aprovados.",
       "next": "029 não aplicada no Cloud; cadeia de host, migrações e vínculos reais exigem autorização/homologação próprias. Continua sem outbox após recarga e sem pontuação/VITALIDADE. Esta parte substitui a limitação de 100 eventos da parte 8; main/preview continuam na versão autorizada anterior.",
+      "requirements": []
+    },
+    {
+      "id": "BLOG-DRAFTS",
+      "title": "Blog central: rascunhos editoriais protegidos — etapa 1",
+      "parent": "15",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Nova frente PRD §15: editor preserva demonstração/identidade e só confirma salvamento por recibo do servidor. SQL local 030 guarda revisão e versões/ator; somente Super ADM ativo usa RPCs, sem acesso direto às tabelas. Resposta incerta exige releitura; logout remove edição. 45 testes direcionados/8 arquivos, TypeScript/lint/build aprovados; navegador local e recusa anônima 401 conferidos.",
+      "next": "030 não aplicada no Cloud. Falta biblioteca paginada, revisão editorial/clínica, mídias, seleção/publicação pela clínica e consumo no PWA. Rascunhos não são publicações; main/preview e infraestrutura não alterados.",
       "requirements": []
     }
   ]

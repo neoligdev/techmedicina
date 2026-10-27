@@ -731,12 +731,12 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - 11. Combinações de pulseira com/sem médico, IA e fidelidade respeitam os recursos incluídos e os valores configurados.
 - 12. Alteração de preço/plano não muda retrospectivamente faturas, vendas ou condições contratuais sem fluxo definido de alteração.
 
-## 15 - Blog central e blog no aplicativo 🟡
+## 15 - Blog central e blog no aplicativo 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar blog central e blog no aplicativo, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados.
+- **Próximo Passo**: Homologar migração 030 após autorização e criar biblioteca/listagem dos rascunhos. Definir revisão editorial/clínica, mídias/acessibilidade, disponibilização central e seleção/publicação por clínica; depois consumo no PWA. Nenhuma política editorial ou neutralidade é presumida a partir dos campos do editor.
 
 **Requisitos**:
 
@@ -2587,3 +2587,10 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET /api/journey/self-report-status e proposta local 029 recuperam o próprio evento pela chave única existente, sem limite da página recente. Host/sessão/grant de leitura revalidados, DTO mínimo e nenhum POST extra. SQL local confirma evento fora dos 100 recentes e recusa acesso revogado/anon; 61 testes direcionados, TypeScript/lint/build aprovados.
 - **Próximo Passo**: 029 não aplicada no Cloud; cadeia de host, migrações e vínculos reais exigem autorização/homologação próprias. Continua sem outbox após recarga e sem pontuação/VITALIDADE. Esta parte substitui a limitação de 100 eventos da parte 8; main/preview continuam na versão autorizada anterior.
+
+## BLOG-DRAFTS - Blog central: rascunhos editoriais protegidos — etapa 1 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Nova frente PRD §15: editor preserva demonstração/identidade e só confirma salvamento por recibo do servidor. SQL local 030 guarda revisão e versões/ator; somente Super ADM ativo usa RPCs, sem acesso direto às tabelas. Resposta incerta exige releitura; logout remove edição. 45 testes direcionados/8 arquivos, TypeScript/lint/build aprovados; navegador local e recusa anônima 401 conferidos.
+- **Próximo Passo**: 030 não aplicada no Cloud. Falta biblioteca paginada, revisão editorial/clínica, mídias, seleção/publicação pela clínica e consumo no PWA. Rascunhos não são publicações; main/preview e infraestrutura não alterados.
