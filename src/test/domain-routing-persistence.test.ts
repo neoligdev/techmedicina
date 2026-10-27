@@ -113,6 +113,7 @@ beforeAll(async () => {
     "025_domain_activation.sql",
     "026_patient_journey_host_lookup.sql",
     "027_journey_own_self_report_history.sql",
+    "028_journey_own_goals.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -977,6 +978,7 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
         isActive: true,
         grants: [
           { resource: "journey_shields", action: "read" },
+          { resource: "journey_goals", action: "read" },
           { resource: "journey_events", action: "create" },
           { resource: "journey_events", action: "read" },
         ],
@@ -992,6 +994,13 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
           await db.query<{ value: unknown }>(
             "SELECT public.tm_resolve_patient_journey_host($1) AS value",
             [args["p_hostname"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_get_own_journey_goals")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_get_own_journey_goals($1,$2,$3) AS value",
+            [args["p_clinic_id"], args["p_after"] ?? null, args["p_limit"]],
           )
         ).rows[0]!.value;
       if (name === "tm_get_own_journey_self_reports")
@@ -1035,6 +1044,13 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
     });
   const own = await run("context", req());
   expect(await own.json()).toEqual({ scope: { clinicId: clinic, patientId: pid } });
+  const ownGoals = await run("ownGoals", req());
+  expect(ownGoals.status).toBe(200);
+  expect((await ownGoals.json()).page).toMatchObject({
+    clinicId: clinic,
+    patientId: pid,
+    goals: [{ id: goal, kind: "hydration", status: "eligible" }],
+  });
   const report = {
     goalId: goal,
     sourceEventId: event,
@@ -1139,6 +1155,86 @@ it("own self-report history pages preserve timestamp microseconds and reject for
   await db.exec("RESET ROLE");
   await db.query(
     "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='journey_events'",
+    [mid],
+  );
+  await user(uid);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+});
+it("own goals SQL pages are minimal, ordered and scoped; reads do not authorize writes", async () => {
+  const { uid, pid, mid } = await activatePatientHost();
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'journey_goals','read')", [
+    mid,
+  ]);
+  const ids = [randomUUID(), randomUUID(), randomUUID()].sort();
+  for (let i = 0; i < ids.length; i++)
+    await db.query(
+      "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,$5,'daily',$6,now()-interval '1 day')",
+      [
+        ids[i],
+        clinic,
+        pid,
+        uid,
+        i === 0 ? "hydration" : i === 1 ? "medication" : "protocol",
+        i === 0 ? "eligible" : i === 1 ? "paused" : "not_applicable",
+      ],
+    );
+  await user(uid);
+  const read = async (after: string | null = null, limit = 1) =>
+    (
+      await db.query<{
+        page: {
+          clinicId: string;
+          patientId: string;
+          goals: Array<{ id: string; kind: string; status: string }>;
+          nextCursor: string | null;
+        };
+      }>("SELECT public.tm_get_own_journey_goals($1,$2,$3) AS page", [clinic, after, limit])
+    ).rows[0]!.page;
+  let cursor: string | null = null;
+  for (let i = 0; i < ids.length; i++) {
+    const page = await read(cursor);
+    expect(page.patientId).toBe(pid);
+    expect(page.clinicId).toBe(clinic);
+    expect(page.goals.map((g) => g.id)).toEqual([ids[i]]);
+    expect(Object.keys(page.goals[0]!).sort()).toEqual(
+      ["id", "kind", "cadence", "status", "version", "effectiveFrom", "expiresAt"].sort(),
+    );
+    expect(page.nextCursor).toBe(i < 2 ? ids[i] : null);
+    cursor = page.nextCursor;
+  }
+  expect((await read(ids[2]!)).goals).toEqual([]);
+  await expect(read(randomUUID())).rejects.toMatchObject({ code: "22023" });
+  await expect(read(null, 101)).rejects.toMatchObject({ code: "22023" });
+  // A read-only grant never enables participation or write access.
+  await expect(
+    db.query("SELECT public.tm_submit_journey_self_report_for_clinic($1,$2,$3,now())", [
+      clinic,
+      ids[0],
+      randomUUID(),
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await user(operator);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(uid, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  const otherUser = randomUUID(),
+    otherPatient = randomUUID(),
+    otherGoal = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+    [otherPatient, clinic, otherUser],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
+    [otherGoal, clinic, otherPatient, otherUser],
+  );
+  await user(uid);
+  await expect(read(otherGoal)).rejects.toMatchObject({ code: "22023" });
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='journey_goals'",
     [mid],
   );
   await user(uid);
