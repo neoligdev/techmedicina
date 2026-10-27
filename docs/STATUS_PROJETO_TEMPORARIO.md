@@ -390,7 +390,7 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex, Antigravity
 - **Entregue**: Contratos, metas/eventos idempotentes, preferências, suspensão e rascunhos possuem implementação local e fundação Cloud histórica 008–013. Motores JORNADA/Escudos e ledger 014 locais; biblioteca de artes ainda demonstrativa. Antigravity criou galeria e estados PWA D122–D124, preservados por Codex. D125 agora registra rotas same-bearer, contexto próprio derivado do host/vínculo e conexão da galeria. Integração SQL local confirma reenvio sem duplicar evento e ausência de score inventado. Isso não é homologação de contas/dados clínicos reais.
-- **Próximo Passo**: Concluir leitura própria de metas e eventos, ligar formulários às metas elegíveis e homologar persistência real após autorização das migrações e permissões QA específicas. VITALIDADE permanece sem fórmula numérica. Cloud verificado em leitura: tabelas 014 ausentes na lista; pacientes/vínculos/grants com zero registros.
+- **Próximo Passo**: Concluir leitura de metas próprias elegíveis e ligar formulários e histórico à UI. Parte 3 entrega recuperação paginada por RPC/HTTP local, ainda sem 027 no Cloud. Homologação clínica e dependências White Label exigem aprovações próprias; não inventar VITALIDADE ou prescrições.
 
 **Requisitos**:
 
@@ -2538,3 +2538,10 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET contexto/Escudos e POST autorrelato registrados, reutilizando Auth/RLS e handlers existentes. Proposta local 026 resolve somente host próprio com provas atuais. Galeria usa clinicId/patientId do servidor, sem ID Auth como paciente. Regressão consolidada: 1.175 testes/131 arquivos, TypeScript, lint direcionado e build aprovados; galeria e rodapé conferidos no navegador local.
 - **Próximo Passo**: D125 operacional permanece parcial: leitura própria de metas/eventos, formulários de hábitos e homologação Cloud. Migração 014 e cadeia White Label não aplicadas por este lote; sem grants, DNS, main ou Publish.
+
+## D125-HISTORY - Jornada: histórico próprio paginado de autorrelatos — parte 3 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: GET /api/journey/self-reports, cliente e proposta local 027 recuperam eventos do próprio paciente com cursor validado no tenant. Teste SQL integrado confirma gravar, reenviar sem duplicar e reler; microssegundos/empates preservados. 49 testes direcionados aprovados, tipos/lint/build válidos. Não é nova execução da regressão global 1.175 da parte 2.
+- **Próximo Passo**: Concluir leitura de metas próprias elegíveis e UI real de registro/histórico; 027 não aplicada no Cloud. Preview autorizado permanece em 1ec288b, com 131 entregas; esta parte posterior exige nova integração aprovada na main.
