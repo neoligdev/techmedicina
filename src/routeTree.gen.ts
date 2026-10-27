@@ -25,7 +25,9 @@ import { Route as ApiAgendaAvailabilityRouteImport } from './routes/api/agenda/a
 import { Route as ApiAgendaClinicRouteImport } from './routes/api/agenda/clinic'
 import { Route as ApiJourneyContextRouteImport } from './routes/api/journey/context'
 import { Route as ApiJourneyOwnGoalsRouteImport } from './routes/api/journey/own-goals'
+import { Route as ApiJourneyParticipationRouteImport } from './routes/api/journey/participation'
 import { Route as ApiJourneySelfReportRouteImport } from './routes/api/journey/self-report'
+import { Route as ApiJourneySelfReportAccessRouteImport } from './routes/api/journey/self-report-access'
 import { Route as ApiJourneySelfReportsRouteImport } from './routes/api/journey/self-reports'
 import { Route as ApiJourneyShieldsRouteImport } from './routes/api/journey/shields'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
@@ -115,11 +117,22 @@ const ApiJourneyOwnGoalsRoute = ApiJourneyOwnGoalsRouteImport.update({
   path: '/api/journey/own-goals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiJourneyParticipationRoute = ApiJourneyParticipationRouteImport.update({
+  id: '/api/journey/participation',
+  path: '/api/journey/participation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiJourneySelfReportRoute = ApiJourneySelfReportRouteImport.update({
   id: '/api/journey/self-report',
   path: '/api/journey/self-report',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiJourneySelfReportAccessRoute =
+  ApiJourneySelfReportAccessRouteImport.update({
+    id: '/api/journey/self-report-access',
+    path: '/api/journey/self-report-access',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiJourneySelfReportsRoute = ApiJourneySelfReportsRouteImport.update({
   id: '/api/journey/self-reports',
   path: '/api/journey/self-reports',
@@ -178,7 +191,9 @@ export interface FileRoutesByFullPath {
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
+  '/api/journey/participation': typeof ApiJourneyParticipationRoute
   '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/self-report-access': typeof ApiJourneySelfReportAccessRoute
   '/api/journey/self-reports': typeof ApiJourneySelfReportsRoute
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
@@ -205,7 +220,9 @@ export interface FileRoutesByTo {
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
+  '/api/journey/participation': typeof ApiJourneyParticipationRoute
   '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/self-report-access': typeof ApiJourneySelfReportAccessRoute
   '/api/journey/self-reports': typeof ApiJourneySelfReportsRoute
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
@@ -233,7 +250,9 @@ export interface FileRoutesById {
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
+  '/api/journey/participation': typeof ApiJourneyParticipationRoute
   '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/self-report-access': typeof ApiJourneySelfReportAccessRoute
   '/api/journey/self-reports': typeof ApiJourneySelfReportsRoute
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
@@ -262,7 +281,9 @@ export interface FileRouteTypes {
     | '/api/agenda/clinic'
     | '/api/journey/context'
     | '/api/journey/own-goals'
+    | '/api/journey/participation'
     | '/api/journey/self-report'
+    | '/api/journey/self-report-access'
     | '/api/journey/self-reports'
     | '/api/journey/shields'
     | '/api/platform/audit'
@@ -289,7 +310,9 @@ export interface FileRouteTypes {
     | '/api/agenda/clinic'
     | '/api/journey/context'
     | '/api/journey/own-goals'
+    | '/api/journey/participation'
     | '/api/journey/self-report'
+    | '/api/journey/self-report-access'
     | '/api/journey/self-reports'
     | '/api/journey/shields'
     | '/api/platform/audit'
@@ -316,7 +339,9 @@ export interface FileRouteTypes {
     | '/api/agenda/clinic'
     | '/api/journey/context'
     | '/api/journey/own-goals'
+    | '/api/journey/participation'
     | '/api/journey/self-report'
+    | '/api/journey/self-report-access'
     | '/api/journey/self-reports'
     | '/api/journey/shields'
     | '/api/platform/audit'
@@ -344,7 +369,9 @@ export interface RootRouteChildren {
   ApiAgendaClinicRoute: typeof ApiAgendaClinicRoute
   ApiJourneyContextRoute: typeof ApiJourneyContextRoute
   ApiJourneyOwnGoalsRoute: typeof ApiJourneyOwnGoalsRoute
+  ApiJourneyParticipationRoute: typeof ApiJourneyParticipationRoute
   ApiJourneySelfReportRoute: typeof ApiJourneySelfReportRoute
+  ApiJourneySelfReportAccessRoute: typeof ApiJourneySelfReportAccessRoute
   ApiJourneySelfReportsRoute: typeof ApiJourneySelfReportsRoute
   ApiJourneyShieldsRoute: typeof ApiJourneyShieldsRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
@@ -469,11 +496,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJourneyOwnGoalsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/journey/participation': {
+      id: '/api/journey/participation'
+      path: '/api/journey/participation'
+      fullPath: '/api/journey/participation'
+      preLoaderRoute: typeof ApiJourneyParticipationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/journey/self-report': {
       id: '/api/journey/self-report'
       path: '/api/journey/self-report'
       fullPath: '/api/journey/self-report'
       preLoaderRoute: typeof ApiJourneySelfReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/journey/self-report-access': {
+      id: '/api/journey/self-report-access'
+      path: '/api/journey/self-report-access'
+      fullPath: '/api/journey/self-report-access'
+      preLoaderRoute: typeof ApiJourneySelfReportAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/journey/self-reports': {
@@ -552,7 +593,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAgendaClinicRoute: ApiAgendaClinicRoute,
   ApiJourneyContextRoute: ApiJourneyContextRoute,
   ApiJourneyOwnGoalsRoute: ApiJourneyOwnGoalsRoute,
+  ApiJourneyParticipationRoute: ApiJourneyParticipationRoute,
   ApiJourneySelfReportRoute: ApiJourneySelfReportRoute,
+  ApiJourneySelfReportAccessRoute: ApiJourneySelfReportAccessRoute,
   ApiJourneySelfReportsRoute: ApiJourneySelfReportsRoute,
   ApiJourneyShieldsRoute: ApiJourneyShieldsRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,

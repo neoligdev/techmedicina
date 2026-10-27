@@ -964,10 +964,7 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
     "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
     [goal, clinic, pid, uid],
   );
-  await db.query(
-    "INSERT INTO public.tm_journey_preferences(clinic_id,patient_id,patient_user_id,is_enabled) VALUES($1,$2,$3,true)",
-    [clinic, pid, uid],
-  );
+
   const ownIdentity: AuthenticatedIdentity = {
     userId: uid,
     links: [
@@ -994,6 +991,20 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
           await db.query<{ value: unknown }>(
             "SELECT public.tm_resolve_patient_journey_host($1) AS value",
             [args["p_hostname"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_get_journey_preference")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_get_journey_preference($1) AS value",
+            [args["p_patient_id"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_set_journey_preference")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_set_journey_preference($1,$2,$3) AS value",
+            [args["p_patient_id"], args["p_is_enabled"], args["p_expected_revision"]],
           )
         ).rows[0]!.value;
       if (name === "tm_get_own_journey_goals")
@@ -1051,6 +1062,17 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
     patientId: pid,
     goals: [{ id: goal, kind: "hydration", status: "eligible" }],
   });
+  const initial = await run("selfReportAccess", req());
+  expect(await initial.json()).toMatchObject({
+    preference: { isEnabled: false, revision: 0 },
+    canSubmit: false,
+  });
+  const enable = await run(
+    "participationSave",
+    req("PUT", { patientId: pid, isEnabled: true, expectedRevision: 0 }),
+  );
+  expect(enable.status).toBe(200);
+  expect((await (await run("selfReportAccess", req())).json()).canSubmit).toBe(true);
   const report = {
     goalId: goal,
     sourceEventId: event,
@@ -1076,6 +1098,17 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
   const result = await shields.json();
   expect(result.overview.state.scoreAverage).toBeNull();
   expect(result.overview.history).toEqual([]);
+  const pause = await run(
+    "participationSave",
+    req("PUT", { patientId: pid, isEnabled: false, expectedRevision: 1 }),
+  );
+  expect(pause.status).toBe(200);
+  expect((await (await run("selfReportAccess", req())).json()).canSubmit).toBe(false);
+  expect((await (await run("selfReportHistory", req())).json()).page.events).toHaveLength(1);
+  expect(
+    (await db.query("SELECT * FROM public.tm_journey_preference_audit WHERE patient_id=$1", [pid]))
+      .rows,
+  ).toHaveLength(2);
   await db.exec("RESET ROLE");
   await db.query("UPDATE public.tm_memberships SET is_active=false WHERE id=$1", [mid]);
   await user(uid);

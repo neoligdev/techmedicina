@@ -21,8 +21,17 @@ type JourneyRpcName =
   | "tm_pause_journey_goal"
   | "tm_submit_journey_self_report_for_clinic"
   | "tm_create_journey_goal_draft";
+import { selfReportAccessSchema } from "@/features/journey/self-report-access-client";
+
 export type PatientJourneyOperation =
-  "ownGoals" | "context" | "shields" | "selfReport" | "selfReportHistory";
+  | "selfReportAccess"
+  | "participationRead"
+  | "participationSave"
+  | "ownGoals"
+  | "context"
+  | "shields"
+  | "selfReport"
+  | "selfReportHistory";
 /** Every call owns its session promise; no cross-request identity, bearer or tenant cache. */
 export function createPatientJourneyRuntime<
   S extends { identity: AuthenticatedIdentity },
@@ -67,12 +76,42 @@ export function createPatientJourneyRuntime<
         resolveSession,
         read: (session, args) => providers.rpc(session, "tm_get_own_journey_self_reports", args),
       })(request);
-    return createJourneyEndpoints({
+    const endpoints = createJourneyEndpoints({
       lookup,
       resolveSession,
       preferenceRpc: (session) => repository(session).preferenceRpc,
       goalRepository: (session) => repository(session).repository,
       selfReportRpc: (session) => repository(session).selfReportRpc,
-    }).selfReport(request);
+    });
+    if (operation === "selfReportAccess") {
+      const result = await endpoints.participation.GET(request);
+      if (!result.ok) return result;
+      try {
+        const { preference } = await result.json();
+        const session = await resolveSession();
+        const link = session?.identity.links.find(
+          (l) =>
+            l.isActive &&
+            l.role === "paciente" &&
+            l.clinicId === preference.clinicId &&
+            l.patientId === preference.patientId,
+        );
+        const canSubmit = Boolean(
+          preference.isEnabled &&
+          link?.grants.some((g) => g.resource === "journey_events" && g.action === "create"),
+        );
+        return Response.json(selfReportAccessSchema.parse({ preference, canSubmit }), {
+          headers: result.headers,
+        });
+      } catch {
+        return Response.json(
+          { error: "Disponibilidade temporariamente indisponível" },
+          { status: 503, headers: result.headers },
+        );
+      }
+    }
+    if (operation === "participationRead") return endpoints.participation.GET(request);
+    if (operation === "participationSave") return endpoints.participation.PUT(request);
+    return endpoints.selfReport(request);
   };
 }

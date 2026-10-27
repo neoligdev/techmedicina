@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { OwnHabitForms } from "./own-habit-forms";
+import { JourneyParticipationConnectedCard } from "./participation-connected-card";
 import { createOwnGoalsClient } from "./own-goals-client";
 import { createOwnSelfReportHistoryClient } from "./self-report-history-client";
 import type { ownGoalsPageSchema } from "./own-goals";
@@ -35,11 +37,13 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
   const [error, setError] = useState(false),
     [busy, setBusy] = useState(true),
     [reload, setReload] = useState(0);
+  const historyVersion = useRef(0);
   const scopeAbort = useRef<AbortController | null>(null),
     pending = useRef(false);
   useEffect(() => {
     const controller = new AbortController();
     scopeAbort.current = controller;
+    historyVersion.current++;
     setGoals(undefined);
     setHistory(undefined);
     setError(false);
@@ -69,11 +73,24 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
       controller.abort();
     };
   }, [clinicId, patientId, getAccessToken, fetcher, reload]);
+  const refreshHistory = useCallback(() => {
+    const controller = scopeAbort.current;
+    if (!controller || controller.signal.aborted) return;
+    const version = ++historyVersion.current;
+    void createOwnSelfReportHistoryClient({ clinicId, patientId, getAccessToken }, fetcher)()
+      .then((page) => {
+        if (!controller.signal.aborted && version === historyVersion.current) setHistory(page);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setError(true);
+      });
+  }, [clinicId, patientId, getAccessToken, fetcher]);
   async function more(target: "goals" | "history") {
     if (pending.current) return;
     const controller = scopeAbort.current;
     if (!controller || controller.signal.aborted) return;
     const scope = { clinicId, patientId, getAccessToken };
+    const version = historyVersion.current;
     pending.current = true;
     setBusy(true);
     setError(false);
@@ -88,7 +105,7 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
           scope,
           fetcher,
         )({ before: history.nextCursor });
-        if (!controller.signal.aborted)
+        if (!controller.signal.aborted && version === historyVersion.current)
           setHistory({ ...page, events: [...history.events, ...page.events] });
       }
     } catch {
@@ -102,6 +119,12 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
   }
   return (
     <section aria-label="Seus registros da Jornada" className="space-y-4 mt-6" aria-busy={busy}>
+      <JourneyParticipationConnectedCard
+        clinicId={clinicId}
+        patientId={patientId}
+        getAccessToken={getAccessToken}
+        fetcher={fetcher}
+      />
       <Card>
         <CardHeader>
           <CardTitle>Suas metas e registros</CardTitle>
@@ -148,6 +171,16 @@ function RecordsPanel({ clinicId, patientId, getAccessToken, fetcher }: Props) {
                 </Button>
               )}
             </div>
+          )}
+          {goals && (
+            <OwnHabitForms
+              clinicId={clinicId}
+              patientId={patientId}
+              getAccessToken={getAccessToken}
+              fetcher={fetcher}
+              goals={goals.goals}
+              onConfirmed={refreshHistory}
+            />
           )}
           {history && (
             <div>

@@ -36,3 +36,7 @@ Guardar somente resultados e IDs QA necessários, nunca senha/token/registro cl�
 ## Consulta inicial de contas
 
 Proprietário indicou contas QA; consulta somente leitura no Auth do projeto não encontrou os dois endereços exatamente informados. Domínio do endereço do paciente precisa de confirmação. Cadastro/confirmação e definição de senha solicitados ao proprietário diretamente na interface; nenhum usuário foi criado e nenhuma identificação alternativa presumida. Proposta de vínculos/grants depende de IDs Auth verificados. Não expor e-mails ou tokens no catálogo público.
+
+## Atualização D125 — implementação local posterior
+
+As partes 1–6 da D125 registraram rotas de contexto próprio, Escudos, metas, histórico, participação e disponibilidade de autorrelato, preservando os guards existentes. Portanto a nota histórica acima sobre endpoints desmontados não descreve mais o código local atual. Isso não significa ativação operacional: resolução White Label, migrações locais posteriores a 013, contas/vínculos/grants e homologação por origem ainda dependem dos gates próprios. A D125 não concedeu acessos nem executou SQL no Cloud. Provas SQL locais e testes de interface constam em docs/D125_PARTE_6_PARTICIPACAO_AUTORRELATO.md.

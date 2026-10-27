@@ -9,7 +9,7 @@ export type JourneyPreferenceRpc = (
   args: { p_patient_id: string; p_is_enabled?: boolean; p_expected_revision?: number },
 ) => Promise<unknown>;
 
-/** No public route enabled yet. Resolve must validate Auth and the patient host registry.
+/** Mounted through the patient runtime. Resolve must validate Auth and the patient host registry.
  * The injected transport must use the same bearer session and retain RPC/RLS enforcement.
  */
 export function createJourneyPreferenceHandlers(
@@ -18,7 +18,7 @@ export function createJourneyPreferenceHandlers(
     rpc: JourneyPreferenceRpc;
   } | null>,
 ) {
-  const headers = { "Cache-Control": "private, no-store" };
+  const headers = { "Cache-Control": "private, no-store", Vary: "Authorization, Host" };
   async function respond(request: Request, writing: boolean) {
     try {
       const method = writing ? "PUT" : "GET";
@@ -27,7 +27,7 @@ export function createJourneyPreferenceHandlers(
           { error: "Método não permitido" },
           { status: 405, headers: { ...headers, Allow: method } },
         );
-      if (new URL(request.url).searchParams.size !== 0)
+      if ((!writing && request.body) || new URL(request.url).searchParams.size !== 0)
         throw new AuthError("Unexpected query", 400);
       const resolved = await resolve(request);
       if (!resolved) throw new AuthError("Session required", 401);

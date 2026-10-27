@@ -34,7 +34,7 @@ const request = (path = "context", token = "qa", method = "GET", body?: string) 
 function setup() {
   const session = { identity, bearer: "qa" };
   const resolveSession = vi.fn(async () => session as typeof session | null);
-  const rpc = vi.fn(async (_session: typeof session, name: string) => {
+  const rpc = vi.fn(async (_session: typeof session, name: string): Promise<unknown> => {
     if (name === "tm_resolve_patient_journey_host")
       return {
         hostname: "app.example.com",
@@ -97,4 +97,111 @@ it("preserves same-bearer database denial and validates mutation before RPC", as
     (await run("selfReport", request("self-report?clinicId=other", "qa", "POST", "{}"))).status,
   ).toBe(400);
   expect(rpc).not.toHaveBeenCalled();
+});
+
+it("participation GET/PUT reuse the same verified session and preserve revision checks", async () => {
+  const { run, rpc, session, resolveSession } = setup();
+  rpc.mockImplementation(async (_session, name) => {
+    if (name === "tm_resolve_patient_journey_host")
+      return {
+        hostname: "app.example.com",
+        clinicId: clinic,
+        environment: "patient_pwa",
+        status: "active",
+      };
+    if (name === "tm_get_journey_preference")
+      return {
+        clinic_id: clinic,
+        patient_id: patient,
+        patient_user_id: user,
+        is_enabled: false,
+        revision: 0,
+      };
+    if (name === "tm_set_journey_preference")
+      return {
+        clinic_id: clinic,
+        patient_id: patient,
+        patient_user_id: user,
+        is_enabled: true,
+        revision: 1,
+      };
+    throw new Error("unexpected");
+  });
+  const read = await run("participationRead", request("participation"));
+  expect(await read.json()).toEqual({
+    preference: { clinicId: clinic, patientId: patient, isEnabled: false, revision: 0 },
+  });
+  expect(rpc).toHaveBeenLastCalledWith(session, "tm_get_journey_preference", {
+    p_patient_id: patient,
+  });
+  const save = await run(
+    "participationSave",
+    request(
+      "participation",
+      "qa",
+      "PUT",
+      JSON.stringify({ patientId: patient, isEnabled: true, expectedRevision: 0 }),
+    ),
+  );
+  expect(save.status).toBe(200);
+  expect(rpc).toHaveBeenLastCalledWith(session, "tm_set_journey_preference", {
+    p_patient_id: patient,
+    p_is_enabled: true,
+    p_expected_revision: 0,
+  });
+  expect(resolveSession).toHaveBeenCalledTimes(2);
+});
+it("participation rejects foreign patient, caller-selected clinic and anonymous requests", async () => {
+  const { run, rpc, resolveSession } = setup();
+  const put = (body: unknown) => request("participation", "qa", "PUT", JSON.stringify(body));
+  expect(
+    (await run("participationSave", put({ patientId: user, isEnabled: true, expectedRevision: 0 })))
+      .status,
+  ).toBe(403);
+  expect(rpc).toHaveBeenCalledTimes(1);
+  rpc.mockClear();
+  expect((await run("participationRead", request("participation?clinicId=" + clinic))).status).toBe(
+    400,
+  );
+  expect(rpc).not.toHaveBeenCalled();
+  resolveSession.mockResolvedValueOnce(null);
+  expect((await run("participationRead", request("participation"))).status).toBe(401);
+});
+
+it("self-report access requires enabled participation plus create grant and uses one request session", async () => {
+  for (const enabled of [false, true])
+    for (const grant of [false, true]) {
+      const { run, rpc, session, resolveSession } = setup();
+      const original = session.identity.links[0]!.grants;
+      session.identity.links[0]!.grants = grant
+        ? [{ resource: "journey_events", action: "create" }]
+        : [];
+      try {
+        rpc.mockImplementation(async (_session, name) => {
+          if (name === "tm_resolve_patient_journey_host")
+            return {
+              hostname: "app.example.com",
+              clinicId: clinic,
+              environment: "patient_pwa",
+              status: "active",
+            };
+          if (name === "tm_get_journey_preference")
+            return {
+              clinic_id: clinic,
+              patient_id: patient,
+              patient_user_id: user,
+              is_enabled: enabled,
+              revision: 1,
+            };
+          throw new Error("Unexpected RPC");
+        });
+        const result = await run("selfReportAccess", request("self-report-access"));
+        expect(result.status).toBe(200);
+        expect((await result.json()).canSubmit).toBe(enabled && grant);
+        expect(resolveSession).toHaveBeenCalledTimes(1);
+        expect(result.headers.get("cache-control")).toBe("private, no-store");
+      } finally {
+        session.identity.links[0]!.grants = original;
+      }
+    }
 });

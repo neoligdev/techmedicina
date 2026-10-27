@@ -6,6 +6,14 @@ vi.mock("@/features/journey/own-goals-client", () => ({ createOwnGoalsClient: ()
 vi.mock("@/features/journey/self-report-history-client", () => ({
   createOwnSelfReportHistoryClient: () => history,
 }));
+vi.mock("@/features/journey/participation-connected-card", () => ({
+  JourneyParticipationConnectedCard: () => <div data-testid="participation-control" />,
+}));
+vi.mock("@/features/journey/own-habit-forms", () => ({
+  OwnHabitForms: ({ onConfirmed }: { onConfirmed: () => void }) => (
+    <button onClick={onConfirmed}>Simular confirmação</button>
+  ),
+}));
 import { OwnJourneyRecordsPanel } from "@/features/journey/own-records-panel";
 const scope = {
   clinicId: "11111111-1111-4111-8111-111111111111",
@@ -96,4 +104,41 @@ it("handles failed read and retry without demo fallback or rendering partial pre
   });
   expect(screen.queryByRole("alert")).toBeNull();
   expect(screen.getByText("Medicação")).toBeTruthy();
+});
+
+it("confirmed history refresh supersedes an older pagination response without remounting the form", async () => {
+  history.mockResolvedValueOnce({
+    ...scope,
+    events: [{ id: "old", occurredAt: "2026-10-02T00:00:00Z" }],
+    nextCursor: "old",
+  });
+  await act(async () => {
+    render(<OwnJourneyRecordsPanel {...scope} />);
+  });
+  let finish!: (v: unknown) => void;
+  history.mockReturnValueOnce(
+    new Promise((r) => {
+      finish = r;
+    }),
+  );
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Ver mais registros" }));
+  });
+  history.mockResolvedValueOnce({
+    ...scope,
+    events: [{ id: "new", occurredAt: "2026-10-04T00:00:00Z" }],
+    nextCursor: null,
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Simular confirmação" }));
+  });
+  await act(async () => {
+    finish({
+      ...scope,
+      events: [{ id: "older", occurredAt: "2026-10-01T00:00:00Z" }],
+      nextCursor: null,
+    });
+  });
+  expect(screen.getAllByText("Atividade registrada")).toHaveLength(1);
+  expect(screen.getByRole("button", { name: "Simular confirmação" })).toBeTruthy();
 });
