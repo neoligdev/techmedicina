@@ -2552,3 +2552,10 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET /api/journey/own-goals, cliente estrito e proposta local 028 consultam somente metas do paciente vinculado ao host/sessão. Paginação limitada, grant de leitura e cursor próprios; estados clínicos não são tratados como autorização de escrita. 61 testes direcionados aprovados, TypeScript/lint/build válidos.
 - **Próximo Passo**: D125 segue parcial: integrar formulários reais e histórico, testar consentimento/troca de sessão e homologar Cloud. SQL 028 apenas local; main/preview permanecem em 1ec288b. Esta entrega está nas ramificações de desenvolvimento.
+
+## D125-RECORDS - Jornada: painel autenticado de metas e autorrelatos — parte 5 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Painel somente de leitura montado em /app/escudos após contexto próprio verificado, com metas, histórico confirmado, paginação, vazio, retry e descarte de respostas de sessões anteriores. Preserva demo e componentes visuais. 27 testes de UI/Auth aprovados, tipos/lint/build válidos; demo conferida no navegador local.
+- **Próximo Passo**: Conectar formulários reais com participação/autorização e revalidar histórico após registro. Homologação Cloud pendente; evidência local demonstra preservação visual, não dados clínicos reais. Main/preview permanecem em 1ec288b; implementação em develop.
