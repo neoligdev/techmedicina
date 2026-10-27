@@ -105,6 +105,7 @@ beforeAll(async () => {
     "022_domain_routing_key_revocation.sql",
     "023_domain_routing_key_audit_read.sql",
     "024_domain_routing_key_inventory.sql",
+    "025_domain_activation.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -749,4 +750,103 @@ it("keeps key inventory unavailable to browser and revoked operators", async () 
   await expect(
     db.query("SELECT public.tm_list_routing_keys($1,$2)", [operator, project]),
   ).rejects.toMatchObject({ code: "42501" });
+});
+
+async function activate(revision = domain.revision, actor = operator, targetProject = project) {
+  return (
+    await db.query<{ saved: { status: string; revision: number; validUntil: string } }>(
+      "SELECT public.tm_activate_domain($1,$2,$3,$4,$5) AS saved",
+      [actor, domain.id, revision, targetProject, challenge.id],
+    )
+  ).rows[0]!.saved;
+}
+it("activates only from a current consumed proof and active clinic, increments revision and audits once", async () => {
+  await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  const saved = await activate();
+  expect(saved).toMatchObject({ status: "active", revision: domain.revision + 1 });
+  expect(Date.parse(saved.validUntil)).toBe(Date.parse(challenge.expiresAt));
+  await expect(activate()).rejects.toMatchObject({ code: "40001" });
+  expect(
+    (
+      await db.query(
+        "SELECT action FROM public.tm_domain_audit WHERE domain_id=$1 AND action='domain_activated'",
+        [domain.id],
+      )
+    ).rows,
+  ).toHaveLength(1);
+  expect(
+    (await db.query("SELECT * FROM public.tm_domain_activations WHERE domain_id=$1", [domain.id]))
+      .rows,
+  ).toHaveLength(1);
+});
+it("does not activate without receipt, with foreign project, stale revision, inactive clinic or revoked key", async () => {
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=false WHERE id=$1", [clinic]);
+  await expect(activate()).rejects.toMatchObject({ code: "40001" });
+  await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  await expect(activate()).rejects.toMatchObject({ code: "40001" });
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  await expect(activate(domain.revision, operator, clinic)).rejects.toMatchObject({
+    code: "40001",
+  });
+  await expect(activate(domain.revision + 1)).rejects.toMatchObject({ code: "40001" });
+  await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+    operator,
+    project,
+    publicKey.keyId,
+  ]);
+  await expect(activate()).rejects.toMatchObject({ code: "40001" });
+  expect(
+    (await db.query("SELECT status FROM public.tm_clinic_domains WHERE id=$1", [domain.id]))
+      .rows[0],
+  ).toEqual({ status: "pending_verification" });
+});
+it("denies browser activation even with valid proofs and rolls back activation if audit fails", async () => {
+  await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  for (const role of ["anon", "authenticated"]) {
+    await user(operator, role);
+    await expect(activate()).rejects.toMatchObject({ code: "42501" });
+  }
+  await db.exec("RESET ROLE");
+  await expect(activate(domain.revision, clinic)).rejects.toMatchObject({ code: "42501" });
+  await db.exec(`CREATE FUNCTION pg_temp.reject_activation_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action='domain_activated' THEN RAISE EXCEPTION 'synthetic'; END IF;RETURN NEW;END $$;
+ CREATE TRIGGER reject_activation_audit BEFORE INSERT ON public.tm_domain_audit FOR EACH ROW EXECUTE FUNCTION pg_temp.reject_activation_audit();`);
+  try {
+    await expect(activate()).rejects.toMatchObject({ code: "P0001" });
+    expect(
+      (
+        await db.query("SELECT status,revision FROM public.tm_clinic_domains WHERE id=$1", [
+          domain.id,
+        ])
+      ).rows[0],
+    ).toEqual({ status: "pending_verification", revision: domain.revision });
+    expect(
+      (await db.query("SELECT * FROM public.tm_domain_activations WHERE domain_id=$1", [domain.id]))
+        .rows,
+    ).toEqual([]);
+  } finally {
+    await db.exec("DROP TRIGGER reject_activation_audit ON public.tm_domain_audit");
+  }
+});
+
+it("rejects activation after expiry of persisted routing proof and leaves no activation", async () => {
+  await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(Date.parse(challenge.expiresAt) + 1000));
+  try {
+    await expect(activate()).rejects.toMatchObject({ code: "40001" });
+  } finally {
+    vi.useRealTimers();
+  }
+  expect(
+    (await db.query("SELECT * FROM public.tm_domain_activations WHERE domain_id=$1", [domain.id]))
+      .rows,
+  ).toEqual([]);
 });
