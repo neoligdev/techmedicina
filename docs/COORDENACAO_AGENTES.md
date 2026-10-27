@@ -66,3 +66,12 @@ Autorizados commits locais, merges não destrutivos e pushes seguros de dev/code
 Auditoria da retomada: origin/develop 75a7818 após fetch; frontend 769d5a2 é ancestral de develop; base comum com Codex 3201996. Cinco commits exclusivos Codex até B025 foram preservados, incluindo correção D125 de autenticação e B023/B024 de leitura privada. Merge não destrutivo na branch Codex reúne ambos; relatório final registrará hash e validação. Worktrees integração, frontend e QA estavam limpas. Original mantém apenas auxiliares não rastreados históricos, incluindo package-lock.json, sem incluí-los no versionamento. Bun.lock permanece oficial.
 
 Prioridade imediata: D125 operacional JORNADA/hábitos, auditando/reutilizando handlers, RPC e migração 014 existentes. D125-AUTH identifica a correção anterior de falha Auth, sem confundi-la com a nova entrega solicitada. B025 é proposta local de ativação, não domínio operacional. Nenhum escore VITALIDADE será inventado.
+## Encerramento da Coordenação Paralela e Retomada Integral pelo Codex (26/10/2026)
+
+Em 26/10/2026, por diretriz humana formal, o modelo de desenvolvimento paralelo entre Antigravity (frontend) e Codex (backend) foi encerrado com sucesso.
+Todas as entregas do Antigravity até a D124 (VITALIDADE, JORNADA, Meus Escudos, blindagem de score e preparação para dados reais) foram auditadas, validadas com 1.112 testes aprovados e integradas na branch `develop`.
+A partir deste marco, o **Codex** reassume a governança técnica e o desenvolvimento integral do Techmedicina (frontend, backend, banco de dados, APIs, infraestrutura e testes).
+O documento detalhado de transferência encontra-se registrado em `docs/HANDOFF_ANTIGRAVITY_PARA_CODEX.md`.
+
+
+Nota de consolidação Codex: a referência de 1.112 testes acima pertence ao handoff Antigravity; a contagem efetiva da nova consolidação será registrada separadamente. Responsabilidade técnica por infraestrutura não autoriza mudanças remotas: continuam os limites explícitos da diretriz vigente.
