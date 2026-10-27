@@ -2545,3 +2545,10 @@ Atualizado em 26/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET /api/journey/self-reports, cliente e proposta local 027 recuperam eventos do próprio paciente com cursor validado no tenant. Teste SQL integrado confirma gravar, reenviar sem duplicar e reler; microssegundos/empates preservados. 49 testes direcionados aprovados, tipos/lint/build válidos. Não é nova execução da regressão global 1.175 da parte 2.
 - **Próximo Passo**: Concluir leitura de metas próprias elegíveis e UI real de registro/histórico; 027 não aplicada no Cloud. Preview autorizado permanece em 1ec288b, com 131 entregas; esta parte posterior exige nova integração aprovada na main.
+
+## D125-GOALS - Jornada: consulta própria de metas — parte 4 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: GET /api/journey/own-goals, cliente estrito e proposta local 028 consultam somente metas do paciente vinculado ao host/sessão. Paginação limitada, grant de leitura e cursor próprios; estados clínicos não são tratados como autorização de escrita. 61 testes direcionados aprovados, TypeScript/lint/build válidos.
+- **Próximo Passo**: D125 segue parcial: integrar formulários reais e histórico, testar consentimento/troca de sessão e homologar Cloud. SQL 028 apenas local; main/preview permanecem em 1ec288b. Esta entrega está nas ramificações de desenvolvimento.
