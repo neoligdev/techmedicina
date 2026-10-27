@@ -5,6 +5,7 @@ import { pageHead } from "@/features/demo/metadata";
 import { PlansCatalog } from "@/features/super-admin/plans";
 import { SimulatorPage } from "@/features/super-admin/simulator";
 import { ShieldsLibraryPage } from "@/features/super-admin/shields";
+import { BlogDraftWorkspace } from "@/features/blog/draft-workspace";
 import { DomainsPage } from "@/features/super-admin/domains";
 
 export const Route = createFileRoute("/super-admin/$section")({
@@ -22,6 +23,13 @@ export const Route = createFileRoute("/super-admin/$section")({
 
 function SectionPage() {
   const { slug } = Route.useLoaderData();
+  if (slug === "blog")
+    return (
+      <>
+        <ModulePage area="super-admin" slug={slug} />
+        <BlogDraftWorkspace />
+      </>
+    );
   if (slug === "dominios") {
     return <DomainsPage />;
   }

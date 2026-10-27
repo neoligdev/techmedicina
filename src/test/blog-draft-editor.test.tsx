@@ -1,0 +1,107 @@
+// @vitest-environment jsdom
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+const { getUser, onAuthStateChange } = vi.hoisted(() => ({
+  getUser: vi.fn(),
+  onAuthStateChange: vi.fn(),
+}));
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: {
+    auth: {
+      getUser,
+      onAuthStateChange,
+      getSession: async () => ({ data: { session: { access_token: "qa" } } }),
+    },
+  },
+}));
+import { BlogDraftEditor, BlogDraftWorkspace } from "@/features/blog/draft-workspace";
+import { blogDraftDocumentSchema } from "@/features/blog/draft-contract";
+const token = async () => "qa";
+afterEach(cleanup);
+beforeEach(() => {
+  vi.clearAllMocks();
+  getUser.mockResolvedValue({ data: { user: { id: "user-a" } }, error: null });
+  onAuthStateChange.mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } });
+});
+it("creates a stable draft, saves server receipt and previews text without executing markup", async () => {
+  const fetcher = vi.fn<typeof fetch>(async (_input, init) => {
+    const input = JSON.parse(String(init?.body));
+    return Response.json({
+      draft: {
+        id: input.id,
+        status: "draft",
+        document: input.document,
+        revision: 1,
+        createdAt: "2026-10-01T00:00:00Z",
+        updatedAt: "2026-10-01T00:00:00Z",
+      },
+    });
+  });
+  render(<BlogDraftEditor getAccessToken={token} fetcher={fetcher} />);
+  fireEvent.click(screen.getByRole("button", { name: "Novo rascunho" }));
+  fireEvent.change(screen.getByRole("textbox", { name: "Título" }), {
+    target: { value: "Artigo QA" },
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "Conteúdo em texto" }), {
+    target: { value: "<img src=x onerror=alert(1)>" },
+  });
+  expect(
+    screen.getByRole("article", { name: "Prévia textual do rascunho" }).querySelector("img"),
+  ).toBeNull();
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
+  });
+  expect(screen.getByText("Rascunho salvo e confirmado no servidor.")).toBeTruthy();
+  expect(JSON.parse(String(fetcher.mock.calls[0]![1]?.body))).toMatchObject({
+    expectedRevision: 0,
+    document: { title: "Artigo QA" },
+  });
+  expect(screen.getByRole("button", { name: "Salvar rascunho" })).toBeDisabled();
+  expect(screen.queryByRole("button", { name: "Publicar" })).toBeNull();
+});
+it("uncertain write blocks overwrite until verified server reload", async () => {
+  let persisted: unknown = null;
+  const fetcher = vi.fn<typeof fetch>(async (_input, init) => {
+    if (init?.method === "PUT") {
+      const input = JSON.parse(String(init.body));
+      persisted = {
+        id: input.id,
+        status: "draft",
+        document: input.document,
+        revision: 1,
+        createdAt: "2026-10-01T00:00:00Z",
+        updatedAt: "2026-10-01T00:00:00Z",
+      };
+      throw new Error("response lost");
+    }
+    return Response.json({ draft: persisted });
+  });
+  render(<BlogDraftEditor getAccessToken={token} fetcher={fetcher} />);
+  fireEvent.click(screen.getByRole("button", { name: "Novo rascunho" }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
+  });
+  expect(screen.getByRole("textbox", { name: "Título" })).toBeDisabled();
+  expect(screen.queryByText("Rascunho salvo e confirmado no servidor.")).toBeNull();
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Recarregar versão do servidor" }));
+  });
+  expect(screen.getByRole("textbox", { name: "Título" })).not.toBeDisabled();
+  expect(screen.getByText("Versão confirmada carregada.")).toBeTruthy();
+  expect(fetcher.mock.calls.filter((c) => c[1]?.method === "PUT")).toHaveLength(1);
+});
+it("logout removes unsaved editorial data and does not restore it from browser storage", async () => {
+  await act(async () => {
+    render(<BlogDraftWorkspace />);
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Novo rascunho" }));
+  fireEvent.change(screen.getByRole("textbox", { name: "Conteúdo em texto" }), {
+    target: { value: "Editorial em edição QA" },
+  });
+  const callback = onAuthStateChange.mock.calls[0]![0] as (event: string, session: null) => void;
+  await act(async () => {
+    callback("SIGNED_OUT", null);
+  });
+  expect(screen.queryByRole("textbox", { name: "Conteúdo em texto" })).toBeNull();
+  expect(screen.queryByText("Editorial em edição QA")).toBeNull();
+});
