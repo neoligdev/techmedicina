@@ -2564,5 +2564,12 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
-- **Entregue**: Rotas GET/PUT de participação e GET de disponibilidade conectadas ao mesmo bearer. Controle existente montado no paciente real; formulários exigem confirmação, meta elegível suportada, vigência e participação/grant revalidados. Reenvio mantém ID/horário e confirmações atualizam histórico sem corrida com paginação antiga. Regressão global: 1.204 testes/136 arquivos aprovados, TypeScript/build válidos, lint global sem erros e sete avisos históricos.
-- **Próximo Passo**: Homologar cadeia Cloud/host/vínculos com autorização própria; continuar dados estruturados, prescrições, calendário e apuração diária. Não há outbox após recarga nem cálculo VITALIDADE. Main/preview continuam em 1ec288b até nova integração aprovada; SQL remoto não aplicado.
+- **Entregue**: Rotas GET/PUT de participação e GET de disponibilidade conectadas ao mesmo bearer. Controle existente montado no paciente real; formulários exigem confirmação, meta elegível suportada, vigência e participação/grant revalidados. Reenvio mantém ID/horário e confirmações atualizam histórico sem corrida com paginação antiga. Regressão global: 1.204 testes/136 arquivos aprovados, build válido; a confirmação prematura de TypeScript foi corrigida e validada na parte 7, lint global sem erros e sete avisos históricos.
+- **Próximo Passo**: Homologar cadeia Cloud/host/vínculos com autorização própria; continuar dados estruturados, prescrições, calendário e apuração diária. Não há outbox após recarga nem cálculo VITALIDADE. 7c1551b não deve ser integrado isoladamente: utilizar lote corrigido posterior com autorização específica; main/preview continuam em 1ec288b; SQL remoto não aplicado.
+
+## D125-REVALIDATION - Jornada: disponibilidade automática e correção estrita de tipos — parte 7 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Gravação da participação bloqueia novos envios e reconsulta disponibilidade ao terminar, inclusive em resposta incerta. Reenvio de autorrelato preserva ID/horário. Propriedades opcionais ausentes são omitidas, sem relaxar tsconfig. TypeScript confirmado com saída zero, lint direcionado/build aprovados e 17 testes direcionados em quatro arquivos. A regressão global 1.204/136 pertence à parte 6 anterior.
+- **Próximo Passo**: Homologação Cloud/host/grants e dados clínicos estruturados continuam pendentes. Pedido anterior de preview 7c1551b retirado após revisão de tipos; utilizar somente versão corrigida aprovada. Nenhuma alteração SQL remota, DNS, grants, main ou Publish.
