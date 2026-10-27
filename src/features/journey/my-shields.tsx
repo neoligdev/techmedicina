@@ -42,6 +42,8 @@ export interface MyShieldsProps {
   clinicId?: string | undefined;
   patientId?: string | undefined;
   isDemo?: boolean | undefined;
+  status?: "loading" | "error" | "ready" | undefined;
+  onRetry?: (() => void) | undefined;
 }
 
 /**
@@ -62,6 +64,8 @@ export function MyShields({
   clinicId: propClinicId,
   patientId: propPatientId,
   isDemo: propIsDemo,
+  status,
+  onRetry,
 }: MyShieldsProps) {
   const demoClinicContext = useSafeDemoClinic();
   const activeClinic = demoClinicContext?.clinic;
@@ -193,23 +197,54 @@ export function MyShields({
         </div>
       </header>
 
-      {/* ESTADO NÃO AUTORIZADO / SEM DADOS REAIS */}
+      {/* ESTADOS DE CARREGAMENTO / ERRO / NÃO AUTORIZADO */}
       {!scoped || !data ? (
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Seu histórico estará aqui</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>
-                Nenhum histórico autorizado foi carregado. A conexão com seu acompanhamento está em
-                preparação.
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Não há pontuação ou conquista atribuída nesta tela.
-              </p>
-            </CardContent>
-          </Card>
+          {status === "loading" ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Aguardando dados do servidor…</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>Consultando o acompanhamento da JORNADA junto à clínica.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Sincronizando registros e histórico no servidor…
+                </p>
+              </CardContent>
+            </Card>
+          ) : status === "error" ? (
+            <Card className="border-destructive/30 bg-destructive/5">
+              <CardHeader>
+                <CardTitle>Erro ao carregar seus Escudos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p>
+                  Não foi possível carregar seus Escudos no momento. Por segurança clínica, nenhuma
+                  pontuação fictícia é exibida.
+                </p>
+                {onRetry && (
+                  <Button type="button" size="sm" variant="outline" onClick={onRetry}>
+                    Tentar novamente
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Seu histórico estará aqui</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  Nenhum histórico autorizado foi carregado. A conexão com seu acompanhamento está
+                  em preparação.
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Não há pontuação ou conquista atribuída nesta tela.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* GALERIA INFORMATIVA DOS 5 NÍVEIS DA JORNADA (SEM DADOS SIMULADOS) */}
           <div className="space-y-3">
@@ -259,47 +294,76 @@ export function MyShields({
         </div>
       ) : (
         <>
-          {/* CARD HERO: ESCUDO ATIVO EM DESTAQUE */}
+          {/* CARD HERO: ESCUDO ATIVO EM DESTAQUE OU ESTADO DE AVALIAÇÕES INSUFICIENTES */}
           <Card className="border-primary/30 shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle>Escudo ativo: {SHIELD_TIERS[data.state.activeShield].name}</CardTitle>
-                <Badge className="bg-emerald-600 text-white hover:bg-emerald-700">
-                  Nível {SHIELD_TIERS[data.state.activeShield].rank}
-                </Badge>
+                {data.state.evaluableDaysCount === 0 || data.state.scoreAverageRounded === null ? (
+                  <>
+                    <CardTitle>Sem avaliações suficientes na janela</CardTitle>
+                    <Badge variant="outline" className="text-amber-500 border-amber-500/40">
+                      Aguardando avaliações
+                    </Badge>
+                  </>
+                ) : (
+                  <>
+                    <CardTitle>
+                      Escudo ativo: {SHIELD_TIERS[data.state.activeShield].name}
+                    </CardTitle>
+                    {data.state.isProvisional ? (
+                      <Badge variant="outline" className="text-amber-500 border-amber-500/40">
+                        Avaliação provisória ({data.state.evaluableDaysCount}/7 dias)
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-emerald-600 text-white hover:bg-emerald-700">
+                        Nível {SHIELD_TIERS[data.state.activeShield].rank}
+                      </Badge>
+                    )}
+                  </>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Arte do Escudo Ativo */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 py-2">
-                <div className="h-28 w-28 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 p-2 border border-slate-700/40">
-                  {(() => {
-                    const activeArt = ShieldArtService.getShieldArt(
-                      data.state.activeShield,
-                      "active",
-                    );
-                    return activeArt ? (
-                      <ShieldArtImage
-                        className="h-full w-full object-contain drop-shadow"
-                        svg={activeArt.svgContent}
-                        label={activeArt.accessibilityLabel}
-                      />
-                    ) : (
-                      <Shield aria-hidden="true" className="h-16 w-16 text-primary" />
-                    );
-                  })()}
+              {data.state.evaluableDaysCount === 0 || data.state.scoreAverageRounded === null ? (
+                <div className="rounded-lg border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
+                  <p>
+                    Você ainda não possui dias avaliáveis suficientes para cálculo consolidado de um
+                    escudo. Seus registros diários de hábitos (alimentação, atividade física, sono e
+                    hidratação) construirão sua pontuação da JORNADA.
+                  </p>
                 </div>
+              ) : (
+                /* Arte do Escudo Ativo */
+                <div className="flex flex-col sm:flex-row items-center gap-4 py-2">
+                  <div className="h-28 w-28 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 p-2 border border-slate-700/40">
+                    {(() => {
+                      const activeArt = ShieldArtService.getShieldArt(
+                        data.state.activeShield,
+                        "active",
+                      );
+                      return activeArt ? (
+                        <ShieldArtImage
+                          className="h-full w-full object-contain drop-shadow"
+                          svg={activeArt.svgContent}
+                          label={activeArt.accessibilityLabel}
+                        />
+                      ) : (
+                        <Shield aria-hidden="true" className="h-16 w-16 text-primary" />
+                      );
+                    })()}
+                  </div>
 
-                <div className="space-y-1 text-center sm:text-left flex-1">
-                  <p className="text-sm font-medium text-foreground">
-                    {SHIELD_TIERS[data.state.activeShield].description}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Faixa do nível: {SHIELD_TIERS[data.state.activeShield].minScore} a{" "}
-                    {SHIELD_TIERS[data.state.activeShield].maxScore} pontos na JORNADA.
-                  </p>
+                  <div className="space-y-1 text-center sm:text-left flex-1">
+                    <p className="text-sm font-medium text-foreground">
+                      {SHIELD_TIERS[data.state.activeShield].description}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Faixa do nível: {SHIELD_TIERS[data.state.activeShield].minScore} a{" "}
+                      {SHIELD_TIERS[data.state.activeShield].maxScore} pontos na JORNADA.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {data.state.isProvisional && (
                 <p>Estado provisório: acompanhamento ainda em formação.</p>
