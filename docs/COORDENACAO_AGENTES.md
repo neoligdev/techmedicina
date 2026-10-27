@@ -54,3 +54,15 @@ O ambiente Bun informou leitura de .env ignorado pelo Git. Não foi copiado nenh
 Teste de fumaça escolhido: src/test/domain-possession.test.ts, isolado e sem rede real. A suíte completa não foi repetida nesta tarefa de preparação.
 As worktrees ficam fora dos writable roots desta sessão Codex; o acesso foi autorizado por escalonamento para a preparação. Uma sessão futura deve abrir C:/dev/techmedicina-codex como workspace, evitando depender de permissões excepcionais a cada edição.
 Resultado: 10 testes aprovados em cada worktree (um arquivo por ambiente). git status sem mudanças rastreadas nas duas worktrees após instalação; bun.lock preservado. git merge-base confirma D115 como base comum. A diferença na branch Codex contém exclusivamente este documento de coordenação. Não houve atualização do catálogo de entregas: trata-se de preparação Git, e o status oficial só deve mudar durante integração.
+
+## Diretriz vigente — 26/10/2026: Codex desenvolvedor principal
+
+Por instrução expressa do proprietário no documento de retomada, Codex reassume frontend, backend, testes, documentação e versionamento. A separação anterior por agente deixa de ser obrigatória; Antigravity permanece como autoria histórica das entregas frontend até D124, preservadas em develop. Não refazer módulos por autoria.
+
+Worktree principal: C:/dev/techmedicina-codex, dev/codex-backend. Integração: C:/dev/techmedicina-integracao, develop. Um executor ativo por pasta; não editar a worktree anterior Antigravity sem necessidade. Catálogo oficial consolidado em develop.
+
+Autorizados commits locais, merges não destrutivos e pushes seguros de dev/codex-backend e develop após testes, conferindo remoto antes de cada envio. Não requer confirmação Git rotineira. Main, Publish, SQL remoto, DNS, credenciais, infraestrutura e concessões clínicas continuam fora dessa autorização. Não usar Ask Lovable.
+
+Auditoria da retomada: origin/develop 75a7818 após fetch; frontend 769d5a2 é ancestral de develop; base comum com Codex 3201996. Cinco commits exclusivos Codex até B025 foram preservados, incluindo correção D125 de autenticação e B023/B024 de leitura privada. Merge não destrutivo na branch Codex reúne ambos; relatório final registrará hash e validação. Worktrees integração, frontend e QA estavam limpas. Original mantém apenas auxiliares não rastreados históricos, incluindo package-lock.json, sem incluí-los no versionamento. Bun.lock permanece oficial.
+
+Prioridade imediata: D125 operacional JORNADA/hábitos, auditando/reutilizando handlers, RPC e migração 014 existentes. D125-AUTH identifica a correção anterior de falha Auth, sem confundi-la com a nova entrega solicitada. B025 é proposta local de ativação, não domínio operacional. Nenhum escore VITALIDADE será inventado.

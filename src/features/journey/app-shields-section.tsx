@@ -28,11 +28,13 @@ export function AppShieldsSection() {
 
   // Identificador sequencial para cancelamento e descarte de respostas assíncronas obsoletas
   const requestIdRef = useRef<number>(0);
+  const scopeAbort = useRef<AbortController | null>(null);
 
   const isDemo = shouldEnablePatientDemo(hasSession);
 
   const fetchRealShields = useCallback(async (pId: string, cId: string) => {
     const currentRequestId = ++requestIdRef.current;
+    const signal = scopeAbort.current?.signal;
     setShieldStatus("loading");
     setShieldOverview(undefined);
     try {
@@ -46,13 +48,13 @@ export function AppShieldsSection() {
       });
       const overview = await client();
       // Descarta se outro request foi disparado ou se o usuário/clínica mudou
-      if (currentRequestId === requestIdRef.current) {
+      if (!signal?.aborted && currentRequestId === requestIdRef.current) {
         setShieldOverview(overview);
         setShieldStatus("ready");
       }
     } catch {
       // Backend ainda não montado ou indisponível
-      if (currentRequestId === requestIdRef.current) {
+      if (!signal?.aborted && currentRequestId === requestIdRef.current) {
         setShieldOverview(undefined);
         setShieldStatus("error");
       }
@@ -61,6 +63,11 @@ export function AppShieldsSection() {
 
   useEffect(() => {
     let mounted = true;
+    let sessionVersion = 0;
+    const controller = new AbortController();
+    scopeAbort.current = controller;
+    setHasSession(null);
+    setPatientId(undefined);
 
     // Invalida requisições em voo ao trocar de clínica
     requestIdRef.current++;
@@ -70,7 +77,7 @@ export function AppShieldsSection() {
     void supabase.auth
       .getUser()
       .then(({ data, error }) => {
-        if (!mounted) return;
+        if (!mounted || sessionVersion !== 0) return;
         const presence = patientSessionPresence(data?.user, error);
         setHasSession(presence);
         if (presence === true && data?.user) {
@@ -83,7 +90,7 @@ export function AppShieldsSection() {
         }
       })
       .catch(() => {
-        if (mounted) {
+        if (mounted && sessionVersion === 0) {
           setHasSession(null);
           setPatientId(undefined);
           setShieldOverview(undefined);
@@ -96,6 +103,7 @@ export function AppShieldsSection() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
+      sessionVersion++;
       requestIdRef.current++;
       if (session?.user) {
         setHasSession(true);
@@ -111,6 +119,7 @@ export function AppShieldsSection() {
 
     return () => {
       mounted = false;
+      controller.abort();
       subscription.unsubscribe();
     };
   }, [clinic.id, fetchRealShields]);
