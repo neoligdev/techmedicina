@@ -112,6 +112,7 @@ beforeAll(async () => {
     "024_domain_routing_key_inventory.sql",
     "025_domain_activation.sql",
     "026_patient_journey_host_lookup.sql",
+    "027_journey_own_self_report_history.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -977,6 +978,7 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
         grants: [
           { resource: "journey_shields", action: "read" },
           { resource: "journey_events", action: "create" },
+          { resource: "journey_events", action: "read" },
         ],
       },
     ],
@@ -990,6 +992,13 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
           await db.query<{ value: unknown }>(
             "SELECT public.tm_resolve_patient_journey_host($1) AS value",
             [args["p_hostname"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_get_own_journey_self_reports")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_get_own_journey_self_reports($1,$2,$3) AS value",
+            [args["p_clinic_id"], args["p_before"] ?? null, args["p_limit"]],
           )
         ).rows[0]!.value;
       if (name === "tm_get_patient_shield_overview")
@@ -1039,6 +1048,13 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
     (await db.query("SELECT * FROM public.tm_journey_events WHERE source_event_id=$1", [event]))
       .rows,
   ).toHaveLength(1);
+  const reports = await run("selfReportHistory", req());
+  expect(reports.status).toBe(200);
+  expect((await reports.json()).page).toMatchObject({
+    clinicId: clinic,
+    patientId: pid,
+    events: [{ goalId: goal, sourceEventId: event }],
+  });
   const shields = await run("shields", req());
   expect(shields.status).toBe(200);
   const result = await shields.json();
@@ -1048,4 +1064,83 @@ it("D125 runtime: real local host RPC and same-session self-report survive retry
   await db.query("UPDATE public.tm_memberships SET is_active=false WHERE id=$1", [mid]);
   await user(uid);
   expect((await run("shields", req())).status).toBe(403);
+});
+
+it("own self-report history pages preserve timestamp microseconds and reject foreign cursor or revoked access", async () => {
+  const { uid, pid, mid } = await activatePatientHost();
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'journey_events','read')", [
+    mid,
+  ]);
+  const goal = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
+    [goal, clinic, pid, uid],
+  );
+  const ids = [randomUUID(), randomUUID(), randomUUID(), randomUUID()];
+  const receivedBase = new Date(Date.now() - 60000).toISOString();
+  for (let i = 0; i < 4; i++)
+    await db.query(
+      "INSERT INTO public.tm_journey_events(id,clinic_id,patient_id,goal_id,source_event_id,source,actor_user_id,goal_version,policy_version_id,occurred_at,received_at) VALUES($1,$2,$3,$4,$1,'self_report',$5,1,$4,now()-interval '2 minutes',$7::timestamptz+($6::integer*interval '1 microsecond'))",
+      [ids[i], clinic, pid, goal, uid, Math.min(i, 2), receivedBase],
+    );
+  const foreignClinic = randomUUID(),
+    foreignPatient = randomUUID(),
+    foreignUser = randomUUID(),
+    foreignGoal = randomUUID(),
+    foreignEvent = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_clinics(id,name,is_active) VALUES($1,'Other synthetic clinic',true)",
+    [foreignClinic],
+  );
+  await db.query(
+    "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+    [foreignPatient, foreignClinic, foreignUser],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
+    [foreignGoal, foreignClinic, foreignPatient, foreignUser],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_events(id,clinic_id,patient_id,goal_id,source_event_id,source,actor_user_id,goal_version,policy_version_id,occurred_at,received_at) VALUES($1,$2,$3,$4,$1,'self_report',$5,1,$4,now()-interval '2 minutes',now()-interval '1 minute')",
+    [foreignEvent, foreignClinic, foreignPatient, foreignGoal, foreignUser],
+  );
+  await user(uid);
+  const read = async (before: string | null = null, limit = 1) =>
+    (
+      await db.query<{ page: { events: Array<{ id: string }>; nextCursor: string | null } }>(
+        "SELECT public.tm_get_own_journey_self_reports($1,$2,$3) AS page",
+        [clinic, before, limit],
+      )
+    ).rows[0]!.page;
+  const expected = [ids[2]!, ids[3]!].sort().reverse().concat([ids[1]!, ids[0]!]);
+  let cursor: string | null = null;
+  const collected: string[] = [];
+  for (let i = 0; i < 4; i++) {
+    const page = await read(cursor);
+    expect(page.events).toHaveLength(1);
+    collected.push(page.events[0]!.id);
+    expect(page.nextCursor).toBe(i < 3 ? page.events[0]!.id : null);
+    cursor = page.nextCursor;
+  }
+  expect(collected).toEqual(expected);
+  await expect(read(randomUUID())).rejects.toMatchObject({ code: "22023" });
+  await expect(read(foreignEvent)).rejects.toMatchObject({ code: "22023" });
+  await expect(
+    db.query("SELECT public.tm_get_own_journey_self_reports($1)", [foreignClinic]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await expect(read(null, 101)).rejects.toMatchObject({ code: "22023" });
+  await user(operator);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(randomUUID());
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(uid, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='journey_events'",
+    [mid],
+  );
+  await user(uid);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
 });

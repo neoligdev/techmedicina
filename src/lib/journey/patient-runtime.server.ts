@@ -6,8 +6,10 @@ import { createJourneyRpcRepository } from "./rpc-repository.server";
 import { createOwnShieldEndpoint } from "./shield-endpoint.server";
 import { createOwnShieldRpcReader } from "./shield-rpc-reader.server";
 import { createOwnJourneyContextEndpoint } from "./own-context-endpoint.server";
+import { createSelfReportHistoryEndpoint } from "./self-report-history-endpoint.server";
 
 type JourneyRpcName =
+  | "tm_get_own_journey_self_reports"
   | "tm_resolve_patient_journey_host"
   | "tm_get_patient_shield_overview"
   | "tm_get_journey_preference"
@@ -16,7 +18,7 @@ type JourneyRpcName =
   | "tm_pause_journey_goal"
   | "tm_submit_journey_self_report_for_clinic"
   | "tm_create_journey_goal_draft";
-export type PatientJourneyOperation = "context" | "shields" | "selfReport";
+export type PatientJourneyOperation = "context" | "shields" | "selfReport" | "selfReportHistory";
 /** Every call owns its session promise; no cross-request identity, bearer or tenant cache. */
 export function createPatientJourneyRuntime<
   S extends { identity: AuthenticatedIdentity },
@@ -48,6 +50,12 @@ export function createPatientJourneyRuntime<
             data: await providers.rpc(session, name, args),
             error: null,
           })),
+      })(request);
+    if (operation === "selfReportHistory")
+      return createSelfReportHistoryEndpoint({
+        lookup,
+        resolveSession,
+        read: (session, args) => providers.rpc(session, "tm_get_own_journey_self_reports", args),
       })(request);
     return createJourneyEndpoints({
       lookup,

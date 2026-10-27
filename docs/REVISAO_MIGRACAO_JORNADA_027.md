@@ -1,0 +1,9 @@
+# Revisão local da migração 027 — histórico próprio de autorrelatos
+
+Proposta local Codex, não aplicada ao Cloud. Depende da fundação 001 e ledger Jornada 008; no fluxo operacional, 026 e as provas de host também precisam estar disponíveis. Confirmar objetos, versões, ACL e plano de recuperação antes de autorização específica. Não reaplicar SQL histórico.
+
+Função SECURITY DEFINER com search_path vazio, EXECUTE somente authenticated, sem DML ou SELECT global adicionais. Exige auth.uid(), um único vínculo ativo na clínica solicitada, papel paciente, paciente/conta associados e ativos, clínica ativa e journey_events/read. Mantém locks compartilhados sobre vínculo/grant/clínica/paciente durante leitura. Super ADM ou médico não recebem esta consulta de paciente próprio por papel global.
+
+Retorna apenas IDs de evento/meta/origem e timestamps de ocorrência/recebimento; não envia actor_user_id ou versão de política interna. Cursor é UUID do evento anterior, verificado no mesmo escopo e autor, com comparação (received_at,id) no PostgreSQL. Não arredonda o instante para milissegundos no JavaScript. Limite 1–100, padrão 25; nextCursor existe apenas quando há mais registros. Índice aditivo apoia consulta por clínica/paciente/recebimento/ID. Analisar duração e bloqueios de criação do índice sobre volume real antes de implantação.
+
+Somente fonte self_report do próprio autor é consultada. Não recupera registros de terceiros, não concede participação, não altera prescrição/metas e não recalcula score. Testes locais cobrem microssegundos, empate de horário, cursor inválido, limites, anon, operador sem vínculo, outro usuário e grant revogado. Homologar ainda concorrência remota, conta QA e mesma identidade real no gateway/RLS. Preferir correção progressiva; não apagar ledger como rollback automático.
