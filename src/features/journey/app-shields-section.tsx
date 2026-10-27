@@ -7,6 +7,7 @@ import {
 } from "@/features/demo/demo-authorization";
 import { MyShields } from "./my-shields";
 import { createOwnShieldClient } from "./shield-client";
+import { createOwnJourneyContextClient } from "./own-context-client";
 
 /**
  * Seção de Meus Escudos conectada ao contexto de clínica e autenticação do cliente.
@@ -21,6 +22,7 @@ export function AppShieldsSection() {
   const { clinic } = useDemoClinic();
   const [hasSession, setHasSession] = useState<boolean | null>(null);
   const [patientId, setPatientId] = useState<string | undefined>();
+  const [ownClinicId, setOwnClinicId] = useState<string | undefined>();
   const [shieldOverview, setShieldOverview] = useState<unknown | undefined>(undefined);
   const [shieldStatus, setShieldStatus] = useState<"loading" | "error" | "ready" | undefined>(
     undefined,
@@ -32,23 +34,23 @@ export function AppShieldsSection() {
 
   const isDemo = shouldEnablePatientDemo(hasSession);
 
-  const fetchRealShields = useCallback(async (pId: string, cId: string) => {
+  const fetchRealShields = useCallback(async () => {
     const currentRequestId = ++requestIdRef.current;
     const signal = scopeAbort.current?.signal;
     setShieldStatus("loading");
     setShieldOverview(undefined);
     try {
-      const client = createOwnShieldClient({
-        clinicId: cId,
-        patientId: pId,
-        getAccessToken: async () => {
-          const { data } = await supabase.auth.getSession();
-          return data?.session?.access_token ?? null;
-        },
-      });
-      const overview = await client();
+      const getAccessToken = async () => {
+        const { data } = await supabase.auth.getSession();
+        return data?.session?.access_token ?? null;
+      };
+      const scope = await createOwnJourneyContextClient(getAccessToken)();
+      if (signal?.aborted || currentRequestId !== requestIdRef.current) return;
+      const overview = await createOwnShieldClient({ ...scope, getAccessToken })();
       // Descarta se outro request foi disparado ou se o usuário/clínica mudou
       if (!signal?.aborted && currentRequestId === requestIdRef.current) {
+        setPatientId(scope.patientId);
+        setOwnClinicId(scope.clinicId);
         setShieldOverview(overview);
         setShieldStatus("ready");
       }
@@ -68,6 +70,7 @@ export function AppShieldsSection() {
     scopeAbort.current = controller;
     setHasSession(null);
     setPatientId(undefined);
+    setOwnClinicId(undefined);
 
     // Invalida requisições em voo ao trocar de clínica
     requestIdRef.current++;
@@ -81,10 +84,12 @@ export function AppShieldsSection() {
         const presence = patientSessionPresence(data?.user, error);
         setHasSession(presence);
         if (presence === true && data?.user) {
-          setPatientId(data.user.id);
-          void fetchRealShields(data.user.id, clinic.id);
+          setPatientId(undefined);
+          setOwnClinicId(undefined);
+          void fetchRealShields();
         } else {
           setPatientId(undefined);
+          setOwnClinicId(undefined);
           setShieldOverview(undefined);
           setShieldStatus(undefined);
         }
@@ -93,6 +98,7 @@ export function AppShieldsSection() {
         if (mounted && sessionVersion === 0) {
           setHasSession(null);
           setPatientId(undefined);
+          setOwnClinicId(undefined);
           setShieldOverview(undefined);
           setShieldStatus(undefined);
         }
@@ -107,11 +113,13 @@ export function AppShieldsSection() {
       requestIdRef.current++;
       if (session?.user) {
         setHasSession(true);
-        setPatientId(session.user.id);
-        void fetchRealShields(session.user.id, clinic.id);
+        setPatientId(undefined);
+        setOwnClinicId(undefined);
+        void fetchRealShields();
       } else {
         setHasSession(false);
         setPatientId(undefined);
+        setOwnClinicId(undefined);
         setShieldOverview(undefined);
         setShieldStatus(undefined);
       }
@@ -127,13 +135,13 @@ export function AppShieldsSection() {
   return (
     <MyShields
       isDemo={isDemo}
-      clinicId={clinic.id}
+      clinicId={isDemo ? clinic.id : ownClinicId}
       patientId={patientId}
       overview={shieldOverview}
       status={isDemo ? undefined : shieldStatus}
       onRetry={() => {
-        if (patientId) {
-          void fetchRealShields(patientId, clinic.id);
+        if (hasSession === true) {
+          void fetchRealShields();
         }
       }}
     />

@@ -14,6 +14,7 @@ import {
   type RoutingReceipt,
 } from "@/lib/white-label/domain-routing-persistence.server";
 import type { AuthenticatedIdentity } from "@/lib/auth/core";
+import { createPatientJourneyRuntime } from "@/lib/journey/patient-runtime.server";
 let db: PGlite;
 const operator = "11111111-1111-4111-8111-111111111111";
 const clinic = "22222222-2222-4222-8222-222222222222";
@@ -97,6 +98,10 @@ beforeAll(async () => {
     "001_tenant_foundation.sql",
     "006_domain_reservations.sql",
     "007_domain_collision_code.sql",
+    "008_journey_participation.sql",
+    "009_journey_preferences.sql",
+    "012_journey_self_report_host_scope.sql",
+    "014_journey_shields.sql",
     "017_domain_challenges.sql",
     "018_domain_dns_observations.sql",
     "019_domain_dns_proof_read.sql",
@@ -106,6 +111,7 @@ beforeAll(async () => {
     "023_domain_routing_key_audit_read.sql",
     "024_domain_routing_key_inventory.sql",
     "025_domain_activation.sql",
+    "026_patient_journey_host_lookup.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -123,7 +129,7 @@ beforeEach(async () => {
     await db.query<{ saved: typeof domain }>("SELECT public.tm_reserve_domain($1,$2,$3) AS saved", [
       clinic,
       `qa-${randomUUID()}.example.com`,
-      "clinic_portal",
+      "patient_pwa",
     ])
   ).rows[0]!.saved;
   const dnsChallenge = (
@@ -849,4 +855,197 @@ it("rejects activation after expiry of persisted routing proof and leaves no act
     (await db.query("SELECT * FROM public.tm_domain_activations WHERE domain_id=$1", [domain.id]))
       .rows,
   ).toEqual([]);
+});
+
+async function activatePatientHost() {
+  await verifier()(identity, domain.id);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  await activate();
+  const uid = randomUUID(),
+    pid = randomUUID(),
+    mid = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+    [pid, clinic, uid],
+  );
+  await db.query(
+    "INSERT INTO public.tm_memberships(id,clinic_id,user_id,role,is_active,patient_id) VALUES($1,$2,$3,'paciente',true,$4)",
+    [mid, clinic, uid, pid],
+  );
+  await db.query(
+    "INSERT INTO public.tm_membership_grants(membership_id,resource,action) VALUES($1,'journey_shields','read')",
+    [mid],
+  );
+  return { uid, pid, mid };
+}
+async function lookupPatientHost() {
+  return (
+    await db.query<{ host: unknown }>("SELECT public.tm_resolve_patient_journey_host($1) AS host", [
+      domain.hostname,
+    ])
+  ).rows[0]!.host;
+}
+it("resolves only the patient's own active host with current activation proofs, without table access", async () => {
+  const { uid, mid } = await activatePatientHost();
+  await user(uid);
+  expect(await lookupPatientHost()).toEqual({
+    hostname: domain.hostname,
+    clinicId: clinic,
+    environment: "patient_pwa",
+    status: "active",
+  });
+  await expect(db.exec("SELECT * FROM public.tm_domain_activations")).rejects.toMatchObject({
+    code: "42501",
+  });
+  await user(operator);
+  expect(await lookupPatientHost()).toBeNull();
+  await user(randomUUID());
+  expect(await lookupPatientHost()).toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("DELETE FROM public.tm_membership_grants WHERE membership_id=$1", [mid]);
+  await user(uid);
+  expect(await lookupPatientHost()).toBeNull();
+});
+it("rejects patient-host resolution after key revocation or activation expiry", async () => {
+  const { uid } = await activatePatientHost();
+  await user(uid);
+  expect(await lookupPatientHost()).not.toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+    operator,
+    project,
+    publicKey.keyId,
+  ]);
+  await user(uid);
+  expect(await lookupPatientHost()).toBeNull();
+});
+it("refuses incomplete active flags, inactive patient/clinic, expired proofs and anonymous enumeration", async () => {
+  const { uid, pid } = await activatePatientHost();
+  await user(uid, "anon");
+  await expect(lookupPatientHost()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_patients SET is_active=false WHERE id=$1", [pid]);
+  await user(uid);
+  expect(await lookupPatientHost()).toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_patients SET is_active=true WHERE id=$1", [pid]);
+  await db.query("UPDATE public.tm_clinics SET is_active=false WHERE id=$1", [clinic]);
+  await user(uid);
+  expect(await lookupPatientHost()).toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_clinics SET is_active=true WHERE id=$1", [clinic]);
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(Date.parse(challenge.expiresAt) + 1000));
+  try {
+    await user(uid);
+    expect(await lookupPatientHost()).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
+  await db.exec("RESET ROLE");
+  await db.query("DELETE FROM public.tm_domain_activations WHERE domain_id=$1", [domain.id]);
+  await user(uid);
+  expect(await lookupPatientHost()).toBeNull();
+});
+
+it("D125 runtime: real local host RPC and same-session self-report survive retry without duplicate, shields stay unscored", async () => {
+  const { uid, pid, mid } = await activatePatientHost();
+  await db.exec("RESET ROLE");
+  await db.query(
+    "INSERT INTO public.tm_membership_grants(membership_id,resource,action) VALUES($1,'journey_events','create'),($1,'journey_events','read'),($1,'journey_goals','read')",
+    [mid],
+  );
+  const goal = randomUUID(),
+    event = randomUUID();
+  await db.query(
+    "INSERT INTO public.tm_journey_goals(id,clinic_id,patient_id,patient_user_id,version,policy_version_id,kind,cadence,status,effective_from) VALUES($1,$2,$3,$4,1,$1,'hydration','daily','eligible',now()-interval '1 day')",
+    [goal, clinic, pid, uid],
+  );
+  await db.query(
+    "INSERT INTO public.tm_journey_preferences(clinic_id,patient_id,patient_user_id,is_enabled) VALUES($1,$2,$3,true)",
+    [clinic, pid, uid],
+  );
+  const ownIdentity: AuthenticatedIdentity = {
+    userId: uid,
+    links: [
+      {
+        clinicId: clinic,
+        patientId: pid,
+        role: "paciente",
+        isActive: true,
+        grants: [
+          { resource: "journey_shields", action: "read" },
+          { resource: "journey_events", action: "create" },
+        ],
+      },
+    ],
+  };
+  await user(uid);
+  const run = createPatientJourneyRuntime({
+    resolveSession: async () => ({ identity: ownIdentity }),
+    rpc: async (_session, name, args) => {
+      if (name === "tm_resolve_patient_journey_host")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_resolve_patient_journey_host($1) AS value",
+            [args["p_hostname"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_get_patient_shield_overview")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_get_patient_shield_overview($1,$2) AS value",
+            [args["p_clinic_id"], args["p_patient_id"]],
+          )
+        ).rows[0]!.value;
+      if (name === "tm_submit_journey_self_report_for_clinic")
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_submit_journey_self_report_for_clinic($1,$2,$3,$4) AS value",
+            [
+              args["p_clinic_id"],
+              args["p_goal_id"],
+              args["p_source_event_id"],
+              args["p_occurred_at"],
+            ],
+          )
+        ).rows[0]!.value;
+      throw new Error("Unexpected local RPC");
+    },
+  });
+  const req = (method = "GET", body?: unknown) =>
+    new Request(`https://${domain.hostname}/api/journey/qa`, {
+      method,
+      headers: {
+        host: domain.hostname,
+        Authorization: "Bearer synthetic-verified-session",
+        "Content-Type": "application/json",
+      },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+  const own = await run("context", req());
+  expect(await own.json()).toEqual({ scope: { clinicId: clinic, patientId: pid } });
+  const report = {
+    goalId: goal,
+    sourceEventId: event,
+    occurredAt: new Date(Date.now() - 60000).toISOString(),
+  };
+  const first = await run("selfReport", req("POST", report));
+  expect(first.status).toBe(200);
+  const second = await run("selfReport", req("POST", report));
+  expect(await second.json()).toEqual(await first.json());
+  expect(
+    (await db.query("SELECT * FROM public.tm_journey_events WHERE source_event_id=$1", [event]))
+      .rows,
+  ).toHaveLength(1);
+  const shields = await run("shields", req());
+  expect(shields.status).toBe(200);
+  const result = await shields.json();
+  expect(result.overview.state.scoreAverage).toBeNull();
+  expect(result.overview.history).toEqual([]);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_memberships SET is_active=false WHERE id=$1", [mid]);
+  await user(uid);
+  expect((await run("shields", req())).status).toBe(403);
 });

@@ -23,6 +23,9 @@ import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
 import { Route as ApiAgendaAvailabilityRouteImport } from './routes/api/agenda/availability'
 import { Route as ApiAgendaClinicRouteImport } from './routes/api/agenda/clinic'
+import { Route as ApiJourneyContextRouteImport } from './routes/api/journey/context'
+import { Route as ApiJourneySelfReportRouteImport } from './routes/api/journey/self-report'
+import { Route as ApiJourneyShieldsRouteImport } from './routes/api/journey/shields'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
@@ -100,6 +103,21 @@ const ApiAgendaClinicRoute = ApiAgendaClinicRouteImport.update({
   path: '/api/agenda/clinic',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiJourneyContextRoute = ApiJourneyContextRouteImport.update({
+  id: '/api/journey/context',
+  path: '/api/journey/context',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiJourneySelfReportRoute = ApiJourneySelfReportRouteImport.update({
+  id: '/api/journey/self-report',
+  path: '/api/journey/self-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiJourneyShieldsRoute = ApiJourneyShieldsRouteImport.update({
+  id: '/api/journey/shields',
+  path: '/api/journey/shields',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformAuditRoute = ApiPlatformAuditRouteImport.update({
   id: '/api/platform/audit',
   path: '/api/platform/audit',
@@ -146,6 +164,9 @@ export interface FileRoutesByFullPath {
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/journey/context': typeof ApiJourneyContextRoute
+  '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -168,6 +189,9 @@ export interface FileRoutesByTo {
   '/super-admin': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/journey/context': typeof ApiJourneyContextRoute
+  '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -191,6 +215,9 @@ export interface FileRoutesById {
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/journey/context': typeof ApiJourneyContextRoute
+  '/api/journey/self-report': typeof ApiJourneySelfReportRoute
+  '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -215,6 +242,9 @@ export interface FileRouteTypes {
     | '/super-admin/'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/journey/context'
+    | '/api/journey/self-report'
+    | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -237,6 +267,9 @@ export interface FileRouteTypes {
     | '/super-admin'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/journey/context'
+    | '/api/journey/self-report'
+    | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -259,6 +292,9 @@ export interface FileRouteTypes {
     | '/super-admin/'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/journey/context'
+    | '/api/journey/self-report'
+    | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -282,6 +318,9 @@ export interface RootRouteChildren {
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
   ApiAgendaAvailabilityRoute: typeof ApiAgendaAvailabilityRoute
   ApiAgendaClinicRoute: typeof ApiAgendaClinicRoute
+  ApiJourneyContextRoute: typeof ApiJourneyContextRoute
+  ApiJourneySelfReportRoute: typeof ApiJourneySelfReportRoute
+  ApiJourneyShieldsRoute: typeof ApiJourneyShieldsRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
@@ -390,6 +429,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAgendaClinicRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/journey/context': {
+      id: '/api/journey/context'
+      path: '/api/journey/context'
+      fullPath: '/api/journey/context'
+      preLoaderRoute: typeof ApiJourneyContextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/journey/self-report': {
+      id: '/api/journey/self-report'
+      path: '/api/journey/self-report'
+      fullPath: '/api/journey/self-report'
+      preLoaderRoute: typeof ApiJourneySelfReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/journey/shields': {
+      id: '/api/journey/shields'
+      path: '/api/journey/shields'
+      fullPath: '/api/journey/shields'
+      preLoaderRoute: typeof ApiJourneyShieldsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/audit': {
       id: '/api/platform/audit'
       path: '/api/platform/audit'
@@ -450,6 +510,9 @@ const rootRouteChildren: RootRouteChildren = {
   SuperAdminIndexRoute: SuperAdminIndexRoute,
   ApiAgendaAvailabilityRoute: ApiAgendaAvailabilityRoute,
   ApiAgendaClinicRoute: ApiAgendaClinicRoute,
+  ApiJourneyContextRoute: ApiJourneyContextRoute,
+  ApiJourneySelfReportRoute: ApiJourneySelfReportRoute,
+  ApiJourneyShieldsRoute: ApiJourneyShieldsRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
