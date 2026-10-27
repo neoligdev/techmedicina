@@ -2580,3 +2580,10 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Formulário confere até 100 eventos recentes próprios sem repetir POST. Confirma somente fonte/meta/instante correspondentes, inclusive após pausa; ausência permanece inconclusiva. Mantém ID de reenvio e detecta conflito temporal sem truncar precisão. 20 testes direcionados/4 arquivos, TypeScript com saída zero, lint direcionado e build aprovados.
 - **Próximo Passo**: Sem outbox persistente após recarga nem busca exaustiva do ledger. Homologação real, dados estruturados, calendário/prescrição e apuração diária permanecem pendentes. Versão proposta para preview d823544 não inclui automaticamente esta parte posterior; sem SQL/grants/DNS/main/Publish.
+
+## D125-EXACT-RECOVERY - Jornada: recuperação pelo identificador exato — parte 9 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: GET /api/journey/self-report-status e proposta local 029 recuperam o próprio evento pela chave única existente, sem limite da página recente. Host/sessão/grant de leitura revalidados, DTO mínimo e nenhum POST extra. SQL local confirma evento fora dos 100 recentes e recusa acesso revogado/anon; 61 testes direcionados, TypeScript/lint/build aprovados.
+- **Próximo Passo**: 029 não aplicada no Cloud; cadeia de host, migrações e vínculos reais exigem autorização/homologação próprias. Continua sem outbox após recarga e sem pontuação/VITALIDADE. Esta parte substitui a limitação de 100 eventos da parte 8; main/preview continuam na versão autorizada anterior.
