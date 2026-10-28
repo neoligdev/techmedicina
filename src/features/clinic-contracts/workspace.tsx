@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { ClinicContractLibrary } from "./library";
 import { ContractClinicChoice } from "./clinic-choice";
 import { emptyClinicContract, clinicContractDocumentSchema } from "./contracts";
 import { createClinicContractClient, ClinicContractConflict } from "./draft-client";
@@ -114,6 +115,7 @@ export function ClinicContractEditor({
     [uncertain, setUncertain] = useState(false),
     [confirmDiscard, setConfirmDiscard] = useState(false),
     [message, setMessage] = useState("");
+  const [libraryRevision, setLibraryRevision] = useState(0);
   const active = useRef(true),
     pending = useRef(false);
   useEffect(() => {
@@ -188,6 +190,7 @@ export function ClinicContractEditor({
       setForm(formOf(saved.document));
       setDirty(false);
       setMessage("Rascunho comercial salvo e confirmado no servidor.");
+      setLibraryRevision((v) => v + 1);
     } catch (error) {
       if (active.current) {
         setUncertain(true);
@@ -221,6 +224,17 @@ export function ClinicContractEditor({
         <p className="text-sm text-muted-foreground">
           Clínica selecionada: <code>{clinicId}</code>
         </p>
+      )}
+      {clinicId && (
+        <ClinicContractLibrary
+          key={clinicId}
+          clinicId={clinicId}
+          getAccessToken={getAccessToken}
+          {...(fetcher ? { fetcher } : {})}
+          disabled={busy || dirty || uncertain}
+          onOpen={(target) => void load(target)}
+          refreshKey={libraryRevision}
+        />
       )}
       <div className="flex flex-wrap gap-3">
         <Button disabled={!clinicId || busy || dirty || uncertain} onClick={create}>

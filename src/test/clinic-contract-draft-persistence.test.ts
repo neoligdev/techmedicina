@@ -40,7 +40,11 @@ beforeAll(async () => {
   await db.exec(
     `CREATE ROLE anon NOLOGIN;CREATE ROLE authenticated NOLOGIN;CREATE SCHEMA auth;CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;GRANT USAGE ON SCHEMA auth TO anon,authenticated;GRANT EXECUTE ON FUNCTION auth.uid() TO anon,authenticated;`,
   );
-  for (const name of ["001_tenant_foundation.sql", "034_clinic_use_contract_drafts.sql"])
+  for (const name of [
+    "001_tenant_foundation.sql",
+    "034_clinic_use_contract_drafts.sql",
+    "035_clinic_contract_draft_list.sql",
+  ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + name, import.meta.url), "utf8"),
     );
@@ -160,4 +164,45 @@ it("contract validator permits incomplete drafts but no billing or entitlements 
   expect(clinicContractDocumentSchema.safeParse({ ...document, activate: true }).success).toBe(
     false,
   );
+});
+
+it("contract library paginates only selected clinic with literal search and scoped cursor", async () => {
+  await user(operator);
+  const ids = Array.from({ length: 26 }, () => randomUUID()).sort();
+  for (const id of ids) await save(id, 0, { ...document, title: "Biblioteca%_ QA" });
+  const foreignId = randomUUID();
+  await save(foreignId, 0, { ...document, title: "Biblioteca%_ QA" }, foreign);
+  const list = async (clinicId = clinic, after: string | null = null, q = "Biblioteca%_ QA") =>
+    (
+      await db.query<{
+        value: {
+          clinicId: string;
+          query: string;
+          items: { id: string; title: string; revision: number }[];
+          nextCursor: string | null;
+        };
+      }>("SELECT public.tm_list_clinic_contract_drafts($1,$2,$3,25) AS value", [clinicId, q, after])
+    ).rows[0]!.value;
+  const first = await list();
+  expect(first.clinicId).toBe(clinic);
+  expect(first.items.map((i) => i.id)).toEqual(ids.slice(0, 25));
+  expect(first.nextCursor).toBe(ids[24]);
+  const last = await list(clinic, first.nextCursor);
+  expect(last.items.map((i) => i.id)).toEqual(ids.slice(25));
+  expect(last.nextCursor).toBeNull();
+  expect((await list(foreign)).items.map((i) => i.id)).toEqual([foreignId]);
+  await expect(list(clinic, foreignId)).rejects.toMatchObject({ code: "22023" });
+  expect((await list(clinic, null, "biblioteca%_ qa")).items).toHaveLength(25);
+  expect((await list(clinic, null, "BibliotecaANY")).items).toHaveLength(0);
+  expect(Object.keys(first.items[0]!).sort()).toEqual([
+    "id",
+    "revision",
+    "status",
+    "title",
+    "updatedAt",
+  ]);
+  await user(other);
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
 });

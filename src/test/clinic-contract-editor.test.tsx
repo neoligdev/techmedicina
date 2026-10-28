@@ -14,6 +14,26 @@ vi.mock("@/integrations/supabase/client", () => ({
     },
   },
 }));
+vi.mock("@/features/clinic-contracts/library", () => ({
+  ClinicContractLibrary: ({
+    disabled,
+    onOpen,
+    refreshKey,
+  }: {
+    disabled?: boolean;
+    onOpen: (id: string) => void;
+    refreshKey?: number;
+  }) => (
+    <button
+      data-testid="contract-library"
+      data-refresh={refreshKey}
+      disabled={disabled}
+      onClick={() => onOpen("11111111-1111-4111-8111-111111111111")}
+    >
+      Abrir contrato pela biblioteca QA
+    </button>
+  ),
+}));
 import {
   ClinicContractEditor,
   ClinicContractWorkspace,
@@ -81,6 +101,7 @@ it("selects server clinic, keeps blank values undecided and saves precise cents 
     fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho comercial" }));
   });
   expect(screen.getByText("Rascunho comercial salvo e confirmado no servidor.")).toBeTruthy();
+  expect(screen.getByTestId("contract-library").getAttribute("data-refresh")).toBe("1");
   const write = fetcher.mock.calls.find((c) => c[1]?.method === "PUT")!;
   expect(JSON.parse(String(write[1]?.body))).toMatchObject({
     clinicId,
@@ -166,4 +187,49 @@ it("logout unmounts commercial editor and late initial Auth lookup cannot restor
   });
   expect(screen.queryByRole("button", { name: "Carregar clínicas do servidor" })).toBeNull();
   expect(screen.getByText(/Entre com sua conta/)).toBeTruthy();
+});
+
+it("opens a library item within selected clinic and protects unsaved changes", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const fetcher = vi.fn<typeof fetch>(async (url) =>
+    String(url).includes("/clinics")
+      ? Response.json(directory)
+      : Response.json({
+          draft: receipt({
+            id,
+            clinicId,
+            document: {
+              title: "Contrato salvo QA",
+              currency: "BRL",
+              setupCents: null,
+              monthlyEnabled: null,
+              monthlyCents: null,
+              livesEnabled: null,
+              livesCount: null,
+              holderCents: null,
+              dependentCents: null,
+              notes: "",
+            },
+            expectedRevision: 0,
+          }),
+        }),
+  );
+  render(<ClinicContractEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Carregar clínicas do servidor" }));
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Clínica do contrato" }), {
+    target: { value: clinicId },
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir contrato pela biblioteca QA" }));
+  });
+  expect(screen.getByRole("textbox", { name: "Nome da proposta" })).toHaveValue(
+    "Contrato salvo QA",
+  );
+  expect(String(fetcher.mock.calls[1]![0])).toContain("clinicId=" + clinicId);
+  fireEvent.change(screen.getByRole("textbox", { name: "Nome da proposta" }), {
+    target: { value: "Edição preservada" },
+  });
+  expect(screen.getByRole("button", { name: "Abrir contrato pela biblioteca QA" })).toBeDisabled();
 });

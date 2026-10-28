@@ -637,8 +637,8 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local.
-- **Próximo Passo**: Biblioteca por clínica; regras comerciais finais, aceite, cobrança e homologação Cloud mediante autorização.
+- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local. Biblioteca paginada por clínica com busca literal, abertura protegida e atualização após recibo confirmado.
+- **Próximo Passo**: Histórico comercial somente leitura; regras finais, aceite, cobrança e homologação Cloud autorizada.
 
 **Requisitos**:
 
@@ -2636,3 +2636,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Formulário integrado preserva catálogo/design e usa cadastro paginado do servidor. Conversão monetária exata, valores não definidos, proteção de edição e recuperação por leitura após PUT incerto. 9 testes novos de UI/clientes, TypeScript/lint/build aprovados.
 - **Próximo Passo**: Ainda depende de 034 local; biblioteca por clínica na sequência. Sem aceite, cobrança, benefícios, SQL remoto, main ou Publish.
+
+## CLINIC-CONTRACT-LIBRARY - Contrato da clínica: biblioteca paginada por tenant — etapa 3 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: API e proposta SQL local 035 listam metadados por clínica, com busca literal e cursor validado no mesmo escopo. Interface abre itens sem UUID, protege edição e descarta respostas de outra clínica. Testes SQL/HTTP/UI, TypeScript e lint direcionado aprovados; build validado antes do commit. Navegador local confirma cartão protegido e APIs recusam acesso anônimo.
+- **Próximo Passo**: 034–035 não aplicadas no Cloud. Histórico, aceite, decisões comerciais e cobrança seguem pendentes. Main/preview permanecem na versão anterior; sem infraestrutura ou permissões clínicas.
