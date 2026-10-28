@@ -6,6 +6,7 @@ import { ClinicContractWorkspace } from "@/features/clinic-contracts/workspace";
 import { PlansCatalog } from "@/features/super-admin/plans";
 import { SimulatorPage } from "@/features/super-admin/simulator";
 import { ShieldsLibraryPage } from "@/features/super-admin/shields";
+import { DeviceRegistrationWorkspace } from "@/features/devices/registration-workspace";
 import { BlogDraftWorkspace } from "@/features/blog/draft-workspace";
 import { DomainsPage } from "@/features/super-admin/domains";
 
@@ -29,6 +30,13 @@ function SectionPage() {
       <>
         <ModulePage area="super-admin" slug={slug} />
         <BlogDraftWorkspace />
+      </>
+    );
+  if (slug === "dispositivos")
+    return (
+      <>
+        <ModulePage area="super-admin" slug={slug} />
+        <DeviceRegistrationWorkspace />
       </>
     );
   if (slug === "dominios") {

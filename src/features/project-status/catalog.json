@@ -1125,20 +1125,24 @@
       "id": "25",
       "title": "Pulseira Inteligente — gestão central no Super ADM",
       "parent": null,
-      "status": "pending",
-      "done": "Ainda não há implementação funcional deste requisito validada.",
-      "next": "Falta implementar e validar pulseira inteligente — gestão central no super adm, respeitando as decisões pendentes do PRD.",
-      "authors": [],
+      "status": "progress",
+      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.",
+      "next": "Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.",
+      "authors": [
+        "Codex"
+      ],
       "requirements": []
     },
     {
       "id": "25.1",
       "title": "Cadastro, estoque e expedição",
       "parent": "25",
-      "status": "pending",
-      "done": "Ainda não há implementação funcional deste requisito validada.",
-      "next": "Falta implementar e validar cadastro, estoque e expedição, respeitando as decisões pendentes do PRD.",
-      "authors": [],
+      "status": "progress",
+      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.",
+      "next": "Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.",
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "Super ADM possui módulo Pulseira Inteligente para gerenciar o ciclo operacional dos dispositivos.",
         "Cadastra pulseiras novas e gerencia o estoque.",
@@ -1154,10 +1158,12 @@
       "id": "25.2",
       "title": "Firmware, identificação e autorização",
       "parent": "25",
-      "status": "pending",
-      "done": "Ainda não há implementação funcional deste requisito validada.",
-      "next": "Falta implementar e validar firmware, identificação e autorização, respeitando as decisões pendentes do PRD.",
-      "authors": [],
+      "status": "progress",
+      "done": "Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real.",
+      "next": "Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.",
+      "authors": [
+        "Codex"
+      ],
       "requirements": [
         "DEFINIDO: liberação central pelo Super ADM, com cadastro/informações do firmware de cada pulseira. Pulseira não liberada não participa da integração do sistema.",
         "RECOMENDADO: separar versão do programa interno (firmware) e identificador da unidade. Versão de firmware identifica uma revisão de software e pode se repetir em várias unidades; não é, por si só, identificação individual nem prova de autenticidade.",
@@ -3570,6 +3576,18 @@
       "status": "done",
       "done": "Painel abre versões históricas por clínica/rascunho sem restaurar, cobrar ou substituir edição suja. Proposta local 036 e APIs revalidam operador ativo, escopo e cursores. 19 testes direcionados/4 arquivos, TypeScript/lint/build aprovados; HTTP anônimo 401 conferido. Regressão global da base anterior e71769f: 1.288 testes/154 arquivos aprovados.",
       "next": "036 local, fora do pedido 034–035. Histórico de rascunho não equivale a contrato aceito. Cloud, aceite, políticas finais, cobrança, main/preview e infraestrutura continuam pendentes dos respectivos escopos.",
+      "requirements": []
+    },
+    {
+      "id": "DEVICE-REGISTRATION-DRAFTS",
+      "title": "Dispositivos: cadastro administrativo sem liberação de hardware — etapa 1",
+      "parent": "25.1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Formulário central e proposta SQL local 037 guardam metadados declarados/versionados com operador ativo. UUID e firmware não são autenticadores. DTO recusa integração liberada; preview textual escapado e recuperação de recibo incerto. 10 testes direcionados/3 arquivos, tipos/lint/build validados antes do commit.",
+      "next": "037 não aplicada no Cloud, fora do pedido 034–035. Biblioteca, estoque físico, expedição, liberação/vínculos e H59 real permanecem pendentes. Sem main/Publish ou infraestrutura.",
       "requirements": []
     }
   ]

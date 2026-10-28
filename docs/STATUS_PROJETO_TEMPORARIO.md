@@ -1022,19 +1022,19 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - Asaas, estados de pagamento confirmado/recebido: https://docs.asaas.com/docs/webhook-para-cobrancas
 - OpenAI, proteção de chave de API no servidor: https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety
 
-## 25 - Pulseira Inteligente — gestão central no Super ADM 🟡
+## 25 - Pulseira Inteligente — gestão central no Super ADM 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar pulseira inteligente — gestão central no super adm, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.
+- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
 
-## 25.1 - Cadastro, estoque e expedição 🟡
+## 25.1 - Cadastro, estoque e expedição 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar cadastro, estoque e expedição, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.
+- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
 
 **Requisitos**:
 
@@ -1047,12 +1047,12 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - RECOMENDADO: expedição possui unidades enviadas, clínica destinatária, data, responsável, transportadora/código de rastreio quando disponível e histórico de status. Exemplos de estados a aprovar: disponível, reservado, expedido, recebido, atribuído ao paciente, devolvido/manutenção e retirado de uso.
 - PENDENTE: campos definitivos, importação em lote, conferência de recebimento, integração com transportadora, venda/cessão/aluguel, estoque em poder da clínica, devoluções, garantias e reposições. Estados de exemplo não foram aprovados como lista final.
 
-## 25.2 - Firmware, identificação e autorização 🟡
+## 25.2 - Firmware, identificação e autorização 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar firmware, identificação e autorização, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real.
+- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
 
 **Requisitos**:
 
@@ -2650,3 +2650,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Painel abre versões históricas por clínica/rascunho sem restaurar, cobrar ou substituir edição suja. Proposta local 036 e APIs revalidam operador ativo, escopo e cursores. 19 testes direcionados/4 arquivos, TypeScript/lint/build aprovados; HTTP anônimo 401 conferido. Regressão global da base anterior e71769f: 1.288 testes/154 arquivos aprovados.
 - **Próximo Passo**: 036 local, fora do pedido 034–035. Histórico de rascunho não equivale a contrato aceito. Cloud, aceite, políticas finais, cobrança, main/preview e infraestrutura continuam pendentes dos respectivos escopos.
+
+## DEVICE-REGISTRATION-DRAFTS - Dispositivos: cadastro administrativo sem liberação de hardware — etapa 1 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Formulário central e proposta SQL local 037 guardam metadados declarados/versionados com operador ativo. UUID e firmware não são autenticadores. DTO recusa integração liberada; preview textual escapado e recuperação de recibo incerto. 10 testes direcionados/3 arquivos, tipos/lint/build validados antes do commit.
+- **Próximo Passo**: 037 não aplicada no Cloud, fora do pedido 034–035. Biblioteca, estoque físico, expedição, liberação/vínculos e H59 real permanecem pendentes. Sem main/Publish ou infraestrutura.
