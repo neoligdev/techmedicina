@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { BlogDraftHistory } from "./draft-history";
 import { BlogDraftLibrary } from "./draft-library";
 import { blogDraftDocumentSchema } from "./draft-contract";
 import { createBlogDraftClient, BlogDraftConflict } from "./draft-client";
@@ -240,6 +241,15 @@ export function BlogDraftEditor({
               </Button>
             )}
           </div>
+          {revision > 0 && (
+            <BlogDraftHistory
+              key={id}
+              id={id}
+              revision={revision}
+              getAccessToken={getAccessToken}
+              {...(fetcher ? { fetcher } : {})}
+            />
+          )}
           <article
             aria-label="Prévia textual do rascunho"
             className="rounded-xl border border-border bg-card/60 p-5"

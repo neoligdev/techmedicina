@@ -153,3 +153,43 @@ it("library selection opens the confirmed draft and unsaved changes block switch
   expect(screen.getByRole("button", { name: "Abrir rascunho" })).toBeDisabled();
   expect(fetcher).toHaveBeenCalledTimes(1);
 });
+
+it("historical preview leaves unsaved current editor contents intact", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const fetcher = vi.fn<typeof fetch>(async (input) =>
+    String(input).includes("blog-draft-version")
+      ? Response.json({
+          version: {
+            draftId: id,
+            revision: 1,
+            document: blogDraftDocumentSchema.parse({ title: "Título histórico" }),
+            occurredAt: "2026-10-28T10:00:00Z",
+          },
+        })
+      : Response.json({
+          draft: {
+            id,
+            status: "draft",
+            document: blogDraftDocumentSchema.parse({ title: "Título atual" }),
+            revision: 2,
+            createdAt: "2026-10-01T00:00:00Z",
+            updatedAt: "2026-10-28T10:00:00Z",
+          },
+        }),
+  );
+  render(<BlogDraftEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir pela biblioteca QA" }));
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "Título" }), {
+    target: { value: "Edição não salva" },
+  });
+  fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "1" } });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Consultar versão" }));
+  });
+  expect(screen.getByText("Título histórico")).toBeTruthy();
+  expect(screen.getByRole("textbox", { name: "Título" })).toHaveValue("Edição não salva");
+  expect(screen.getByRole("button", { name: "Salvar rascunho" })).not.toBeDisabled();
+  expect(fetcher.mock.calls.every((c) => c[1]?.method === "GET")).toBe(true);
+});
