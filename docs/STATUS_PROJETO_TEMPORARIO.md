@@ -735,8 +735,8 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados.
-- **Próximo Passo**: Homologar migração 030 após autorização e criar biblioteca/listagem dos rascunhos. Definir revisão editorial/clínica, mídias/acessibilidade, disponibilização central e seleção/publicação por clínica; depois consumo no PWA. Nenhuma política editorial ou neutralidade é presumida a partir dos campos do editor.
+- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados. A etapa 2 acrescenta biblioteca navegável com busca literal por título, paginação e abertura no editor; salva atualiza a lista e alterações não salvas bloqueiam troca de artigo. API/SQL local 031 retornam só metadados. 23 testes direcionados e tipos/lint/build aprovados.
+- **Próximo Passo**: Homologar 030/031 após autorização e evoluir consulta de versões. Definir revisão editorial/clínica, mídias/acessibilidade, disponibilização central e seleção/publicação por clínica; depois consumo no PWA. Rascunhos e biblioteca não constituem conteúdo publicado nem aprovação editorial.
 
 **Requisitos**:
 
@@ -2594,3 +2594,10 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Nova frente PRD §15: editor preserva demonstração/identidade e só confirma salvamento por recibo do servidor. SQL local 030 guarda revisão e versões/ator; somente Super ADM ativo usa RPCs, sem acesso direto às tabelas. Resposta incerta exige releitura; logout remove edição. 45 testes direcionados/8 arquivos, TypeScript/lint/build aprovados; navegador local e recusa anônima 401 conferidos.
 - **Próximo Passo**: 030 não aplicada no Cloud. Falta biblioteca paginada, revisão editorial/clínica, mídias, seleção/publicação pela clínica e consumo no PWA. Rascunhos não são publicações; main/preview e infraestrutura não alterados.
+
+## BLOG-LIBRARY - Blog central: biblioteca navegável e busca de rascunhos — etapa 2 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: GET protegido e proposta local 031 listam metadados paginados, com busca literal por título e operador ativo revalidado. Interface abre itens sem digitar UUID, atualiza após salvar e protege edições não salvas. Vazio/erro/retry e respostas antigas tratados; 23 testes direcionados/6 arquivos, TypeScript/lint/build aprovados e HTTP anônimo 401 conferido.
+- **Próximo Passo**: 031 não aplicada remotamente neste lote. Versões/revisão editorial, mídias, seleção/publicação nas clínicas e PWA permanecem pendentes. Main/preview, grants, DNS e infraestrutura não alterados; PRD §15 permanece parcial.
