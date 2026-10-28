@@ -33,6 +33,7 @@ import { Route as ApiJourneySelfReportsRouteImport } from './routes/api/journey/
 import { Route as ApiJourneyShieldsRouteImport } from './routes/api/journey/shields'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
 import { Route as ApiPlatformBlogDraftRouteImport } from './routes/api/platform/blog-draft'
+import { Route as ApiPlatformBlogDraftVersionRouteImport } from './routes/api/platform/blog-draft-version'
 import { Route as ApiPlatformBlogDraftsRouteImport } from './routes/api/platform/blog-drafts'
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
@@ -162,6 +163,12 @@ const ApiPlatformBlogDraftRoute = ApiPlatformBlogDraftRouteImport.update({
   path: '/api/platform/blog-draft',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformBlogDraftVersionRoute =
+  ApiPlatformBlogDraftVersionRouteImport.update({
+    id: '/api/platform/blog-draft-version',
+    path: '/api/platform/blog-draft-version',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPlatformBlogDraftsRoute = ApiPlatformBlogDraftsRouteImport.update({
   id: '/api/platform/blog-drafts',
   path: '/api/platform/blog-drafts',
@@ -218,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-draft-version': typeof ApiPlatformBlogDraftVersionRoute
   '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -250,6 +258,7 @@ export interface FileRoutesByTo {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-draft-version': typeof ApiPlatformBlogDraftVersionRoute
   '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -283,6 +292,7 @@ export interface FileRoutesById {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-draft-version': typeof ApiPlatformBlogDraftVersionRoute
   '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
@@ -317,6 +327,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-draft-version'
     | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -349,6 +360,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-draft-version'
     | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -381,6 +393,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-draft-version'
     | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
@@ -414,6 +427,7 @@ export interface RootRouteChildren {
   ApiJourneyShieldsRoute: typeof ApiJourneyShieldsRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
   ApiPlatformBlogDraftRoute: typeof ApiPlatformBlogDraftRoute
+  ApiPlatformBlogDraftVersionRoute: typeof ApiPlatformBlogDraftVersionRoute
   ApiPlatformBlogDraftsRoute: typeof ApiPlatformBlogDraftsRoute
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
@@ -592,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformBlogDraftRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/blog-draft-version': {
+      id: '/api/platform/blog-draft-version'
+      path: '/api/platform/blog-draft-version'
+      fullPath: '/api/platform/blog-draft-version'
+      preLoaderRoute: typeof ApiPlatformBlogDraftVersionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/blog-drafts': {
       id: '/api/platform/blog-drafts'
       path: '/api/platform/blog-drafts'
@@ -662,6 +683,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiJourneyShieldsRoute: ApiJourneyShieldsRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,
   ApiPlatformBlogDraftRoute: ApiPlatformBlogDraftRoute,
+  ApiPlatformBlogDraftVersionRoute: ApiPlatformBlogDraftVersionRoute,
   ApiPlatformBlogDraftsRoute: ApiPlatformBlogDraftsRoute,
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,

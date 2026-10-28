@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -735,8 +735,8 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados. A etapa 2 acrescenta biblioteca navegável com busca literal por título, paginação e abertura no editor; salva atualiza a lista e alterações não salvas bloqueiam troca de artigo. API/SQL local 031 retornam só metadados. 23 testes direcionados e tipos/lint/build aprovados.
-- **Próximo Passo**: Homologar 030/031 após autorização e evoluir consulta de versões. Definir revisão editorial/clínica, mídias/acessibilidade, disponibilização central e seleção/publicação por clínica; depois consumo no PWA. Rascunhos e biblioteca não constituem conteúdo publicado nem aprovação editorial.
+- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados. A etapa 2 acrescenta biblioteca navegável com busca literal por título, paginação e abertura no editor; salva atualiza a lista e alterações não salvas bloqueiam troca de artigo. API/SQL local 031 retornam só metadados. 23 testes direcionados e tipos/lint/build aprovados. Consulta protegida de versão exata disponível no backend local (etapa 3A).
+- **Próximo Passo**: Concluir listagem/painel de versões; revisão editorial/clínica, mídias, seleção/publicação por clínica e consumo no PWA. Homologar migrações mediante autorização.
 
 **Requisitos**:
 
@@ -2601,3 +2601,10 @@ Atualizado em 27/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET protegido e proposta local 031 listam metadados paginados, com busca literal por título e operador ativo revalidado. Interface abre itens sem digitar UUID, atualiza após salvar e protege edições não salvas. Vazio/erro/retry e respostas antigas tratados; 23 testes direcionados/6 arquivos, TypeScript/lint/build aprovados e HTTP anônimo 401 conferido.
 - **Próximo Passo**: 031 não aplicada remotamente neste lote. Versões/revisão editorial, mídias, seleção/publicação nas clínicas e PWA permanecem pendentes. Main/preview, grants, DNS e infraestrutura não alterados; PRD §15 permanece parcial.
+
+## BLOG-VERSION-READ - Blog central: consulta protegida de versão exata — etapa 3A 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: API GET e proposta SQL local 032 consultam snapshot por rascunho/revisão, com operador ativo, resposta estrita e privada. Nenhuma restauração ou alteração do editor. 9 testes direcionados/2 arquivos, TypeScript, lint direcionado e build aprovados.
+- **Próximo Passo**: Listagem paginada e interface de histórico pendentes; 032 não aplicada no Cloud. Revisão editorial, mídias e publicação por clínica/PWA permanecem pendentes. Main e infraestrutura preservadas.

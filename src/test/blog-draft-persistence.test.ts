@@ -37,6 +37,7 @@ beforeAll(async () => {
     "001_tenant_foundation.sql",
     "030_central_blog_drafts.sql",
     "031_central_blog_draft_list.sql",
+    "032_central_blog_draft_version.sql",
   ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + f, import.meta.url), "utf8"),
@@ -162,4 +163,37 @@ it("central library pages metadata by stable UUID and searches title literally",
   await db.query("UPDATE public.tm_platform_operators SET is_active=true WHERE user_id=$1", [
     operator,
   ]);
+});
+
+it("version RPC reads original snapshots without modifying current draft and denies other accounts", async () => {
+  await user(operator);
+  const id = randomUUID();
+  await save(id, 0);
+  await save(id, 1, { ...doc, title: "Título posterior" });
+  const read = () =>
+    db.query<{ value: { document: unknown } }>(
+      "SELECT public.tm_get_blog_draft_version($1,$2) AS value",
+      [id, 1],
+    );
+  expect((await read()).rows[0]!.value.document).toEqual(doc);
+  expect(savedBlogDraftSchema.parse(await get(id)).revision).toBe(2);
+  expect(
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_get_blog_draft_version($1,99) AS value",
+        [id],
+      )
+    ).rows[0]!.value,
+  ).toBeNull();
+  await expect(
+    db.query("SELECT public.tm_get_blog_draft_version($1,0)", [id]),
+  ).rejects.toMatchObject({ code: "22023" });
+  await user(other);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(operator);
+  await expect(db.query("SELECT * FROM public.tm_blog_draft_versions")).rejects.toMatchObject({
+    code: "42501",
+  });
 });

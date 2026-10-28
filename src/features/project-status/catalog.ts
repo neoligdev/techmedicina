@@ -11,7 +11,7 @@ export interface StatusItem {
   authors: string[];
   requirements: string[];
 }
-export const updatedAt = "27/10/2026"; // Atualização manual do catálogo; limites de cada entrega constam no status.
+export const updatedAt = "28/10/2026"; // Atualização manual do catálogo; limites de cada entrega constam no status.
 export const statusItems = catalog.items as StatusItem[];
 export const deliveries = catalog.deliveries as StatusItem[];
 export function projectProgress(items: StatusItem[]) {
