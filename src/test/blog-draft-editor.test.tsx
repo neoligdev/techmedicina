@@ -193,3 +193,61 @@ it("historical preview leaves unsaved current editor contents intact", async () 
   expect(screen.getByRole("button", { name: "Salvar rascunho" })).not.toBeDisabled();
   expect(fetcher.mock.calls.every((c) => c[1]?.method === "GET")).toBe(true);
 });
+
+it("selecting a listed version can preview a newer server revision without replacing dirty fields", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const fetcher = vi.fn<typeof fetch>(async (input) => {
+    const url = String(input);
+    if (url.includes("blog-draft-versions?"))
+      return Response.json({
+        page: {
+          draftId: id,
+          items: [
+            { revision: 3, title: "Nova revisão no servidor", occurredAt: "2026-10-28T10:00:00Z" },
+          ],
+          nextCursor: null,
+        },
+      });
+    if (url.includes("blog-draft-version?"))
+      return Response.json({
+        version: {
+          draftId: id,
+          revision: 3,
+          document: blogDraftDocumentSchema.parse({
+            title: "Nova revisão no servidor",
+            body: "Histórico independente",
+          }),
+          occurredAt: "2026-10-28T10:00:00Z",
+        },
+      });
+    return Response.json({
+      draft: {
+        id,
+        status: "draft",
+        document: blogDraftDocumentSchema.parse({ title: "Título carregado" }),
+        revision: 2,
+        createdAt: "2026-10-01T00:00:00Z",
+        updatedAt: "2026-10-28T10:00:00Z",
+      },
+    });
+  });
+  render(<BlogDraftEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir pela biblioteca QA" }));
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "Título" }), {
+    target: { value: "Edição local mantida" },
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Listar versões salvas" }));
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Consultar revisão 3" }));
+  });
+  expect(
+    screen.getByRole("article", { name: "Versão histórica somente leitura" }),
+  ).toHaveTextContent("Histórico independente");
+  expect(screen.getByRole("textbox", { name: "Título" })).toHaveValue("Edição local mantida");
+  expect(screen.getByRole("button", { name: "Salvar rascunho" })).not.toBeDisabled();
+  expect(fetcher.mock.calls.every((c) => c[1]?.method === "GET")).toBe(true);
+});

@@ -38,6 +38,7 @@ beforeAll(async () => {
     "030_central_blog_drafts.sql",
     "031_central_blog_draft_list.sql",
     "032_central_blog_draft_version.sql",
+    "033_central_blog_version_list.sql",
   ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + f, import.meta.url), "utf8"),
@@ -196,4 +197,51 @@ it("version RPC reads original snapshots without modifying current draft and den
   await expect(db.query("SELECT * FROM public.tm_blog_draft_versions")).rejects.toMatchObject({
     code: "42501",
   });
+});
+
+it("version metadata pages descend within one draft and reject foreign cursors and revoked access", async () => {
+  await user(operator);
+  const id = randomUUID(),
+    foreign = randomUUID();
+  await save(id, 0);
+  await save(foreign, 0);
+  for (let n = 1; n < 12; n++) await save(id, n, { ...doc, title: "Histórico " + (n + 1) });
+  const list = async (before: number | null = null, limit = 10) =>
+    (
+      await db.query<{
+        value: {
+          draftId: string;
+          items: { revision: number; title: string; occurredAt: string }[];
+          nextCursor: number | null;
+        };
+      }>("SELECT public.tm_list_blog_draft_versions($1,$2,$3) AS value", [id, before, limit])
+    ).rows[0]!.value;
+  const first = await list();
+  expect(first.draftId).toBe(id);
+  expect(first.items.map((v) => v.revision)).toEqual([12, 11, 10, 9, 8, 7, 6, 5, 4, 3]);
+  expect(first.nextCursor).toBe(3);
+  expect(Object.keys(first.items[0]!).sort()).toEqual(["occurredAt", "revision", "title"]);
+  expect((await list(3)).items.map((v) => v.revision)).toEqual([2, 1]);
+  expect((await list(3)).nextCursor).toBeNull();
+  await save(id, 12, { ...doc, title: "Nova versão" });
+  expect((await list(3)).items.map((v) => v.revision)).toEqual([2, 1]);
+  await expect(list(99)).rejects.toMatchObject({ code: "22023" });
+  await expect(list(null, 51)).rejects.toMatchObject({ code: "22023" });
+  await expect(
+    db.query("SELECT public.tm_list_blog_draft_versions($1,12,10)", [foreign]),
+  ).rejects.toMatchObject({ code: "22023" });
+  await user(other);
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await user(operator);
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=true WHERE user_id=$1", [
+    operator,
+  ]);
 });

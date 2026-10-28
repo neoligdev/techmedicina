@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { BlogVersionList } from "./version-list";
 import { createBlogDraftVersionClient } from "./draft-version-client";
 import type { blogDraftVersionSchema } from "./draft-version-contract";
 export function BlogDraftHistory({
@@ -35,9 +36,8 @@ export function BlogDraftHistory({
     setBusy(false);
     return () => controller.abort();
   }, [id, revision, read]);
-  async function open() {
-    const target = Number(selected);
-    if (pending.current || !Number.isInteger(target) || target < 1 || target > revision) return;
+  async function open(target = Number(selected)) {
+    if (pending.current || !Number.isInteger(target) || target < 1 || target > 2147483647) return;
     pending.current = true;
     const current = scope.current;
     if (!current || current.signal.aborted) {
@@ -67,9 +67,20 @@ export function BlogDraftHistory({
     >
       <h3 className="font-semibold">Histórico de versões</h3>
       <p className="text-sm text-muted-foreground">
-        Consulte revisões de 1 a {revision}. A consulta não substitui o texto em edição e não
+        Revisão carregada no editor: {revision}. A consulta não substitui o texto em edição e não
         publica conteúdo.
       </p>
+      <BlogVersionList
+        id={id}
+        revision={revision}
+        getAccessToken={getAccessToken}
+        {...(fetcher ? { fetcher } : {})}
+        disabled={busy}
+        onSelect={(target) => {
+          setSelected(String(target));
+          void open(target);
+        }}
+      />
       <form
         className="flex flex-wrap items-end gap-3"
         onSubmit={(e) => {
@@ -82,7 +93,7 @@ export function BlogDraftHistory({
           <Input
             type="number"
             min={1}
-            max={revision}
+            max={2147483647}
             step={1}
             value={selected}
             disabled={busy}
@@ -97,7 +108,7 @@ export function BlogDraftHistory({
             !selected ||
             !Number.isInteger(Number(selected)) ||
             Number(selected) < 1 ||
-            Number(selected) > revision
+            Number(selected) > 2147483647
           }
         >
           Consultar versão

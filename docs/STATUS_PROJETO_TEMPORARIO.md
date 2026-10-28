@@ -735,8 +735,8 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados. A etapa 2 acrescenta biblioteca navegável com busca literal por título, paginação e abertura no editor; salva atualiza a lista e alterações não salvas bloqueiam troca de artigo. API/SQL local 031 retornam só metadados. 23 testes direcionados e tipos/lint/build aprovados. Consulta protegida de versão exata disponível no backend local (etapa 3A). Painel histórico consulta revisão exata sem substituir a edição atual (etapa 3B).
-- **Próximo Passo**: Listagem paginada de versões; revisão editorial/clínica, mídias, seleção/publicação por clínica e PWA; homologação Cloud mediante autorização.
+- **Entregue**: Ainda não há implementação funcional deste requisito validada. Codex implementou primeira base de rascunhos centrais: editor protegido, GET/PUT autenticados, proposta SQL local 030, revisão otimista e snapshots de conteúdo/ator. A prévia anterior foi preservada; nada publicado para clínicas/pacientes. 45 testes direcionados, TypeScript/lint/build aprovados. A etapa 2 acrescenta biblioteca navegável com busca literal por título, paginação e abertura no editor; salva atualiza a lista e alterações não salvas bloqueiam troca de artigo. API/SQL local 031 retornam só metadados. 23 testes direcionados e tipos/lint/build aprovados. Consulta protegida de versão exata disponível no backend local (etapa 3A). Painel histórico consulta revisão exata sem substituir a edição atual (etapa 3B). Lista paginada de versões permite selecionar títulos históricos com data e consulta somente leitura (etapa 3C).
+- **Próximo Passo**: Revisão editorial/clínica, mídias, seleção/publicação por clínica e PWA; homologação Cloud das propostas mediante autorização específica.
 
 **Requisitos**:
 
@@ -2615,3 +2615,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Editor consulta revisão exata em painel separado e preserva edição não salva. Cliente valida sessão, escopo e prazo; mensagens distinguem falha e ausência; respostas antigas descartadas. 13 testes direcionados/3 arquivos, TypeScript, lint direcionado e build aprovados.
 - **Próximo Passo**: Listagem paginada de metadados históricos ainda pendente. Depende de 032 local; sem homologação Cloud ou alteração do preview. Revisão editorial, mídias e publicação por clínica/PWA não concluídas.
+
+## BLOG-HISTORY-LIST - Blog central: lista paginada de versões — etapa 3C 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Lista sob demanda de títulos/datas históricos em ordem decrescente e cursor por revisão, abrindo consulta somente leitura. API/cliente validam rascunho, ordem e limite; SQL local 033 revalida operador ativo. Preserva edição não salva, inclusive ao consultar versão mais recente de outro editor. 27 testes direcionados/6 arquivos aprovados (SQL, HTTP, interface e status); TypeScript, lint e build aprovados.
+- **Próximo Passo**: 033 permanece proposta local; falta homologação Cloud autorizada. Revisão editorial/clínica, mídias, seleção/publicação por clínica e PWA continuam pendentes; sem main, Publish ou infraestrutura.
