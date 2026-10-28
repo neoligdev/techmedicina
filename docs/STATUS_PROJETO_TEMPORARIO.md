@@ -633,12 +633,12 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Entregue**: Catálogo local de rascunhos de telemedicina e pulseira com validação e tratamento de erro no navegador.
 - **Próximo Passo**: Implementar contratos, venda e ativação real; consolidar condições comerciais pendentes.
 
-## 13.1 - Contrato de uso da clínica com a PlugPix 🟡
+## 13.1 - Contrato de uso da clínica com a PlugPix 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar contrato de uso da clínica com a plugpix, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.
+- **Próximo Passo**: Editor e biblioteca por clínica; decisões comerciais, aceite, cobrança e homologação Cloud mediante autorização específica.
 
 **Requisitos**:
 
@@ -2622,3 +2622,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Lista sob demanda de títulos/datas históricos em ordem decrescente e cursor por revisão, abrindo consulta somente leitura. API/cliente validam rascunho, ordem e limite; SQL local 033 revalida operador ativo. Preserva edição não salva, inclusive ao consultar versão mais recente de outro editor. 27 testes direcionados/6 arquivos aprovados (SQL, HTTP, interface e status); TypeScript, lint e build aprovados.
 - **Próximo Passo**: 033 permanece proposta local; falta homologação Cloud autorizada. Revisão editorial/clínica, mídias, seleção/publicação por clínica e PWA continuam pendentes; sem main, Publish ou infraestrutura.
+
+## CLINIC-CONTRACT-DRAFTS - Contrato da clínica: rascunhos protegidos e versionados — etapa 1 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.
+- **Próximo Passo**: 034 local apenas. Sem interface operacional neste lote, assinatura/aceite, fatura, ativação ou permissões clínicas. Cloud/main/infraestrutura preservados.
