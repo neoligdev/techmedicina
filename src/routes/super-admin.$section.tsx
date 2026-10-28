@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ModulePage } from "@/components/platform/module-page";
 import { navigation, areaLabels } from "@/features/demo/navigation";
 import { pageHead } from "@/features/demo/metadata";
+import { ClinicContractWorkspace } from "@/features/clinic-contracts/workspace";
 import { PlansCatalog } from "@/features/super-admin/plans";
 import { SimulatorPage } from "@/features/super-admin/simulator";
 import { ShieldsLibraryPage } from "@/features/super-admin/shields";
@@ -34,7 +35,12 @@ function SectionPage() {
     return <DomainsPage />;
   }
   if (slug === "planos") {
-    return <PlansCatalog defaultTab="policies" />;
+    return (
+      <>
+        <PlansCatalog defaultTab="policies" />
+        <ClinicContractWorkspace />
+      </>
+    );
   }
   if (slug === "simulador") {
     return <SimulatorPage />;

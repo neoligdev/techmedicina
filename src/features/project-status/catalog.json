@@ -695,8 +695,8 @@
       "title": "Contrato de uso da clínica com a PlugPix",
       "parent": "13",
       "status": "progress",
-      "done": "Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.",
-      "next": "Editor e biblioteca por clínica; decisões comerciais, aceite, cobrança e homologação Cloud mediante autorização específica.",
+      "done": "Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local.",
+      "next": "Biblioteca por clínica; regras comerciais finais, aceite, cobrança e homologação Cloud mediante autorização.",
       "authors": [
         "Codex"
       ],
@@ -3534,6 +3534,18 @@
       "status": "done",
       "done": "Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.",
       "next": "034 local apenas. Sem interface operacional neste lote, assinatura/aceite, fatura, ativação ou permissões clínicas. Cloud/main/infraestrutura preservados.",
+      "requirements": []
+    },
+    {
+      "id": "CLINIC-CONTRACT-EDITOR",
+      "title": "Contrato da clínica: editor com seleção real e recuperação — etapa 2",
+      "parent": "13.1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Formulário integrado preserva catálogo/design e usa cadastro paginado do servidor. Conversão monetária exata, valores não definidos, proteção de edição e recuperação por leitura após PUT incerto. 9 testes novos de UI/clientes, TypeScript/lint/build aprovados.",
+      "next": "Ainda depende de 034 local; biblioteca por clínica na sequência. Sem aceite, cobrança, benefícios, SQL remoto, main ou Publish.",
       "requirements": []
     }
   ]

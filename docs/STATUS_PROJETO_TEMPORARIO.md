@@ -637,8 +637,8 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.
-- **Próximo Passo**: Editor e biblioteca por clínica; decisões comerciais, aceite, cobrança e homologação Cloud mediante autorização específica.
+- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local.
+- **Próximo Passo**: Biblioteca por clínica; regras comerciais finais, aceite, cobrança e homologação Cloud mediante autorização.
 
 **Requisitos**:
 
@@ -2629,3 +2629,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados.
 - **Próximo Passo**: 034 local apenas. Sem interface operacional neste lote, assinatura/aceite, fatura, ativação ou permissões clínicas. Cloud/main/infraestrutura preservados.
+
+## CLINIC-CONTRACT-EDITOR - Contrato da clínica: editor com seleção real e recuperação — etapa 2 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Formulário integrado preserva catálogo/design e usa cadastro paginado do servidor. Conversão monetária exata, valores não definidos, proteção de edição e recuperação por leitura após PUT incerto. 9 testes novos de UI/clientes, TypeScript/lint/build aprovados.
+- **Próximo Passo**: Ainda depende de 034 local; biblioteca por clínica na sequência. Sem aceite, cobrança, benefícios, SQL remoto, main ou Publish.
