@@ -14,6 +14,26 @@ vi.mock("@/integrations/supabase/client", () => ({
     },
   },
 }));
+vi.mock("@/features/blog/draft-library", () => ({
+  BlogDraftLibrary: ({
+    disabled,
+    onOpen,
+    refreshKey,
+  }: {
+    disabled?: boolean;
+    onOpen: (id: string) => void;
+    refreshKey?: number;
+  }) => (
+    <button
+      data-testid="draft-library"
+      data-refresh={refreshKey}
+      disabled={disabled}
+      onClick={() => onOpen("11111111-1111-4111-8111-111111111111")}
+    >
+      Abrir pela biblioteca QA
+    </button>
+  ),
+}));
 import { BlogDraftEditor, BlogDraftWorkspace } from "@/features/blog/draft-workspace";
 import { blogDraftDocumentSchema } from "@/features/blog/draft-contract";
 const token = async () => "qa";
@@ -52,6 +72,7 @@ it("creates a stable draft, saves server receipt and previews text without execu
     fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
   });
   expect(screen.getByText("Rascunho salvo e confirmado no servidor.")).toBeTruthy();
+  expect(screen.getByTestId("draft-library").getAttribute("data-refresh")).toBe("1");
   expect(JSON.parse(String(fetcher.mock.calls[0]![1]?.body))).toMatchObject({
     expectedRevision: 0,
     document: { title: "Artigo QA" },
@@ -104,4 +125,31 @@ it("logout removes unsaved editorial data and does not restore it from browser s
   });
   expect(screen.queryByRole("textbox", { name: "Conteúdo em texto" })).toBeNull();
   expect(screen.queryByText("Editorial em edição QA")).toBeNull();
+});
+
+it("library selection opens the confirmed draft and unsaved changes block switching", async () => {
+  const document = blogDraftDocumentSchema.parse({ title: "Artigo selecionado" });
+  const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
+    Response.json({
+      draft: {
+        id: "11111111-1111-4111-8111-111111111111",
+        status: "draft",
+        document,
+        revision: 2,
+        createdAt: "2026-10-01T00:00:00Z",
+        updatedAt: "2026-10-02T00:00:00Z",
+      },
+    }),
+  );
+  render(<BlogDraftEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir pela biblioteca QA" }));
+  });
+  expect(screen.getByRole("textbox", { name: "Título" })).toHaveValue("Artigo selecionado");
+  fireEvent.change(screen.getByRole("textbox", { name: "Título" }), {
+    target: { value: "Alteração ainda não salva" },
+  });
+  expect(screen.getByRole("button", { name: "Abrir pela biblioteca QA" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Abrir rascunho" })).toBeDisabled();
+  expect(fetcher).toHaveBeenCalledTimes(1);
 });

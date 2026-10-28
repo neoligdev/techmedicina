@@ -33,6 +33,7 @@ import { Route as ApiJourneySelfReportsRouteImport } from './routes/api/journey/
 import { Route as ApiJourneyShieldsRouteImport } from './routes/api/journey/shields'
 import { Route as ApiPlatformAuditRouteImport } from './routes/api/platform/audit'
 import { Route as ApiPlatformBlogDraftRouteImport } from './routes/api/platform/blog-draft'
+import { Route as ApiPlatformBlogDraftsRouteImport } from './routes/api/platform/blog-drafts'
 import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/branding'
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
@@ -161,6 +162,11 @@ const ApiPlatformBlogDraftRoute = ApiPlatformBlogDraftRouteImport.update({
   path: '/api/platform/blog-draft',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlatformBlogDraftsRoute = ApiPlatformBlogDraftsRouteImport.update({
+  id: '/api/platform/blog-drafts',
+  path: '/api/platform/blog-drafts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPlatformBrandingRoute = ApiPlatformBrandingRouteImport.update({
   id: '/api/platform/branding',
   path: '/api/platform/branding',
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/api/journey/shields': typeof ApiJourneyShieldsRoute
   '/api/platform/audit': typeof ApiPlatformAuditRoute
   '/api/platform/blog-draft': typeof ApiPlatformBlogDraftRoute
+  '/api/platform/blog-drafts': typeof ApiPlatformBlogDraftsRoute
   '/api/platform/branding': typeof ApiPlatformBrandingRoute
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/api/journey/shields'
     | '/api/platform/audit'
     | '/api/platform/blog-draft'
+    | '/api/platform/blog-drafts'
     | '/api/platform/branding'
     | '/api/platform/clinic'
     | '/api/platform/clinics'
@@ -402,6 +414,7 @@ export interface RootRouteChildren {
   ApiJourneyShieldsRoute: typeof ApiJourneyShieldsRoute
   ApiPlatformAuditRoute: typeof ApiPlatformAuditRoute
   ApiPlatformBlogDraftRoute: typeof ApiPlatformBlogDraftRoute
+  ApiPlatformBlogDraftsRoute: typeof ApiPlatformBlogDraftsRoute
   ApiPlatformBrandingRoute: typeof ApiPlatformBrandingRoute
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
@@ -579,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformBlogDraftRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/blog-drafts': {
+      id: '/api/platform/blog-drafts'
+      path: '/api/platform/blog-drafts'
+      fullPath: '/api/platform/blog-drafts'
+      preLoaderRoute: typeof ApiPlatformBlogDraftsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/branding': {
       id: '/api/platform/branding'
       path: '/api/platform/branding'
@@ -642,6 +662,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiJourneyShieldsRoute: ApiJourneyShieldsRoute,
   ApiPlatformAuditRoute: ApiPlatformAuditRoute,
   ApiPlatformBlogDraftRoute: ApiPlatformBlogDraftRoute,
+  ApiPlatformBlogDraftsRoute: ApiPlatformBlogDraftsRoute,
   ApiPlatformBrandingRoute: ApiPlatformBrandingRoute,
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,

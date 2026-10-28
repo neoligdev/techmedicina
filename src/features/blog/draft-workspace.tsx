@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { BlogDraftLibrary } from "./draft-library";
 import { blogDraftDocumentSchema } from "./draft-contract";
 import { createBlogDraftClient, BlogDraftConflict } from "./draft-client";
 async function token() {
@@ -77,6 +78,7 @@ export function BlogDraftEditor({
     [uncertain, setUncertain] = useState(false),
     [dirty, setDirty] = useState(false),
     [message, setMessage] = useState("");
+  const [libraryRevision, setLibraryRevision] = useState(0);
   const active = useRef(true),
     pending = useRef(false);
   useEffect(() => {
@@ -93,8 +95,8 @@ export function BlogDraftEditor({
     setDirty(true);
     setMessage("Rascunho em edição, ainda não salvo.");
   }
-  async function load(target: string) {
-    if (pending.current) return;
+  async function load(target: string, recovery = false) {
+    if (pending.current || (!recovery && (dirty || uncertain))) return;
     pending.current = true;
     setBusy(true);
     setMessage("");
@@ -137,6 +139,7 @@ export function BlogDraftEditor({
       setDocument(saved.document);
       setDirty(false);
       setMessage("Rascunho salvo e confirmado no servidor.");
+      setLibraryRevision((v) => v + 1);
     } catch (error) {
       if (active.current) {
         setUncertain(true);
@@ -154,6 +157,13 @@ export function BlogDraftEditor({
   const editable = Boolean(id) && !busy && !uncertain;
   return (
     <div className="space-y-5" aria-busy={busy}>
+      <BlogDraftLibrary
+        getAccessToken={getAccessToken}
+        {...(fetcher ? { fetcher } : {})}
+        disabled={busy || dirty || uncertain}
+        onOpen={(target) => void load(target)}
+        refreshKey={libraryRevision}
+      />
       <div className="flex flex-wrap gap-3">
         <Button onClick={create} disabled={busy || dirty || uncertain}>
           Novo rascunho
@@ -225,7 +235,7 @@ export function BlogDraftEditor({
               Salvar rascunho
             </Button>
             {uncertain && (
-              <Button variant="outline" disabled={busy} onClick={() => void load(id)}>
+              <Button variant="outline" disabled={busy} onClick={() => void load(id, true)}>
                 Recarregar versão do servidor
               </Button>
             )}

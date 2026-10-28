@@ -33,7 +33,11 @@ beforeAll(async () => {
   await db.exec(
     `CREATE ROLE anon NOLOGIN;CREATE ROLE authenticated NOLOGIN;CREATE SCHEMA auth;CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;GRANT USAGE ON SCHEMA auth TO anon,authenticated;GRANT EXECUTE ON FUNCTION auth.uid() TO anon,authenticated;`,
   );
-  for (const f of ["001_tenant_foundation.sql", "030_central_blog_drafts.sql"])
+  for (const f of [
+    "001_tenant_foundation.sql",
+    "030_central_blog_drafts.sql",
+    "031_central_blog_draft_list.sql",
+  ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + f, import.meta.url), "utf8"),
     );
@@ -106,6 +110,54 @@ it("clinic roles, arbitrary accounts, anon, revoked operator and direct table wr
   await user(operator);
   await expect(get(id)).rejects.toMatchObject({ code: "42501" });
   await expect(save(id, 1)).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=true WHERE user_id=$1", [
+    operator,
+  ]);
+});
+it("central library pages metadata by stable UUID and searches title literally", async () => {
+  await user(operator);
+  const ids = [randomUUID(), randomUUID(), randomUUID()].sort();
+  for (let i = 0; i < ids.length; i++)
+    await save(ids[i]!, 0, {
+      ...doc,
+      title: "Library QA " + i + (i === 0 ? " 100%" : ""),
+      body: "DO NOT RETURN BODY",
+    });
+  const read = async (q = "Library QA", after: string | null = null, limit = 2) =>
+    (
+      await db.query<{
+        page: {
+          query: string;
+          items: Array<{ id: string; title: string }>;
+          nextCursor: string | null;
+        };
+      }>("SELECT public.tm_list_blog_drafts($1,$2,$3) AS page", [q, after, limit])
+    ).rows[0]!.page;
+  const first = await read();
+  expect(first.items.map((i) => i.id)).toEqual(ids.slice(0, 2));
+  expect(first.nextCursor).toBe(ids[1]);
+  expect(Object.keys(first.items[0]!).sort()).toEqual(
+    ["id", "status", "title", "category", "revision", "updatedAt"].sort(),
+  );
+  const second = await read("Library QA", first.nextCursor);
+  expect(second.items.map((i) => i.id)).toEqual(ids.slice(2));
+  expect(second.nextCursor).toBeNull();
+  expect((await read("%")).items.map((i) => i.id)).toEqual([ids[0]]);
+  expect((await read("library qa")).items).toHaveLength(2);
+  expect((await read("not matching")).items).toEqual([]);
+  await expect(read("Library QA", randomUUID())).rejects.toMatchObject({ code: "22023" });
+  await expect(read("Library QA", null, 51)).rejects.toMatchObject({ code: "22023" });
+  await user(other);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=false WHERE user_id=$1", [
+    operator,
+  ]);
+  await user(operator);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
   await db.exec("RESET ROLE");
   await db.query("UPDATE public.tm_platform_operators SET is_active=true WHERE user_id=$1", [
     operator,
