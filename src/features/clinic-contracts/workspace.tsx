@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { ClinicContractHistory } from "./history";
 import { ClinicContractLibrary } from "./library";
 import { ContractClinicChoice } from "./clinic-choice";
 import { emptyClinicContract, clinicContractDocumentSchema } from "./contracts";
@@ -365,6 +366,16 @@ export function ClinicContractEditor({
             </div>
           )}
         </>
+      )}
+      {id && revision > 0 && (
+        <ClinicContractHistory
+          key={clinicId + ":" + id}
+          id={id}
+          clinicId={clinicId}
+          revision={revision}
+          getAccessToken={getAccessToken}
+          {...(fetcher ? { fetcher } : {})}
+        />
       )}
       {message && (
         <p role="status" aria-live="polite">

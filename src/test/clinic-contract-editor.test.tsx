@@ -233,3 +233,76 @@ it("opens a library item within selected clinic and protects unsaved changes", a
   });
   expect(screen.getByRole("button", { name: "Abrir contrato pela biblioteca QA" })).toBeDisabled();
 });
+
+it("historical proposal does not overwrite unsaved commercial terms", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const document = {
+    title: "Proposta atual",
+    currency: "BRL",
+    setupCents: 1000,
+    monthlyEnabled: null,
+    monthlyCents: null,
+    livesEnabled: null,
+    livesCount: null,
+    holderCents: null,
+    dependentCents: null,
+    notes: "Notas atuais",
+  };
+  const fetcher = vi.fn<typeof fetch>(async (url) => {
+    const text = String(url);
+    if (text.includes("/clinics")) return Response.json(directory);
+    if (text.includes("/clinic-contract-versions?"))
+      return Response.json({
+        page: {
+          draftId: id,
+          clinicId,
+          items: [{ revision: 1, title: "Proposta anterior", occurredAt: "2026-10-28T10:00:00Z" }],
+          nextCursor: null,
+        },
+      });
+    if (text.includes("/clinic-contract-version?"))
+      return Response.json({
+        version: {
+          draftId: id,
+          clinicId,
+          revision: 1,
+          document: {
+            ...document,
+            title: "Proposta anterior",
+            setupCents: null,
+            notes: "Notas históricas",
+          },
+          occurredAt: "2026-10-28T10:00:00Z",
+        },
+      });
+    return Response.json({ draft: receipt({ id, clinicId, document, expectedRevision: 1 }) });
+  });
+  render(<ClinicContractEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Carregar clínicas do servidor" }));
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Clínica do contrato" }), {
+    target: { value: clinicId },
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir contrato pela biblioteca QA" }));
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "Observações comerciais" }), {
+    target: { value: "Nova edição não salva" },
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Listar versões comerciais" }));
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Consultar proposta — revisão 1" }));
+  });
+  expect(
+    screen.getByRole("article", { name: "Condições históricas em rascunho" }),
+  ).toHaveTextContent("Notas históricas");
+  expect(screen.getByRole("textbox", { name: "Observações comerciais" })).toHaveValue(
+    "Nova edição não salva",
+  );
+  expect(screen.getByRole("textbox", { name: "Setup de implementação (R$)" })).toHaveValue("10,00");
+  expect(screen.getByRole("button", { name: "Salvar rascunho comercial" })).not.toBeDisabled();
+  expect(fetcher.mock.calls.some((c) => c[1]?.method === "PUT")).toBe(false);
+});

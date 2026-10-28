@@ -40,6 +40,8 @@ import { Route as ApiPlatformBrandingRouteImport } from './routes/api/platform/b
 import { Route as ApiPlatformClinicRouteImport } from './routes/api/platform/clinic'
 import { Route as ApiPlatformClinicContractDraftRouteImport } from './routes/api/platform/clinic-contract-draft'
 import { Route as ApiPlatformClinicContractDraftsRouteImport } from './routes/api/platform/clinic-contract-drafts'
+import { Route as ApiPlatformClinicContractVersionRouteImport } from './routes/api/platform/clinic-contract-version'
+import { Route as ApiPlatformClinicContractVersionsRouteImport } from './routes/api/platform/clinic-contract-versions'
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
 import { Route as ApiPlatformDomainAuditRouteImport } from './routes/api/platform/domain-audit'
 import { Route as ApiPlatformDomainsRouteImport } from './routes/api/platform/domains'
@@ -205,6 +207,18 @@ const ApiPlatformClinicContractDraftsRoute =
     path: '/api/platform/clinic-contract-drafts',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPlatformClinicContractVersionRoute =
+  ApiPlatformClinicContractVersionRouteImport.update({
+    id: '/api/platform/clinic-contract-version',
+    path: '/api/platform/clinic-contract-version',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPlatformClinicContractVersionsRoute =
+  ApiPlatformClinicContractVersionsRouteImport.update({
+    id: '/api/platform/clinic-contract-versions',
+    path: '/api/platform/clinic-contract-versions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPlatformClinicsRoute = ApiPlatformClinicsRouteImport.update({
   id: '/api/platform/clinics',
   path: '/api/platform/clinics',
@@ -253,6 +267,8 @@ export interface FileRoutesByFullPath {
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinic-contract-draft': typeof ApiPlatformClinicContractDraftRoute
   '/api/platform/clinic-contract-drafts': typeof ApiPlatformClinicContractDraftsRoute
+  '/api/platform/clinic-contract-version': typeof ApiPlatformClinicContractVersionRoute
+  '/api/platform/clinic-contract-versions': typeof ApiPlatformClinicContractVersionsRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
@@ -289,6 +305,8 @@ export interface FileRoutesByTo {
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinic-contract-draft': typeof ApiPlatformClinicContractDraftRoute
   '/api/platform/clinic-contract-drafts': typeof ApiPlatformClinicContractDraftsRoute
+  '/api/platform/clinic-contract-version': typeof ApiPlatformClinicContractVersionRoute
+  '/api/platform/clinic-contract-versions': typeof ApiPlatformClinicContractVersionsRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
@@ -326,6 +344,8 @@ export interface FileRoutesById {
   '/api/platform/clinic': typeof ApiPlatformClinicRoute
   '/api/platform/clinic-contract-draft': typeof ApiPlatformClinicContractDraftRoute
   '/api/platform/clinic-contract-drafts': typeof ApiPlatformClinicContractDraftsRoute
+  '/api/platform/clinic-contract-version': typeof ApiPlatformClinicContractVersionRoute
+  '/api/platform/clinic-contract-versions': typeof ApiPlatformClinicContractVersionsRoute
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
@@ -364,6 +384,8 @@ export interface FileRouteTypes {
     | '/api/platform/clinic'
     | '/api/platform/clinic-contract-draft'
     | '/api/platform/clinic-contract-drafts'
+    | '/api/platform/clinic-contract-version'
+    | '/api/platform/clinic-contract-versions'
     | '/api/platform/clinics'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
@@ -400,6 +422,8 @@ export interface FileRouteTypes {
     | '/api/platform/clinic'
     | '/api/platform/clinic-contract-draft'
     | '/api/platform/clinic-contract-drafts'
+    | '/api/platform/clinic-contract-version'
+    | '/api/platform/clinic-contract-versions'
     | '/api/platform/clinics'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
@@ -436,6 +460,8 @@ export interface FileRouteTypes {
     | '/api/platform/clinic'
     | '/api/platform/clinic-contract-draft'
     | '/api/platform/clinic-contract-drafts'
+    | '/api/platform/clinic-contract-version'
+    | '/api/platform/clinic-contract-versions'
     | '/api/platform/clinics'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
@@ -473,6 +499,8 @@ export interface RootRouteChildren {
   ApiPlatformClinicRoute: typeof ApiPlatformClinicRoute
   ApiPlatformClinicContractDraftRoute: typeof ApiPlatformClinicContractDraftRoute
   ApiPlatformClinicContractDraftsRoute: typeof ApiPlatformClinicContractDraftsRoute
+  ApiPlatformClinicContractVersionRoute: typeof ApiPlatformClinicContractVersionRoute
+  ApiPlatformClinicContractVersionsRoute: typeof ApiPlatformClinicContractVersionsRoute
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
   ApiPlatformDomainAuditRoute: typeof ApiPlatformDomainAuditRoute
   ApiPlatformDomainsRoute: typeof ApiPlatformDomainsRoute
@@ -697,6 +725,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformClinicContractDraftsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/clinic-contract-version': {
+      id: '/api/platform/clinic-contract-version'
+      path: '/api/platform/clinic-contract-version'
+      fullPath: '/api/platform/clinic-contract-version'
+      preLoaderRoute: typeof ApiPlatformClinicContractVersionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/platform/clinic-contract-versions': {
+      id: '/api/platform/clinic-contract-versions'
+      path: '/api/platform/clinic-contract-versions'
+      fullPath: '/api/platform/clinic-contract-versions'
+      preLoaderRoute: typeof ApiPlatformClinicContractVersionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/clinics': {
       id: '/api/platform/clinics'
       path: '/api/platform/clinics'
@@ -753,6 +795,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPlatformClinicRoute: ApiPlatformClinicRoute,
   ApiPlatformClinicContractDraftRoute: ApiPlatformClinicContractDraftRoute,
   ApiPlatformClinicContractDraftsRoute: ApiPlatformClinicContractDraftsRoute,
+  ApiPlatformClinicContractVersionRoute: ApiPlatformClinicContractVersionRoute,
+  ApiPlatformClinicContractVersionsRoute:
+    ApiPlatformClinicContractVersionsRoute,
   ApiPlatformClinicsRoute: ApiPlatformClinicsRoute,
   ApiPlatformDomainAuditRoute: ApiPlatformDomainAuditRoute,
   ApiPlatformDomainsRoute: ApiPlatformDomainsRoute,

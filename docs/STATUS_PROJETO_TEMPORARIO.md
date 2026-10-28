@@ -637,8 +637,8 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local. Biblioteca paginada por clínica com busca literal, abertura protegida e atualização após recibo confirmado.
-- **Próximo Passo**: Histórico comercial somente leitura; regras finais, aceite, cobrança e homologação Cloud autorizada.
+- **Entregue**: Contratos de dados, API administrativa e proposta SQL local 034 guardam rascunhos por clínica com revisões/snapshots. Valores e escolhas indefinidos permanecem null, sem cobrança, aceite ou benefícios. 10 testes SQL/HTTP, TypeScript/lint/build aprovados. Editor em Planos escolhe clínica do servidor, preserva valores não definidos e confirma recibos; descarte explícito e releitura após resposta incerta, sem storage local. Biblioteca paginada por clínica com busca literal, abertura protegida e atualização após recibo confirmado. Histórico comercial paginado e consulta somente leitura preservam condições antigas sem alterar a edição atual (etapa 4).
+- **Próximo Passo**: Definir aceite, condições comerciais finais, vigência/cobrança e homologar as propostas locais no Cloud mediante autorização específica.
 
 **Requisitos**:
 
@@ -2643,3 +2643,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: API e proposta SQL local 035 listam metadados por clínica, com busca literal e cursor validado no mesmo escopo. Interface abre itens sem UUID, protege edição e descarta respostas de outra clínica. Testes SQL/HTTP/UI, TypeScript e lint direcionado aprovados; build validado antes do commit. Navegador local confirma cartão protegido e APIs recusam acesso anônimo.
 - **Próximo Passo**: 034–035 não aplicadas no Cloud. Histórico, aceite, decisões comerciais e cobrança seguem pendentes. Main/preview permanecem na versão anterior; sem infraestrutura ou permissões clínicas.
+
+## CLINIC-CONTRACT-HISTORY - Contrato da clínica: histórico imutável para consulta — etapa 4 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Painel abre versões históricas por clínica/rascunho sem restaurar, cobrar ou substituir edição suja. Proposta local 036 e APIs revalidam operador ativo, escopo e cursores. 19 testes direcionados/4 arquivos, TypeScript/lint/build aprovados; HTTP anônimo 401 conferido. Regressão global da base anterior e71769f: 1.288 testes/154 arquivos aprovados.
+- **Próximo Passo**: 036 local, fora do pedido 034–035. Histórico de rascunho não equivale a contrato aceito. Cloud, aceite, políticas finais, cobrança, main/preview e infraestrutura continuam pendentes dos respectivos escopos.
