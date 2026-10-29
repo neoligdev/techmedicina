@@ -45,6 +45,7 @@ import { Route as ApiPlatformClinicContractVersionsRouteImport } from './routes/
 import { Route as ApiPlatformClinicsRouteImport } from './routes/api/platform/clinics'
 import { Route as ApiPlatformDeviceRegistrationDraftRouteImport } from './routes/api/platform/device-registration-draft'
 import { Route as ApiPlatformDeviceRegistrationDraftsRouteImport } from './routes/api/platform/device-registration-drafts'
+import { Route as ApiPlatformDeviceRegistrationVersionRouteImport } from './routes/api/platform/device-registration-version'
 import { Route as ApiPlatformDomainAuditRouteImport } from './routes/api/platform/domain-audit'
 import { Route as ApiPlatformDomainsRouteImport } from './routes/api/platform/domains'
 
@@ -238,6 +239,12 @@ const ApiPlatformDeviceRegistrationDraftsRoute =
     path: '/api/platform/device-registration-drafts',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPlatformDeviceRegistrationVersionRoute =
+  ApiPlatformDeviceRegistrationVersionRouteImport.update({
+    id: '/api/platform/device-registration-version',
+    path: '/api/platform/device-registration-version',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPlatformDomainAuditRoute = ApiPlatformDomainAuditRouteImport.update({
   id: '/api/platform/domain-audit',
   path: '/api/platform/domain-audit',
@@ -286,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/device-registration-draft': typeof ApiPlatformDeviceRegistrationDraftRoute
   '/api/platform/device-registration-drafts': typeof ApiPlatformDeviceRegistrationDraftsRoute
+  '/api/platform/device-registration-version': typeof ApiPlatformDeviceRegistrationVersionRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
@@ -326,6 +334,7 @@ export interface FileRoutesByTo {
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/device-registration-draft': typeof ApiPlatformDeviceRegistrationDraftRoute
   '/api/platform/device-registration-drafts': typeof ApiPlatformDeviceRegistrationDraftsRoute
+  '/api/platform/device-registration-version': typeof ApiPlatformDeviceRegistrationVersionRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
@@ -367,6 +376,7 @@ export interface FileRoutesById {
   '/api/platform/clinics': typeof ApiPlatformClinicsRoute
   '/api/platform/device-registration-draft': typeof ApiPlatformDeviceRegistrationDraftRoute
   '/api/platform/device-registration-drafts': typeof ApiPlatformDeviceRegistrationDraftsRoute
+  '/api/platform/device-registration-version': typeof ApiPlatformDeviceRegistrationVersionRoute
   '/api/platform/domain-audit': typeof ApiPlatformDomainAuditRoute
   '/api/platform/domains': typeof ApiPlatformDomainsRoute
 }
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/api/platform/clinics'
     | '/api/platform/device-registration-draft'
     | '/api/platform/device-registration-drafts'
+    | '/api/platform/device-registration-version'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
   fileRoutesByTo: FileRoutesByTo
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/api/platform/clinics'
     | '/api/platform/device-registration-draft'
     | '/api/platform/device-registration-drafts'
+    | '/api/platform/device-registration-version'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
   id:
@@ -489,6 +501,7 @@ export interface FileRouteTypes {
     | '/api/platform/clinics'
     | '/api/platform/device-registration-draft'
     | '/api/platform/device-registration-drafts'
+    | '/api/platform/device-registration-version'
     | '/api/platform/domain-audit'
     | '/api/platform/domains'
   fileRoutesById: FileRoutesById
@@ -530,6 +543,7 @@ export interface RootRouteChildren {
   ApiPlatformClinicsRoute: typeof ApiPlatformClinicsRoute
   ApiPlatformDeviceRegistrationDraftRoute: typeof ApiPlatformDeviceRegistrationDraftRoute
   ApiPlatformDeviceRegistrationDraftsRoute: typeof ApiPlatformDeviceRegistrationDraftsRoute
+  ApiPlatformDeviceRegistrationVersionRoute: typeof ApiPlatformDeviceRegistrationVersionRoute
   ApiPlatformDomainAuditRoute: typeof ApiPlatformDomainAuditRoute
   ApiPlatformDomainsRoute: typeof ApiPlatformDomainsRoute
 }
@@ -788,6 +802,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPlatformDeviceRegistrationDraftsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/platform/device-registration-version': {
+      id: '/api/platform/device-registration-version'
+      path: '/api/platform/device-registration-version'
+      fullPath: '/api/platform/device-registration-version'
+      preLoaderRoute: typeof ApiPlatformDeviceRegistrationVersionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/platform/domain-audit': {
       id: '/api/platform/domain-audit'
       path: '/api/platform/domain-audit'
@@ -845,6 +866,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPlatformDeviceRegistrationDraftRoute,
   ApiPlatformDeviceRegistrationDraftsRoute:
     ApiPlatformDeviceRegistrationDraftsRoute,
+  ApiPlatformDeviceRegistrationVersionRoute:
+    ApiPlatformDeviceRegistrationVersionRoute,
   ApiPlatformDomainAuditRoute: ApiPlatformDomainAuditRoute,
   ApiPlatformDomainsRoute: ApiPlatformDomainsRoute,
 }

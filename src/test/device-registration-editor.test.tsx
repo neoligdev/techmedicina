@@ -138,3 +138,44 @@ it("opens a listed registration and prevents changing selection while metadata i
   expect(screen.getByRole("button", { name: "Abrir unidade pela biblioteca QA" })).toBeDisabled();
   expect(fetcher).toHaveBeenCalledTimes(1);
 });
+it("historical consultation preserves unsaved device metadata", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const document = {
+    title: "Unidade atual",
+    manufacturer: "",
+    model: "Modelo atual",
+    claimedIdentifier: "QA",
+    firmwareVersion: "v2",
+    lot: "",
+    notes: "",
+  };
+  const fetcher = vi.fn<typeof fetch>(async (url) =>
+    String(url).includes("device-registration-version?")
+      ? Response.json({
+          version: {
+            draftId: id,
+            revision: 1,
+            integrationAuthorized: false,
+            document: { ...document, title: "Unidade antiga", model: "Modelo antigo" },
+            occurredAt: "2026-10-28T10:00:00Z",
+          },
+        })
+      : Response.json({ draft: receipt({ id, document, expectedRevision: 1 }) }),
+  );
+  render(<DeviceRegistrationEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir unidade pela biblioteca QA" }));
+  });
+  fireEvent.change(screen.getByRole("textbox", { name: "Modelo informado" }), {
+    target: { value: "Edição não salva" },
+  });
+  fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "1" } });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Consultar versão" }));
+  });
+  expect(
+    screen.getByRole("article", { name: "Versão histórica somente leitura" }),
+  ).toHaveTextContent("Modelo antigo");
+  expect(screen.getByRole("textbox", { name: "Modelo informado" })).toHaveValue("Edição não salva");
+  expect(fetcher.mock.calls.every((c) => c[1]?.method !== "PUT")).toBe(true);
+});

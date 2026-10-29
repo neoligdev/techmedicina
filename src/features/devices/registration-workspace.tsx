@@ -1,3 +1,4 @@
+import { DeviceRegistrationHistory } from "./registration-history";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -250,6 +251,15 @@ export function DeviceRegistrationEditor({
               </Button>
             )}
           </div>
+          {revision > 0 && (
+            <DeviceRegistrationHistory
+              key={id}
+              id={id}
+              revision={revision}
+              getAccessToken={getAccessToken}
+              {...(fetcher ? { fetcher } : {})}
+            />
+          )}
           <article
             aria-label="Prévia dos metadados informados"
             className="rounded-xl border border-border bg-card/60 p-5"

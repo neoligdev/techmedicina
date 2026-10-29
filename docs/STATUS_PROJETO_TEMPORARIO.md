@@ -1026,15 +1026,15 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.
-- **Próximo Passo**: Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
+- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 ## 25.1 - Cadastro, estoque e expedição 🔵
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.
-- **Próximo Passo**: Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
+- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 **Requisitos**:
 
@@ -1051,8 +1051,8 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real.
-- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
+- **Entregue**: Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
+- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 **Requisitos**:
 
@@ -2678,3 +2678,10 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Corrigida consulta sem bearer encontrada no preview. Usa token da sessão, no-store, sem cookies/redirecionamento e descarta respostas antigas. Sem sessão não chama o cadastro protegido. Preview 5b4ff09 confirmou /staus com 147 entregas e navegação hidratada; 20 testes de políticas aprovados antes do commit.
 - **Próximo Passo**: Não implementa persistência das políticas nem concede acesso: servidor continua exigindo Super ADM. Correção e status novo ficam em develop até autorização própria para main. Homologação autenticada real ainda pendente.
+
+## DEVICE-REGISTRATION-HISTORY - Dispositivos: consulta imutável dos metadados históricos — etapa 3 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Consulta protegida por unidade/revisão, contrato estrito com integração não liberada e painel somente leitura preservando edição pendente. Proposta SQL local 039 revalida operador ativo; sem acesso direto a snapshots ou exposição de autor interno. Testes PostgreSQL/HTTP/UI executados; validação final registrada no documento da etapa.
+- **Próximo Passo**: 039 depende de 037 e permanece local, assim como 037–038. Não conclui inventário físico, expedição, autenticação H59, liberação, vínculo ou telemetria. Main preservada em 5b4ff09; sem SQL remoto, DNS, Publish ou grants.

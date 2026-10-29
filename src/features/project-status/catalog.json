@@ -1126,8 +1126,8 @@
       "title": "Pulseira Inteligente — gestão central no Super ADM",
       "parent": null,
       "status": "progress",
-      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.",
-      "next": "Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.",
+      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.",
+      "next": "037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.",
       "authors": [
         "Codex"
       ],
@@ -1138,8 +1138,8 @@
       "title": "Cadastro, estoque e expedição",
       "parent": "25",
       "status": "progress",
-      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.",
-      "next": "Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.",
+      "done": "Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.",
+      "next": "037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.",
       "authors": [
         "Codex"
       ],
@@ -1159,8 +1159,8 @@
       "title": "Firmware, identificação e autorização",
       "parent": "25",
       "status": "progress",
-      "done": "Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real.",
-      "next": "Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.",
+      "done": "Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.",
+      "next": "037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.",
       "authors": [
         "Codex"
       ],
@@ -3624,6 +3624,18 @@
       "status": "done",
       "done": "Corrigida consulta sem bearer encontrada no preview. Usa token da sessão, no-store, sem cookies/redirecionamento e descarta respostas antigas. Sem sessão não chama o cadastro protegido. Preview 5b4ff09 confirmou /staus com 147 entregas e navegação hidratada; 20 testes de políticas aprovados antes do commit.",
       "next": "Não implementa persistência das políticas nem concede acesso: servidor continua exigindo Super ADM. Correção e status novo ficam em develop até autorização própria para main. Homologação autenticada real ainda pendente.",
+      "requirements": []
+    },
+    {
+      "id": "DEVICE-REGISTRATION-HISTORY",
+      "title": "Dispositivos: consulta imutável dos metadados históricos — etapa 3",
+      "parent": "25.1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Consulta protegida por unidade/revisão, contrato estrito com integração não liberada e painel somente leitura preservando edição pendente. Proposta SQL local 039 revalida operador ativo; sem acesso direto a snapshots ou exposição de autor interno. Testes PostgreSQL/HTTP/UI executados; validação final registrada no documento da etapa.",
+      "next": "039 depende de 037 e permanece local, assim como 037–038. Não conclui inventário físico, expedição, autenticação H59, liberação, vínculo ou telemetria. Main preservada em 5b4ff09; sem SQL remoto, DNS, Publish ou grants.",
       "requirements": []
     }
   ]
