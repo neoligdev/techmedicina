@@ -1,3 +1,4 @@
+import { deviceRegistrationVersionListPageSchema } from "@/features/devices/registration-version-list-contract";
 // @vitest-environment node
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
@@ -35,6 +36,7 @@ beforeAll(async () => {
     "001_tenant_foundation.sql",
     "037_device_registration_drafts.sql",
     "039_device_registration_version.sql",
+    "040_device_registration_version_list.sql",
   ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + name, import.meta.url), "utf8"),
@@ -100,4 +102,32 @@ it("revalidates operator activation and rejects invalid revision", async () => {
   ]);
   await user(operator);
   await expect(read(id, 0)).rejects.toMatchObject({ code: "22023" });
+});
+
+it("paginates descending historical metadata and rejects absent cursor and unauthorized accounts", async () => {
+  await user(operator);
+  for (let revision = 2; revision < 12; revision++)
+    await db.query("SELECT public.tm_save_device_registration_draft($1,$2,$3::jsonb)", [
+      id,
+      revision,
+      JSON.stringify({ ...original, title: "Unidade revisão " + (revision + 1) }),
+    ]);
+  const list = async (before: number | null = null) =>
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_list_device_registration_draft_versions($1,$2,2) AS value",
+        [id, before],
+      )
+    ).rows[0]!.value;
+  const first = deviceRegistrationVersionListPageSchema.parse(await list());
+  expect(first.items.map((i) => i.revision)).toEqual([12, 11]);
+  expect(first.nextCursor).toBe(11);
+  const second = deviceRegistrationVersionListPageSchema.parse(await list(11));
+  expect(second.items.map((i) => i.revision)).toEqual([10, 9]);
+  expect(JSON.stringify(first)).not.toMatch(/document|actor_user_id|notes|firmwareVersion/);
+  await expect(list(99)).rejects.toMatchObject({ code: "22023" });
+  await user(other);
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
 });

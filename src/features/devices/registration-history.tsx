@@ -1,3 +1,4 @@
+import { DeviceRegistrationVersionList } from "./registration-version-list";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,17 @@ export function DeviceRegistrationHistory({
         não substitui a edição nem libera a integração do equipamento.
       </p>
 
+      <DeviceRegistrationVersionList
+        id={id}
+        revision={revision}
+        getAccessToken={getAccessToken}
+        {...(fetcher ? { fetcher } : {})}
+        disabled={busy}
+        onSelect={(target) => {
+          setSelected(String(target));
+          void open(target);
+        }}
+      />
       <form
         className="flex flex-wrap items-end gap-3"
         onSubmit={(e) => {

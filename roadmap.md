@@ -210,3 +210,5 @@ Registros anteriores preservam o estado de suas datas. Referência atual: docs/S
 - [ ] Cloud 036–039 depende de revisão e autorização própria; não aplicado por inferência.
 - [ ] Main posterior a 5b4ff09 depende de autorização própria. Develop não atualiza o preview conectado à main.
 - [ ] Regras pendentes e hardware real continuam necessários; entregas técnicas parciais não concluem o PRD.
+
+- [x] Lista paginada de revisões de dispositivos — etapa local 4, SQL 040 não aplicada; status 153. Posterior ao candidato a705177.

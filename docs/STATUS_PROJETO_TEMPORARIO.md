@@ -1027,14 +1027,14 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
-- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
+- **Próximo Passo**: 037–040 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 ## 25.1 - Cadastro, estoque e expedição 🔵
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
-- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
+- **Próximo Passo**: 037–040 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 **Requisitos**:
 
@@ -1052,7 +1052,7 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
 - **Entregue**: Cadastro guarda versão de firmware como metadado declarado separado do UUID/identificador da unidade. Respostas exigem integrationAuthorized=false; não há liberação técnica, autenticação de hardware ou ingestão real. Consulta de revisão histórica dos metadados disponível localmente, somente leitura e sem substituir edição pendente.
-- **Próximo Passo**: 037–039 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
+- **Próximo Passo**: 037–040 locais: homologar mediante autorização específica Cloud. Documentação/autenticação de hardware, conferência física e estados de estoque/expedição/liberação continuam pendentes.
 
 **Requisitos**:
 
@@ -2685,3 +2685,10 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Consulta protegida por unidade/revisão, contrato estrito com integração não liberada e painel somente leitura preservando edição pendente. Proposta SQL local 039 revalida operador ativo; sem acesso direto a snapshots ou exposição de autor interno. Testes PostgreSQL/HTTP/UI executados; validação final registrada no documento da etapa. Regressão global da base 6fe31a8: 1.335 testes em 165 arquivos aprovados; lint global sem erros (7 avisos anteriores).
 - **Próximo Passo**: 039 depende de 037 e permanece local, assim como 037–038. Não conclui inventário físico, expedição, autenticação H59, liberação, vínculo ou telemetria. Main preservada em 5b4ff09; sem SQL remoto, DNS, Publish ou grants.
+
+## DEVICE-REGISTRATION-VERSION-LIST - Dispositivos: lista paginada de revisões salvas — etapa 4 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Lista sob demanda mostra título/data/revisão em páginas decrescentes de 10, com abertura somente leitura. Contratos/HTTP recusam cursor inválido, outra unidade, duplicação, ordem incorreta e dados extras; UI descarta resposta antiga e diferencia falha de histórico vazio. Proposta local 040 e testes PostgreSQL, API e interface.
+- **Próximo Passo**: 040 depende de 037 e não foi aplicada no Cloud. Etapa posterior ao candidato de preview a705177; não incluída nessa autorização. Sem estoque físico, liberação, telemetria, restauração, SQL remoto, main ou Publish.
