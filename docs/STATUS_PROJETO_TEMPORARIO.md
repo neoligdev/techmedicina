@@ -265,12 +265,12 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - Explicações educativas não confirmam nem descartam doenças. Encaminhamento médico e mensagens para resultados críticos dependem de protocolo clínico aprovado; não tranquilizar o paciente apenas por ausência de alterações na extração.
 - PENDENTE: tipos de exame, formatos/tamanhos, leitura de arquivos protegidos ou ilegíveis, critérios clínicos de alteração/urgência, revisão humana e avaliação do enquadramento regulatório da finalidade efetiva de interpretação. Não concluir que a ausência de prescrição torna qualquer interpretação automaticamente isenta de requisitos regulatórios.
 
-## 8.3 - Hidratação 🟡
+## 8.3 - Hidratação 🔵
 
-- **Status**: 🟡 Não implementado / pendente
-- **Autores**: Sem implementação
-- **Entregue**: Ainda não há implementação funcional deste requisito validada.
-- **Próximo Passo**: Falta implementar e validar hidratação, respeitando as decisões pendentes do PRD.
+- **Status**: 🔵 Em implementação / parcial
+- **Autores**: Codex
+- **Entregue**: Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador.
+- **Próximo Passo**: Aprovar convenções/unidades de produção e origem da meta, implementar gravação/correção e leitura com contexto próprio autorizado, integrar tela do PWA e homologar. Lembretes/canais, restrições clínicas e IA continuam pendentes; componente ainda não conectado à rota do paciente.
 
 **Requisitos**:
 
@@ -2692,3 +2692,10 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Lista sob demanda mostra título/data/revisão em páginas decrescentes de 10, com abertura somente leitura. Contratos/HTTP recusam cursor inválido, outra unidade, duplicação, ordem incorreta e dados extras; UI descarta resposta antiga e diferencia falha de histórico vazio. Proposta local 040 e testes PostgreSQL, API e interface.
 - **Próximo Passo**: 040 depende de 037 e não foi aplicada no Cloud. Etapa posterior ao candidato de preview a705177; não incluída nessa autorização. Sem estoque físico, liberação, telemetria, restauração, SQL remoto, main ou Publish.
+
+## HYDRATION-HISTORY-FOUNDATION - Hidratação: contratos, histórico temporal e gráfico acessível — etapa 1 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Projeção local recusa escopo divergente, UUID duplicado e soma fora da precisão inteira. Usa snapshots atuais, ignora anulados e ocorrências futuras; preserva desconhecido em vez de inventar consumo zero. 12 testes direcionados cobrem calendário/fuso/DST, correção e gráfico/tabela acessíveis.
+- **Próximo Passo**: Sem API, SQL remoto, persistência ou integração na tela do PWA. mL inteiro e janelas documentados como proposta técnica local; metas, lembretes e IA não implementados. Main preservada; não incluída no candidato a705177.
