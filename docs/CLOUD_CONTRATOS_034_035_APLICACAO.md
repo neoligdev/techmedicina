@@ -12,3 +12,5 @@ Verificação posterior: duas tabelas com RLS; anon e authenticated sem SELECT/I
 Main enviada exatamente até 5b4ff09. As entregas posteriores de dispositivos não foram promovidas. Migrações 036–038 continuam locais. Recebimento de commits pelo Lovable observado, compilação/hidratação do novo preview ainda deve ser confirmada.
 
 Evidência: evidencias/contratos-clinica/cloud-034-035-verificado.png.
+
+Verificação posterior do preview: /staus renderizou 147 entregas, atualização 28/10, cobertura iniciada 26% e conclusão integral 0%. Menu abriu e navegação para Planos funcionou; cartão de contratos recusou edição sem sessão. Isso confirma renderização e interação nessas telas, não escrita autenticada. O painel legado de políticas fazia GET sem bearer, corrigido na etapa seguinte somente em desenvolvimento.

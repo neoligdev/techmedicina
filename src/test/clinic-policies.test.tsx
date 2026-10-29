@@ -87,6 +87,34 @@ describe("Gestão de Políticas Comerciais e Limites por Clínica (Super ADM)", 
     });
   });
 
+  it("envia o bearer atual e impede cache no cadastro de clínicas", async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ clinics: [] }),
+    } as Response);
+    render(<ClinicPoliciesPanel />);
+    await waitFor(() =>
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/platform/clinics",
+        expect.objectContaining({
+          headers: { Authorization: "Bearer " + testAdminToken },
+          cache: "no-store",
+          credentials: "omit",
+          redirect: "error",
+        }),
+      ),
+    );
+  });
+
+  it("não consulta cadastro protegido nem exibe erro HTTP sem sessão", async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: null }, error: null });
+    render(<ClinicPoliciesPanel />);
+    await screen.findByText(/Sessão Administrativa Não Confirmada/i);
+    await waitFor(() => expect(supabase.auth.getSession).toHaveBeenCalled());
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Falha ao buscar clínicas: HTTP/i)).not.toBeInTheDocument();
+  });
+
   it("carrega clínicas reais e exibe métricas de quotas e componentes oficiais", async () => {
     render(
       <ClinicPoliciesPanel

@@ -119,15 +119,30 @@ export function ClinicPoliciesPanel({
       return;
     }
 
+    let cancelled = false;
     const loadClinics = async () => {
       setLoadingClinics(true);
       setError(null);
       try {
-        const res = await fetch("/api/platform/clinics");
+        const accessToken = token || (await supabase.auth.getSession()).data.session?.access_token;
+        if (cancelled) return;
+        if (!accessToken) {
+          setClinics([]);
+          setHasSession(false);
+          return;
+        }
+        const res = await fetch("/api/platform/clinics", {
+          headers: { Authorization: "Bearer " + accessToken },
+          cache: "no-store",
+          credentials: "omit",
+          redirect: "error",
+        });
+        if (cancelled) return;
         if (!res.ok) {
           throw new Error(`Falha ao buscar clínicas: HTTP ${res.status}`);
         }
         const data = await res.json();
+        if (cancelled) return;
         const validClinics = (data.clinics || []).filter(
           (c: unknown): c is ClinicSummary =>
             typeof c === "object" &&
@@ -142,14 +157,17 @@ export function ClinicPoliciesPanel({
       } catch (err: unknown) {
         const errMsg =
           err instanceof Error ? err.message : "Falha ao carregar clínicas cadastradas.";
-        setError(errMsg);
+        if (!cancelled) setError(errMsg);
       } finally {
-        setLoadingClinics(false);
+        if (!cancelled) setLoadingClinics(false);
       }
     };
 
     loadClinics();
-  }, [initialClinicsList, initialClinicId, selectedClinicId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [initialClinicsList, initialClinicId, selectedClinicId, token]);
 
   // Carrega ou inicializa as políticas quando muda a clínica selecionada
   useEffect(() => {

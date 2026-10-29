@@ -3613,6 +3613,18 @@
       "done": "Aplicação autorizada dos arquivos revisados, com sucesso confirmado no SQL Editor. Duas tabelas com RLS e sem acesso direto anon/authenticated; três RPCs SECURITY DEFINER, search_path vazio e sem EXECUTE público/anônimo. Índice presente e ambas as tabelas vazias. Main integrada e enviada exatamente até 5b4ff09.",
       "next": "Homologar criação/edição com sessão real de Super ADM. Migração 036 e dispositivos 037–038 não aplicados. Envio Git confirmado não comprova build do preview. Sem aceite, cobrança ou permissões clínicas.",
       "requirements": []
+    },
+    {
+      "id": "POLICIES-DIRECTORY-BEARER",
+      "title": "Políticas comerciais: carregamento autenticado do cadastro de clínicas",
+      "parent": "13.1",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Corrigida consulta sem bearer encontrada no preview. Usa token da sessão, no-store, sem cookies/redirecionamento e descarta respostas antigas. Sem sessão não chama o cadastro protegido. Preview 5b4ff09 confirmou /staus com 147 entregas e navegação hidratada; 20 testes de políticas aprovados antes do commit.",
+      "next": "Não implementa persistência das políticas nem concede acesso: servidor continua exigindo Super ADM. Correção e status novo ficam em develop até autorização própria para main. Homologação autenticada real ainda pendente.",
+      "requirements": []
     }
   ]
 }
