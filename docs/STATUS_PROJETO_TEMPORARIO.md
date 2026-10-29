@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -2664,3 +2664,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Biblioteca e proposta SQL local 038 listam metadados declarados, com busca literal/paginação e DTO que exige integração não liberada. Protege edição e atualiza após recibo. 20 testes direcionados/5 arquivos, tipos/lint/build aprovados. Navegador confirma cartão protegido; rodapé PWA permanece fixo após rolagem na janela desktop testada.
 - **Próximo Passo**: 037–038 locais, fora da autorização solicitada 034–035 e da proposta de main 5b4ff09. Não conclui estoque físico, expedição, autenticação H59, vínculo ou telemetria. Nenhum SQL remoto/main/Publish/DNS/grant alterado.
+
+## CLOUD-CONTRACTS-034-035 - Contratos: migrações 034–035 aplicadas e auditadas no Cloud 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Aplicação autorizada dos arquivos revisados, com sucesso confirmado no SQL Editor. Duas tabelas com RLS e sem acesso direto anon/authenticated; três RPCs SECURITY DEFINER, search_path vazio e sem EXECUTE público/anônimo. Índice presente e ambas as tabelas vazias. Main integrada e enviada exatamente até 5b4ff09.
+- **Próximo Passo**: Homologar criação/edição com sessão real de Super ADM. Migração 036 e dispositivos 037–038 não aplicados. Envio Git confirmado não comprova build do preview. Sem aceite, cobrança ou permissões clínicas.
