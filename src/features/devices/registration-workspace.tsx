@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { DeviceRegistrationLibrary } from "./registration-library";
 import { deviceRegistrationDocumentSchema } from "./registration-contract";
 import { createDeviceRegistrationClient, DeviceRegistrationConflict } from "./registration-client";
 async function token() {
@@ -78,6 +79,7 @@ export function DeviceRegistrationEditor({
     [uncertain, setUncertain] = useState(false),
     [dirty, setDirty] = useState(false),
     [message, setMessage] = useState("");
+  const [libraryRevision, setLibraryRevision] = useState(0);
   const active = useRef(true),
     pending = useRef(false);
   useEffect(() => {
@@ -139,6 +141,7 @@ export function DeviceRegistrationEditor({
       setRevision(saved.revision);
       setDocument(saved.document);
       setDirty(false);
+      setLibraryRevision((v) => v + 1);
       setMessage("Cadastro salvo e confirmado no servidor, sem liberação da integração.");
     } catch (error) {
       if (active.current) {
@@ -157,6 +160,13 @@ export function DeviceRegistrationEditor({
   const editable = Boolean(id) && !busy && !uncertain;
   return (
     <div className="space-y-5" aria-busy={busy}>
+      <DeviceRegistrationLibrary
+        getAccessToken={getAccessToken}
+        {...(fetcher ? { fetcher } : {})}
+        disabled={busy || dirty || uncertain}
+        onOpen={(target) => void load(target)}
+        refreshKey={libraryRevision}
+      />
       <div className="flex flex-wrap gap-3">
         <Button onClick={create} disabled={busy || dirty || uncertain}>
           Novo cadastro de unidade

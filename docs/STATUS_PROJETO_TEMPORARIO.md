@@ -1026,15 +1026,15 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.
-- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.
+- **Próximo Passo**: Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.
 
 ## 25.1 - Cadastro, estoque e expedição 🔵
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes.
-- **Próximo Passo**: Biblioteca de cadastros; documentação/autenticação do hardware, conferência física, estados operacionais e expedição/liberação exigem definição/homologação. 037 permanece local.
+- **Entregue**: Cadastro central em rascunho com modelo/fabricante/identificador/firmware/lote informados, API exclusiva de Super ADM e versões SQL locais. Salvar metadados não libera hardware, não movimenta estoque e não vincula pacientes. Biblioteca paginada permite buscar título/modelo/identificador declarado e abrir cadastro, sem liberação ou contagem de estoque físico.
+- **Próximo Passo**: Homologar cadastro Cloud mediante autorização própria; identificar/autenticar hardware e definir estoque, estados, expedição/recebimento e liberação por clínica/paciente.
 
 **Requisitos**:
 
@@ -2657,3 +2657,10 @@ Atualizado em 28/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Formulário central e proposta SQL local 037 guardam metadados declarados/versionados com operador ativo. UUID e firmware não são autenticadores. DTO recusa integração liberada; preview textual escapado e recuperação de recibo incerto. 10 testes direcionados/3 arquivos, tipos/lint/build validados antes do commit.
 - **Próximo Passo**: 037 não aplicada no Cloud, fora do pedido 034–035. Biblioteca, estoque físico, expedição, liberação/vínculos e H59 real permanecem pendentes. Sem main/Publish ou infraestrutura.
+
+## DEVICE-REGISTRATION-LIBRARY - Dispositivos: biblioteca de cadastros e busca literal — etapa 2 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Biblioteca e proposta SQL local 038 listam metadados declarados, com busca literal/paginação e DTO que exige integração não liberada. Protege edição e atualiza após recibo. 20 testes direcionados/5 arquivos, tipos/lint/build aprovados. Navegador confirma cartão protegido; rodapé PWA permanece fixo após rolagem na janela desktop testada.
+- **Próximo Passo**: 037–038 locais, fora da autorização solicitada 034–035 e da proposta de main 5b4ff09. Não conclui estoque físico, expedição, autenticação H59, vínculo ou telemetria. Nenhum SQL remoto/main/Publish/DNS/grant alterado.

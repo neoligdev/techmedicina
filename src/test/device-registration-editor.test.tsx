@@ -9,6 +9,26 @@ vi.mock("@/integrations/supabase/client", () => ({
     },
   },
 }));
+vi.mock("@/features/devices/registration-library", () => ({
+  DeviceRegistrationLibrary: ({
+    disabled,
+    onOpen,
+    refreshKey,
+  }: {
+    disabled?: boolean;
+    onOpen: (id: string) => void;
+    refreshKey?: number;
+  }) => (
+    <button
+      data-testid="device-library"
+      data-refresh={refreshKey}
+      disabled={disabled}
+      onClick={() => onOpen("11111111-1111-4111-8111-111111111111")}
+    >
+      Abrir unidade pela biblioteca QA
+    </button>
+  ),
+}));
 import { DeviceRegistrationEditor } from "@/features/devices/registration-workspace";
 const token = async () => "qa";
 afterEach(cleanup);
@@ -45,6 +65,7 @@ it("saves declared metadata without granting release and escapes preview text", 
     screen.getByText("Cadastro salvo e confirmado no servidor, sem liberação da integração."),
   ).toBeTruthy();
   expect(screen.queryByRole("button", { name: /liberar|parear|ativar/i })).toBeNull();
+  expect(screen.getByTestId("device-library").getAttribute("data-refresh")).toBe("1");
   expect(JSON.parse(String(fetcher.mock.calls[0]![1]?.body)).document.model).toBe(
     "Modelo QA não homologado",
   );
@@ -85,4 +106,35 @@ it("a response claiming release cannot be shown as a successful registration", a
     screen.queryByText("Cadastro salvo e confirmado no servidor, sem liberação da integração."),
   ).toBeNull();
   expect(screen.getByRole("textbox", { name: "Identificação administrativa" })).toBeDisabled();
+});
+
+it("opens a listed registration and prevents changing selection while metadata is unsaved", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const fetcher = vi.fn<typeof fetch>(async () =>
+    Response.json({
+      draft: receipt({
+        id,
+        expectedRevision: 0,
+        document: {
+          title: "Unidade já salva",
+          manufacturer: "",
+          model: "Modelo declarado",
+          claimedIdentifier: "ETIQUETA QA",
+          firmwareVersion: "v1",
+          lot: "",
+          notes: "",
+        },
+      }),
+    }),
+  );
+  render(<DeviceRegistrationEditor getAccessToken={token} fetcher={fetcher} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Abrir unidade pela biblioteca QA" }));
+  });
+  expect(screen.getByRole("textbox", { name: "Modelo informado" })).toHaveValue("Modelo declarado");
+  fireEvent.change(screen.getByRole("textbox", { name: "Modelo informado" }), {
+    target: { value: "Revisão de metadado" },
+  });
+  expect(screen.getByRole("button", { name: "Abrir unidade pela biblioteca QA" })).toBeDisabled();
+  expect(fetcher).toHaveBeenCalledTimes(1);
 });

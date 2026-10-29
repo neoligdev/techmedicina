@@ -42,7 +42,11 @@ beforeAll(async () => {
   await db.exec(
     `CREATE ROLE anon NOLOGIN;CREATE ROLE authenticated NOLOGIN;CREATE SCHEMA auth;CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;GRANT USAGE ON SCHEMA auth TO anon,authenticated;GRANT EXECUTE ON FUNCTION auth.uid() TO anon,authenticated;`,
   );
-  for (const name of ["001_tenant_foundation.sql", "037_device_registration_drafts.sql"])
+  for (const name of [
+    "001_tenant_foundation.sql",
+    "037_device_registration_drafts.sql",
+    "038_device_registration_draft_list.sql",
+  ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + name, import.meta.url), "utf8"),
     );
@@ -127,4 +131,60 @@ it("denies ordinary/clinic accounts, anon, table mutation and revoked operator",
   ]);
   await user(operator);
   await expect(save(id, 1)).rejects.toMatchObject({ code: "42501" });
+});
+
+it("lists declared metadata in bounded pages and searches identifiers literally without granting access", async () => {
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_platform_operators SET is_active=true WHERE user_id=$1", [
+    operator,
+  ]);
+  await user(operator);
+  const ids = Array.from({ length: 26 }, () => randomUUID()).sort();
+  for (const id of ids)
+    await save(id, 0, { ...document, title: "Biblioteca QA", claimedIdentifier: "DECLARADO%_QA" });
+  const list = async (q = "declarado%_qa", after: string | null = null) =>
+    (
+      await db.query<{
+        value: {
+          items: {
+            id: string;
+            integrationAuthorized: boolean;
+            model: string;
+            claimedIdentifier: string;
+            firmwareVersion: string;
+          }[];
+          nextCursor: string | null;
+        };
+      }>("SELECT public.tm_list_device_registration_drafts($1,$2,25) AS value", [q, after])
+    ).rows[0]!.value;
+  const first = await list();
+  expect(first.items.map((i) => i.id)).toEqual(ids.slice(0, 25));
+  expect(first.nextCursor).toBe(ids[24]);
+  expect((await list("declarado%_qa", first.nextCursor)).items.map((i) => i.id)).toEqual(
+    ids.slice(25),
+  );
+  expect(first.items.every((i) => i.integrationAuthorized === false)).toBe(true);
+  expect(first.items[0]).toMatchObject({
+    model: document.model,
+    claimedIdentifier: "DECLARADO%_QA",
+    firmwareVersion: document.firmwareVersion,
+  });
+  expect(Object.keys(first.items[0]!).sort()).toEqual([
+    "claimedIdentifier",
+    "firmwareVersion",
+    "id",
+    "integrationAuthorized",
+    "model",
+    "revision",
+    "status",
+    "title",
+    "updatedAt",
+  ]);
+  expect((await list("DECLARADOANYQA")).items).toHaveLength(0);
+  expect((await list("Modelo informado QA")).items.length).toBeGreaterThan(0);
+  await expect(list("no-match", first.nextCursor)).rejects.toMatchObject({ code: "22023" });
+  await user(other);
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+  await user(operator, "anon");
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
 });
