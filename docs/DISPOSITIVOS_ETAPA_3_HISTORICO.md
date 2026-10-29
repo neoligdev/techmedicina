@@ -15,3 +15,5 @@ Antes de eventual aplicação remota: revisar 037 e comparar ausência/assinatur
 Não representa estoque verificado, autenticidade do hardware ou integração real. Estados de expedição e regras finais dependem de definição do proprietário conforme o PRD. Nenhuma alteração visual global ou de personalização.
 
 Validação concluída: 16 testes direcionados em 4 arquivos, mais 4 de status/cobertura. TypeScript, lint direcionado e build aprovados. Teste integrado confirma consulta de revisão antiga sem apagar edição suja nem emitir PUT. Navegador local confirma tela protegida preservada sem sessão. Sem homologação autenticada no Cloud.
+
+Regressão global da base 6fe31a8 concluída: 1.335 testes/165 arquivos, 525,52 segundos, saída 0. Nenhum código alterado durante a execução; somente documentação/evidência. Lint global: zero erros e sete avisos preexistentes de Fast Refresh. HTTP local anônimo da nova rota: 401, Cache-Control no-store/private, Vary Authorization. Status local: 152 entregas, cobertura iniciada 28% (24/86), conclusão integral 0%.

@@ -196,3 +196,17 @@ Revisão final C012: Antigravity iniciou; usuário transferiu execução direta 
 - [x] Migração 003 aplicada diretamente e privilégios conferidos no Cloud.
 - [x] Fronteira HTTP e transporte PostgREST protegidos implementados.
 - [ ] Conectar formulário e homologar salvar/recarregar no preview.
+
+
+## Retomada Codex — 29/10/2026
+
+Registros anteriores preservam o estado de suas datas. Referência atual: docs/STATUS_PROJETO_TEMPORARIO.md. Desenvolvimento direto autorizado e ativo, preservando frontend e personalização.
+
+- [x] Main integrada exatamente até 5b4ff09; preview renderiza 147 entregas e navegação hidratada.
+- [x] Cloud 034–035 aplicado após autorização, dependências/ausência prévias e RLS/ACL posteriores conferidas.
+- [x] Corrigida consulta sem bearer no painel legado de políticas, em develop.
+- [x] Cadastro, biblioteca e consulta histórica de metadados de dispositivos preparados/testados localmente, sem integração liberada.
+- [ ] Homologar rascunhos comerciais com sessão real de Super ADM.
+- [ ] Cloud 036–039 depende de revisão e autorização própria; não aplicado por inferência.
+- [ ] Main posterior a 5b4ff09 depende de autorização própria. Develop não atualiza o preview conectado à main.
+- [ ] Regras pendentes e hardware real continuam necessários; entregas técnicas parciais não concluem o PRD.

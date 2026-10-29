@@ -2683,5 +2683,5 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
-- **Entregue**: Consulta protegida por unidade/revisão, contrato estrito com integração não liberada e painel somente leitura preservando edição pendente. Proposta SQL local 039 revalida operador ativo; sem acesso direto a snapshots ou exposição de autor interno. Testes PostgreSQL/HTTP/UI executados; validação final registrada no documento da etapa.
+- **Entregue**: Consulta protegida por unidade/revisão, contrato estrito com integração não liberada e painel somente leitura preservando edição pendente. Proposta SQL local 039 revalida operador ativo; sem acesso direto a snapshots ou exposição de autor interno. Testes PostgreSQL/HTTP/UI executados; validação final registrada no documento da etapa. Regressão global da base 6fe31a8: 1.335 testes em 165 arquivos aprovados; lint global sem erros (7 avisos anteriores).
 - **Próximo Passo**: 039 depende de 037 e permanece local, assim como 037–038. Não conclui inventário físico, expedição, autenticação H59, liberação, vínculo ou telemetria. Main preservada em 5b4ff09; sem SQL remoto, DNS, Publish ou grants.
