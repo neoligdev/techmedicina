@@ -212,3 +212,10 @@ Registros anteriores preservam o estado de suas datas. Referência atual: docs/S
 - [ ] Regras pendentes e hardware real continuam necessários; entregas técnicas parciais não concluem o PRD.
 
 - [x] Lista paginada de revisões de dispositivos — etapa local 4, SQL 040 não aplicada; status 153. Posterior ao candidato a705177.
+
+## Hidratação — retomada 30/10/2026
+
+- [x] Etapa local 3: recurso próprio, autorização e persistência transacional proposta 041, sem grants provisionados.
+- [x] Etapa local 4: listagem por intervalo/cursor, proposta 042 e fronteira HTTP/cliente preparados; status 157.
+- [ ] Contexto de host próprio, registro de runtime/rota e integração no PWA.
+- [ ] SQL 041–042 no Cloud depende de revisão e autorização específica; não aplicado.

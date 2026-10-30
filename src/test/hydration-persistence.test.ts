@@ -1,3 +1,4 @@
+import { validateHydrationPage } from "@/features/hydration/list-contract";
 // @vitest-environment node
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
@@ -51,7 +52,11 @@ beforeAll(async () => {
   await db.exec(
     `CREATE ROLE anon NOLOGIN;CREATE ROLE authenticated NOLOGIN;CREATE SCHEMA auth;CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;GRANT USAGE ON SCHEMA auth TO anon,authenticated;GRANT EXECUTE ON FUNCTION auth.uid() TO anon,authenticated;`,
   );
-  for (const file of ["001_tenant_foundation.sql", "041_own_hydration_records.sql"])
+  for (const file of [
+    "001_tenant_foundation.sql",
+    "041_own_hydration_records.sql",
+    "042_own_hydration_list.sql",
+  ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + file, import.meta.url), "utf8"),
     );
@@ -235,4 +240,76 @@ it("checks write permission before correction even with a valid read grant", asy
     }),
   ).rejects.toMatchObject({ code: "42501" });
   expect((await get()).record).not.toBeNull();
+});
+it("paginates only own current snapshots in a half-open interval, including voided records", async () => {
+  await login();
+  const from = "2026-10-29T00:00:00Z",
+    until = "2026-10-30T00:00:00Z";
+  for (let i = 0; i < 3; i++)
+    await mutate({
+      ...create,
+      recordId: randomUUID(),
+      sourceRequestId: randomUUID(),
+      document: { ...document, volumeMl: i },
+    });
+  const outside = randomUUID();
+  await mutate({
+    ...create,
+    recordId: outside,
+    sourceRequestId: randomUUID(),
+    document: { ...document, occurredAt: until },
+  });
+  const list = async (after: string | null = null, who = clinic) =>
+    (
+      await db.query<{
+        value: {
+          clinicId: string;
+          patientId: string;
+          records: Array<{ id: string; status: string }>;
+          nextCursor: string | null;
+        };
+      }>("SELECT public.tm_list_own_hydration_records($1,$2,$3,$4,2) AS value", [
+        who,
+        from,
+        until,
+        after,
+      ])
+    ).rows[0]!.value;
+  const first = await list();
+  validateHydrationPage(first, { clinicId: clinic, patientId: patient }, { from, until, limit: 2 });
+  expect(first.clinicId).toBe(clinic);
+  expect(first.patientId).toBe(patient);
+  expect(first.records).toHaveLength(2);
+  expect(first.nextCursor).toBe(first.records[1]!.id);
+  const second = await list(first.nextCursor),
+    all = [...first.records, ...second.records];
+  expect(second.nextCursor).toBeNull();
+  expect(new Set(all.map((r) => r.id)).size).toBe(4);
+  expect(all.some((r) => r.id === id && r.status === "voided")).toBe(true);
+  expect(all.some((r) => r.id === outside)).toBe(false);
+  await expect(list(outside)).rejects.toMatchObject({ code: "22023" });
+  await expect(list(null, otherClinic)).rejects.toMatchObject({ code: "42501" });
+  await login(otherUser);
+  const other = await list();
+  expect(other.records).toEqual([]);
+  await expect(list(first.nextCursor)).rejects.toMatchObject({ code: "22023" });
+  await login(userId, "anon");
+  await expect(list()).rejects.toMatchObject({ code: "42501" });
+});
+it("rejects invalid SQL intervals and page limits", async () => {
+  await login();
+  for (const [from, until, limit] of [
+    [null, "2026-10-30T00:00:00Z", 25],
+    ["2026-10-30T00:00:00Z", "2026-10-29T00:00:00Z", 25],
+    ["-infinity", "infinity", 25],
+    ["2026-10-29T00:00:00Z", "2026-10-30T00:00:00Z", 101],
+  ])
+    await expect(
+      db.query("SELECT public.tm_list_own_hydration_records($1,$2,$3,NULL,$4)", [
+        clinic,
+        from,
+        until,
+        limit,
+      ]),
+    ).rejects.toMatchObject({ code: "22023" });
 });
