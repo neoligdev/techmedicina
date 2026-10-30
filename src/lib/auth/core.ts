@@ -8,7 +8,8 @@ export type ResourceType =
   | "faturamento"
   | "journey_goals"
   | "journey_events"
-  | "journey_shields";
+  | "journey_shields"
+  | "hydration_records";
 export type Action = "create" | "read" | "write" | "delete" | "manage";
 
 export interface Permission {
@@ -70,6 +71,7 @@ export function isAuthorized(
     "journey_goals",
     "journey_events",
     "journey_shields",
+    "hydration_records",
   ];
   const validActions = ["create", "read", "write", "delete", "manage"];
   if (!validResources.includes(resource) || !validActions.includes(action)) {
@@ -132,6 +134,14 @@ export function isAuthorized(
     }
   }
 
+  // Initial hydration scope: own patient only; no implicit clinical/admin access.
+  if (
+    resource === "hydration_records" &&
+    (role !== "paciente" ||
+      !currentLink.grants.some((g) => g.resource === "hydration_records" && g.action === "read"))
+  )
+    return false;
+
   // Médico: recursos clínicos e acompanhamento autorizado.
   if (role === "medico") {
     if (
@@ -153,7 +163,8 @@ export function isAuthorized(
       (resource === "agenda" && ["read", "create"].includes(action)) ||
       (resource === "journey_goals" && action === "read") ||
       (resource === "journey_shields" && action === "read") ||
-      (resource === "journey_events" && ["read", "create"].includes(action))
+      (resource === "journey_events" && ["read", "create"].includes(action)) ||
+      (resource === "hydration_records" && ["read", "create", "write"].includes(action))
     ))
       return false;
   }
@@ -186,6 +197,7 @@ export function isAuthorized(
       "journey_goals",
       "journey_events",
       "journey_shields",
+      "hydration_records",
     ].includes(resource)
   ) {
     // Exige ownerPatientId preenchido

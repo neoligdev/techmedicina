@@ -1,6 +1,6 @@
 # Status Temporário do Projeto
 
-Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
+Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o escopo entregue.
 
 ## 1 - Processo e estado das decisões 🔵
 
@@ -269,8 +269,8 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada.
-- **Próximo Passo**: Aprovar convenções/unidades de produção e origem da meta, implementar gravação/correção e leitura com contexto próprio autorizado, integrar tela do PWA e homologar. Lembretes/canais, restrições clínicas e IA continuam pendentes; componente ainda não conectado à rota do paciente.
+- **Entregue**: Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo.
+- **Próximo Passo**: Integrar contexto de host próprio de hidratação, API e leitura paginada; persistência ainda não aplicada no Cloud e PWA ainda não conectado. Revisão médica, unidades/convenções de produção, metas/restrições, lembretes e IA seguem pendentes.
 
 **Requisitos**:
 
@@ -2706,3 +2706,10 @@ Atualizado em 29/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Contrato estrito e núcleo de referência exclusivo de servidor preservam snapshots e recibos por registro. Reenvio igual recupera recibo sem duplicar; conteúdo diferente no mesmo ID, revisão antiga e histórico inconsistente são recusados. Anulação não apaga versões nem permite reativação implícita. 21 testes direcionados de hidratação aprovados.
 - **Próximo Passo**: Ainda sem banco, API ou escrita real. Adaptador futuro deve resolver autorização e executar bloqueio/revisão/recibo/snapshot em transação atômica; função pura não resolve concorrência entre processos. Sem novos grants ou SQL remoto; main preservada.
+
+## HYDRATION-OWN-PERSISTENCE - Hidratação: autorização própria e persistência transacional local — etapa 3 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Novo recurso hydration_records exige paciente proprietário ativo e grants explícitos. Proposta local 041 deriva paciente do Auth/vínculo, bloqueia UUID/revisão e grava registro/recibo juntos. Reenvio antigo não desfaz correção; anulação preserva histórico. PostgreSQL local verifica isolamento, revogação e rollback do registro se recibo falhar.
+- **Próximo Passo**: Sem contas/grants provisionados, SQL remoto ou API ativada. Host resolver da Jornada não é reutilizado como autorização de hidratação; adaptar contexto próprio e API na próxima etapa. Acesso médico ainda bloqueado nesta fase, exige implementação separada. Main/infraestrutura preservadas.

@@ -12,6 +12,7 @@ const permission = z
       "journey_goals",
       "journey_events",
       "journey_shields",
+      "hydration_records",
     ]),
     action: z.enum(["create", "read", "write", "delete", "manage"]),
   })
