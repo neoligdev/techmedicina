@@ -5,12 +5,15 @@ import { createOwnHydrationContextResolver } from "./own-context.server";
 import { createOwnHydrationListEndpoint } from "./list-endpoint.server";
 import { createOwnHydrationReceiptEndpoint } from "./receipt-endpoint.server";
 import { createOwnHydrationMutationEndpoint } from "./mutation-endpoint.server";
-export type HydrationReadOperation = "context" | "records" | "receipt" | "mutate";
+import { createHydrationSettingsEndpoint } from "./settings-endpoint.server";
+export type HydrationReadOperation = "context" | "records" | "receipt" | "mutate" | "preferences";
 type HydrationRpc =
   | "tm_resolve_patient_hydration_host"
   | "tm_list_own_hydration_records"
   | "tm_get_own_hydration_receipt"
-  | "tm_mutate_own_hydration_record";
+  | "tm_mutate_own_hydration_record"
+  | "tm_get_own_hydration_preferences"
+  | "tm_save_own_hydration_preferences";
 /** Every invocation owns its Auth promise; lookup and data RPC use the same request bearer. */
 export function createPatientHydrationRuntime<
   S extends { identity: AuthenticatedIdentity },
@@ -31,6 +34,14 @@ export function createPatientHydrationRuntime<
         });
       },
     });
+    if (operation === "preferences")
+      return createHydrationSettingsEndpoint({
+        resolveContext,
+        read: (bound, args) =>
+          providers.rpc(bound.session, "tm_get_own_hydration_preferences", args),
+        save: (bound, args) =>
+          providers.rpc(bound.session, "tm_save_own_hydration_preferences", args),
+      })(request);
     if (operation === "mutate")
       return createOwnHydrationMutationEndpoint({
         resolveContext,

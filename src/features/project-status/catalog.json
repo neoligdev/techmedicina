@@ -324,8 +324,8 @@
       "title": "Hidratação",
       "parent": "8",
       "status": "progress",
-      "done": "Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação. PWA local integrado ao contexto/leitura próprios: consulta explícita por período/fuso, todas as páginas antes do gráfico, descarte de consulta antiga e remoção ao sair da sessão. Fluxo local completo de registro, correção/anulação versionadas, recuperação de recibo e atualização explícita dos gráficos conectado ao PWA por Codex em 30/10/2026. Cloud: migrações 041, 042 e 044 aplicadas e ACL/RLS conferidas em 30/10, sem dados/grants clínicos.",
-      "next": "Homologar o fluxo real após cadeia de host 043/White Label e vínculos QA expressamente autorizados. Metas, lembretes e observações da IA permanecem pendentes.",
+      "done": "Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação. PWA local integrado ao contexto/leitura próprios: consulta explícita por período/fuso, todas as páginas antes do gráfico, descarte de consulta antiga e remoção ao sair da sessão. Fluxo local completo de registro, correção/anulação versionadas, recuperação de recibo e atualização explícita dos gráficos conectado ao PWA por Codex em 30/10/2026. Cloud: migrações 041, 042 e 044 aplicadas e ACL/RLS conferidas em 30/10, sem dados/grants clínicos. Meta diária informada pelo paciente e horários/fuso de lembretes implementados localmente no PWA, API e proposta SQL 045, sem ativar notificações.",
+      "next": "Homologar registros e preferências após domínio/043, vínculos QA e migração 045 autorizados. Implementar entrega real de lembretes e observações seguras da IA; o módulo permanece parcial.",
       "authors": [
         "Codex"
       ],
@@ -3782,6 +3782,18 @@
       "status": "done",
       "done": "PWA integra formulário com consumo e horário com fuso explícitos, correção com revisão e anulação confirmada. Envio único; resposta incerta mantém comando original e bloqueia novos registros até confirmação. Consulta de recibo não grava; repetição exige ação explícita e preserva IDs/payload. Gráficos anteriores são retirados após mudança até recarga manual. Testes de interface, API e PostgreSQL locais aprovados; design e rodapé preservados. Após autorização explícita, main 6a4936b enviada e preview conferido com 164 entregas. Cloud 041/042/044 aplicado, RLS e ACL verificados, zero registros/recibos/pacientes/vínculos/grants.",
       "next": "Persistência preparada no Cloud, mas fluxo real ainda não homologado: 043/cadeia de domínios e vínculos QA não ativados. Metas, lembretes e IA pendentes. O registro desta aplicação é posterior à candidata 6a4936b e aguarda próxima integração autorizada para aparecer no preview.",
+      "requirements": []
+    },
+    {
+      "id": "HYDRATION-PREFERENCES",
+      "title": "Hidratação: meta informada e horários configuráveis no PWA — entrega local",
+      "parent": "8.3",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Painel integrado permite informar/remover meta diária sem valor automático e escolher horários/fuso de lembretes. API deriva escopo do servidor; proposta local 045 persiste preferências com revisão e recibos idempotentes. Resposta incerta exige confirmação original, bloqueia novos comandos e não causa retry automático. Interface distingue preferências salvas de envio de notificações, que não foi habilitado. Regressão ampliada: 97 testes/13 arquivos aprovados; build e lint válidos. Token da tela fica vinculado à conta original, com bloqueio de envio após logout/troca de usuário.",
+      "next": "045 não aplicada no Cloud; main/preview permanecem na candidata autorizada 6a4936b. Homologar preferências após autorização SQL, domínio e vínculos QA. Entrega real de notificações e observações de IA seguem pendentes; nenhuma meta foi prescrita automaticamente.",
       "requirements": []
     }
   ]

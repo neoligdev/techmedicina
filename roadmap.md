@@ -227,3 +227,13 @@ Registros anteriores preservam o estado de suas datas. Referência atual: docs/S
 - [ ] Homologação Cloud/host/contas com autorizações específicas; SQL 041–043 local.
 - [ ] Escrita HTTP, recuperação de recibo e formulário de registro/correção.
 - [ ] Metas/restrições, lembretes/canais, IA e leitura médica continuam pendentes.
+
+## Hidratação — preferências locais, 30/10/2026
+
+- [x] Meta diária informada pelo paciente, sem valor/fórmula automática, e horários/fuso de lembretes no PWA, API e proposta SQL local 045.
+- [x] Recibos idempotentes, revisão otimista, isolamento próprio e bloqueio integrado de consumo/filtros enquanto preferências estão incertas.
+- [ ] Aplicar 045 somente após autorização específica e pré-checagem; main permanece na candidata autorizada 6a4936b.
+- [ ] Homologar host/cadeia 043 e vínculos QA autorizados; 041/042/044 já aplicadas e verificadas no Cloud.
+- [ ] Implementar entrega real de lembretes e observações seguras da IA. Salvar horários ainda não agenda nem envia notificações.
+
+Revisão e limites: docs/REVISAO_MIGRACAO_HIDRATACAO_045.md.

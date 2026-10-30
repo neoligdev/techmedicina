@@ -13,6 +13,7 @@ export function HydrationWritePanel({
   fetcher,
   onLocked,
   onChanged,
+  blocked = false,
 }: {
   scope: { clinicId: string; patientId: string };
   records: HydrationRecord[];
@@ -20,6 +21,7 @@ export function HydrationWritePanel({
   fetcher?: typeof fetch;
   onLocked: (locked: boolean) => void;
   onChanged: () => void;
+  blocked?: boolean;
 }) {
   const [selected, setSelected] = useState(""),
     [volume, setVolume] = useState(""),
@@ -38,7 +40,7 @@ export function HydrationWritePanel({
     };
   }, []);
   const current = records.find((r) => r.id === selected && r.status === "active");
-  const locked = busy || pending !== null;
+  const locked = blocked || busy || pending !== null;
   function lock(value: boolean) {
     onLocked(value);
   }
@@ -225,13 +227,13 @@ export function HydrationWritePanel({
       {message && <p role="status">{message}</p>}
       {pending && (
         <div className="flex flex-wrap gap-3">
-          <Button type="button" disabled={busy} onClick={() => void recover()}>
+          <Button type="button" disabled={busy || blocked} onClick={() => void recover()}>
             Consultar recibo original
           </Button>
           <Button
             type="button"
             variant="outline"
-            disabled={busy}
+            disabled={busy || blocked}
             onClick={() => void send(pending)}
           >
             Repetir solicitação original

@@ -176,7 +176,7 @@ it("removes an already displayed patient history on sign out", async () => {
         access_token: "qa",
         refresh_token: "qa-refresh",
         expires_in: 3600,
-        token_type: "bearer",
+        token_type: "bearer" as const,
         user,
       },
     },
@@ -239,4 +239,116 @@ it("integrates recording with history and hides stale totals until explicit relo
   fireEvent.click(screen.getByRole("button", { name: "Consultar histórico" }));
   expect(await screen.findByText("250 mL registrados no período")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Registrar consumo" })).toBeEnabled();
+});
+it("locks history and consumption while preferences are uncertain, then unlocks after receipt confirmation", async () => {
+  let command: Record<string, unknown> = {};
+  const fetcher = vi.fn<typeof fetch>(async (input, init) => {
+    const url = String(input);
+    if (url.endsWith("/context")) return Response.json({ scope });
+    if (url.includes("/preferences")) {
+      if (init?.method === "POST") {
+        command = JSON.parse(init.body as string);
+        throw new Error("lost response");
+      }
+      if (url.includes("sourceRequestId=")) {
+        const snapshot = { ...scope, revision: 1, settings: command["settings"] };
+        return Response.json({
+          result: { ...scope, preferences: snapshot, receipt: { command, snapshot } },
+        });
+      }
+      return Response.json({ result: { ...scope, preferences: null, receipt: null } });
+    }
+    return page(url);
+  });
+  render(<HydrationReadPanel getAccessToken={token} fetcher={fetcher} now={now} />);
+  start();
+  fireEvent.click(await screen.findByRole("button", { name: "Carregar preferências" }));
+  await screen.findByLabelText("Fuso dos lembretes");
+  fireEvent.change(screen.getByLabelText("Fuso dos lembretes"), { target: { value: "UTC" } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar preferências" }));
+  await screen.findByText(/Resultado não confirmado/);
+  expect(screen.getByRole("button", { name: "Registrar consumo" })).toBeDisabled();
+  expect(screen.getByRole("combobox", { name: "Período" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Consultar histórico" })).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Consultar recibo das preferências" }));
+  await screen.findByText(/Preferências confirmadas pelo recibo/);
+  expect(screen.getByRole("button", { name: "Registrar consumo" })).toBeEnabled();
+  expect(screen.getByRole("combobox", { name: "Período" })).toBeEnabled();
+  expect(fetcher.mock.calls.filter((c) => String(c[0]).endsWith("/mutate"))).toHaveLength(0);
+});
+it("does not send a previous patient's command with a newly switched account token", async () => {
+  vi.spyOn(hostResolver, "isLocalOrPreviewHost").mockReturnValue(false);
+  const user = {
+    id: "33333333-3333-4333-8333-333333333333",
+    app_metadata: {},
+    user_metadata: {},
+    aud: "authenticated",
+    created_at: "2026-10-30T00:00:00Z",
+  };
+  const session = {
+    access_token: "qa",
+    refresh_token: "qa-refresh",
+    expires_in: 3600,
+    token_type: "bearer" as const,
+    user,
+  };
+  vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user }, error: null });
+  vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session }, error: null });
+  const fetcher = vi.fn<typeof fetch>(async (input) =>
+    String(input).endsWith("/context") ? Response.json({ scope }) : page(String(input)),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  render(<HydrationSection />);
+  await screen.findByRole("button", { name: "Consultar histórico" });
+  start();
+  await screen.findByRole("button", { name: "Registrar consumo" });
+  vi.mocked(supabase.auth.getSession).mockResolvedValue({
+    data: { session: { ...session, access_token: "other-user", user: { ...user, id: patientId } } },
+    error: null,
+  });
+  fireEvent.change(screen.getByLabelText("Volume registrado (mL)"), { target: { value: "250" } });
+  fireEvent.change(screen.getByLabelText("Data e hora com fuso (ISO)"), {
+    target: { value: "2026-10-30T12:00:00Z" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Registrar consumo" }));
+  await screen.findByText(/Registro não autorizado ou inválido/);
+  expect(fetcher.mock.calls.some((c) => String(c[0]).endsWith("/mutate"))).toBe(false);
+});
+it("does not dispatch a token lookup completed after sign out", async () => {
+  vi.spyOn(hostResolver, "isLocalOrPreviewHost").mockReturnValue(false);
+  const user = {
+    id: "33333333-3333-4333-8333-333333333333",
+    app_metadata: {},
+    user_metadata: {},
+    aud: "authenticated",
+    created_at: "2026-10-30T00:00:00Z",
+  };
+  const session = {
+    access_token: "qa",
+    refresh_token: "qa-refresh",
+    expires_in: 3600,
+    token_type: "bearer" as const,
+    user,
+  };
+  vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user }, error: null });
+  let finish!: (value: Awaited<ReturnType<typeof supabase.auth.getSession>>) => void;
+  vi.mocked(supabase.auth.getSession).mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const fetcher = vi.fn<typeof fetch>();
+  vi.stubGlobal("fetch", fetcher);
+  render(<HydrationSection />);
+  await screen.findByRole("button", { name: "Consultar histórico" });
+  start();
+  await waitFor(() => expect(supabase.auth.getSession).toHaveBeenCalledTimes(1));
+  const callback = vi.mocked(supabase.auth.onAuthStateChange).mock.calls[0]![0];
+  await act(async () => {
+    await callback("SIGNED_OUT", null);
+  });
+  await act(async () => finish({ data: { session }, error: null }));
+  expect(fetcher).not.toHaveBeenCalled();
+  expect(screen.getByRole("link", { name: "Entrar" })).toBeInTheDocument();
 });

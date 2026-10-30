@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { isLocalOrPreviewHost } from "@/lib/white-label/host-resolver";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -6,9 +6,20 @@ import { Button } from "@/components/ui/button";
 import { loadOwnHydrationHistory } from "./complete-history-client";
 import { HydrationHistoryChart } from "./history-chart";
 import { HydrationWritePanel } from "./write-panel";
-async function token() {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? null;
+import { HydrationSettingsPanel } from "./settings-panel";
+function AuthenticatedHydrationPanel({ userId }: { userId: string }) {
+  const active = useRef(true);
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+    };
+  }, []);
+  const getAccessToken = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    return active.current && data.session?.user.id === userId ? data.session.access_token : null;
+  }, [userId]);
+  return <HydrationReadPanel getAccessToken={getAccessToken} />;
 }
 export function HydrationSection() {
   const [mode, setMode] = useState<"checking" | "demo" | "login" | "ready">("checking"),
@@ -71,11 +82,11 @@ export function HydrationSection() {
               </a>
             </p>
           ) : (
-            <HydrationReadPanel key={userId} getAccessToken={token} />
+            <AuthenticatedHydrationPanel key={userId} userId={userId ?? ""} />
           )}
           <p className="mt-4 text-sm text-muted-foreground">
-            Metas e lembretes ainda não estão habilitados. Registros exigem permissão própria da
-            clínica.
+            Meta informada e horários exigem acesso próprio; o envio de lembretes ainda não está
+            habilitado. Registros exigem permissão própria da clínica.
           </p>
         </CardContent>
       </Card>
@@ -95,6 +106,7 @@ export function HydrationReadPanel({
     [period, setPeriod] = useState("day"),
     [busy, setBusy] = useState(false),
     [writeLocked, setWriteLocked] = useState(false),
+    [settingsLocked, setSettingsLocked] = useState(false),
     [stale, setStale] = useState(false),
     [error, setError] = useState(false),
     [result, setResult] = useState<Awaited<ReturnType<typeof loadOwnHydrationHistory>>>();
@@ -105,6 +117,7 @@ export function HydrationReadPanel({
     scope.current = c;
     pending.current = false;
     setWriteLocked(false);
+    setSettingsLocked(false);
     setStale(false);
     setResult(undefined);
     setBusy(false);
@@ -113,7 +126,8 @@ export function HydrationReadPanel({
   }, [getAccessToken, fetcher]);
   async function load() {
     const c = scope.current;
-    if (!c || c.signal.aborted || pending.current || writeLocked || !timeZone) return;
+    if (!c || c.signal.aborted || pending.current || writeLocked || settingsLocked || !timeZone)
+      return;
     pending.current = true;
     setBusy(true);
     setError(false);
@@ -150,7 +164,7 @@ export function HydrationReadPanel({
           <select
             className="block rounded-lg border border-input bg-background p-3"
             value={period}
-            disabled={busy || writeLocked}
+            disabled={busy || writeLocked || settingsLocked}
             onChange={(e) => {
               setPeriod(e.target.value);
               setResult(undefined);
@@ -168,7 +182,7 @@ export function HydrationReadPanel({
           <select
             className="block rounded-lg border border-input bg-background p-3"
             value={timeZone}
-            disabled={busy || writeLocked}
+            disabled={busy || writeLocked || settingsLocked}
             onChange={(e) => {
               setTimeZone(e.target.value);
               setResult(undefined);
@@ -181,7 +195,7 @@ export function HydrationReadPanel({
             <option value="UTC">UTC</option>
           </select>
         </label>
-        <Button type="submit" disabled={busy || writeLocked || !timeZone}>
+        <Button type="submit" disabled={busy || writeLocked || settingsLocked || !timeZone}>
           Consultar histórico
         </Button>
       </form>
@@ -218,8 +232,16 @@ export function HydrationReadPanel({
             records={result.records}
             getAccessToken={getAccessToken}
             {...(fetcher ? { fetcher } : {})}
+            blocked={settingsLocked}
             onLocked={setWriteLocked}
             onChanged={() => setStale(true)}
+          />
+          <HydrationSettingsPanel
+            scope={result.scope}
+            getAccessToken={getAccessToken}
+            {...(fetcher ? { fetcher } : {})}
+            blocked={writeLocked}
+            onLocked={setSettingsLocked}
           />
         </>
       )}

@@ -57,6 +57,7 @@ beforeAll(async () => {
     "041_own_hydration_records.sql",
     "042_own_hydration_list.sql",
     "044_own_hydration_receipt.sql",
+    "045_own_hydration_preferences.sql",
   ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + file, import.meta.url), "utf8"),
@@ -387,4 +388,135 @@ it("rechecks live read grants and leaves the immutable receipt unchanged", async
   }>("SELECT public.tm_get_own_hydration_receipt($1,$2,$3) AS value", [clinic, id, request]);
   expect(result.rows[0]!.value.receipt.record.revision).toBe(1);
   expect(result.rows[0]!.value.record.revision).toBe(3);
+});
+it("persists patient preferences with original receipts and optimistic revision", async () => {
+  await login();
+  const { validateHydrationSettings } = await import("@/features/hydration/settings-contract");
+  const settings = {
+    dailyGoalMl: 1500,
+    timeZone: "America/Bahia",
+    remindersEnabled: true,
+    reminderTimes: ["09:00", "15:30"],
+  };
+  const command = { sourceRequestId: randomUUID(), expectedRevision: 0, settings };
+  const save = async (c: unknown) =>
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_save_own_hydration_preferences($1,$2::jsonb) AS value",
+        [clinic, JSON.stringify(c)],
+      )
+    ).rows[0]!.value;
+  const first = validateHydrationSettings(
+    await save(command),
+    { clinicId: clinic, patientId: patient },
+    command,
+  );
+  expect(first.preferences).toMatchObject({ revision: 1, settings });
+  expect(
+    validateHydrationSettings(
+      await save(command),
+      { clinicId: clinic, patientId: patient },
+      command,
+    ),
+  ).toEqual(first);
+  const corrected = {
+    ...command,
+    sourceRequestId: randomUUID(),
+    expectedRevision: 1,
+    settings: { ...settings, dailyGoalMl: null, remindersEnabled: false },
+  };
+  expect(
+    validateHydrationSettings(
+      await save(corrected),
+      { clinicId: clinic, patientId: patient },
+      corrected,
+    ).preferences,
+  ).toMatchObject({ revision: 2, settings: { dailyGoalMl: null, remindersEnabled: false } });
+  const replay = validateHydrationSettings(
+    await save(command),
+    { clinicId: clinic, patientId: patient },
+    command,
+  );
+  expect(replay.preferences?.revision).toBe(2);
+  expect(replay.receipt?.snapshot.revision).toBe(1);
+  await expect(
+    save({ ...command, settings: { ...settings, dailyGoalMl: 999 } }),
+  ).rejects.toMatchObject({ code: "40001" });
+  await expect(save({ ...command, sourceRequestId: randomUUID() })).rejects.toMatchObject({
+    code: "40001",
+  });
+});
+it("does not leak preferences across patients and rechecks write grants", async () => {
+  const read = async (tenant = clinic) =>
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_get_own_hydration_preferences($1) AS value",
+        [tenant],
+      )
+    ).rows[0]!.value;
+  await login(otherUser);
+  expect(await read()).toMatchObject({ patientId: otherPatient, preferences: null, receipt: null });
+  await login(admin);
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await login(userId, "anon");
+  await expect(read()).rejects.toMatchObject({ code: "42501" });
+  await login();
+  await expect(read(otherClinic)).rejects.toMatchObject({ code: "42501" });
+  for (const table of ["tm_hydration_preferences", "tm_hydration_preference_receipts"])
+    await expect(db.query("SELECT * FROM public." + table)).rejects.toMatchObject({
+      code: "42501",
+    });
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='hydration_records' AND action='write'",
+    [member],
+  );
+  await login();
+  const command = {
+    sourceRequestId: randomUUID(),
+    expectedRevision: 2,
+    settings: { dailyGoalMl: null, timeZone: "UTC", remindersEnabled: false, reminderTimes: [] },
+  };
+  await expect(
+    db.query("SELECT public.tm_save_own_hydration_preferences($1,$2::jsonb)", [
+      clinic,
+      JSON.stringify(command),
+    ]),
+  ).rejects.toMatchObject({ code: "42501" });
+  expect(await read()).toMatchObject({ preferences: { revision: 2 } });
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'hydration_records','write')", [
+    member,
+  ]);
+  await login();
+});
+it("rejects invalid preference payloads without changing revision", async () => {
+  await login();
+  const settings = {
+    dailyGoalMl: null,
+    timeZone: "UTC",
+    remindersEnabled: false,
+    reminderTimes: [],
+  };
+  for (const bad of [
+    { ...settings, dailyGoalMl: 0 },
+    { ...settings, dailyGoalMl: -1 },
+    { ...settings, timeZone: "Europe/London" },
+    { ...settings, remindersEnabled: true },
+    { ...settings, reminderTimes: ["25:00"] },
+    { ...settings, reminderTimes: ["09:00", "09:00"] },
+    { ...settings, channel: "email" },
+  ]) {
+    await expect(
+      db.query("SELECT public.tm_save_own_hydration_preferences($1,$2::jsonb)", [
+        clinic,
+        JSON.stringify({ sourceRequestId: randomUUID(), expectedRevision: 2, settings: bad }),
+      ]),
+    ).rejects.toMatchObject({ code: "22023" });
+  }
+  const current = await db.query<{ value: { preferences: { revision: number } } }>(
+    "SELECT public.tm_get_own_hydration_preferences($1) AS value",
+    [clinic],
+  );
+  expect(current.rows[0]!.value.preferences.revision).toBe(2);
 });

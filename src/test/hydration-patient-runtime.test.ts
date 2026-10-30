@@ -444,3 +444,60 @@ it("mutation client never retries an uncertain write or substitutes the original
   ).rejects.toMatchObject({ outcome: "rejected", status: 401 });
   expect(fetcher).not.toHaveBeenCalled();
 });
+it("preferences endpoint derives own scope and requires write, with no caller authority", async () => {
+  const { run, rpc, identity, resolveSession } = setup();
+  const implementation = rpc.getMockImplementation()!;
+  const settings = {
+    dailyGoalMl: null,
+    timeZone: "UTC",
+    remindersEnabled: false,
+    reminderTimes: [],
+  };
+  const command = { sourceRequestId: user, expectedRevision: 0, settings };
+  const snapshot = { clinicId: clinic, patientId: patient, revision: 1, settings };
+  rpc.mockImplementation((session, name, args) =>
+    name === "tm_get_own_hydration_preferences"
+      ? Promise.resolve({ clinicId: clinic, patientId: patient, preferences: null, receipt: null })
+      : name === "tm_save_own_hydration_preferences"
+        ? Promise.resolve({
+            clinicId: clinic,
+            patientId: patient,
+            preferences: snapshot,
+            receipt: { command: args["p_command"], snapshot },
+          })
+        : implementation(session, name, args),
+  );
+  expect((await run("preferences", request("preferences"))).status).toBe(200);
+  expect(resolveSession).toHaveBeenCalledTimes(1);
+  expect(rpc.mock.calls[0]![0]).toBe(rpc.mock.calls[1]![0]);
+  const post = () =>
+    new Request("https://app.clinica.example/api/hydration/preferences", {
+      method: "POST",
+      headers: { host: "app.clinica.example", "content-type": "application/json" },
+      body: JSON.stringify(command),
+    });
+  expect((await run("preferences", post())).status).toBe(403);
+  identity.links[0]!.grants.push({ resource: "hydration_records", action: "write" });
+  const response = await run("preferences", post());
+  expect(response.status).toBe(200);
+  expect(await response.json()).toMatchObject({
+    result: { preferences: { revision: 1, settings } },
+  });
+  expect(rpc.mock.calls.at(-1)![2]).toEqual({ p_clinic_id: clinic, p_command: command });
+  expect(
+    (await run("preferences", request("preferences", "app.clinica.example", "?clinicId=" + clinic)))
+      .status,
+  ).toBe(400);
+  expect(
+    (
+      await run(
+        "preferences",
+        request(
+          "preferences",
+          "app.clinica.example",
+          "?sourceRequestId=" + user + "&sourceRequestId=" + user,
+        ),
+      )
+    ).status,
+  ).toBe(400);
+});
