@@ -3723,6 +3723,18 @@
       "done": "Tela usa identidade/rodapé existentes e contexto do servidor, com escolha explícita de fuso e período. Carregador só entrega resultado após todas as páginas; erro intermediário não vira gráfico parcial. Dados são retirados no logout e respostas após desmontagem descartadas. Comparação temporal preserva ocorrências submilissegundo no corte. Regressão global e11b928: 1.399 testes/175 arquivos aprovados; tipos/build válidos e lint global sem erros (7 avisos anteriores).",
       "next": "Sem homologação Cloud nem escrita na tela. Localhost/preview mostram aviso protegido, sem dados reais ou Auth de paciente. SQL 041–043, permissões QA e domínio operacional dependem dos próprios escopos autorizados. Sem metas, lembretes, IA ou main neste lote.",
       "requirements": []
+    },
+    {
+      "id": "HYDRATION-RECEIPT-CONTRACT",
+      "title": "Hidratação: confirmação estrita de recibos — etapa 7",
+      "parent": "8.3",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Contrato local valida escopo, solicitação original, conteúdo, revisão e instante completo do recibo. Mantém registro atual posterior sem regressão e rejeita ressurreição após anulação. Nove testes direcionados aprovados.",
+      "next": "Implementar consulta protegida de recibo e escrita com recuperação explícita. Sem RPC nova, escrita na tela ou aplicação Cloud nesta etapa. Ausência de recibo significa confirmação pendente; não prova falha da escrita.",
+      "requirements": []
     }
   ]
 }
