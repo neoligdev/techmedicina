@@ -1,5 +1,15 @@
 import { z } from "zod";
 import { hydrationRecordSchema, hydrationScopeSchema, hydrationWindowSchema } from "./contracts";
+function occursAfter(value: string, reference: string) {
+  const a = Date.parse(value),
+    b = Date.parse(reference);
+  if (a !== b) return a > b;
+  const tail = (v: string) => v.match(/\.(\d+)/)?.[1]?.slice(3) ?? "";
+  const x = tail(value),
+    y = tail(reference),
+    n = Math.max(x.length, y.length);
+  return x.padEnd(n, "0") > y.padEnd(n, "0");
+}
 export interface HydrationBucket {
   key: string;
   recordedMl: number | null;
@@ -63,8 +73,7 @@ export function projectHydration(scopeValue: unknown, recordsValue: unknown, win
   let totalRecordedMl: number | null = null,
     recordCount = 0;
   for (const record of records) {
-    if (record.status === "voided" || Date.parse(record.occurredAt) > Date.parse(window.asOf))
-      continue;
+    if (record.status === "voided" || occursAfter(record.occurredAt, window.asOf)) continue;
     const date = localDate(record.occurredAt),
       key = window.period === "year" ? date.slice(0, 7) : date,
       bucket = index.get(key);

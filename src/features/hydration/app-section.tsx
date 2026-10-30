@@ -1,0 +1,204 @@
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { isLocalOrPreviewHost } from "@/lib/white-label/host-resolver";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { loadOwnHydrationHistory } from "./complete-history-client";
+import { HydrationHistoryChart } from "./history-chart";
+async function token() {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+export function HydrationSection() {
+  const [mode, setMode] = useState<"checking" | "demo" | "login" | "ready">("checking"),
+    [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    if (isLocalOrPreviewHost(window.location.hostname)) {
+      setMode("demo");
+      return;
+    }
+    let active = true,
+      version = 0;
+    void supabase.auth
+      .getUser()
+      .then(({ data, error }) => {
+        if (active && version === 0) {
+          setUserId(error ? null : (data.user?.id ?? null));
+          setMode(!error && data.user ? "ready" : "login");
+        }
+      })
+      .catch(() => {
+        if (active && version === 0) setMode("login");
+      });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) {
+        version++;
+        setUserId(session?.user.id ?? null);
+        setMode(session ? "ready" : "login");
+      }
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+  return (
+    <section className="page-content">
+      <Card>
+        <CardHeader>
+          <CardTitle>Hidratação</CardTitle>
+          <CardDescription>
+            Consulte a água que você registrou, sem confundir ausência de registro com ausência de
+            consumo.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {mode === "checking" ? (
+            <p role="status">Conferindo acesso…</p>
+          ) : mode === "demo" ? (
+            <p>
+              A consulta de registros reais requer o endereço verificado do aplicativo da sua
+              clínica e acesso de paciente autorizado. Esta prévia não mostra dados de saúde.
+            </p>
+          ) : mode === "login" ? (
+            <p>
+              Entre com sua conta de paciente para consultar seu histórico.{" "}
+              <a href="/login" className="underline">
+                Entrar
+              </a>
+            </p>
+          ) : (
+            <HydrationReadPanel key={userId} getAccessToken={token} />
+          )}
+          <p className="mt-4 text-sm text-muted-foreground">
+            Metas, lembretes e registro de consumo ainda não estão habilitados nesta tela.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+export function HydrationReadPanel({
+  getAccessToken,
+  fetcher,
+  now = () => new Date().toISOString(),
+}: {
+  getAccessToken: () => Promise<string | null>;
+  fetcher?: typeof fetch;
+  now?: () => string;
+}) {
+  const [timeZone, setTimeZone] = useState(""),
+    [period, setPeriod] = useState("day"),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(false),
+    [result, setResult] = useState<Awaited<ReturnType<typeof loadOwnHydrationHistory>>>();
+  const scope = useRef<AbortController | null>(null),
+    pending = useRef(false);
+  useEffect(() => {
+    const c = new AbortController();
+    scope.current = c;
+    pending.current = false;
+    setResult(undefined);
+    setBusy(false);
+    setError(false);
+    return () => c.abort();
+  }, [getAccessToken, fetcher]);
+  async function load() {
+    const c = scope.current;
+    if (!c || c.signal.aborted || pending.current || !timeZone) return;
+    pending.current = true;
+    setBusy(true);
+    setError(false);
+    setResult(undefined);
+    try {
+      const data = await loadOwnHydrationHistory(
+        { period, timeZone, asOf: now() },
+        { getAccessToken, ...(fetcher ? { fetcher } : {}), signal: c.signal },
+      );
+      if (!c.signal.aborted) setResult(data);
+    } catch {
+      if (!c.signal.aborted) setError(true);
+    } finally {
+      if (!c.signal.aborted) {
+        pending.current = false;
+        setBusy(false);
+      }
+    }
+  }
+  return (
+    <div className="space-y-4" aria-busy={busy}>
+      <form
+        className="flex flex-wrap items-end gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void load();
+        }}
+      >
+        <label className="space-y-2">
+          <span>Período</span>
+          <select
+            className="block rounded-lg border border-input bg-background p-3"
+            value={period}
+            disabled={busy}
+            onChange={(e) => {
+              setPeriod(e.target.value);
+              setResult(undefined);
+              setError(false);
+            }}
+          >
+            <option value="day">Hoje</option>
+            <option value="week">Últimos 7 dias</option>
+            <option value="month">Este mês</option>
+            <option value="year">Este ano</option>
+          </select>
+        </label>
+        <label className="space-y-2">
+          <span>Fuso horário da consulta</span>
+          <select
+            className="block rounded-lg border border-input bg-background p-3"
+            value={timeZone}
+            disabled={busy}
+            onChange={(e) => {
+              setTimeZone(e.target.value);
+              setResult(undefined);
+              setError(false);
+            }}
+          >
+            <option value="">Selecione seu fuso</option>
+            <option value="America/Bahia">Bahia</option>
+            <option value="America/Sao_Paulo">São Paulo</option>
+            <option value="UTC">UTC</option>
+          </select>
+        </label>
+        <Button type="submit" disabled={busy || !timeZone}>
+          Consultar histórico
+        </Button>
+      </form>
+      {busy && <p role="status">Carregando todo o período…</p>}
+      {error && (
+        <p role="alert">
+          Não foi possível carregar todo o período. Confira seu acesso e tente novamente, ou escolha
+          um período menor.
+        </p>
+      )}
+      {result && (
+        <>
+          <p className="text-sm text-muted-foreground">
+            Consulta até{" "}
+            {new Date(result.window.asOf).toLocaleString("pt-BR", {
+              timeZone: result.window.timeZone,
+            })}
+            . Os registros podem mudar; consulte novamente para atualizar.
+          </p>
+          <HydrationHistoryChart
+            scope={result.scope}
+            records={result.records}
+            window={result.window}
+          />
+        </>
+      )}
+    </div>
+  );
+}

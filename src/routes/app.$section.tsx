@@ -1,3 +1,4 @@
+import { HydrationSection } from "@/features/hydration/app-section";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ModulePage } from "@/components/platform/module-page";
 import { navigation, areaLabels } from "@/features/demo/navigation";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/app/$section")({
 
 function SectionPage() {
   const { slug } = Route.useLoaderData();
+  if (slug === "hidratacao") return <HydrationSection />;
   if (slug === "escudos") return <AppShieldsSection />;
   return <ModulePage area="app" slug={slug} />;
 }

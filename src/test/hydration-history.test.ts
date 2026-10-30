@@ -117,3 +117,11 @@ describe("Hydration current-snapshot projection", () => {
     ).toThrow("exact integer");
   });
 });
+it("does not count a future occurrence within the same millisecond", () => {
+  const projection = projectHydration(
+    scope,
+    [record(undefined, 250, "2026-10-29T15:00:00.000001Z")],
+    { ...window, asOf: "2026-10-29T15:00:00.000Z" },
+  );
+  expect(projection.totalRecordedMl).toBeNull();
+});

@@ -269,8 +269,8 @@ Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: Codex
-- **Entregue**: Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação.
-- **Próximo Passo**: Integrar leitura no PWA com fuso explícito, paginação completa e estados de sessão/erro; migrações 041–043 não aplicadas no Cloud. Metas, notificações, IA e leitura médica seguem pendentes.
+- **Entregue**: Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação. PWA local integrado ao contexto/leitura próprios: consulta explícita por período/fuso, todas as páginas antes do gráfico, descarte de consulta antiga e remoção ao sair da sessão.
+- **Próximo Passo**: Homologar leitura em domínio e conta especificamente autorizados após SQL 041–043; implementar escrita HTTP, recuperação de recibo e formulário de consumo/correção. Metas, restrições, lembretes/canais, IA e leitura médica permanecem pendentes.
 
 **Requisitos**:
 
@@ -2727,3 +2727,10 @@ Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Proposta SQL local 043 verifica domínio/provas e grant hydration_records/read sem reutilizar grants de Jornada. Rotas locais GET de contexto/registros usam mesma sessão verificada nas RPCs, sem cache entre requisições. Testes integrados com provas locais reais conferem revogação de chave e paciente. HTTP localhost/preview negado.
 - **Próximo Passo**: 043 depende da cadeia de domínios e 041; nenhum SQL remoto, grant, domínio, DNS ou main alterado. PWA ainda sem painel conectado. Revalidação por requisição não promete revogação atômica de domínio no meio da leitura.
+
+## HYDRATION-PWA-READ - Hidratação: painel de consulta no PWA sem totais parciais — etapa 6 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Tela usa identidade/rodapé existentes e contexto do servidor, com escolha explícita de fuso e período. Carregador só entrega resultado após todas as páginas; erro intermediário não vira gráfico parcial. Dados são retirados no logout e respostas após desmontagem descartadas. Comparação temporal preserva ocorrências submilissegundo no corte.
+- **Próximo Passo**: Sem homologação Cloud nem escrita na tela. Localhost/preview mostram aviso protegido, sem dados reais ou Auth de paciente. SQL 041–043, permissões QA e domínio operacional dependem dos próprios escopos autorizados. Sem metas, lembretes, IA ou main neste lote.
