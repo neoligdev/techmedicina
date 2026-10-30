@@ -17,3 +17,5 @@ Validação inicial: 19 testes em 3 arquivos de painel/projeção/gráfico, com 
 Navegador local: tela protegida renderizada, footer fixed com base 720px na janela de 720px; largura do documento 1280px para viewport 1280px, sem overflow horizontal nessa janela desktop. Evidência em docs/evidencias/hidratacao/pwa-protegida.png. Não é homologação móvel ou de dados reais.
 
 Próxima etapa: escrita HTTP/recibo e formulário, mantendo permissões e revisão. Cloud 041–043, DNS/domínio, grants QA e main permanecem nos respectivos gates.
+
+Regressão global concluída em 30/10/2026 sobre e11b928: 1.399 testes em 175 arquivos, 549,95 segundos, saída 0. Código permaneceu estável durante a execução; somente documentação foi preparada. Lint global: zero erros e 7 avisos preexistentes. Nenhuma aplicação SQL remota ou alteração de main incluída.

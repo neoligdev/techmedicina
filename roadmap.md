@@ -219,3 +219,11 @@ Registros anteriores preservam o estado de suas datas. Referência atual: docs/S
 - [x] Etapa local 4: listagem por intervalo/cursor, proposta 042 e fronteira HTTP/cliente preparados; status 157.
 - [ ] Contexto de host próprio, registro de runtime/rota e integração no PWA.
 - [ ] SQL 041–042 no Cloud depende de revisão e autorização específica; não aplicado.
+
+## Hidratação — contexto e PWA, 30/10/2026
+
+- [x] Etapa local 5: contexto próprio, proposta 043 e rotas GET de leitura com host/sessão/grant verificados.
+- [x] Etapa local 6: painel de consulta no PWA, fuso explícito e resultado somente após todas as páginas.
+- [ ] Homologação Cloud/host/contas com autorizações específicas; SQL 041–043 local.
+- [ ] Escrita HTTP, recuperação de recibo e formulário de registro/correção.
+- [ ] Metas/restrições, lembretes/canais, IA e leitura médica continuam pendentes.

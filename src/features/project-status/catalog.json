@@ -3720,7 +3720,7 @@
         "Codex"
       ],
       "status": "done",
-      "done": "Tela usa identidade/rodapé existentes e contexto do servidor, com escolha explícita de fuso e período. Carregador só entrega resultado após todas as páginas; erro intermediário não vira gráfico parcial. Dados são retirados no logout e respostas após desmontagem descartadas. Comparação temporal preserva ocorrências submilissegundo no corte.",
+      "done": "Tela usa identidade/rodapé existentes e contexto do servidor, com escolha explícita de fuso e período. Carregador só entrega resultado após todas as páginas; erro intermediário não vira gráfico parcial. Dados são retirados no logout e respostas após desmontagem descartadas. Comparação temporal preserva ocorrências submilissegundo no corte. Regressão global e11b928: 1.399 testes/175 arquivos aprovados; tipos/build válidos e lint global sem erros (7 avisos anteriores).",
       "next": "Sem homologação Cloud nem escrita na tela. Localhost/preview mostram aviso protegido, sem dados reais ou Auth de paciente. SQL 041–043, permissões QA e domínio operacional dependem dos próprios escopos autorizados. Sem metas, lembretes, IA ou main neste lote.",
       "requirements": []
     }
