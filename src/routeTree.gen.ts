@@ -24,6 +24,7 @@ import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$sec
 import { Route as ApiAgendaAvailabilityRouteImport } from './routes/api/agenda/availability'
 import { Route as ApiAgendaClinicRouteImport } from './routes/api/agenda/clinic'
 import { Route as ApiHydrationContextRouteImport } from './routes/api/hydration/context'
+import { Route as ApiHydrationMutateRouteImport } from './routes/api/hydration/mutate'
 import { Route as ApiHydrationReceiptRouteImport } from './routes/api/hydration/receipt'
 import { Route as ApiHydrationRecordsRouteImport } from './routes/api/hydration/records'
 import { Route as ApiJourneyContextRouteImport } from './routes/api/journey/context'
@@ -126,6 +127,11 @@ const ApiAgendaClinicRoute = ApiAgendaClinicRouteImport.update({
 const ApiHydrationContextRoute = ApiHydrationContextRouteImport.update({
   id: '/api/hydration/context',
   path: '/api/hydration/context',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHydrationMutateRoute = ApiHydrationMutateRouteImport.update({
+  id: '/api/hydration/mutate',
+  path: '/api/hydration/mutate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHydrationReceiptRoute = ApiHydrationReceiptRouteImport.update({
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/mutate': typeof ApiHydrationMutateRoute
   '/api/hydration/receipt': typeof ApiHydrationReceiptRoute
   '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/mutate': typeof ApiHydrationMutateRoute
   '/api/hydration/receipt': typeof ApiHydrationReceiptRoute
   '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
@@ -388,6 +396,7 @@ export interface FileRoutesById {
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
   '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/mutate': typeof ApiHydrationMutateRoute
   '/api/hydration/receipt': typeof ApiHydrationReceiptRoute
   '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
@@ -435,6 +444,7 @@ export interface FileRouteTypes {
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
     | '/api/hydration/context'
+    | '/api/hydration/mutate'
     | '/api/hydration/receipt'
     | '/api/hydration/records'
     | '/api/journey/context'
@@ -480,6 +490,7 @@ export interface FileRouteTypes {
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
     | '/api/hydration/context'
+    | '/api/hydration/mutate'
     | '/api/hydration/receipt'
     | '/api/hydration/records'
     | '/api/journey/context'
@@ -525,6 +536,7 @@ export interface FileRouteTypes {
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
     | '/api/hydration/context'
+    | '/api/hydration/mutate'
     | '/api/hydration/receipt'
     | '/api/hydration/records'
     | '/api/journey/context'
@@ -571,6 +583,7 @@ export interface RootRouteChildren {
   ApiAgendaAvailabilityRoute: typeof ApiAgendaAvailabilityRoute
   ApiAgendaClinicRoute: typeof ApiAgendaClinicRoute
   ApiHydrationContextRoute: typeof ApiHydrationContextRoute
+  ApiHydrationMutateRoute: typeof ApiHydrationMutateRoute
   ApiHydrationReceiptRoute: typeof ApiHydrationReceiptRoute
   ApiHydrationRecordsRoute: typeof ApiHydrationRecordsRoute
   ApiJourneyContextRoute: typeof ApiJourneyContextRoute
@@ -706,6 +719,13 @@ declare module '@tanstack/react-router' {
       path: '/api/hydration/context'
       fullPath: '/api/hydration/context'
       preLoaderRoute: typeof ApiHydrationContextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hydration/mutate': {
+      id: '/api/hydration/mutate'
+      path: '/api/hydration/mutate'
+      fullPath: '/api/hydration/mutate'
+      preLoaderRoute: typeof ApiHydrationMutateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/hydration/receipt': {
@@ -923,6 +943,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAgendaAvailabilityRoute: ApiAgendaAvailabilityRoute,
   ApiAgendaClinicRoute: ApiAgendaClinicRoute,
   ApiHydrationContextRoute: ApiHydrationContextRoute,
+  ApiHydrationMutateRoute: ApiHydrationMutateRoute,
   ApiHydrationReceiptRoute: ApiHydrationReceiptRoute,
   ApiHydrationRecordsRoute: ApiHydrationRecordsRoute,
   ApiJourneyContextRoute: ApiJourneyContextRoute,

@@ -4,11 +4,13 @@ import { AuthError } from "@/lib/auth/guards.server";
 import { createOwnHydrationContextResolver } from "./own-context.server";
 import { createOwnHydrationListEndpoint } from "./list-endpoint.server";
 import { createOwnHydrationReceiptEndpoint } from "./receipt-endpoint.server";
-export type HydrationReadOperation = "context" | "records" | "receipt";
+import { createOwnHydrationMutationEndpoint } from "./mutation-endpoint.server";
+export type HydrationReadOperation = "context" | "records" | "receipt" | "mutate";
 type HydrationRpc =
   | "tm_resolve_patient_hydration_host"
   | "tm_list_own_hydration_records"
-  | "tm_get_own_hydration_receipt";
+  | "tm_get_own_hydration_receipt"
+  | "tm_mutate_own_hydration_record";
 /** Every invocation owns its Auth promise; lookup and data RPC use the same request bearer. */
 export function createPatientHydrationRuntime<
   S extends { identity: AuthenticatedIdentity },
@@ -29,6 +31,12 @@ export function createPatientHydrationRuntime<
         });
       },
     });
+    if (operation === "mutate")
+      return createOwnHydrationMutationEndpoint({
+        resolveContext,
+        mutate: (bound, args) =>
+          providers.rpc(bound.session, "tm_mutate_own_hydration_record", args),
+      })(request);
     if (operation === "receipt")
       return createOwnHydrationReceiptEndpoint({
         resolveContext,

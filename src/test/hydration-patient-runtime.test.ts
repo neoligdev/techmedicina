@@ -298,3 +298,149 @@ it("receipt lookup rechecks host and read grants before touching receipt storage
   );
   expect(rpc.mock.calls.every((c) => c[1] === "tm_resolve_patient_hydration_host")).toBe(true);
 });
+const hydrationWrite = {
+  kind: "create",
+  recordId: user,
+  sourceRequestId: patient,
+  expectedRevision: 0,
+  document: { volumeMl: 250, occurredAt: "2026-10-30T12:00:00Z" },
+};
+const postHydration = (value: unknown = hydrationWrite, extra = "") =>
+  new Request("https://app.clinica.example/api/hydration/mutate" + extra, {
+    method: "POST",
+    headers: { host: "app.clinica.example", "content-type": "application/json" },
+    body: JSON.stringify(value),
+  });
+it("hydration writes require explicit create/write plus read grants", async () => {
+  const { run, identity, rpc } = setup();
+  expect((await run("mutate", postHydration())).status).toBe(403);
+  identity.links[0]!.grants.push({ resource: "hydration_records", action: "create" });
+  const implementation = rpc.getMockImplementation()!;
+  const record = {
+    id: user,
+    clinicId: clinic,
+    patientId: patient,
+    revision: 1,
+    status: "active",
+    ...hydrationWrite.document,
+  };
+  rpc.mockImplementation((session, name, args) =>
+    name === "tm_mutate_own_hydration_record"
+      ? Promise.resolve({
+          receipt: {
+            scope: { clinicId: clinic, patientId: patient },
+            command: args["p_command"],
+            record,
+          },
+          record,
+          replayed: false,
+        })
+      : implementation(session, name, args),
+  );
+  const response = await run("mutate", postHydration());
+  expect(response.status).toBe(200);
+  expect(await response.json()).toMatchObject({
+    result: { record: { revision: 1 }, replayed: false },
+  });
+  const calls = rpc.mock.calls.slice(-2);
+  expect(calls[0]![0]).toBe(calls[1]![0]);
+  expect(calls[1]![2]).toEqual({ p_clinic_id: clinic, p_command: hydrationWrite });
+  expect(
+    (
+      await run(
+        "mutate",
+        postHydration({ ...hydrationWrite, kind: "correct", expectedRevision: 1 }),
+      )
+    ).status,
+  ).toBe(403);
+  identity.links[0]!.grants = [{ resource: "hydration_records", action: "create" }];
+  expect((await run("mutate", postHydration())).status).toBe(403);
+});
+it("hydration write rejects caller scope, excessive body and query before any RPC", async () => {
+  const { run, rpc } = setup();
+  expect((await run("mutate", postHydration({ ...hydrationWrite, clinicId: clinic }))).status).toBe(
+    400,
+  );
+  expect((await run("mutate", postHydration(hydrationWrite, "?patientId=" + patient))).status).toBe(
+    400,
+  );
+  expect((await run("mutate", postHydration({ extra: "x".repeat(5000) }))).status).toBe(413);
+  expect(
+    (
+      await run(
+        "mutate",
+        new Request("https://app.clinica.example/api/hydration/mutate", {
+          method: "POST",
+          body: "{}",
+        }),
+      )
+    ).status,
+  ).toBe(415);
+  expect(rpc).not.toHaveBeenCalled();
+});
+it("hydration write exposes conflict but hides unknown/invalid upstream outcomes", async () => {
+  const { run, identity, rpc } = setup();
+  identity.links[0]!.grants.push({ resource: "hydration_records", action: "create" });
+  const implementation = rpc.getMockImplementation()!;
+  const { AuthError } = await import("@/lib/auth/guards.server");
+  for (const failure of [new AuthError("private conflict", 409), new Error("secret upstream")]) {
+    rpc.mockImplementation((session, name, args) =>
+      name === "tm_mutate_own_hydration_record"
+        ? Promise.reject(failure)
+        : implementation(session, name, args),
+    );
+    const response = await run("mutate", postHydration());
+    expect(response.status).toBe(failure instanceof AuthError ? 409 : 503);
+    expect(JSON.stringify(await response.json())).not.toMatch(/private conflict|secret upstream/);
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+  }
+  rpc.mockImplementation((session, name, args) =>
+    name === "tm_mutate_own_hydration_record"
+      ? Promise.resolve({ receipt: null, record: null, replayed: false })
+      : implementation(session, name, args),
+  );
+  expect((await run("mutate", postHydration())).status).toBe(503);
+});
+it("mutation client never retries an uncertain write or substitutes the original command", async () => {
+  const { createHydrationMutationClient, HydrationWriteError } =
+    await import("@/features/hydration/mutation-client");
+  const fetcher = vi.fn<typeof fetch>(async () => {
+    throw new Error("connection lost after commit");
+  });
+  const send = createHydrationMutationClient(async () => "qa", fetcher);
+  await expect(
+    send(hydrationWrite, { clinicId: clinic, patientId: patient }),
+  ).rejects.toMatchObject({ outcome: "uncertain" });
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(JSON.parse(fetcher.mock.calls[0]![1]!.body as string)).toEqual(hydrationWrite);
+  expect(fetcher.mock.calls[0]![1]).toMatchObject({
+    method: "POST",
+    credentials: "omit",
+    cache: "no-store",
+    redirect: "error",
+  });
+  for (const [status, outcome] of [
+    [409, "conflict"],
+    [403, "rejected"],
+    [503, "uncertain"],
+  ] as const) {
+    fetcher.mockResolvedValueOnce(Response.json({ error: "private" }, { status }));
+    await expect(
+      send(hydrationWrite, { clinicId: clinic, patientId: patient }),
+    ).rejects.toMatchObject({ outcome, status });
+  }
+  fetcher.mockResolvedValueOnce(
+    Response.json({ result: { receipt: null, record: null, replayed: false } }),
+  );
+  await expect(
+    send(hydrationWrite, { clinicId: clinic, patientId: patient }),
+  ).rejects.toBeInstanceOf(HydrationWriteError);
+  fetcher.mockClear();
+  await expect(
+    createHydrationMutationClient(async () => null, fetcher)(hydrationWrite, {
+      clinicId: clinic,
+      patientId: patient,
+    }),
+  ).rejects.toMatchObject({ outcome: "rejected", status: 401 });
+  expect(fetcher).not.toHaveBeenCalled();
+});

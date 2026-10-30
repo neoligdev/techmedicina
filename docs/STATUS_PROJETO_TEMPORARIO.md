@@ -2755,3 +2755,10 @@ Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: GET local /api/hydration/receipt deriva clínica/paciente do host e identidade verificados, reutiliza o mesmo bearer e valida recibo/registro antes de responder. Cliente compara com comando original, sem retry ou armazenamento. Testes conferem escopo, parâmetros repetidos, resposta malformada, grant/host negados e ausência de sessão; compilação aprovada.
 - **Próximo Passo**: Migração 044 continua local. Sem homologação Cloud, endpoint operacional remoto ou formulário de escrita no PWA. Falhas de acesso/rede são erros, não ausência confirmada; correlação continua em memória. Conectar UI após escrita com confirmação explícita.
+
+## HYDRATION-WRITE-ENDPOINT - Hidratação: escrita protegida e resultado incerto — etapa 10 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: POST local aceita comando estrito limitado a 4 KB, deriva escopo do host/sessão e exige read mais create ou write. Confere recibo e registro da RPC 041. Cliente envia uma vez, distingue conflito, rejeição e resultado incerto e não faz retry automático. Testes simulam resposta perdida após commit, permissões insuficientes, corpo excessivo e upstream inválido.
+- **Próximo Passo**: Formulário PWA ainda não conectado; próxima etapa mantém comando pendente em memória e consulta explícita do recibo. Sem aplicação Cloud, grants, DNS ou main. Migrações 041–044 dependem de autorização própria e homologação operacional.
