@@ -3735,6 +3735,18 @@
       "done": "Contrato local valida escopo, solicitação original, conteúdo, revisão e instante completo do recibo. Mantém registro atual posterior sem regressão e rejeita ressurreição após anulação. Nove testes direcionados aprovados.",
       "next": "Implementar consulta protegida de recibo e escrita com recuperação explícita. Sem RPC nova, escrita na tela ou aplicação Cloud nesta etapa. Ausência de recibo significa confirmação pendente; não prova falha da escrita.",
       "requirements": []
+    },
+    {
+      "id": "HYDRATION-RECEIPT-SQL",
+      "title": "Hidratação: consulta isolada do recibo original — etapa 8",
+      "parent": "8.3",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Proposta SQL local 044 consulta recibo por registro e solicitação, com guarda própria/read e snapshot único de recibo e registro atual. Teste de resposta perdida seguida de correção preserva recibo revisionado; outro paciente não vê registro/recibo. Suíte direcionada: 21 testes aprovados, incluindo negação a anon, Super ADM sem vínculo, outra clínica e grant revogado.",
+      "next": "044 não aplicada no Cloud. Implementar endpoint autenticado e cliente de recuperação sem retry automático. Não há formulário de escrita, grant novo, DNS ou main nesta etapa. Contenção entre conexões reais permanece sem homologação.",
+      "requirements": []
     }
   ]
 }

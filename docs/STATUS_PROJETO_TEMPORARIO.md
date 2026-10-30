@@ -2741,3 +2741,10 @@ Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Contrato local valida escopo, solicitação original, conteúdo, revisão e instante completo do recibo. Mantém registro atual posterior sem regressão e rejeita ressurreição após anulação. Nove testes direcionados aprovados.
 - **Próximo Passo**: Implementar consulta protegida de recibo e escrita com recuperação explícita. Sem RPC nova, escrita na tela ou aplicação Cloud nesta etapa. Ausência de recibo significa confirmação pendente; não prova falha da escrita.
+
+## HYDRATION-RECEIPT-SQL - Hidratação: consulta isolada do recibo original — etapa 8 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Proposta SQL local 044 consulta recibo por registro e solicitação, com guarda própria/read e snapshot único de recibo e registro atual. Teste de resposta perdida seguida de correção preserva recibo revisionado; outro paciente não vê registro/recibo. Suíte direcionada: 21 testes aprovados, incluindo negação a anon, Super ADM sem vínculo, outra clínica e grant revogado.
+- **Próximo Passo**: 044 não aplicada no Cloud. Implementar endpoint autenticado e cliente de recuperação sem retry automático. Não há formulário de escrita, grant novo, DNS ou main nesta etapa. Contenção entre conexões reais permanece sem homologação.

@@ -56,6 +56,7 @@ beforeAll(async () => {
     "001_tenant_foundation.sql",
     "041_own_hydration_records.sql",
     "042_own_hydration_list.sql",
+    "044_own_hydration_receipt.sql",
   ])
     await db.exec(
       await readFile(new URL("../../database/migrations/" + file, import.meta.url), "utf8"),
@@ -312,4 +313,78 @@ it("rejects invalid SQL intervals and page limits", async () => {
         limit,
       ]),
     ).rejects.toMatchObject({ code: "22023" });
+});
+
+it("recovers an accepted original request after corrections without rewriting history", async () => {
+  await login();
+  await db.exec("RESET ROLE");
+  await db.query(
+    "INSERT INTO public.tm_membership_grants(membership_id,resource,action) VALUES($1,'hydration_records','write') ON CONFLICT DO NOTHING",
+    [member],
+  );
+  await login();
+  const localId = randomUUID(),
+    source = randomUUID();
+  const original = { ...create, recordId: localId, sourceRequestId: source };
+  await mutate(original); // Model a committed write whose response the client lost.
+  await mutate({
+    ...original,
+    kind: "correct",
+    expectedRevision: 1,
+    sourceRequestId: randomUUID(),
+    document: { ...document, volumeMl: 120 },
+  });
+  const recover = async (target = localId, requestId = source, tenant = clinic) =>
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_get_own_hydration_receipt($1,$2,$3) AS value",
+        [tenant, target, requestId],
+      )
+    ).rows[0]!.value;
+  const { validateHydrationRecovery } = await import("@/features/hydration/recovery-contract");
+  expect(
+    validateHydrationRecovery(await recover(), { clinicId: clinic, patientId: patient }, original),
+  ).toMatchObject({
+    confirmation: "confirmed",
+    record: { revision: 2, volumeMl: 120 },
+    receipt: { record: { revision: 1, volumeMl: 250 } },
+  });
+  expect(await recover(localId, randomUUID())).toMatchObject({
+    receipt: null,
+    record: { revision: 2 },
+  });
+  expect(await recover(randomUUID())).toMatchObject({ receipt: null, record: null });
+  await login(otherUser);
+  expect(await recover()).toMatchObject({ patientId: otherPatient, receipt: null, record: null });
+  await login(admin);
+  await expect(recover()).rejects.toMatchObject({ code: "42501" });
+  await login(userId, "anon");
+  await expect(recover()).rejects.toMatchObject({ code: "42501" });
+  await login();
+  await expect(recover(localId, source, otherClinic)).rejects.toMatchObject({ code: "42501" });
+  await expect(
+    db.query("SELECT public.tm_get_own_hydration_receipt($1,NULL,$2)", [clinic, source]),
+  ).rejects.toMatchObject({ code: "22023" });
+});
+it("rechecks live read grants and leaves the immutable receipt unchanged", async () => {
+  await db.exec("RESET ROLE");
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource='hydration_records' AND action='read'",
+    [member],
+  );
+  await login();
+  await expect(
+    db.query("SELECT public.tm_get_own_hydration_receipt($1,$2,$3)", [clinic, id, request]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await db.exec("RESET ROLE");
+  await db.query(
+    "INSERT INTO public.tm_membership_grants(membership_id,resource,action) VALUES($1,'hydration_records','read')",
+    [member],
+  );
+  await login();
+  const result = await db.query<{
+    value: { receipt: { record: { revision: number } }; record: { revision: number } };
+  }>("SELECT public.tm_get_own_hydration_receipt($1,$2,$3) AS value", [clinic, id, request]);
+  expect(result.rows[0]!.value.receipt.record.revision).toBe(1);
+  expect(result.rows[0]!.value.record.revision).toBe(3);
 });
