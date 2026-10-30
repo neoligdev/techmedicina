@@ -61,3 +61,7 @@ Além das preferências visuais, o catálogo C005 guarda somente rascunhos comer
 ### Hidratação — preferências locais (30/10/2026)
 
 Meta informada pelo paciente e horários de lembretes estão implementados localmente no PWA/API, com revisão e recuperação de recibo. A migração 045 é proposta local; 041, 042 e 044 já foram aplicadas no Cloud por autorização própria. Horários salvos não ativam notificações, e a prévia mantém a proteção por host/identidade. Veja [a revisão da 045](docs/REVISAO_MIGRACAO_HIDRATACAO_045.md). Metas clínicas automáticas e entrega de lembretes não foram implementadas.
+
+### Avisos de hidratação na tela aberta (30/10/2026)
+
+Foi acrescentado um aviso visual no próprio painel, após carregar preferências confirmadas, apenas enquanto a tela de hidratação está aberta e visível. Não é push nem notificação em segundo plano e não garante entrega. Deduplicação em memória e limites estão em [avisos na tela aberta](docs/HIDRATACAO_LEMBRETES_TELA_ABERTA.md).

@@ -85,8 +85,9 @@ export function HydrationSection() {
             <AuthenticatedHydrationPanel key={userId} userId={userId ?? ""} />
           )}
           <p className="mt-4 text-sm text-muted-foreground">
-            Meta informada e horários exigem acesso próprio; o envio de lembretes ainda não está
-            habilitado. Registros exigem permissão própria da clínica.
+            Meta e avisos nesta tela exigem acesso próprio. Avisos funcionam com a tela aberta e
+            visível; notificações em segundo plano permanecem pendentes. Registros exigem permissão
+            da clínica.
           </p>
         </CardContent>
       </Card>

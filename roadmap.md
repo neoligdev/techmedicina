@@ -237,3 +237,11 @@ Registros anteriores preservam o estado de suas datas. Referência atual: docs/S
 - [ ] Implementar entrega real de lembretes e observações seguras da IA. Salvar horários ainda não agenda nem envia notificações.
 
 Revisão e limites: docs/REVISAO_MIGRACAO_HIDRATACAO_045.md.
+
+## Hidratação — avisos com tela aberta, 30/10/2026
+
+- [x] Avisos visuais locais por horário/fuso confirmado, com deduplicação em memória, pausa em edição e aba oculta, sem recuperar horários perdidos.
+- [ ] Entrega em segundo plano e deduplicação durável dependem de canal/infraestrutura autorizados; avisos visuais não concluem esse escopo.
+- [ ] 045 e main 804be82 seguem sem nova autorização explícita; 043/grants clínicos também não ativados.
+
+Detalhes e testes: docs/HIDRATACAO_LEMBRETES_TELA_ABERTA.md.

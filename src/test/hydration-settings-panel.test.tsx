@@ -9,6 +9,7 @@ const token = async () => "qa";
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 it("loads absent goal as blank and saves only explicit patient input without sending notifications", async () => {
   const fetcher = vi.fn<typeof fetch>(async (_input, init) => {
@@ -53,7 +54,7 @@ it("loads absent goal as blank and saves only explicit patient input without sen
       reminderTimes: ["09:00", "15:30"],
     },
   });
-  expect(screen.getByText(/Nenhuma notificação está agendada/)).toBeInTheDocument();
+  expect(screen.getByText(/Não há notificações em segundo plano/)).toBeInTheDocument();
 });
 it("keeps uncertain settings locked and recovers only the original request", async () => {
   let original: Record<string, unknown> = {};
@@ -113,5 +114,41 @@ it("refuses incomplete enabled schedule before save", async () => {
   fireEvent.click(screen.getByLabelText("Quero lembretes nos horários escolhidos"));
   fireEvent.click(screen.getByRole("button", { name: "Salvar preferências" }));
   await waitFor(() => expect(screen.getByText(/Confira a meta inteira/)).toBeInTheDocument());
+  expect(fetcher).toHaveBeenCalledTimes(1);
+});
+it("shows foreground reminder only from confirmed preferences and pauses while editing", async () => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-10-31T12:00:00Z"));
+  vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
+  const preferences = {
+    ...scope,
+    revision: 1,
+    settings: {
+      dailyGoalMl: null,
+      timeZone: "America/Bahia",
+      remindersEnabled: true,
+      reminderTimes: ["09:00"],
+    },
+  };
+  const fetcher = vi.fn<typeof fetch>(async () =>
+    Response.json({ result: { ...scope, preferences, receipt: null } }),
+  );
+  render(
+    <HydrationSettingsPanel
+      scope={scope}
+      getAccessToken={token}
+      fetcher={fetcher}
+      onLocked={vi.fn()}
+    />,
+  );
+  expect(screen.queryByRole("status", { name: "Lembrete de hidratação no aplicativo" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Carregar preferências" }));
+  expect(
+    await screen.findByRole("status", { name: "Lembrete de hidratação no aplicativo" }),
+  ).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText("Minha meta diária informada (mL, opcional)"), {
+    target: { value: "1000" },
+  });
+  expect(screen.queryByRole("status", { name: "Lembrete de hidratação no aplicativo" })).toBeNull();
   expect(fetcher).toHaveBeenCalledTimes(1);
 });

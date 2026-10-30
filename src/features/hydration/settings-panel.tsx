@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { createHydrationSettingsClient } from "./settings-client";
 import { hydrationSettingsCommandSchema, validateHydrationSettings } from "./settings-contract";
 import type { z } from "zod";
+import { HydrationForegroundReminder } from "./foreground-reminder";
 import { HydrationWriteError } from "./mutation-client";
 type Command = z.infer<typeof hydrationSettingsCommandSchema>;
 export function HydrationSettingsPanel({
@@ -28,6 +29,8 @@ export function HydrationSettingsPanel({
     [busy, setBusy] = useState(false),
     [pending, setPending] = useState<Command | null>(null),
     [message, setMessage] = useState("");
+  const [confirmedPreferences, setConfirmedPreferences] =
+    useState<ReturnType<typeof validateHydrationSettings>["preferences"]>(null);
   const alive = useRef(true),
     inFlight = useRef(false);
   useEffect(() => {
@@ -39,6 +42,7 @@ export function HydrationSettingsPanel({
   const locked = blocked || busy || pending !== null;
   function apply(value: ReturnType<typeof validateHydrationSettings>) {
     const p = value.preferences;
+    setConfirmedPreferences(p);
     setRevision(p?.revision ?? 0);
     setGoal(p?.settings.dailyGoalMl == null ? "" : String(p.settings.dailyGoalMl));
     setZone(p?.settings.timeZone ?? "");
@@ -70,7 +74,7 @@ export function HydrationSettingsPanel({
           setMessage(
             pending
               ? "Preferências confirmadas pelo recibo; exibindo revisão atual."
-              : "Preferências carregadas. Horários salvos não ativam envio de notificações.",
+              : "Preferências carregadas. Avisos nesta tela dependem do aplicativo aberto e visível.",
           );
         }
       }
@@ -100,7 +104,9 @@ export function HydrationSettingsPanel({
       );
       if (alive.current) {
         apply(result);
-        setMessage("Preferências salvas. O envio de notificações ainda não está habilitado.");
+        setMessage(
+          "Preferências salvas. Avisos nesta tela funcionam com o aplicativo aberto e visível; envio em segundo plano não está habilitado.",
+        );
       }
     } catch (error) {
       if (alive.current) {
@@ -224,6 +230,22 @@ export function HydrationSettingsPanel({
           </Button>
         </form>
       )}
+      <HydrationForegroundReminder
+        preferences={confirmedPreferences}
+        paused={
+          locked ||
+          !enabled ||
+          Boolean(
+            confirmedPreferences &&
+            (goal !==
+              (confirmedPreferences.settings.dailyGoalMl == null
+                ? ""
+                : String(confirmedPreferences.settings.dailyGoalMl)) ||
+              zone !== confirmedPreferences.settings.timeZone ||
+              times !== confirmedPreferences.settings.reminderTimes.join(", ")),
+          )
+        }
+      />
       {message && <p role="status">{message}</p>}
       {pending && (
         <Button
@@ -236,8 +258,9 @@ export function HydrationSettingsPanel({
         </Button>
       )}
       <p className="text-sm text-muted-foreground">
-        Configuração de horários: envio ainda não habilitado. Nenhuma notificação está agendada ou
-        garantida nesta etapa. Solicitações pendentes ficam em memória; fechar ou recarregar a tela
+        Avisos somente nesta tela aberta e visível, após carregar preferências confirmadas. Não há
+        notificações em segundo plano nem recuperação de horários perdidos. Os avisos pausam durante
+        edição ou confirmação. Solicitações pendentes ficam em memória; fechar ou recarregar a tela
         perde essa referência, sem cancelar uma alteração já enviada.
       </p>
     </section>
