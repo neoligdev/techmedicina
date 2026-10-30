@@ -324,8 +324,8 @@
       "title": "Hidratação",
       "parent": "8",
       "status": "progress",
-      "done": "Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação. PWA local integrado ao contexto/leitura próprios: consulta explícita por período/fuso, todas as páginas antes do gráfico, descarte de consulta antiga e remoção ao sair da sessão.",
-      "next": "Homologar leitura em domínio e conta especificamente autorizados após SQL 041–043; implementar escrita HTTP, recuperação de recibo e formulário de consumo/correção. Metas, restrições, lembretes/canais, IA e leitura médica permanecem pendentes.",
+      "done": "Contratos locais de volume/ocorrência e projeção de snapshots por clínica/paciente. Histórico diário, sete dias, mês e ano com fuso explícito; gráfico reutilizável e tabela acessível distinguem ausência de registro e zero informado. Sem metas clínicas automáticas ou armazenamento de saúde no navegador. Núcleo de transições de servidor preparado: criar/corrigir/anular com recibos idempotentes e revisões preservadas, sem persistência ativada. Proposta SQL local 041 persiste registro e recibo/versionamento na mesma transação; nova permissão explícita de hidratação restrita ao próprio paciente ativo. Testes locais cobrem isolamento, revogação e rollback de falha no recibo. Listagem local por intervalo e cursor validado, com fronteira HTTP e cliente preparados, sem rota pública ativada. Runtime e rotas locais de contexto/leitura próprios conferem host White Label verificado e sessão única; grants de Jornada não autorizam hidratação. PWA local integrado ao contexto/leitura próprios: consulta explícita por período/fuso, todas as páginas antes do gráfico, descarte de consulta antiga e remoção ao sair da sessão. Fluxo local completo de registro, correção/anulação versionadas, recuperação de recibo e atualização explícita dos gráficos conectado ao PWA por Codex em 30/10/2026.",
+      "next": "Homologar Cloud/host/identidade com permissões aprovadas; implementar meta diária, lembretes configuráveis e observações seguras da IA. Não há tabelas/funções de hidratação nem vínculos clínicos no Cloud conferido em 30/10.",
       "authors": [
         "Codex"
       ],
@@ -3770,6 +3770,18 @@
       "status": "done",
       "done": "POST local aceita comando estrito limitado a 4 KB, deriva escopo do host/sessão e exige read mais create ou write. Confere recibo e registro da RPC 041. Cliente envia uma vez, distingue conflito, rejeição e resultado incerto e não faz retry automático. Testes simulam resposta perdida após commit, permissões insuficientes, corpo excessivo e upstream inválido.",
       "next": "Formulário PWA ainda não conectado; próxima etapa mantém comando pendente em memória e consulta explícita do recibo. Sem aplicação Cloud, grants, DNS ou main. Migrações 041–044 dependem de autorização própria e homologação operacional.",
+      "requirements": []
+    },
+    {
+      "id": "HYDRATION-PWA-WRITE",
+      "title": "Hidratação: registro, correção, anulação e recuperação no PWA — fluxo local",
+      "parent": "8.3",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "PWA integra formulário com consumo e horário com fuso explícitos, correção com revisão e anulação confirmada. Envio único; resposta incerta mantém comando original e bloqueia novos registros até confirmação. Consulta de recibo não grava; repetição exige ação explícita e preserva IDs/payload. Gráficos anteriores são retirados após mudança até recarga manual. Testes de interface, API e PostgreSQL locais aprovados; design e rodapé preservados.",
+      "next": "Cloud conferido em 30/10: nenhuma tabela/função de hidratação e zero pacientes, memberships e grants. Sem homologação real. Migrações, vínculos QA e domínio operacional exigem seus escopos autorizados. Metas, lembretes e observações de IA continuam pendentes; esta entrega não conclui todo o requisito 8.3.",
       "requirements": []
     }
   ]

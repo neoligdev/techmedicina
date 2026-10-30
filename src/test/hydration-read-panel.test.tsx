@@ -202,3 +202,41 @@ it("removes an already displayed patient history on sign out", async () => {
   expect(screen.queryByText("999 mL registrados no período")).toBeNull();
   expect(screen.getByRole("link", { name: "Entrar" })).toBeInTheDocument();
 });
+it("integrates recording with history and hides stale totals until explicit reload", async () => {
+  let saved = false;
+  const fetcher = vi.fn<typeof fetch>(async (input, init) => {
+    const url = String(input);
+    if (url.endsWith("/context")) return Response.json({ scope });
+    if (url.endsWith("/mutate")) {
+      const command = JSON.parse(init!.body as string);
+      saved = true;
+      const snapshot = {
+        ...record(1, command.document.volumeMl),
+        id: command.recordId,
+        occurredAt: command.document.occurredAt,
+      };
+      return Response.json({
+        result: {
+          receipt: { scope, command, record: snapshot },
+          record: snapshot,
+          replayed: false,
+        },
+      });
+    }
+    return page(url, saved ? [record(1, 250)] : []);
+  });
+  render(<HydrationReadPanel getAccessToken={token} fetcher={fetcher} now={now} />);
+  start();
+  await screen.findByRole("button", { name: "Registrar consumo" });
+  fireEvent.change(screen.getByLabelText("Volume registrado (mL)"), { target: { value: "250" } });
+  fireEvent.change(screen.getByLabelText("Data e hora com fuso (ISO)"), {
+    target: { value: "2026-10-30T12:00:00Z" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Registrar consumo" }));
+  await screen.findByText(/Registro confirmado/);
+  expect(screen.queryByRole("region", { name: "Histórico de água registrada" })).toBeNull();
+  expect(screen.getByText(/Histórico desatualizado/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Consultar histórico" }));
+  expect(await screen.findByText("250 mL registrados no período")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Registrar consumo" })).toBeEnabled();
+});

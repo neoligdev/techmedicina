@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { loadOwnHydrationHistory } from "./complete-history-client";
 import { HydrationHistoryChart } from "./history-chart";
+import { HydrationWritePanel } from "./write-panel";
 async function token() {
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token ?? null;
@@ -73,7 +74,8 @@ export function HydrationSection() {
             <HydrationReadPanel key={userId} getAccessToken={token} />
           )}
           <p className="mt-4 text-sm text-muted-foreground">
-            Metas, lembretes e registro de consumo ainda não estão habilitados nesta tela.
+            Metas e lembretes ainda não estão habilitados. Registros exigem permissão própria da
+            clínica.
           </p>
         </CardContent>
       </Card>
@@ -92,6 +94,8 @@ export function HydrationReadPanel({
   const [timeZone, setTimeZone] = useState(""),
     [period, setPeriod] = useState("day"),
     [busy, setBusy] = useState(false),
+    [writeLocked, setWriteLocked] = useState(false),
+    [stale, setStale] = useState(false),
     [error, setError] = useState(false),
     [result, setResult] = useState<Awaited<ReturnType<typeof loadOwnHydrationHistory>>>();
   const scope = useRef<AbortController | null>(null),
@@ -100,6 +104,8 @@ export function HydrationReadPanel({
     const c = new AbortController();
     scope.current = c;
     pending.current = false;
+    setWriteLocked(false);
+    setStale(false);
     setResult(undefined);
     setBusy(false);
     setError(false);
@@ -107,7 +113,7 @@ export function HydrationReadPanel({
   }, [getAccessToken, fetcher]);
   async function load() {
     const c = scope.current;
-    if (!c || c.signal.aborted || pending.current || !timeZone) return;
+    if (!c || c.signal.aborted || pending.current || writeLocked || !timeZone) return;
     pending.current = true;
     setBusy(true);
     setError(false);
@@ -117,7 +123,10 @@ export function HydrationReadPanel({
         { period, timeZone, asOf: now() },
         { getAccessToken, ...(fetcher ? { fetcher } : {}), signal: c.signal },
       );
-      if (!c.signal.aborted) setResult(data);
+      if (!c.signal.aborted) {
+        setResult(data);
+        setStale(false);
+      }
     } catch {
       if (!c.signal.aborted) setError(true);
     } finally {
@@ -141,7 +150,7 @@ export function HydrationReadPanel({
           <select
             className="block rounded-lg border border-input bg-background p-3"
             value={period}
-            disabled={busy}
+            disabled={busy || writeLocked}
             onChange={(e) => {
               setPeriod(e.target.value);
               setResult(undefined);
@@ -159,7 +168,7 @@ export function HydrationReadPanel({
           <select
             className="block rounded-lg border border-input bg-background p-3"
             value={timeZone}
-            disabled={busy}
+            disabled={busy || writeLocked}
             onChange={(e) => {
               setTimeZone(e.target.value);
               setResult(undefined);
@@ -172,7 +181,7 @@ export function HydrationReadPanel({
             <option value="UTC">UTC</option>
           </select>
         </label>
-        <Button type="submit" disabled={busy || !timeZone}>
+        <Button type="submit" disabled={busy || writeLocked || !timeZone}>
           Consultar histórico
         </Button>
       </form>
@@ -192,10 +201,25 @@ export function HydrationReadPanel({
             })}
             . Os registros podem mudar; consulte novamente para atualizar.
           </p>
-          <HydrationHistoryChart
+          {!stale && (
+            <HydrationHistoryChart
+              scope={result.scope}
+              records={result.records}
+              window={result.window}
+            />
+          )}
+          {stale && (
+            <p role="status">
+              Histórico desatualizado após alteração. Consulte novamente para atualizar os gráficos.
+            </p>
+          )}
+          <HydrationWritePanel
             scope={result.scope}
             records={result.records}
-            window={result.window}
+            getAccessToken={getAccessToken}
+            {...(fetcher ? { fetcher } : {})}
+            onLocked={setWriteLocked}
+            onChanged={() => setStale(true)}
           />
         </>
       )}
