@@ -159,3 +159,142 @@ it("context client requires fresh token, no cache and a strict response", async 
   );
   await expect(createOwnHydrationContextClient(async () => "qa", fetcher)()).rejects.toThrow();
 });
+it("receipt lookup uses one verified bearer and derives tenant from host rather than query", async () => {
+  const { run, rpc, resolveSession } = setup();
+  const implementation = rpc.getMockImplementation()!;
+  rpc.mockImplementation((session, name, args) =>
+    name === "tm_get_own_hydration_receipt"
+      ? Promise.resolve({ clinicId: clinic, patientId: patient, record: null, receipt: null })
+      : implementation(session, name, args),
+  );
+  const suffix = "?recordId=" + user + "&sourceRequestId=" + patient;
+  const result = await run("receipt", request("receipt", "app.clinica.example", suffix));
+  expect(result.status).toBe(200);
+  expect(await result.json()).toEqual({
+    result: { clinicId: clinic, patientId: patient, record: null, receipt: null },
+  });
+  expect(resolveSession).toHaveBeenCalledTimes(1);
+  expect(rpc.mock.calls[0]![0]).toBe(rpc.mock.calls[1]![0]);
+  expect(rpc.mock.calls[1]!.slice(1)).toEqual([
+    "tm_get_own_hydration_receipt",
+    { p_clinic_id: clinic, p_record_id: user, p_source_request_id: patient },
+  ]);
+  expect(result.headers.get("cache-control")).toBe("private, no-store");
+  expect(result.headers.get("vary")).toBe("Authorization, Host");
+});
+it("rejects receipt query scope, duplicates, missing identifiers and writes before RPC", async () => {
+  const { run, rpc } = setup();
+  for (const suffix of [
+    "",
+    "?recordId=" + user,
+    "?recordId=" + user + "&sourceRequestId=" + patient + "&clinicId=" + clinic,
+    "?recordId=" + user + "&recordId=" + user + "&sourceRequestId=" + patient,
+  ])
+    expect((await run("receipt", request("receipt", "app.clinica.example", suffix))).status).toBe(
+      400,
+    );
+  expect(
+    (
+      await run(
+        "receipt",
+        new Request("https://app.clinica.example/api/hydration/receipt", {
+          method: "POST",
+          body: "{}",
+        }),
+      )
+    ).status,
+  ).toBe(405);
+  expect(rpc).not.toHaveBeenCalled();
+});
+it("does not release foreign or malformed receipt responses", async () => {
+  const { run, rpc } = setup();
+  const implementation = rpc.getMockImplementation()!;
+  for (const bad of [
+    { clinicId: clinic, patientId: user, record: null, receipt: null },
+    { clinicId: clinic, patientId: patient, record: null, receipt: null, actor: "internal" },
+  ]) {
+    rpc.mockImplementation((session, name, args) =>
+      name === "tm_get_own_hydration_receipt"
+        ? Promise.resolve(bad)
+        : implementation(session, name, args),
+    );
+    const result = await run(
+      "receipt",
+      request(
+        "receipt",
+        "app.clinica.example",
+        "?recordId=" + user + "&sourceRequestId=" + patient,
+      ),
+    );
+    expect(result.status).toBe(503);
+    expect(JSON.stringify(await result.json())).not.toContain("internal");
+  }
+});
+it("recovery client only reads and verifies the original command after a lost response", async () => {
+  const { createHydrationRecoveryClient } = await import("@/features/hydration/recovery-client");
+  const command = {
+    kind: "create",
+    recordId: user,
+    sourceRequestId: patient,
+    expectedRevision: 0,
+    document: { volumeMl: 250, occurredAt: "2026-10-30T12:00:00Z" },
+  };
+  const record = {
+    id: user,
+    clinicId: clinic,
+    patientId: patient,
+    revision: 1,
+    status: "active",
+    ...command.document,
+  };
+  const raw = {
+    clinicId: clinic,
+    patientId: patient,
+    record,
+    receipt: { scope: { clinicId: clinic, patientId: patient }, command, record },
+  };
+  const fetcher = vi.fn<typeof fetch>(async () => Response.json({ result: raw }));
+  const read = createHydrationRecoveryClient(async () => "qa", fetcher);
+  expect((await read(command, { clinicId: clinic, patientId: patient })).confirmation).toBe(
+    "confirmed",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(fetcher.mock.calls[0]![0]).not.toContain("clinicId");
+  expect(fetcher.mock.calls[0]![1]).toMatchObject({
+    method: "GET",
+    cache: "no-store",
+    credentials: "omit",
+    redirect: "error",
+    headers: { Authorization: "Bearer qa" },
+  });
+  await expect(
+    read(
+      { ...command, document: { ...command.document, volumeMl: 999 } },
+      { clinicId: clinic, patientId: patient },
+    ),
+  ).rejects.toThrow();
+  fetcher.mockResolvedValueOnce(Response.json({ error: "private" }, { status: 403 }));
+  await expect(read(command, { clinicId: clinic, patientId: patient })).rejects.toThrow(
+    "unavailable",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(3);
+  fetcher.mockClear();
+  await expect(
+    createHydrationRecoveryClient(async () => null, fetcher)(command, {
+      clinicId: clinic,
+      patientId: patient,
+    }),
+  ).rejects.toThrow("Session required");
+  expect(fetcher).not.toHaveBeenCalled();
+});
+it("receipt lookup rechecks host and read grants before touching receipt storage", async () => {
+  const { run, rpc, identity } = setup();
+  const suffix = "?recordId=" + user + "&sourceRequestId=" + patient;
+  expect((await run("receipt", request("receipt", "localhost", suffix))).status).toBe(403);
+  expect(rpc).not.toHaveBeenCalled();
+  identity.links[0]!.grants = [];
+  expect((await run("receipt", request("receipt", "app.clinica.example", suffix))).status).toBe(
+    403,
+  );
+  expect(rpc.mock.calls.every((c) => c[1] === "tm_resolve_patient_hydration_host")).toBe(true);
+});

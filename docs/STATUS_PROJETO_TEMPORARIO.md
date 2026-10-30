@@ -2748,3 +2748,10 @@ Atualizado em 30/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Proposta SQL local 044 consulta recibo por registro e solicitação, com guarda própria/read e snapshot único de recibo e registro atual. Teste de resposta perdida seguida de correção preserva recibo revisionado; outro paciente não vê registro/recibo. Suíte direcionada: 21 testes aprovados, incluindo negação a anon, Super ADM sem vínculo, outra clínica e grant revogado.
 - **Próximo Passo**: 044 não aplicada no Cloud. Implementar endpoint autenticado e cliente de recuperação sem retry automático. Não há formulário de escrita, grant novo, DNS ou main nesta etapa. Contenção entre conexões reais permanece sem homologação.
+
+## HYDRATION-RECEIPT-ENDPOINT - Hidratação: endpoint e cliente de recuperação somente leitura — etapa 9 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: GET local /api/hydration/receipt deriva clínica/paciente do host e identidade verificados, reutiliza o mesmo bearer e valida recibo/registro antes de responder. Cliente compara com comando original, sem retry ou armazenamento. Testes conferem escopo, parâmetros repetidos, resposta malformada, grant/host negados e ausência de sessão; compilação aprovada.
+- **Próximo Passo**: Migração 044 continua local. Sem homologação Cloud, endpoint operacional remoto ou formulário de escrita no PWA. Falhas de acesso/rede são erros, não ausência confirmada; correlação continua em memória. Conectar UI após escrita com confirmação explícita.
