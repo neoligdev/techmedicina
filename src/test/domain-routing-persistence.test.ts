@@ -1,3 +1,4 @@
+import { createPatientHydrationRuntime } from "@/lib/hydration/patient-runtime.server";
 // @vitest-environment node
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
@@ -115,6 +116,9 @@ beforeAll(async () => {
     "027_journey_own_self_report_history.sql",
     "028_journey_own_goals.sql",
     "029_journey_own_self_report_status.sql",
+    "041_own_hydration_records.sql",
+    "042_own_hydration_list.sql",
+    "043_patient_hydration_host_lookup.sql",
   ])
     await db.exec(
       await readFile(new URL(`../../database/migrations/${file}`, import.meta.url), "utf8"),
@@ -1360,4 +1364,123 @@ it("exact own source lookup reaches old events outside recent pages and refuses 
   );
   await user(uid);
   await expect(read()).rejects.toMatchObject({ code: "42501" });
+});
+it("hydration host requires its own read grant and still validates routing proof revocation", async () => {
+  const { uid, mid } = await activatePatientHost();
+  const lookup = async () =>
+    (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_resolve_patient_hydration_host($1) AS value",
+        [domain.hostname],
+      )
+    ).rows[0]!.value;
+  await user(uid);
+  expect(await lookup()).toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'hydration_records','read')", [
+    mid,
+  ]);
+  await db.query(
+    "DELETE FROM public.tm_membership_grants WHERE membership_id=$1 AND resource LIKE 'journey_%'",
+    [mid],
+  );
+  await user(uid);
+  expect(await lookup()).toMatchObject({
+    hostname: domain.hostname,
+    clinicId: clinic,
+    environment: "patient_pwa",
+    status: "active",
+  });
+  expect(await lookupPatientHost()).toBeNull();
+  await db.exec("RESET ROLE");
+  await db.query("SELECT public.tm_revoke_routing_key($1,$2,$3,1)", [
+    operator,
+    project,
+    publicKey.keyId,
+  ]);
+  await user(uid);
+  expect(await lookup()).toBeNull();
+});
+it("hydration runtime reads through real local host proof and patient RPC using one session", async () => {
+  const { uid, pid, mid } = await activatePatientHost();
+  await db.exec("RESET ROLE");
+  for (const action of ["read", "create"])
+    await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'hydration_records',$2)", [
+      mid,
+      action,
+    ]);
+  const ownIdentity: AuthenticatedIdentity = {
+    userId: uid,
+    links: [
+      {
+        clinicId: clinic,
+        patientId: pid,
+        role: "paciente",
+        isActive: true,
+        grants: [
+          { resource: "hydration_records", action: "read" },
+          { resource: "hydration_records", action: "create" },
+        ],
+      },
+    ],
+  };
+  await user(uid);
+  const record = randomUUID();
+  await db.query("SELECT public.tm_mutate_own_hydration_record($1,$2::jsonb)", [
+    clinic,
+    JSON.stringify({
+      kind: "create",
+      recordId: record,
+      sourceRequestId: randomUUID(),
+      expectedRevision: 0,
+      document: { volumeMl: 125, occurredAt: "2026-10-29T12:00:00Z" },
+    }),
+  ]);
+  const session = { identity: ownIdentity, authorization: "Bearer local-test" },
+    resolveSession = vi.fn(async () => session),
+    rpc = vi.fn(
+      async (
+        _session: typeof session,
+        name: string,
+        args: Record<string, unknown>,
+      ): Promise<unknown> => {
+        if (name === "tm_resolve_patient_hydration_host")
+          return (
+            await db.query<{ value: unknown }>(
+              "SELECT public.tm_resolve_patient_hydration_host($1) AS value",
+              [args["p_hostname"]],
+            )
+          ).rows[0]!.value;
+        return (
+          await db.query<{ value: unknown }>(
+            "SELECT public.tm_list_own_hydration_records($1,$2,$3,$4,$5) AS value",
+            [
+              args["p_clinic_id"],
+              args["p_from"],
+              args["p_until"],
+              args["p_after"] ?? null,
+              args["p_limit"],
+            ],
+          )
+        ).rows[0]!.value;
+      },
+    );
+  const runtime = createPatientHydrationRuntime({ resolveSession, rpc }),
+    request = new Request(
+      "https://" +
+        domain.hostname +
+        "/api/hydration/records?from=2026-10-29T00:00:00Z&until=2026-10-30T00:00:00Z",
+      { headers: { host: domain.hostname } },
+    );
+  const r = await runtime("records", request);
+  expect(r.status).toBe(200);
+  expect((await r.json()).page.records).toMatchObject([
+    { id: record, patientId: pid, volumeMl: 125 },
+  ]);
+  expect(resolveSession).toHaveBeenCalledTimes(1);
+  expect(rpc.mock.calls[0]![0]).toBe(rpc.mock.calls[1]![0]);
+  await db.exec("RESET ROLE");
+  await db.query("UPDATE public.tm_patients SET is_active=false WHERE id=$1", [pid]);
+  await user(uid);
+  expect((await runtime("records", request)).status).toBe(403);
 });

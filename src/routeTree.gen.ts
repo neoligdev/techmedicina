@@ -23,6 +23,8 @@ import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SuperAdminSectionRouteImport } from './routes/super-admin.$section'
 import { Route as ApiAgendaAvailabilityRouteImport } from './routes/api/agenda/availability'
 import { Route as ApiAgendaClinicRouteImport } from './routes/api/agenda/clinic'
+import { Route as ApiHydrationContextRouteImport } from './routes/api/hydration/context'
+import { Route as ApiHydrationRecordsRouteImport } from './routes/api/hydration/records'
 import { Route as ApiJourneyContextRouteImport } from './routes/api/journey/context'
 import { Route as ApiJourneyOwnGoalsRouteImport } from './routes/api/journey/own-goals'
 import { Route as ApiJourneyParticipationRouteImport } from './routes/api/journey/participation'
@@ -118,6 +120,16 @@ const ApiAgendaAvailabilityRoute = ApiAgendaAvailabilityRouteImport.update({
 const ApiAgendaClinicRoute = ApiAgendaClinicRouteImport.update({
   id: '/api/agenda/clinic',
   path: '/api/agenda/clinic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHydrationContextRoute = ApiHydrationContextRouteImport.update({
+  id: '/api/hydration/context',
+  path: '/api/hydration/context',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHydrationRecordsRoute = ApiHydrationRecordsRouteImport.update({
+  id: '/api/hydration/records',
+  path: '/api/hydration/records',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiJourneyContextRoute = ApiJourneyContextRouteImport.update({
@@ -278,6 +290,8 @@ export interface FileRoutesByFullPath {
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
   '/api/journey/participation': typeof ApiJourneyParticipationRoute
@@ -320,6 +334,8 @@ export interface FileRoutesByTo {
   '/super-admin': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
   '/api/journey/participation': typeof ApiJourneyParticipationRoute
@@ -363,6 +379,8 @@ export interface FileRoutesById {
   '/super-admin/': typeof SuperAdminIndexRoute
   '/api/agenda/availability': typeof ApiAgendaAvailabilityRoute
   '/api/agenda/clinic': typeof ApiAgendaClinicRoute
+  '/api/hydration/context': typeof ApiHydrationContextRoute
+  '/api/hydration/records': typeof ApiHydrationRecordsRoute
   '/api/journey/context': typeof ApiJourneyContextRoute
   '/api/journey/own-goals': typeof ApiJourneyOwnGoalsRoute
   '/api/journey/participation': typeof ApiJourneyParticipationRoute
@@ -407,6 +425,8 @@ export interface FileRouteTypes {
     | '/super-admin/'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/hydration/context'
+    | '/api/hydration/records'
     | '/api/journey/context'
     | '/api/journey/own-goals'
     | '/api/journey/participation'
@@ -449,6 +469,8 @@ export interface FileRouteTypes {
     | '/super-admin'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/hydration/context'
+    | '/api/hydration/records'
     | '/api/journey/context'
     | '/api/journey/own-goals'
     | '/api/journey/participation'
@@ -491,6 +513,8 @@ export interface FileRouteTypes {
     | '/super-admin/'
     | '/api/agenda/availability'
     | '/api/agenda/clinic'
+    | '/api/hydration/context'
+    | '/api/hydration/records'
     | '/api/journey/context'
     | '/api/journey/own-goals'
     | '/api/journey/participation'
@@ -534,6 +558,8 @@ export interface RootRouteChildren {
   SuperAdminIndexRoute: typeof SuperAdminIndexRoute
   ApiAgendaAvailabilityRoute: typeof ApiAgendaAvailabilityRoute
   ApiAgendaClinicRoute: typeof ApiAgendaClinicRoute
+  ApiHydrationContextRoute: typeof ApiHydrationContextRoute
+  ApiHydrationRecordsRoute: typeof ApiHydrationRecordsRoute
   ApiJourneyContextRoute: typeof ApiJourneyContextRoute
   ApiJourneyOwnGoalsRoute: typeof ApiJourneyOwnGoalsRoute
   ApiJourneyParticipationRoute: typeof ApiJourneyParticipationRoute
@@ -660,6 +686,20 @@ declare module '@tanstack/react-router' {
       path: '/api/agenda/clinic'
       fullPath: '/api/agenda/clinic'
       preLoaderRoute: typeof ApiAgendaClinicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hydration/context': {
+      id: '/api/hydration/context'
+      path: '/api/hydration/context'
+      fullPath: '/api/hydration/context'
+      preLoaderRoute: typeof ApiHydrationContextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hydration/records': {
+      id: '/api/hydration/records'
+      path: '/api/hydration/records'
+      fullPath: '/api/hydration/records'
+      preLoaderRoute: typeof ApiHydrationRecordsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/journey/context': {
@@ -862,6 +902,8 @@ const rootRouteChildren: RootRouteChildren = {
   SuperAdminIndexRoute: SuperAdminIndexRoute,
   ApiAgendaAvailabilityRoute: ApiAgendaAvailabilityRoute,
   ApiAgendaClinicRoute: ApiAgendaClinicRoute,
+  ApiHydrationContextRoute: ApiHydrationContextRoute,
+  ApiHydrationRecordsRoute: ApiHydrationRecordsRoute,
   ApiJourneyContextRoute: ApiJourneyContextRoute,
   ApiJourneyOwnGoalsRoute: ApiJourneyOwnGoalsRoute,
   ApiJourneyParticipationRoute: ApiJourneyParticipationRoute,
