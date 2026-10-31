@@ -66,9 +66,9 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 ## 3.2 - Prontuário e evoluções 🔵
 
 - **Status**: 🔵 Em implementação / parcial
-- **Autores**: OpenCode
-- **Entregue**: Ainda não há prontuário funcional validado. C010 (executor OpenCode) implementa unidade de criptografia server-only AES-256-GCM para o texto clínico, com testes unitários e endurecimento R1 (snapshot de contexto, IV/limites estritos); sem persistência, guarda, UI ou assinatura.
-- **Próximo Passo**: Falta implementar e validar prontuário e evoluções, respeitando as decisões pendentes do PRD.
+- **Autores**: OpenCode, Codex
+- **Entregue**: Núcleo local server-only de evolução cifrada, autoria e cronologia preservadas, SQL 048 append-only, complemento e auditoria privada preparados. Sem endpoint, KMS ou acesso clínico produtivo.
+- **Próximo Passo**: Implementar histórico paginado/interface e integrar Auth/host, identidade profissional verificada e chaves reais. 048 não aplicada; assinatura permanece pendente conforme PRD. Não é prontuário completo.
 
 **Requisitos**:
 
@@ -2811,3 +2811,10 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Proposta 047 lista preferências elegíveis por cursor, com limite 100 e acesso restrito. Adaptador server-only conecta a seleção ao enqueue 046. Testes PostgreSQL embarcado percorrem 102 pacientes fictícios entre duas clínicas, repetem lotes sem duplicar ocorrências, simulam resposta perdida após commit e recusam revogação no intervalo. Função inacessível aos papéis de aplicação e a grants padrão herdados. Regressão ampliada: 142 testes em 17 arquivos, lint e build aprovados.
 - **Próximo Passo**: 045–047 não aplicadas no Cloud. Sem identidade/transporte operacional do worker, scheduler, canal, consentimento/inscrição ou entrega real. Avaliar plano/índices e carga na homologação; testes locais não comprovam concorrência entre conexões remotas. Main/preview permanecem 6a4936b, aguardando autorização específica para nova candidata.
+
+## MEDICAL-EVOLUTIONS-CORE - Prontuário: evolução cifrada, autoria e imutabilidade — proposta local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Serviço e adaptador server-only com criptografia clínica existente; SQL 048 persiste apenas envelope, recusa UPDATE/DELETE e exige médico autorizado no mesmo tenant. Complemento cria novo registro; replay conserva original e conteúdo diferente conflita. Auditoria privada registra criação/leitura sem texto. Testes locais com conteúdo fictício e chave efêmera.
+- **Próximo Passo**: Histórico paginado, interface, cadastro profissional/KMS/host, assinatura e homologação ainda pendentes. 048 não aplicada no Cloud; nenhum grant clínico ou endpoint ativado. Não conclui o prontuário do PRD.

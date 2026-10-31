@@ -1564,3 +1564,7 @@ Cada ficha abaixo mantém identificador e expectativa do PRD, registra a evidên
 ## Retomada durável
 
 Ver RETOMADA_CODEX_20261020.md para HEAD, resultados verificados e próximo passo exato. Atualizar este plano ao resolver dependências, sem apagar registros históricos.
+
+## Avanço local — 31/10/2026: prontuário
+
+PRD 3.2 passa a parcial com núcleo cifrado/imutável e auditoria privados em proposta 048, serviço e adaptador, sem concessão de acesso ou endpoint. Próxima etapa: histórico paginado, seguida de interface ligada a Auth/host e keystore operacionais. PRD e adendos preservados; decisões de assinatura não resolvidas por suposição. Entregas técnicas locais 171; conclusão integral do PRD não é inferida dessa contagem. Revisão: REVISAO_MIGRACAO_PRONTUARIO_048.md.

@@ -275,3 +275,9 @@ Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
 - [x] Fluxo de 102 pacientes fictícios em duas clínicas; replay e resposta perdida após commit sem duplicação.
 - [ ] Aplicação remota 045–047, identidade/transporte do worker, canal/consentimento e operação real pendentes. Não há notificações ativas.
 - Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_047.md.
+
+## Prontuário — núcleo local, 31/10/2026
+
+- [x] Evoluções cifradas, imutáveis, com complemento e confirmação de ID; autoria/cronologia preservadas e auditoria de acesso sem texto.
+- [ ] Histórico paginado e interface integrada; Auth/host profissional, KMS/rotação/backup e assinatura ainda não operacionais.
+- [ ] 048 não aplicada no Cloud; nenhum grant clínico provisionado. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_048.md.

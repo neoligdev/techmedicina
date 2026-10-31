@@ -77,3 +77,7 @@ Planejamento limitado a 100 preferências por chamada, com validação de págin
 ### Candidatos privados e planejamento integrado — proposta local (31/10/2026)
 
 SQL 047 e adaptador server-only conectam preferências elegíveis ao planejador/fila. Testes locais percorrem 102 pacientes de duas clínicas sem duplicar ocorrências após replay. Não há concessão de papel, scheduler ou envio real; 045–047 continuam fora do Cloud. Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_047.md.
+
+### Prontuário — núcleo de evoluções local (31/10/2026)
+
+Texto cifrado com autoria preservada, append-only, complemento por novo registro, autorização médica e auditoria sem conteúdo clínico preparados em SQL 048/serviço/adaptador locais. Não há endpoint, KMS, cadastro profissional operacional ou concessão clínica. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_048.md.
