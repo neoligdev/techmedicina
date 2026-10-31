@@ -268,3 +268,10 @@ Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
 - [x] Contrato server-only de lotes, ordem, checkpoint e ocorrência no minuto confirmado; falhas não avançam checkpoint.
 - [ ] Fonte privada paginada, adaptador SQL e integração com fila ainda necessários; cron e notificações permanecem desativados.
 - Registro e limites: docs/HIDRATACAO_PLANEJADOR_LOCAL.md.
+
+## Hidratação — candidatos e fila integrados localmente, 31/10/2026
+
+- [x] Proposta privada 047 e adaptador de planejamento/enqueue; limites, keyset, ACL e revalidação de acesso testados em PostgreSQL embarcado.
+- [x] Fluxo de 102 pacientes fictícios em duas clínicas; replay e resposta perdida após commit sem duplicação.
+- [ ] Aplicação remota 045–047, identidade/transporte do worker, canal/consentimento e operação real pendentes. Não há notificações ativas.
+- Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_047.md.

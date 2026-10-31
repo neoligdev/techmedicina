@@ -2803,4 +2803,11 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
 - **Entregue**: Planejador server-only valida toda a página antes de gravar, limita 100 candidatos, exige ordenação e cursor coerentes e considera só o minuto atual. Falha não devolve checkpoint avançado; repetição depende da unicidade da fila 046. Testes locais com dependências simuladas cobrem páginas inválidas, janela expirada, retorno estrangeiro e resposta perdida.
-- **Próximo Passo**: Fonte privada paginada, adaptador de enqueue e testes integrados ainda pendentes. Sem cron, provedor, envio real ou novo SQL remoto; main continua 6a4936b. Não representa conclusão integral do requisito 8.3.
+- **Próximo Passo**: Fonte privada, adaptador de enqueue e testes integrados locais acrescentados na entrega HYDRATION-PLANNING-SQL. Aplicação remota, identidade/transporte operacional, cron, canal e consentimento seguem pendentes; não representa conclusão integral do requisito 8.3.
+
+## HYDRATION-PLANNING-SQL - Hidratação: fonte privada e planejamento integrado à fila — proposta local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Proposta 047 lista preferências elegíveis por cursor, com limite 100 e acesso restrito. Adaptador server-only conecta a seleção ao enqueue 046. Testes PostgreSQL embarcado percorrem 102 pacientes fictícios entre duas clínicas, repetem lotes sem duplicar ocorrências, simulam resposta perdida após commit e recusam revogação no intervalo. Função inacessível aos papéis de aplicação e a grants padrão herdados. Regressão ampliada: 142 testes em 17 arquivos, lint e build aprovados.
+- **Próximo Passo**: 045–047 não aplicadas no Cloud. Sem identidade/transporte operacional do worker, scheduler, canal, consentimento/inscrição ou entrega real. Avaliar plano/índices e carga na homologação; testes locais não comprovam concorrência entre conexões remotas. Main/preview permanecem 6a4936b, aguardando autorização específica para nova candidata.

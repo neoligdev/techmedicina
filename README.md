@@ -73,3 +73,7 @@ A proposta SQL 046 acrescenta unicidade por ocorrência e transições de tentat
 ### Planejador de lembretes — referência local (31/10/2026)
 
 Planejamento limitado a 100 preferências por chamada, com validação de página e checkpoint por minuto, sem avanço após falha incerta. Ainda exige fonte privada e transporte SQL; nenhum envio foi ativado. Veja docs/HIDRATACAO_PLANEJADOR_LOCAL.md.
+
+### Candidatos privados e planejamento integrado — proposta local (31/10/2026)
+
+SQL 047 e adaptador server-only conectam preferências elegíveis ao planejador/fila. Testes locais percorrem 102 pacientes de duas clínicas sem duplicar ocorrências após replay. Não há concessão de papel, scheduler ou envio real; 045–047 continuam fora do Cloud. Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_047.md.

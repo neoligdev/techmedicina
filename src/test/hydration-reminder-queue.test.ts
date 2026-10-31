@@ -1,4 +1,6 @@
 // @vitest-environment node
+import { createHydrationReminderPlanner } from "@/lib/hydration/reminder-planner.server";
+import { createHydrationReminderPlanningStore } from "@/lib/hydration/reminder-planning-store.server";
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
@@ -28,6 +30,7 @@ beforeAll(async () => {
     "041_own_hydration_records.sql",
     "045_own_hydration_preferences.sql",
     "046_private_hydration_reminder_queue.sql",
+    "047_private_hydration_reminder_candidates.sql",
   ]) {
     if (file.startsWith("046"))
       await db.exec(
@@ -70,7 +73,12 @@ beforeEach(async () => {
 afterAll(async () => {
   await db.close();
 });
-async function enqueue(id: string = randomUUID(), at = scheduled, p = patient, c = clinic) {
+async function enqueue(
+  id: string = randomUUID(),
+  at = scheduled,
+  p: string = patient,
+  c: string = clinic,
+) {
   return (
     await db.query<{ value: unknown }>(
       "SELECT public.tm_enqueue_hydration_reminder($1,$2,$3,$4) AS value",
@@ -292,4 +300,165 @@ it("preserves default privileges for other objects while stripping them from the
   const job = hydrationReminderJobSchema.parse(await enqueue());
   await expect(enqueue(job.id, "2026-11-01T09:00:00Z")).rejects.toMatchObject({ code: "23505" });
   expect(await store().read(randomUUID())).toBeNull();
+});
+
+const planningStore = () =>
+  createHydrationReminderPlanningStore(async (name, args) => {
+    if (name === "tm_enqueue_hydration_reminder")
+      return enqueue(
+        args["p_id"] as string,
+        args["p_scheduled_at"] as string,
+        args["p_patient_id"] as string,
+        args["p_clinic_id"] as string,
+      );
+    return (
+      await db.query<{ value: unknown }>(
+        "SELECT public.tm_list_hydration_reminder_candidates($1,$2) AS value",
+        [args["p_after"] ?? null, args["p_limit"]],
+      )
+    ).rows[0]!.value;
+  });
+it("plans from the private SQL candidate source and retries an uncertain committed enqueue without duplication", async () => {
+  const store = planningStore();
+  let loseResponse = true;
+  const planner = createHydrationReminderPlanner({
+    ...store,
+    now: () => scheduled,
+    newJobId: randomUUID,
+    enqueue: async (request) => {
+      const result = await store.enqueue(request);
+      if (loseResponse) {
+        loseResponse = false;
+        throw new Error("lost committed response");
+      }
+      return result;
+    },
+  });
+  await expect(planner()).rejects.toThrow("lost committed response");
+  expect(await planner()).toEqual({ scanned: 1, planned: 1, next: null });
+  expect(
+    (
+      await db.query<{ n: number }>(
+        "SELECT count(*)::int AS n FROM public.tm_hydration_reminder_jobs",
+      )
+    ).rows[0]!.n,
+  ).toBe(1);
+});
+it("lists no candidate after disabling preferences, revoking read or deactivating the patient", async () => {
+  const store = planningStore();
+  await db.query(
+    "UPDATE public.tm_hydration_preferences SET settings=jsonb_set(settings,'{remindersEnabled}','false')",
+  );
+  expect(await store.list({ after: null, limit: 100 })).toEqual({ items: [], nextCursor: null });
+  await db.query("UPDATE public.tm_hydration_preferences SET settings=$1::jsonb", [
+    JSON.stringify(settings),
+  ]);
+  await db.query("DELETE FROM public.tm_membership_grants WHERE membership_id=$1", [member]);
+  expect(await store.list({ after: null, limit: 100 })).toEqual({ items: [], nextCursor: null });
+  await db.query("INSERT INTO public.tm_membership_grants VALUES($1,'hydration_records','read')", [
+    member,
+  ]);
+  await db.query("UPDATE public.tm_patients SET is_active=false WHERE id=$1", [patient]);
+  expect(await store.list({ after: null, limit: 100 })).toEqual({ items: [], nextCursor: null });
+});
+it("fails closed when authorization changes between listing and enqueue", async () => {
+  const store = planningStore();
+  const planner = createHydrationReminderPlanner({
+    ...store,
+    now: () => scheduled,
+    newJobId: randomUUID,
+    list: async (request) => {
+      const page = await store.list(request);
+      await db.query("DELETE FROM public.tm_membership_grants WHERE membership_id=$1", [member]);
+      return page;
+    },
+  });
+  await expect(planner()).rejects.toMatchObject({ code: "42501" });
+  expect(
+    (
+      await db.query<{ n: number }>(
+        "SELECT count(*)::int AS n FROM public.tm_hydration_reminder_jobs",
+      )
+    ).rows[0]!.n,
+  ).toBe(0);
+});
+it("keeps the bulk candidate function private even with inherited default grants", async () => {
+  for (const role of ["anon", "authenticated", "qa_default_worker"]) {
+    await db.exec(`SET ROLE ${role}`);
+    await expect(
+      db.query("SELECT public.tm_list_hydration_reminder_candidates()"),
+    ).rejects.toMatchObject({ code: "42501" });
+    await db.exec("RESET ROLE");
+  }
+  await expect(
+    db.query("SELECT public.tm_list_hydration_reminder_candidates(NULL,101)"),
+  ).rejects.toMatchObject({ code: "22023" });
+  await expect(
+    db.query("SELECT public.tm_list_hydration_reminder_candidates('not-a-cursor',1)"),
+  ).rejects.toMatchObject({ code: "22023" });
+  expect(await planningStore().list({ after: `${clinic}:${patient}`, limit: 1 })).toEqual({
+    items: [],
+    nextCursor: null,
+  });
+});
+it("paginates across 102 eligible patients without duplicates or skipped boundaries", async () => {
+  await db.exec("BEGIN");
+  try {
+    const secondClinic = randomUUID();
+    await db.query("INSERT INTO public.tm_clinics(id,name,is_active) VALUES($1,'Other QA',true)", [
+      secondClinic,
+    ]);
+    for (let i = 0; i < 101; i++) {
+      const p = randomUUID(),
+        u = randomUUID(),
+        m = randomUUID(),
+        c = i % 2 ? clinic : secondClinic;
+      await db.query(
+        "INSERT INTO public.tm_patients(id,clinic_id,user_id,is_active) VALUES($1,$2,$3,true)",
+        [p, c, u],
+      );
+      await db.query(
+        "INSERT INTO public.tm_memberships(id,clinic_id,user_id,role,patient_id,is_active) VALUES($1,$2,$3,'paciente',$4,true)",
+        [m, c, u, p],
+      );
+      await db.query(
+        "INSERT INTO public.tm_membership_grants VALUES($1,'hydration_records','read')",
+        [m],
+      );
+      await db.query("INSERT INTO public.tm_hydration_preferences VALUES($1,$2,$3,1,$4::jsonb)", [
+        c,
+        p,
+        u,
+        JSON.stringify(settings),
+      ]);
+    }
+    const planner = createHydrationReminderPlanner({
+      ...planningStore(),
+      now: () => scheduled,
+      newJobId: randomUUID,
+    });
+    const first = await planner();
+    expect(first.scanned).toBe(100);
+    expect(first.planned).toBe(100);
+    expect(first.next).not.toBeNull();
+    expect(await planner(first.next)).toEqual({ scanned: 2, planned: 2, next: null });
+    expect(
+      (
+        await db.query<{ n: number }>(
+          "SELECT count(*)::int AS n FROM public.tm_hydration_reminder_jobs",
+        )
+      ).rows[0]!.n,
+    ).toBe(102);
+    // Explicitly replaying the first batch still creates no extra occurrences.
+    await planner();
+    expect(
+      (
+        await db.query<{ n: number }>(
+          "SELECT count(*)::int AS n FROM public.tm_hydration_reminder_jobs",
+        )
+      ).rows[0]!.n,
+    ).toBe(102);
+  } finally {
+    await db.exec("ROLLBACK");
+  }
 });
