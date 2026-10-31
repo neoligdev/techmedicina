@@ -253,3 +253,12 @@ Detalhes e testes: docs/HIDRATACAO_LEMBRETES_TELA_ABERTA.md.
 - [ ] Definir recibos verificados e reconciliação; aceitação pelo provedor não significa entrega.
 
 Limites: docs/HIDRATACAO_CONTROLE_ENTREGA_LOCAL.md.
+
+## Hidratação — fila SQL privada local, 31/10/2026
+
+- [x] Proposta 046: unicidade por ocorrência civil, claim/transições CAS, estados terminais e ACL privada, com adaptador ligado ao executor local.
+- [x] Testes em PostgreSQL embarcado conferem idempotência, resposta perdida entre instâncias e negação de grants padrão herdados sem alterar defaults globais.
+- [ ] 046 não aplicada; requer 045, revisão de privilégios de worker, autorização e homologação remota própria. Sem scheduler, provider ou notificações reais.
+- [ ] Concorrência entre conexões reais, recuperação de máquina, TTL e recibos verificados ainda pendentes.
+
+Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.

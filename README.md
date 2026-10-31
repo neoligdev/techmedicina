@@ -65,3 +65,7 @@ Meta informada pelo paciente e horários de lembretes estão implementados local
 ### Avisos de hidratação na tela aberta (30/10/2026)
 
 Foi acrescentado um aviso visual no próprio painel, após carregar preferências confirmadas, apenas enquanto a tela de hidratação está aberta e visível. Não é push nem notificação em segundo plano e não garante entrega. Deduplicação em memória e limites estão em [avisos na tela aberta](docs/HIDRATACAO_LEMBRETES_TELA_ABERTA.md).
+
+### Fila privada de lembretes — proposta local (31/10/2026)
+
+A proposta SQL 046 acrescenta unicidade por ocorrência e transições de tentativa protegidas por revisão, com adaptador server-only testado em PostgreSQL embarcado. Não foi aplicada no Cloud e não concede acesso a roles de aplicação ou worker. Envio real e concorrência entre conexões remotas seguem pendentes. Veja [a revisão da fila](docs/REVISAO_MIGRACAO_HIDRATACAO_046.md).
