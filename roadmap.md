@@ -245,3 +245,11 @@ Revisão e limites: docs/REVISAO_MIGRACAO_HIDRATACAO_045.md.
 - [ ] 045 e main 804be82 seguem sem nova autorização explícita; 043/grants clínicos também não ativados.
 
 Detalhes e testes: docs/HIDRATACAO_LEMBRETES_TELA_ABERTA.md.
+
+## Hidratação — controle de tentativa local, 31/10/2026
+
+- [x] Referência server-only com reivindicação CAS, barreira antes do provedor, escopo/consentimento e tratamento de resultado incerto sem reenvio automático.
+- [ ] Implementar armazenamento durável/unique por ocorrência, autorização corrente e canal/provedor antes de qualquer ativação real; testes atuais usam fila/provedor fictícios.
+- [ ] Definir recibos verificados e reconciliação; aceitação pelo provedor não significa entrega.
+
+Limites: docs/HIDRATACAO_CONTROLE_ENTREGA_LOCAL.md.
