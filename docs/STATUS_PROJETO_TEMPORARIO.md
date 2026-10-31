@@ -2797,3 +2797,10 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: Proposta SQL 046 cria fila privada, ocorrência única por clínica/paciente/data/hora, reivindicação e transições por revisão/tentativa, sem voltar estados terminais para fila. Adaptador server-only liga o executor ao SQL. Testes PostgreSQL embarcado verificam IDs diferentes no mesmo slot, DST, resultado incerto preservado entre instâncias e acesso negado inclusive a papel com permissões padrão herdadas. Regressão ampliada: 127 testes em 16 arquivos aprovados; SQL final revalidado em 9 testes, build e lint válidos.
 - **Próximo Passo**: 046 não aplicada no Cloud e sem role/credencial de worker, planejador/cron ou provedor configurados. Testes em uma instância embarcada não comprovam concorrência entre conexões PostgreSQL reais nem recuperação de disco. Entrega de notificações, inscrições/consentimento atuais e homologação dependem de integrações/autorização próprias. Main e 045 continuam pendentes de autorização explícita.
+
+## HYDRATION-BATCH-PLANNER - Hidratação: planejador limitado e checkpoint por minuto — referência local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Planejador server-only valida toda a página antes de gravar, limita 100 candidatos, exige ordenação e cursor coerentes e considera só o minuto atual. Falha não devolve checkpoint avançado; repetição depende da unicidade da fila 046. Testes locais com dependências simuladas cobrem páginas inválidas, janela expirada, retorno estrangeiro e resposta perdida.
+- **Próximo Passo**: Fonte privada paginada, adaptador de enqueue e testes integrados ainda pendentes. Sem cron, provedor, envio real ou novo SQL remoto; main continua 6a4936b. Não representa conclusão integral do requisito 8.3.

@@ -69,3 +69,7 @@ Foi acrescentado um aviso visual no próprio painel, após carregar preferência
 ### Fila privada de lembretes — proposta local (31/10/2026)
 
 A proposta SQL 046 acrescenta unicidade por ocorrência e transições de tentativa protegidas por revisão, com adaptador server-only testado em PostgreSQL embarcado. Não foi aplicada no Cloud e não concede acesso a roles de aplicação ou worker. Envio real e concorrência entre conexões remotas seguem pendentes. Veja [a revisão da fila](docs/REVISAO_MIGRACAO_HIDRATACAO_046.md).
+
+### Planejador de lembretes — referência local (31/10/2026)
+
+Planejamento limitado a 100 preferências por chamada, com validação de página e checkpoint por minuto, sem avanço após falha incerta. Ainda exige fonte privada e transporte SQL; nenhum envio foi ativado. Veja docs/HIDRATACAO_PLANEJADOR_LOCAL.md.

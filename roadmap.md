@@ -262,3 +262,9 @@ Limites: docs/HIDRATACAO_CONTROLE_ENTREGA_LOCAL.md.
 - [ ] Concorrência entre conexões reais, recuperação de máquina, TTL e recibos verificados ainda pendentes.
 
 Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
+
+## Hidratação — planejador local, 31/10/2026
+
+- [x] Contrato server-only de lotes, ordem, checkpoint e ocorrência no minuto confirmado; falhas não avançam checkpoint.
+- [ ] Fonte privada paginada, adaptador SQL e integração com fila ainda necessários; cron e notificações permanecem desativados.
+- Registro e limites: docs/HIDRATACAO_PLANEJADOR_LOCAL.md.
