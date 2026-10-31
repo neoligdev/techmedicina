@@ -293,3 +293,9 @@ Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
 - [x] Factory protegida com autorização existente, dados de contexto do servidor, JSON limitado, no-store e confirmação por ID sem retry automático.
 - [x] Teste HTTP + serviço + criptografia + SQL PGlite usando contexto e texto fictícios; sem exposição de rota.
 - [ ] Cliente/UX de incerteza, workspace, resolvedor Auth/host/profissional, KMS e acesso clínico autorizado. Nenhum endpoint produtivo ativado.
+
+## Prontuário — cliente de confirmação local, 31/10/2026
+
+- [x] Cliente com sessão vinculada, comando capturado antes de await, deadline, fechamento e leitura do ID original sem reenvio automático.
+- [x] Integração local cliente/HTTP/AES-GCM/SQL confirma resposta perdida com uma única linha; dados/token/chave fictícios.
+- [ ] Workspace, contexto/rota reais, cadastro profissional e KMS, autorizações SQL/grants e homologação ainda pendentes.

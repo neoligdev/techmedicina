@@ -89,3 +89,7 @@ SQL 049 e serviço de histórico validam todas as linhas antes da decifragem, co
 ### Fronteira HTTP clínica local (31/10/2026)
 
 Factory protegida para criação, leitura por ID e histórico, com contexto derivado de servidor, JSON limitado e resposta incerta conservadora. Sem rota ativada ou resolvedor padrão. Teste integrado local percorre HTTP/serviço/criptografia/SQL com dados fictícios. Detalhes: docs/PRONTUARIO_FRONTEIRA_HTTP_LOCAL.md.
+
+### Cliente de confirmação clínica — local (31/10/2026)
+
+Cliente browser-safe com sessão vinculada à conta, deadline e confirmação GET do ID original após resultado incerto. Sem retry/cache local; fechar aborta transportes e recusa resultados tardios. Ainda sem workspace/rota produtivos. Detalhes: docs/PRONTUARIO_CLIENTE_CONFIRMACAO_LOCAL.md.

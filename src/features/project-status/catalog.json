@@ -3890,7 +3890,19 @@
       ],
       "status": "done",
       "done": "Factory server-only de criação/leitura/histórico com contexto do servidor, médico verificado/grants, origem, corpo limitado, no-store e escopo do resultado. Erro após despacho fica incerto e preserva ID, sem retry. Teste integrado local liga HTTP, serviço, AES-GCM e SQL com dados fictícios. Regressão ampliada: 203 testes/21 arquivos, tipos, lint e build aprovados.",
-      "next": "Sem rota/resolvedor produtivo, workspace ou KMS reais. Cliente/UX de incerteza e vínculo de host/Auth/CRM ainda necessários; 048–049 não aplicadas nem grants concedidos. Não é prontuário completo nem assinatura clínica.",
+      "next": "Cliente local acrescentado em MEDICAL-EVOLUTION-CLIENT. Workspace, resolvedor Auth/host/profissional, KMS, aplicação 048–049 e grants clínicos continuam pendentes; nenhuma rota produtiva ativada.",
+      "requirements": []
+    },
+    {
+      "id": "MEDICAL-EVOLUTION-CLIENT",
+      "title": "Prontuário: cliente com prazo e confirmação do comando original — local",
+      "parent": "3.2",
+      "authors": [
+        "Codex"
+      ],
+      "status": "done",
+      "done": "Cliente browser-safe vincula a sessão à conta original, envia um comando e preserva ID/conteúdo após resposta incerta. GET compara escopo/autoria/texto; 404 não confirma falha. Deadline inclui token/rede/corpo; fechamento aborta transportes e ignora respostas tardias. Integração local cliente/HTTP/criptografia/SQL confirma resposta perdida sem duplicar registro. Histórico por página validado. Regressão ampliada: 218 testes/22 arquivos, tipos, lint e build aprovados.",
+      "next": "Workspace e contexto profissional/host/KMS reais ainda não integrados. Sem rota ativada, grants clínicos ou 048–049 no Cloud. Instância/comando em memória devem ser removidos ao trocar sessão/paciente; assinatura e homologação continuam pendentes.",
       "requirements": []
     }
   ]

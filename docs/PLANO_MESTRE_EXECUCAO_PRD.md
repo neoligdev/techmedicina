@@ -1576,3 +1576,7 @@ PRD 3.2 passa a parcial com núcleo cifrado/imutável e auditoria privados em pr
 ## Continuidade — fronteira HTTP clínica local, 31/10/2026
 
 Factory sem rota ativada e sem contexto/KMS padrão; valida escopo médico, corpo limitado e confirmação por ID. Teste integrado de HTTP/serviço/criptografia/SQL e regressão ampliada com 203 testes/21 arquivos aprovados; tipos/lint/build válidos. Status 173, ainda parcial. Próximo incremento: cliente com prazo/resultado incerto, sem armazenamento de texto clínico no navegador nem retry automático. Dependências operacionais em RETOMADA_PENDENCIAS_OPERACIONAIS_20261031.md.
+
+## Continuidade — cliente clínico local, 31/10/2026
+
+Cliente com deadline, contexto de conta fixo, confirmação por ID original, histórico limitado e fechamento dos transportes. Regressão 218 testes/22 arquivos, tipos/lint/build aprovados. Status local 174; nenhuma rota clínica ativada. Próximo incremento: workspace com bloqueio de comandos incertos e descarte de estado ao trocar contexto, seguido da ligação operacional Auth/host/CRM/KMS mediante decisões próprias.

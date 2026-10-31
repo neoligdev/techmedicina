@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { createMedicalEvolutionClient } from "@/features/medical-records/evolution-client";
 import { createMedicalEvolutionEndpoint } from "@/lib/medical-records/evolution-endpoint.server";
 import {
   createMedicalEvolutionHistory,
@@ -471,4 +472,58 @@ it("connects local HTTP create/read/history to the encrypted SQL core without ex
   expect(
     JSON.stringify((await db.query("SELECT * FROM public.tm_medical_evolutions")).rows),
   ).not.toContain("Fluxo HTTP QA");
+});
+it("confirms an uncertain client command through HTTP and encrypted SQL with the original ID", async () => {
+  const { service } = setup(),
+    { history } = historySetup();
+  const endpoint = createMedicalEvolutionEndpoint({
+    resolveContext: async () => ({
+      authContext: {
+        currentClinicId: clinic,
+        identity: {
+          userId: doctor,
+          links: [
+            {
+              clinicId: clinic,
+              role: "medico",
+              isActive: true,
+              medicalIdentityVerified: true,
+              grants: [
+                { resource: "prontuario", action: "read" },
+                { resource: "prontuario", action: "create" },
+              ],
+            },
+          ],
+        },
+      },
+      patientLink: { patientId: patient, clinicId: clinic, isActive: true },
+    }),
+    create: (_s, command) => service.create(scope, command),
+    read: (_s, id) => service.read(scope, id),
+    history: (_s, cursor) => history(scope, cursor),
+  });
+  let calls = 0;
+  const transport: typeof fetch = async (input, options) => {
+    calls++;
+    const url = new URL(String(input), "https://clinica.example.test"),
+      headers = new Headers(options?.headers);
+    if (options?.method === "POST") headers.set("Origin", url.origin);
+    const request = new Request(url, { ...options, headers });
+    const response = await endpoint(request, options?.method === "POST" ? "create" : "record");
+    if (options?.method === "POST") throw new Error("Response lost after SQL append");
+    return response;
+  };
+  const client = createMedicalEvolutionClient(
+      { ...scope, userId: doctor },
+      async () => ({ userId: doctor, accessToken: "qa" }),
+      transport,
+    ),
+    command = { id: randomUUID(), text: "QA confirmação ponta a ponta local", supplementsId: null };
+  await expect(client.create(command)).rejects.toMatchObject({ outcome: "uncertain" });
+  const confirmation = await client.confirm(command);
+  expect(confirmation.outcome).toBe("confirmed");
+  expect(confirmation.record?.id).toBe(command.id);
+  expect(calls).toBe(2);
+  expect((await db.query("SELECT * FROM public.tm_medical_evolutions")).rows).toHaveLength(1);
+  client.close();
 });
