@@ -67,8 +67,8 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: OpenCode, Codex
-- **Entregue**: Núcleo local server-only de evolução cifrada, autoria e cronologia preservadas, SQL 048 append-only, complemento e auditoria privada preparados. Sem endpoint, KMS ou acesso clínico produtivo.
-- **Próximo Passo**: Implementar histórico paginado/interface e integrar Auth/host, identidade profissional verificada e chaves reais. 048 não aplicada; assinatura permanece pendente conforme PRD. Não é prontuário completo.
+- **Entregue**: Núcleo local server-only de evolução cifrada, autoria e cronologia preservadas, SQL 048 append-only, complemento e auditoria privada preparados. Sem endpoint, KMS ou acesso clínico produtivo. Histórico paginado privado 049/serviço com validação de escopo antes de decifrar e reautorização posterior, testado com 102 evoluções fictícias.
+- **Próximo Passo**: Integrar interface, Auth/host, cadastro profissional verificado e KMS/backup/rotação. 048–049 não aplicadas no Cloud; assinatura pendente. Não representa prontuário completo.
 
 **Requisitos**:
 
@@ -2817,4 +2817,11 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Status**: 🟢 Concluído no escopo descrito
 - **Autores**: Codex
 - **Entregue**: Serviço e adaptador server-only com criptografia clínica existente; SQL 048 persiste apenas envelope, recusa UPDATE/DELETE e exige médico autorizado no mesmo tenant. Complemento cria novo registro; replay conserva original e conteúdo diferente conflita. Auditoria privada registra criação/leitura sem texto. Testes locais com conteúdo fictício e chave efêmera.
-- **Próximo Passo**: Histórico paginado, interface, cadastro profissional/KMS/host, assinatura e homologação ainda pendentes. 048 não aplicada no Cloud; nenhum grant clínico ou endpoint ativado. Não conclui o prontuário do PRD.
+- **Próximo Passo**: Histórico local acrescentado na entrega MEDICAL-EVOLUTION-HISTORY. Interface, contexto Auth/host e cadastro profissional/KMS/assinatura continuam pendentes; 048 não aplicada nem acesso clínico provisionado.
+
+## MEDICAL-EVOLUTION-HISTORY - Prontuário: histórico cifrado paginado e reautorizado — proposta local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: SQL 049 e serviço/adaptador privados com páginas limitadas, data/ID e auditoria de leitura sem texto. Validação integral de escopo/ordem/cursor antes da chave; mesma conta reautorizada antes da devolução. Testados 102 registros cifrados fictícios em 100 + 2, escopo alheio e troca de sessão bloqueados. Regressão ampliada: 192 testes/20 arquivos, tipos, lint e build aprovados.
+- **Próximo Passo**: Sem endpoint, interface ou KMS/cadastro profissional operacionais. 048–049 não aplicadas, sem grants clínicos. Assinatura, concorrência PostgreSQL remota, backup/rotação e homologação ponta a ponta ainda pendentes; requisito 3.2 permanece parcial.

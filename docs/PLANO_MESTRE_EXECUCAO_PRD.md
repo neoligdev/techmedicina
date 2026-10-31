@@ -1568,3 +1568,7 @@ Ver RETOMADA_CODEX_20261020.md para HEAD, resultados verificados e próximo pass
 ## Avanço local — 31/10/2026: prontuário
 
 PRD 3.2 passa a parcial com núcleo cifrado/imutável e auditoria privados em proposta 048, serviço e adaptador, sem concessão de acesso ou endpoint. Próxima etapa: histórico paginado, seguida de interface ligada a Auth/host e keystore operacionais. PRD e adendos preservados; decisões de assinatura não resolvidas por suposição. Entregas técnicas locais 171; conclusão integral do PRD não é inferida dessa contagem. Revisão: REVISAO_MIGRACAO_PRONTUARIO_048.md.
+
+## Continuidade — histórico clínico local, 31/10/2026
+
+049 acrescenta histórico cifrado por cursor com auditoria, sem endpoint ou privilégio novo. Regressão ampliada: 192 testes/20 arquivos aprovada, tipos/lint/build válidos. Status local 172 conferido com busca do item 3.2; permanece parcial. SQL Editor remoto somente leitura confirmou estado anterior de hidratação e ausência de vínculos clínicos, sem aplicar migrações. Próximo incremento: fronteira HTTP com contexto profissional derivado de servidor e recuperação de comando incerto, sem exposição enquanto Auth/host/CRM/KMS não estiverem operacionais.

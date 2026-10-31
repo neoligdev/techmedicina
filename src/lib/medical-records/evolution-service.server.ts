@@ -1,15 +1,14 @@
+import { openMedicalEvolution } from "./open-evolution.server";
 import "@tanstack/react-start/server-only";
 import {
   evolutionCommandSchema,
   evolutionScopeSchema,
   evolutionAuthorSchema,
   evolutionPayloadSchema,
-  encryptedEvolutionSchema,
   type EncryptedEvolution,
 } from "@/features/medical-records/evolution-contract";
 import {
   encryptClinicalText,
-  decryptClinicalText,
   type ClinicalKeyProvider,
 } from "@/lib/security/clinical-crypto.server";
 /** Local core only. No default identity, key provider, database connection or HTTP endpoint. */
@@ -29,29 +28,8 @@ export function createMedicalEvolutionService(providers: {
     recordId: record.id,
     recordType: "medical_evolution",
   });
-  const open = async (
-    value: unknown,
-    scope: { clinicId: string; patientId: string },
-    id: string,
-  ) => {
-    const record = encryptedEvolutionSchema.parse(value);
-    if (
-      record.clinicId !== scope.clinicId ||
-      record.patientId !== scope.patientId ||
-      record.id !== id
-    )
-      throw new Error("Unexpected medical record");
-    const payload = evolutionPayloadSchema.parse(
-      JSON.parse(await decryptClinicalText(providers.keys, record.envelope, context(record))),
-    );
-    if (
-      payload.author.userId !== record.authorUserId ||
-      payload.recordedAt !== record.recordedAt ||
-      payload.supplementsId !== record.supplementsId
-    )
-      throw new Error("Unexpected medical metadata");
-    return payload;
-  };
+  const open = (value: unknown, scope: { clinicId: string; patientId: string }, id: string) =>
+    openMedicalEvolution(providers.keys, value, scope, id);
   return {
     async read(scopeValue: unknown, idValue: unknown) {
       const scope = evolutionScopeSchema.parse(scopeValue),

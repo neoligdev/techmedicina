@@ -1,4 +1,8 @@
 // @vitest-environment node
+import {
+  createMedicalEvolutionHistory,
+  createMedicalEvolutionHistoryStore,
+} from "@/lib/medical-records/evolution-history.server";
 import { createMedicalEvolutionStore } from "@/lib/medical-records/evolution-store.server";
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
@@ -42,6 +46,15 @@ beforeAll(async () => {
   await db.exec(
     await readFile(
       new URL("../../database/migrations/048_private_medical_evolutions.sql", import.meta.url),
+      "utf8",
+    ),
+  );
+  await db.exec(
+    await readFile(
+      new URL(
+        "../../database/migrations/049_private_medical_evolution_history.sql",
+        import.meta.url,
+      ),
       "utf8",
     ),
   );
@@ -301,4 +314,99 @@ it("uses the verified actor captured by the private SQL adapter", async () => {
     id = randomUUID();
   await service.create(scope, { id, text: "QA adaptador", supplementsId: null });
   expect((await service.read(scope, id))?.text).toBe("QA adaptador");
+});
+function historySetup() {
+  const list = createMedicalEvolutionHistoryStore(
+    doctor,
+    async (_name, args) =>
+      (
+        await db.query<{ value: unknown }>(
+          "SELECT public.tm_list_medical_evolutions($1,$2,$3,$4,$5,$6) AS value",
+          [
+            args["p_actor"],
+            args["p_clinic"],
+            args["p_patient"],
+            args["p_before_recorded_at"] ?? null,
+            args["p_before_id"] ?? null,
+            args["p_limit"],
+          ],
+        )
+      ).rows[0]!.value,
+  );
+  const providers = { keys, authorize: vi.fn(async () => author), list };
+  return { providers, history: createMedicalEvolutionHistory(providers) };
+}
+it("reads 102 encrypted evolutions in 100 plus 2, with stable tie-breaks and no plaintext in audit", async () => {
+  const { service } = setup();
+  for (let i = 0; i < 102; i++)
+    await service.create(scope, { id: randomUUID(), text: `QA ${i}`, supplementsId: null });
+  const { history } = historySetup(),
+    first = await history(scope);
+  expect(first.items).toHaveLength(100);
+  expect(first.nextCursor).not.toBeNull();
+  const second = await history(scope, first.nextCursor);
+  expect(second.items).toHaveLength(2);
+  expect(second.nextCursor).toBeNull();
+  expect(new Set([...first.items, ...second.items].map((r) => r.id)).size).toBe(102);
+  expect(first.items.every((r, i) => i === 0 || r.id < first.items[i - 1]!.id)).toBe(true);
+  expect((await history(scope)).items.map((r) => r.id)).toEqual(first.items.map((r) => r.id));
+  expect(
+    JSON.stringify((await db.query("SELECT * FROM public.tm_medical_evolution_audit")).rows),
+  ).not.toContain("QA 0");
+});
+it("keeps history private and rejects invalid SQL cursor pairs and limits", async () => {
+  for (const role of ["anon", "authenticated", "inherited_reader"]) {
+    expect(
+      (
+        await db.query<{ allowed: boolean }>(
+          "SELECT has_function_privilege($1,'public.tm_list_medical_evolutions(uuid,uuid,uuid,timestamptz,uuid,integer)','EXECUTE') AS allowed",
+          [role],
+        )
+      ).rows[0]!.allowed,
+    ).toBe(false);
+  }
+  await db.exec("SAVEPOINT bad_history");
+  await expect(
+    db.query("SELECT public.tm_list_medical_evolutions($1,$2,$3,NULL,$4,101)", [
+      doctor,
+      clinic,
+      patient,
+      randomUUID(),
+    ]),
+  ).rejects.toMatchObject({ code: "22023" });
+  await db.exec("ROLLBACK TO SAVEPOINT bad_history");
+  await db.exec("SAVEPOINT history_denied");
+  await expect(
+    db.query("SELECT public.tm_list_medical_evolutions($1,$2,$3)", [admin, clinic, patient]),
+  ).rejects.toMatchObject({ code: "42501" });
+  await db.exec("ROLLBACK TO SAVEPOINT history_denied");
+});
+it("validates every encrypted history scope before asking the key provider to decrypt", async () => {
+  const { service } = setup(),
+    id = randomUUID();
+  await service.create(scope, { id, text: "QA", supplementsId: null });
+  const raw = (
+    await db.query<{ value: { items: Record<string, unknown>[]; nextCursor: null } }>(
+      "SELECT public.tm_list_medical_evolutions($1,$2,$3) AS value",
+      [doctor, clinic, patient],
+    )
+  ).rows[0]!.value;
+  raw.items[0]!["patientId"] = otherPatient;
+  const keyLookup = vi.fn(keys.getKeyForKid);
+  const history = createMedicalEvolutionHistory({
+    keys: { ...keys, getKeyForKid: keyLookup },
+    authorize: async () => author,
+    list: async () => raw,
+  });
+  await expect(history(scope)).rejects.toThrow("Unexpected medical history page");
+  expect(keyLookup).not.toHaveBeenCalled();
+});
+it("does not release a history page after a session change", async () => {
+  const { service } = setup();
+  await service.create(scope, { id: randomUUID(), text: "QA", supplementsId: null });
+  const { history, providers } = historySetup();
+  providers.authorize
+    .mockResolvedValueOnce(author)
+    .mockResolvedValueOnce({ ...author, userId: colleague });
+  await expect(history(scope)).rejects.toThrow("Medical session changed");
 });

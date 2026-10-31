@@ -1,0 +1,86 @@
+{
+  "constraint": "CHECK ((resource = ANY (ARRAY['cadastro_clinica'::text, 'prontuario'::text, 'paciente'::text, 'agenda'::text, 'faturamento'::text, 'journey_goals'::text, 'journey_events'::text, 'journey_shields'::text, 'hydration_records'::text])))",
+  "functions": [
+    {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "name": "tm_require_own_hydration_patient",
+      "public": false
+    },
+    {
+      "anon": false,
+      "authenticated": false,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "name": "tm_hydration_snapshot",
+      "public": false
+    },
+    {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "name": "tm_get_own_hydration_receipt",
+      "public": false
+    },
+    {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "name": "tm_mutate_own_hydration_record",
+      "public": false
+    },
+    {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "name": "tm_get_own_hydration_record",
+      "public": false
+    },
+    {
+      "anon": false,
+      "authenticated": true,
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "name": "tm_list_own_hydration_records",
+      "public": false
+    }
+  ],
+  "grant_count": 0,
+  "host043": null,
+  "index": "tm_hydration_records_own_id_idx",
+  "membership_count": 0,
+  "patient_count": 0,
+  "receipt_count": 0,
+  "record_count": 0,
+  "tables": [
+    {
+      "anon": false,
+      "authenticated": false,
+      "name": "tm_hydration_receipts",
+      "rls": true
+    },
+    {
+      "anon": false,
+      "authenticated": false,
+      "name": "tm_hydration_records",
+      "rls": true
+    }
+  ]
+}

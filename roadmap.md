@@ -281,3 +281,9 @@ Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
 - [x] Evoluções cifradas, imutáveis, com complemento e confirmação de ID; autoria/cronologia preservadas e auditoria de acesso sem texto.
 - [ ] Histórico paginado e interface integrada; Auth/host profissional, KMS/rotação/backup e assinatura ainda não operacionais.
 - [ ] 048 não aplicada no Cloud; nenhum grant clínico provisionado. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_048.md.
+
+## Prontuário — histórico paginado local, 31/10/2026
+
+- [x] Proposta 049/serviço/adaptador: páginas cifradas, cursor data/ID, auditoria de leitura e validação completa antes de decifrar; reautoriza antes da devolução.
+- [x] 102 evoluções fictícias em páginas 100 + 2, sem duplicação na fronteira e com troca de conta bloqueada.
+- [ ] Interface, contexto Auth/host, cadastro profissional verificado e KMS reais; 048–049 não aplicadas no Cloud. Assinatura não definida.

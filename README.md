@@ -81,3 +81,7 @@ SQL 047 e adaptador server-only conectam preferências elegíveis ao planejador/
 ### Prontuário — núcleo de evoluções local (31/10/2026)
 
 Texto cifrado com autoria preservada, append-only, complemento por novo registro, autorização médica e auditoria sem conteúdo clínico preparados em SQL 048/serviço/adaptador locais. Não há endpoint, KMS, cadastro profissional operacional ou concessão clínica. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_048.md.
+
+### Histórico clínico paginado — proposta local (31/10/2026)
+
+SQL 049 e serviço de histórico validam todas as linhas antes da decifragem, com páginas de até 100, cursor por data/ID e reautorização antes da devolução. Testes usam 102 evoluções cifradas fictícias. Não expõe endpoint nem acesso ao Super ADM; produção e interface permanecem pendentes. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_049.md.
