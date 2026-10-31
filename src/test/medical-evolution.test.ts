@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { createMedicalEvolutionEndpoint } from "@/lib/medical-records/evolution-endpoint.server";
 import {
   createMedicalEvolutionHistory,
   createMedicalEvolutionHistoryStore,
@@ -409,4 +410,65 @@ it("does not release a history page after a session change", async () => {
     .mockResolvedValueOnce(author)
     .mockResolvedValueOnce({ ...author, userId: colleague });
   await expect(history(scope)).rejects.toThrow("Medical session changed");
+});
+it("connects local HTTP create/read/history to the encrypted SQL core without exposing a route", async () => {
+  const { service } = setup(),
+    { history } = historySetup();
+  const endpoint = createMedicalEvolutionEndpoint({
+    resolveContext: async () => ({
+      authContext: {
+        currentClinicId: clinic,
+        identity: {
+          userId: doctor,
+          links: [
+            {
+              clinicId: clinic,
+              role: "medico",
+              isActive: true,
+              medicalIdentityVerified: true,
+              grants: [
+                { resource: "prontuario", action: "read" },
+                { resource: "prontuario", action: "create" },
+              ],
+            },
+          ],
+        },
+      },
+      patientLink: { patientId: patient, clinicId: clinic, isActive: true },
+    }),
+    create: (_session, command) => service.create(scope, command),
+    read: (_session, id) => service.read(scope, id),
+    history: (_session, cursor) => history(scope, cursor),
+  });
+  const id = randomUUID(),
+    url = "https://clinica.example.test/api/medical/evolutions";
+  const created = await endpoint(
+    new Request(url, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer qa",
+        Origin: "https://clinica.example.test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, text: "Fluxo HTTP QA", supplementsId: null }),
+    }),
+    "create",
+  );
+  expect(created.status).toBe(200);
+  expect((await created.json()).result.author).toEqual(author);
+  const read = await endpoint(
+    new Request(`${url}?id=${id}`, { headers: { Authorization: "Bearer qa" } }),
+    "record",
+  );
+  expect(read.status).toBe(200);
+  expect((await read.json()).result.text).toBe("Fluxo HTTP QA");
+  const page = await endpoint(
+    new Request(url, { headers: { Authorization: "Bearer qa" } }),
+    "history",
+  );
+  expect(page.status).toBe(200);
+  expect((await page.json()).result.items).toHaveLength(1);
+  expect(
+    JSON.stringify((await db.query("SELECT * FROM public.tm_medical_evolutions")).rows),
+  ).not.toContain("Fluxo HTTP QA");
 });

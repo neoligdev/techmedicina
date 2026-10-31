@@ -67,7 +67,7 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 
 - **Status**: 🔵 Em implementação / parcial
 - **Autores**: OpenCode, Codex
-- **Entregue**: Núcleo local server-only de evolução cifrada, autoria e cronologia preservadas, SQL 048 append-only, complemento e auditoria privada preparados. Sem endpoint, KMS ou acesso clínico produtivo. Histórico paginado privado 049/serviço com validação de escopo antes de decifrar e reautorização posterior, testado com 102 evoluções fictícias.
+- **Entregue**: Núcleo local server-only de evolução cifrada, autoria e cronologia preservadas, SQL 048 append-only, complemento e auditoria privada preparados. Sem endpoint, KMS ou acesso clínico produtivo. Histórico paginado privado 049/serviço com validação de escopo antes de decifrar e reautorização posterior, testado com 102 evoluções fictícias. Fronteira HTTP local exige contexto profissional verificado, corpo estrito e confirmação por ID sem retry automático; não há rota ativada.
 - **Próximo Passo**: Integrar interface, Auth/host, cadastro profissional verificado e KMS/backup/rotação. 048–049 não aplicadas no Cloud; assinatura pendente. Não representa prontuário completo.
 
 **Requisitos**:
@@ -2825,3 +2825,10 @@ Atualizado em 31/10/2026. Gerado a partir do catálogo; verde descreve somente o
 - **Autores**: Codex
 - **Entregue**: SQL 049 e serviço/adaptador privados com páginas limitadas, data/ID e auditoria de leitura sem texto. Validação integral de escopo/ordem/cursor antes da chave; mesma conta reautorizada antes da devolução. Testados 102 registros cifrados fictícios em 100 + 2, escopo alheio e troca de sessão bloqueados. Regressão ampliada: 192 testes/20 arquivos, tipos, lint e build aprovados.
 - **Próximo Passo**: Sem endpoint, interface ou KMS/cadastro profissional operacionais. 048–049 não aplicadas, sem grants clínicos. Assinatura, concorrência PostgreSQL remota, backup/rotação e homologação ponta a ponta ainda pendentes; requisito 3.2 permanece parcial.
+
+## MEDICAL-EVOLUTION-HTTP - Prontuário: fronteira HTTP protegida e confirmação por ID — factory local 🟢
+
+- **Status**: 🟢 Concluído no escopo descrito
+- **Autores**: Codex
+- **Entregue**: Factory server-only de criação/leitura/histórico com contexto do servidor, médico verificado/grants, origem, corpo limitado, no-store e escopo do resultado. Erro após despacho fica incerto e preserva ID, sem retry. Teste integrado local liga HTTP, serviço, AES-GCM e SQL com dados fictícios. Regressão ampliada: 203 testes/21 arquivos, tipos, lint e build aprovados.
+- **Próximo Passo**: Sem rota/resolvedor produtivo, workspace ou KMS reais. Cliente/UX de incerteza e vínculo de host/Auth/CRM ainda necessários; 048–049 não aplicadas nem grants concedidos. Não é prontuário completo nem assinatura clínica.

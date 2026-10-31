@@ -287,3 +287,9 @@ Revisão: docs/REVISAO_MIGRACAO_HIDRATACAO_046.md.
 - [x] Proposta 049/serviço/adaptador: páginas cifradas, cursor data/ID, auditoria de leitura e validação completa antes de decifrar; reautoriza antes da devolução.
 - [x] 102 evoluções fictícias em páginas 100 + 2, sem duplicação na fronteira e com troca de conta bloqueada.
 - [ ] Interface, contexto Auth/host, cadastro profissional verificado e KMS reais; 048–049 não aplicadas no Cloud. Assinatura não definida.
+
+## Prontuário — fronteira HTTP local, 31/10/2026
+
+- [x] Factory protegida com autorização existente, dados de contexto do servidor, JSON limitado, no-store e confirmação por ID sem retry automático.
+- [x] Teste HTTP + serviço + criptografia + SQL PGlite usando contexto e texto fictícios; sem exposição de rota.
+- [ ] Cliente/UX de incerteza, workspace, resolvedor Auth/host/profissional, KMS e acesso clínico autorizado. Nenhum endpoint produtivo ativado.

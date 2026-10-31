@@ -85,3 +85,7 @@ Texto cifrado com autoria preservada, append-only, complemento por novo registro
 ### Histórico clínico paginado — proposta local (31/10/2026)
 
 SQL 049 e serviço de histórico validam todas as linhas antes da decifragem, com páginas de até 100, cursor por data/ID e reautorização antes da devolução. Testes usam 102 evoluções cifradas fictícias. Não expõe endpoint nem acesso ao Super ADM; produção e interface permanecem pendentes. Revisão: docs/REVISAO_MIGRACAO_PRONTUARIO_049.md.
+
+### Fronteira HTTP clínica local (31/10/2026)
+
+Factory protegida para criação, leitura por ID e histórico, com contexto derivado de servidor, JSON limitado e resposta incerta conservadora. Sem rota ativada ou resolvedor padrão. Teste integrado local percorre HTTP/serviço/criptografia/SQL com dados fictícios. Detalhes: docs/PRONTUARIO_FRONTEIRA_HTTP_LOCAL.md.
